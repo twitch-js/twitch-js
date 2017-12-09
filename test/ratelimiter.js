@@ -1,5 +1,5 @@
 var sinon = require("sinon");
-var RateLimiter = require("../lib/ratelimiter");
+var RateLimiter = require("../src/ratelimiter");
 
 function fillQueue(rateLimiter, amount) {
     rateLimiter.queue = Array(amount).fill(Date.now());
