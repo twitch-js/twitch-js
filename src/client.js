@@ -3,6 +3,7 @@ var commands = require("./commands");
 var eventEmitter = require("./events").EventEmitter;
 var logger = require("./logger");
 var parse = require("./parser");
+var RateLimiter = require("./ratelimiter");
 var timer = require("./timer");
 var ws = global.WebSocket || global.MozWebSocket || require("ws");
 var _ = require("./utils");
@@ -13,10 +14,12 @@ var client = function client(opts) {
     this.setMaxListeners(0);
 
     this.opts = _.get(opts, {});
-    this.opts.channels = this.opts.channels || [];
+    this.opts.channels = this.opts.channels || this.opts.channel || [];
     this.opts.connection = this.opts.connection || {};
     this.opts.identity = this.opts.identity || {};
     this.opts.options = this.opts.options || {};
+
+    this.clientId = _.get(this.opts.options.clientId, null);
 
     this.clientId = _.get(this.opts.options.clientId, null);
 
@@ -44,6 +47,7 @@ var client = function client(opts) {
     this.moderators = {};
     this.pingLoop = null;
     this.pingTimeout = null;
+    this.rateLimiter = null;
     this.reason = "";
     this.username = "";
     this.userstate = {};
@@ -56,6 +60,23 @@ var client = function client(opts) {
     this.log = this.opts.logger || logger;
 
     try { logger.setLevel(level); } catch(e) {};
+
+    // Set up the rate limiter
+    var rateLimiterOptions = this.opts.options.ratelimiter;
+    if (rateLimiterOptions) {
+        this.rateLimiter = new RateLimiter(rateLimiterOptions);
+    }
+
+    // If a string is passed here, format it..
+    if(_.isString(this.opts.channels)) {
+        // Comma-delimited channels..
+        if(this.opts.channels.indexOf(",") > -1) {
+            this.opts.channels = this.opts.channels.split(",");
+        }
+        else {
+            this.opts.channels = [this.opts.channels];
+        }
+    }
 
     // Format the channel names..
     this.opts.channels.forEach(function(part, index, theArray) {
@@ -1065,6 +1086,11 @@ client.prototype._sendCommand = function _sendCommand(delay, channel, command, f
 client.prototype._sendMessage = function _sendMessage(delay, channel, message, fn) {
     // Promise a result..
     return new Promise((resolve, reject) => {
+        // Check if we're not ratelimited
+        if (this.rateLimiter && !this.rateLimiter.hit()) {
+            return reject(new Error("Ratelimit reached"));
+        }
+
         // Make sure the socket is opened and not logged in as a justinfan user..
         if (!_.isNull(this.ws) && this.ws.readyState !== 2 && this.ws.readyState !== 3 && !_.isJustinfan(this.getUsername())) {
             if (!this.userstate[_.channel(channel)]) { this.userstate[_.channel(channel)] = {} }
