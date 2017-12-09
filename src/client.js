@@ -427,6 +427,8 @@ client.prototype.handleMessage = function handleMessage(message) {
                             break;
 
                         // Unban command success..
+                        // Unban can also be used to cancel an active timeout.
+                        case "untimeout_success":
                         case "unban_success":
                             this.log.info(`[${channel}] ${msg}`);
                             this.emits(["notice", "_promiseUnban"], [[channel, msgid, msg], [null]]);
@@ -508,6 +510,7 @@ client.prototype.handleMessage = function handleMessage(message) {
                         case "msg_censored_broadcaster":
                         case "msg_duplicate":
                         case "msg_emoteonly":
+                        case "msg_followersonly":
                         case "msg_verified_email":
                         case "msg_ratelimit":
                         case "msg_subsonly":
