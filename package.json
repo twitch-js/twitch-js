@@ -2,6 +2,8 @@
   "name": "twitch-js",
   "version": "1.2.3",
   "description": "Javascript library for the Twitch Messaging Interface.",
+  "license": "MIT",
+  "author": "Schmoopiie",
   "keywords": [
     "tmi",
     "twitch",
@@ -17,18 +19,18 @@
     "bot",
     "robot"
   ],
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/marcandrews/twitch-js.git"
+  },
+  "bugs": {
+    "url": "https://github.com/marcandrews/twitch-js/issues"
+  },
   "main": "lib/index.js",
   "files": [
     "dist",
     "lib",
     "src"
-  ],
-  "author": "Schmoopiie",
-  "contributors": [
-    {
-      "name": "celluj34",
-      "email": "celluj34@gmail.com"
-    }
   ],
   "scripts": {
     "test": "istanbul cover node_modules/mocha/bin/_mocha -- -R spec --require should",
@@ -42,14 +44,6 @@
     "build:uglify": "uglifyjs --compress --mangle --output ./dist/tmi.min.js --source-map ./dist/tmi.js.map ./dist/tmi.js",
     "build:sri": "node sri.js ./dist/tmi.js",
     "build:sri-min": "node sri.js ./dist/tmi.min.js"
-  },
-  "license": "MIT",
-  "repository": {
-    "type": "git",
-    "url": "git://github.com/tmijs/tmi.js.git"
-  },
-  "bugs": {
-    "url": "https://github.com/tmijs/tmi.js/issues"
   },
   "dependencies": {
     "request": "2.74.0",
