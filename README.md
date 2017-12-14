@@ -5,7 +5,7 @@ A community-centric, community-supported version of `tmi.js`.
 
 ## Contribution guidelines
 
-If you wish to contribute, please see the [CONTRIBUTING](https://github.com/marcandrews/twith-js/blob/master/CONTRIBUTING.md) doc.
+If you wish to contribute, please see the [CONTRIBUTING](https://github.com/marcandrews/twitch-js/blob/master/CONTRIBUTING.md) doc.
 
 
 ## Getting started
