@@ -5,14 +5,7 @@ A community-centric, community-supported version of `tmi.js`.
 
 ## Contribution guidelines
 
-All submissions must:
-- Pass ESLint tests
-- Pass TravisCI tests
-- Maintain current test coverage
-- Receive at least one approval from an existing contributor
-- ... more to follow
-
-Anyone who submits a PR that is merged with relatively little-to-no assistance from an existing contributor **will receive merge rights**.
+If you wish to contribute, please see the [CONTRIBUTING](https://github.com/marcandrews/twith-js/blob/master/CONTRIBUTING.md) doc.
 
 
 ## Getting started
