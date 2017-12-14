@@ -3,16 +3,46 @@ var _ = require("./utils");
 
 var api = function api(options, callback) {
     // Set the url to options.uri or options.url..
-    var url = _.get(options.url, null) === null ? _.get(options.uri, null) : _.get(options.url, null);
+    var url = options.url || options.uri || '';
 
     // Make sure it is a valid url..
-    if (!_.isURL(url)) { url = url.charAt(0) === "/" ? `https://api.twitch.tv/kraken${url}` : `https://api.twitch.tv/kraken/${url}`; }
+    if (_.isString(url) && !_.isURL(url)) {
+        url = `https://api.twitch.tv/kraken${url.charAt(0) === "/" ? "" : "/"}${url}`;
+        // Force the url in the options to reflect this change..
+        options.url = url;
+    }
+
+    // Callback may be passed through the options..
+    if(_.isUndefined(callback) && _.isFunction(options.callback)) {
+        callback = options.callback;
+    }
 
     // We are inside a Node application, so we can use the request module..
     if (_.isNode()) {
-        request(_.merge(options, { url: url, method: "GET", json: true }), function (err, res, body) {
-            callback(err, res, body);
-        });
+        request(_.defaults(options, { url: url, method: "GET", json: true, callback: callback }));
+    }
+    // Inside an extension -> we cannot use jsonp!
+    else if (_.isExtension()) {
+      options = _.merge(options, { url: url, method: "GET", headers: {} })
+      // prepare request
+      var xhr = new XMLHttpRequest();
+      xhr.open(options.method, options.url, true);
+      for(var name in options.headers) {
+        xhr.setRequestHeader(name, options.headers[name]);
+      }
+      xhr.responseType = "json";
+      // set request handler
+      xhr.addEventListener("load", (ev) => {
+        if(xhr.readyState == 4) {
+          if(xhr.status != 200) {
+            callback(xhr.status, null, null);
+          } else {
+            callback(null, null, xhr.response);
+          }
+        }
+      });
+      // submit
+      xhr.send();
     }
     // Inside an extension -> we cannot use jsonp!
     else if (_.isExtension()) {
