@@ -56,6 +56,8 @@
     "babelify": "7.2.0",
     "browserify": "13.0.0",
     "eslint": "4.13.1",
+    "eslint-config-airbnb-base": "12.1.0",
+    "eslint-plugin-import": "2.8.0",
     "hook-std": "0.2.0",
     "istanbul": "0.4.2",
     "mkdirp": "0.5.1",
