@@ -1,57 +1,55 @@
-var request = require("request");
-var _ = require("./utils");
+const request = require('request');
+const _ = require('./utils');
 
-var api = function api(options, callback) {
-    // Set the url to options.uri or options.url..
-    var url = _.get(options.url, null) === null ? _.get(options.uri, null) : _.get(options.url, null);
+const api = function api(options, callback) {
+  // Set the url to options.uri or options.url..
+  let url = _.get(options.url, null) === null ? _.get(options.uri, null) : _.get(options.url, null);
 
-    // Make sure it is a valid url..
-    if (!_.isURL(url)) { url = url.charAt(0) === "/" ? `https://api.twitch.tv/kraken${url}` : `https://api.twitch.tv/kraken/${url}`; }
+  // Make sure it is a valid url..
+  if (!_.isURL(url)) { url = url.charAt(0) === '/' ? `https://api.twitch.tv/kraken${url}` : `https://api.twitch.tv/kraken/${url}`; }
 
-    // We are inside a Node application, so we can use the request module..
-    if (_.isNode()) {
-        request(_.merge(options, { url: url, method: "GET", json: true }), function (err, res, body) {
-            callback(err, res, body);
-        });
-    }
+  // We are inside a Node application, so we can use the request module..
+  if (_.isNode()) {
+    request(_.merge(options, { url, method: 'GET', json: true }), (err, res, body) => {
+      callback(err, res, body);
+    });
+  } else if (_.isExtension()) {
     // Inside an extension -> we cannot use jsonp!
-    else if (_.isExtension()) {
-      options = _.merge(options, { url: url, method: "GET", headers: {} })
-      // prepare request
-      var xhr = new XMLHttpRequest();
-      xhr.open(options.method, options.url, true);
-      for(var name in options.headers) {
-        xhr.setRequestHeader(name, options.headers[name]);
-      }
-      xhr.responseType = "json";
-      // set request handler
-      xhr.addEventListener("load", (ev) => {
-        if(xhr.readyState == 4) {
-          if(xhr.status != 200) {
-            callback(xhr.status, null, null);
-          } else {
-            callback(null, null, xhr.response);
-          }
+    const xhrOptions = _.merge(options, { url, method: 'GET', headers: {} });
+    // prepare request
+    const xhr = new XMLHttpRequest();
+    xhr.open(xhrOptions.method, xhrOptions.url, true);
+    Object.keys(xhrOptions)
+      .forEach(name => xhr.setRequestHeader(name, xhrOptions.headers[name]));
+    xhr.responseType = 'json';
+    // set request handler
+    xhr.addEventListener('load', () => {
+      if (xhr.readyState === 4) {
+        if (xhr.status !== 200) {
+          callback(xhr.status, null, null);
+        } else {
+          callback(null, null, xhr.response);
         }
-      });
-      // submit
-      xhr.send();
-    }
+      }
+    });
+    // submit
+    xhr.send();
+  } else {
     // Inside a web application, use jsonp..
-    else {
-        // Callbacks must match the regex [a-zA-Z_$][\w$]*(\.[a-zA-Z_$][\w$]*)*
-        var callbackName = `jsonp_callback_${Math.round(100000 * Math.random())}`;
-        window[callbackName] = function(data) {
-            delete window[callbackName];
-            document.body.removeChild(script);
-            callback(null, null, data);
-        };
+    // Callbacks must match the regex [a-zA-Z_$][\w$]*(\.[a-zA-Z_$][\w$]*)*
+    const script = document.createElement('script');
 
-        // Inject the script in the document..
-        var script = document.createElement("script");
-        script.src = `${url}${url.indexOf("?") >= 0 ? "&" : "?"}callback=${callbackName}`;
-        document.body.appendChild(script);
-    }
-}
+    const callbackName = `jsonp_callback_${Math.round(100000 * Math.random())}`;
+    window[callbackName] = (data) => {
+      delete window[callbackName];
+      document.body.removeChild(script);
+      callback(null, null, data);
+    };
+
+    // Inject the script in the document..
+    script.src = `${url}${url.indexOf('?') >= 0 ? '&' : '?'}callback=${callbackName}`;
+    document.body.appendChild(script);
+  }
+};
 
 module.exports = api;
