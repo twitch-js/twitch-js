@@ -1,3 +1,5 @@
+/* eslint-disable */
+
 /*
  * Copyright Joyent, Inc. and other Node contributors.
  *
