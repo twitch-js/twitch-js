@@ -1,14 +1,27 @@
+/* eslint-disable no-extend-native */
+
+const client = require('./client');
+
 // Provide support for < Chrome 41 mainly due to CLR Browser..
-String.prototype.includes || (String.prototype.includes = function() {
-    return -1 !== String.prototype.indexOf.apply(this, arguments)
-}), String.prototype.startsWith || (String.prototype.startsWith = function(a, b) {
-    return b = b || 0, this.indexOf(a, b) === b
-}), Object.setPrototypeOf || (Object.setPrototypeOf = function(obj, proto) {
+if (typeof String.prototype.includes !== 'function') {
+  String.prototype.includes = () =>
+    String.prototype.indexOf.apply(this, arguments) !== -1;
+}
+
+if (typeof String.prototype.startsWith !== 'function') {
+  String.prototype.startsWith = (a, b) =>
+    String.prototype.indexOf(a, b || 0) === b;
+}
+
+if (typeof Object.setPrototypeOf !== 'function') {
+  Object.setPrototypeOf = (obj, proto) => {
+    // eslint-disable-next-line no-proto
     obj.__proto__ = proto;
     return obj;
-});
+  };
+}
 
-module.exports={
-	client:require("./client"),
-	Client:require("./client")
+module.exports = {
+  client,
+  Client: client,
 };
