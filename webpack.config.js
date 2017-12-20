@@ -17,7 +17,7 @@ module.exports = {
   output: {
     path: path.join(__dirname, './'),
     filename: isProdBuild ? '[name].min.js' : '[name].js',
-    library: 'twitchJS',
+    library: 'TwitchJS',
     libraryTarget: 'umd',
     umdNamedDefine: true,
   },
