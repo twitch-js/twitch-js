@@ -36,7 +36,7 @@
     "clean": "rimraf lib dist",
     "lint": "eslint src",
     "test": "mocha --compilers js:babel-core/register --reporter spec --require should test",
-    "coverage": "cross-env COVERALLS_GIT_COMMIT=HEAD nyc report --reporter=text-lcov | coveralls",
+    "test:coverage": "nyc npm test && nyc report --reporter=text-lcov | coveralls",
     "prepublish": "npm run build",
     "prebuild": "npm run clean",
     "build:cjs": "babel src --out-dir lib",
