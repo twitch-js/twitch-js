@@ -6,7 +6,7 @@ Describe the big picture of your changes here to communicate to the maintainers 
 ## Types of changes
 
 What types of changes does your code introduce to TwitchJS?
-_Put an `x` in the boxes that apply_
+_Put an `x` in the boxes that apply and remove those that do not apply_
 
 - [ ] Bugfix (non-breaking change which fixes an issue)
 - [ ] New feature (non-breaking change which adds functionality)
