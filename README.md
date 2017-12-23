@@ -1,72 +1,58 @@
-# tmi.js
-[![Build Status](https://secure.travis-ci.org/tmijs/tmi.js.png?branch=master)](https://travis-ci.org/tmijs/tmi.js) [![Downloads](https://img.shields.io/npm/dm/tmi.js.svg?style=flat)](https://www.npmjs.org/package/tmi.js) [![Npm Version](https://img.shields.io/npm/v/tmi.js.svg?style=flat)](https://www.npmjs.org/package/tmi.js) [![Node Version](https://img.shields.io/node/v/tmi.js.svg?style=flat)](https://www.npmjs.org/package/tmi.js) [![Issues](https://img.shields.io/github/issues/tmijs/tmi.js.svg?style=flat)](https://github.com/tmijs/tmi.js/issues)
+# TwitchJS
 
-![](https://i.imgur.com/vsdO7N5.png)
+[![Travis branch](https://img.shields.io/travis/marcandrews/twitch-js/master.svg)](https://travis-ci.org/marcandrews/twitch-js)
+[![npm](https://img.shields.io/npm/v/twitch-js.svg)](https://www.npmjs.com/package/twitch-js)
+[![npm](https://img.shields.io/npm/dw/twitch-js.svg)](https://www.npmjs.com/package/twitch-js)
+[![GitHub issues](https://img.shields.io/github/issues/marcandrews/twitch-js.svg)](https://github.com/marcandrews/twitch-js/issues)
+[![Coverage Status](https://coveralls.io/repos/github/marcandrews/twitch-js/badge.svg)](https://coveralls.io/github/marcandrews/twitch-js)
 
-The best place to start with tmi.js is our [documentation page](https://docs.tmijs.org/).
+A community-centric, community-supported version of `tmi.js`.
 
-This module currently support [Node.js 4.x](https://nodejs.org/en/download/) and every browser that support WebSockets. The current WebSocket protocol being used by this module is **HyBi drafts 13-17**.
 
-## Install
+## Contribution guidelines
 
-#### Node
+If you wish to contribute, please see the [CONTRIBUTING](https://github.com/marcandrews/twitch-js/blob/master/CONTRIBUTING.md) doc.
 
-Install Node using this [tutorial](https://www.npmjs.com/package/tmi.js/tutorial). Once installed, jump to the [documentation](https://docs.tmijs.org/) to get started.
 
-~~~ bash
-npm i tmi.js --save
-~~~
+## Getting started
 
-#### CDN provided by MaxCDN
+### Installation
 
-Reference the file directly in the script tag.
+#### CommonJS
+If you are using a module bundler, such [Webpack](https://webpack.js.org/), [Browserify](http://browserify.org/), or a in a Node environment:
+1.  Add TwitchJS to your project:
+    ```bash
+    npm install --save twitch-js
+    ```
+2.  Import TwitchJS
+    ```js
+    // ES2015 syntax
+    import Twitch from 'twitch-js';
 
-We support [Subresource Integrity](https://developer.mozilla.org/en-US/docs/Web/Security/Subresource_Integrity) (SRI) which allows the browser to verify that the files being delivered have not been modified. This [https://www.w3.org/TR/SRI/](https://www.w3.org/TR/SRI/) is currently being implemented by browsers. Adding the new integrity attribute will ensure your application gains this security improvement as browsers support it.
+    // OR ES5 syntax
+    var twitch = require('twitch-js');
+    ```
 
-Use Subresource Integrity only if you reference a specific version of tmi.js.
+#### UMD
+If you are not using a module bundler, precompiled builds are available in the [`dist` folder](https://unpkg.com/twitch-js/dist/):
+1.  Include a script tag in your HTML:
+    ```html
+    <script src="//https://unpkg.com/twitch-js/"></script>
+    ```
+2.  Consume the library:
+    ```html
+    <script type="javascript">
+    windows.TwitchJS ...
+    </script>
+    ```
 
-~~~ html
-<!--Sourcemap: //cdn.tmijs.org/js/1.2.1/tmi.js.map-->
-<script src="//cdn.tmijs.org/js/1.2.1/tmi.min.js" integrity="sha384-eE0n7sm1W7DOUI2Xh5I4qSpZTe6hupAO0ovLfqEy0yVJtGRBNfssdmjbJhEYm6Bw" crossorigin="anonymous"></script>
-~~~
+For more information, please see the original [`tmi.js` documentation](https://docs.tmijs.org/).
 
-You **must** provide the major version when using the latest branch.
 
-~~~ html
-<!--Sourcemap: //cdn.tmijs.org/js/latest/1.x/tmi.js.map-->
-<script src="//cdn.tmijs.org/js/latest/1.x/tmi.min.js"></script>
-~~~
+## Special thanks
 
-## Community
+[Schmoopiie](https://github.com/Schmoopiie) and all the [original contributors](https://github.com/tmijs/tmi.js/graphs/contributors) of `tmi.js`.
 
-- Follow [@Schmoopiie on Twitter](https://twitter.com/Schmoopiie).
-- Have a question that is not a bug report ? [Discuss on the tmi.js forum](http://www.tmijs.org/forums/).
-- Found a bug ? [Submit an issue](https://github.com/tmijs/tmi.js/issues/new).
+## License
 
-## Contributors
-
-In order of the [most commits](https://github.com/tmijs/tmi.js/graphs/contributors):
-
-- Schmoopiie - [https://github.com/Schmoopiie](https://github.com/Schmoopiie)
-- AlcaDesign - [https://github.com/AlcaDesign](https://github.com/AlcaDesign)
-- ben-eb - [https://github.com/ben-eb](https://github.com/ben-eb)
-- d-fischer - [https://github.com/d-fischer](https://github.com/d-fischer)
-- celluj34 - [https://github.com/celluj34](https://github.com/celluj34)
-- dbkynd - [https://github.com/dbkynd](https://github.com/dbkynd)
-- JDBar - [https://github.com/JDBar](https://github.com/JDBar)
-- subperks - [https://github.com/subperks](https://github.com/subperks)
-- roberthartung - [https://github.com/roberthartung](https://github.com/roberthartung)
-- justinsacbibit - [https://github.com/justinsacbibit](https://github.com/justinsacbibit)
-- Hatsuney - [https://github.com/Hatsuney](https://github.com/Hatsuney)
-- ImNatho - [https://github.com/ImNatho](https://github.com/ImNatho)
-- Jonliney - [https://github.com/Jonliney](https://github.com/Jonliney)
-- UnwrittenFun - [https://github.com/UnwrittenFun](https://github.com/UnwrittenFun)
-- joein3d - [https://github.com/joein3d](https://github.com/joein3d)
-- egonny - [https://github.com/egonny](https://github.com/egonny)
-- smalls89 - [https://github.com/smalls89](https://github.com/smalls89)
-- mertzt89 - [https://github.com/mertzt89](https://github.com/mertzt89)
-- artemisbot - [https://github.com/artemisbot](https://github.com/artemisbot)
-
-## Contributing guidelines
-
-Please review the [guidelines for contributing](https://github.com/tmijs/tmi.js/blob/master/CONTRIBUTING.md) of the [tmi.js repository](https://github.com/tmijs/tmi.js). We reserve the right to refuse a Pull Request if it does not meet the requirements.
+MIT

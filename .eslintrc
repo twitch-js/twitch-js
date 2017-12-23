@@ -1,0 +1,31 @@
+{
+  "parser": "babel-eslint",
+  "parserOptions": {
+    "ecmaVersion": 6,
+    "sourceType": "module"
+  },
+  "env": {
+    "node": true,
+    "browser": true
+  },
+  "extends": "airbnb-base",
+  "rules": {
+    "camelcase": 1,
+    "consistent-return": 1,
+    "global-require": 1,
+    "new-cap": 1,
+    "no-bitwise": 1,
+    "no-cond-assign": 1,
+    "no-confusing-arrow": [1, { "allowParens": true }],
+    "no-extend-native": 1,
+    "no-lonely-if": 1,
+    "no-param-reassign": 1,
+    "no-plusplus": 1,
+    "no-prototype-builtins": 1,
+    "no-restricted-properties": 1,
+    "no-underscore-dangle": 1,
+    "no-useless-escape": 1,
+    "prefer-destructuring": 1,
+    "prefer-promise-reject-errors": 1
+  }
+}
