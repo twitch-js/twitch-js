@@ -1,5 +1,11 @@
 # TwitchJS
 
+[![Travis branch](https://img.shields.io/travis/marcandrews/twitch-js/master.svg)](https://travis-ci.org/marcandrews/twitch-js)
+[![npm](https://img.shields.io/npm/v/twitch-js.svg)](https://www.npmjs.com/package/twitch-js)
+[![npm](https://img.shields.io/npm/dw/twitch-js.svg)](https://www.npmjs.com/package/twitch-js)
+[![GitHub issues](https://img.shields.io/github/issues/marcandrews/twitch-js.svg)](https://github.com/marcandrews/twitch-js/issues)
+[![Coverage Status](https://coveralls.io/repos/github/marcandrews/twitch-js/badge.svg)](https://coveralls.io/github/marcandrews/twitch-js)
+
 A community-centric, community-supported version of `tmi.js`.
 
 
