@@ -112,16 +112,19 @@ var self = module.exports = {
 		}
 	},
 
-	// Merge two objects..
-	merge: (obj1, obj2) => {
-		for (var p in obj2) {
-			try {
-				if (obj2[p].constructor == Object) { obj1[p] = self.merge(obj1[p], obj2[p]); }
-				else { obj1[p] = obj2[p]; }
-			} catch(e) { obj1[p] = obj2[p]; }
-		}
-		return obj1;
-	},
+	// Merge two or more objects.
+	merge: Object.assign ||
+		function(target) {
+				for (var i = 1; i < arguments.length; i++) {
+						var source = arguments[i];
+						for (var key in source) {
+								if (Object.prototype.hasOwnProperty.call(source, key)) {
+										target[key] = source[key];
+								}
+						}
+				}
+				return target;
+		},
 
 	// Split a line but don't cut a word in half..
 	splitLine: (input, length) => {

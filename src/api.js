@@ -10,13 +10,13 @@ var api = function api(options, callback) {
 
     // We are inside a Node application, so we can use the request module..
     if (_.isNode()) {
-        request(_.merge({ url: url, method: "GET", json: true }, options), function (err, res, body) {
+        request(_.merge({ method: "GET", json: true }, options, { url }), function (err, res, body) {
             callback(err, res, body);
         });
     }
     // Inside an extension -> we cannot use jsonp!
     else if (_.isExtension()) {
-      options = _.merge(options, { url: url, method: "GET", headers: {} })
+      options = _.merge({ method: "GET", headers: {} }, options, { url });
       // prepare request
       var xhr = new XMLHttpRequest();
       xhr.open(options.method, options.url, true);
