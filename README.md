@@ -6,7 +6,7 @@
 [![GitHub issues](https://img.shields.io/github/issues/marcandrews/twitch-js.svg)](https://github.com/marcandrews/twitch-js/issues)
 [![Coverage Status](https://coveralls.io/repos/github/marcandrews/twitch-js/badge.svg)](https://coveralls.io/github/marcandrews/twitch-js)
 
-A community-centric, community-supported version of `tmi.js`.
+A community-centric, community-supported version of [`tmi.js`](https://github.com/tmijs/tmi.js).
 
 
 ## Contribution guidelines
@@ -27,22 +27,22 @@ If you are using a module bundler, such [Webpack](https://webpack.js.org/), [Bro
 2.  Import TwitchJS
     ```js
     // ES2015 syntax
-    import Twitch from 'twitch-js';
+    import TwitchJS from 'twitch-js';
 
     // OR ES5 syntax
-    var twitch = require('twitch-js');
+    var TwitchJS = require('twitch-js');
     ```
 
 #### UMD
 If you are not using a module bundler, precompiled builds are available in the [`dist` folder](https://unpkg.com/twitch-js/dist/):
 1.  Include a script tag in your HTML:
     ```html
-    <script src="//https://unpkg.com/twitch-js/"></script>
+    <script src="//unpkg.com/twitch-js@latest/dist/twitch-js.min.js"></script>
     ```
 2.  Consume the library:
     ```html
     <script type="javascript">
-    windows.TwitchJS ...
+        windows.TwitchJS ...
     </script>
     ```
 
