@@ -14,39 +14,17 @@ A community-centric, community-supported version of `tmi.js`.
 If you wish to contribute, please see the [CONTRIBUTING](https://github.com/marcandrews/twitch-js/blob/master/CONTRIBUTING.md) doc.
 
 
-## Getting started
+## Documentation
 
-### Installation
-
-#### CommonJS
-If you are using a module bundler, such [Webpack](https://webpack.js.org/), [Browserify](http://browserify.org/), or a in a Node environment:
-1.  Add TwitchJS to your project:
-    ```bash
-    npm install --save twitch-js
-    ```
-2.  Import TwitchJS
-    ```js
-    // ES2015 syntax
-    import Twitch from 'twitch-js';
-
-    // OR ES5 syntax
-    var twitch = require('twitch-js');
-    ```
-
-#### UMD
-If you are not using a module bundler, precompiled builds are available in the [`dist` folder](https://unpkg.com/twitch-js/dist/):
-1.  Include a script tag in your HTML:
-    ```html
-    <script src="//https://unpkg.com/twitch-js/"></script>
-    ```
-2.  Consume the library:
-    ```html
-    <script type="javascript">
-    windows.TwitchJS ...
-    </script>
-    ```
-
-For more information, please see the original [`tmi.js` documentation](https://docs.tmijs.org/).
+1.  [**Home / Getting started**](https://github.com/marcandrews/twitch-js/wiki)
+1.  [**Examples**](https://github.com/marcandrews/twitch-js/wiki/Examples)
+1.  **Chat client**
+    1. [Configuration](https://github.com/marcandrews/twitch-js/wiki/Configuration)
+    1. [Commands](https://github.com/marcandrews/twitch-js/wiki/Commands)
+    1. [Events](https://github.com/marcandrews/twitch-js/wiki/Events)
+    1. [Methods](https://github.com/marcandrews/twitch-js/wiki/Functions)
+1.  [**API**](https://github.com/marcandrews/twitch-js/wiki/Twitch-API)
+1.  [**Useful functions**](https://github.com/marcandrews/twitch-js/wiki/Useful-functions)
 
 
 ## Special thanks
