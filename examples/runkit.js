@@ -16,7 +16,7 @@ const options = {
 
 const client = new TwitchJS.Client(options);
 
-// Add chat event listener that will respond to every chat message with:
+// Add chat event listener that will respond to "!command" messages with:
 // "Hello world!".
 client.on('chat', (channel, userstate, message, self) => {
   console
