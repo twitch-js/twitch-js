@@ -1,6 +1,6 @@
 {
   "name": "twitch-js",
-  "version": "1.2.5",
+  "version": "1.2.7",
   "description": "Javascript library for the Twitch Messaging Interface.",
   "license": "MIT",
   "author": "Schmoopiie",
@@ -29,9 +29,11 @@
   "main": "lib/index.js",
   "files": [
     "dist",
+    "examples",
     "lib",
     "src"
   ],
+  "runkitExampleFilename": "examples/runkit.js",
   "scripts": {
     "clean": "rimraf lib dist",
     "lint": "eslint src",
