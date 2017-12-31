@@ -1,6 +1,8 @@
 # Builds
 dist
 lib
+twitch-js-*.tgz
+/package
 
 # Logs
 logs
