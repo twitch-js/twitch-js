@@ -6,7 +6,7 @@
 [![GitHub issues](https://img.shields.io/github/issues/marcandrews/twitch-js.svg)](https://github.com/marcandrews/twitch-js/issues)
 [![Coverage Status](https://coveralls.io/repos/github/marcandrews/twitch-js/badge.svg)](https://coveralls.io/github/marcandrews/twitch-js)
 
-A community-centric, community-supported version of `tmi.js`.
+A community-centric, community-supported version of [`tmi.js`](https://github.com/tmijs/tmi.js).
 
 
 ## Contribution guidelines

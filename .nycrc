@@ -1,0 +1,11 @@
+{
+  "check-coverage": false,
+  "reporter": [
+    "text-lcov",
+    "text"
+  ],
+  "exclude": [
+    "lib",
+    "dist"
+  ]
+}

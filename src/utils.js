@@ -120,22 +120,8 @@ const self = {
     }
   },
 
-  // Merge two objects..
-  merge: (obj1, obj2) => {
-    Object.keys(obj2).forEach((p) => {
-      try {
-        if (obj2[p].constructor === Object) {
-          obj1[p] = self.merge(obj1[p], obj2[p]);
-        } else {
-          obj1[p] = obj2[p];
-        }
-      } catch (e) {
-        obj1[p] = obj2[p];
-      }
-    });
-
-    return obj1;
-  },
+  // Merge two or more objects.
+  merge: Object.assign,
 
   // Split a line but don't cut a word in half..
   splitLine: (input, length) => {

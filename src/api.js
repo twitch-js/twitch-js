@@ -10,7 +10,7 @@ const api = function api(options, callback) {
 
   // We are inside a Node application, so we can use the request module..
   if (_.isNode()) {
-    request(_.merge(options, { url, method: 'GET', json: true }), (err, res, body) => {
+    request(_.merge({ method: 'GET', json: true }, options, { url }), (err, res, body) => {
       callback(err, res, body);
     });
   } else if (_.isExtension()) {

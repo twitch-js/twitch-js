@@ -22,6 +22,8 @@ module.exports = {
     umdNamedDefine: true,
   },
 
+  devtool: 'source-map',
+
   plugins: isProdBuild ? [
     new webpack.optimize.UglifyJsPlugin({
       compressor: {
@@ -31,6 +33,7 @@ module.exports = {
         screw_ie8: true,
         warnings: false,
       },
+      sourceMap: true,
     }),
   ] : [],
 };
