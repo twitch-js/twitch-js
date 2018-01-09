@@ -1,54 +1,22 @@
-const request = require('request');
 const _ = require('./utils');
-
+const request = (url, options) => _.isNode() ? require('./fetch')(url, options) : fetch(url, options);
 const api = function api(options, callback) {
+
   // Set the url to options.uri or options.url..
   let url = _.get(options.url, null) === null ? _.get(options.uri, null) : _.get(options.url, null);
 
   // Make sure it is a valid url..
   if (!_.isURL(url)) { url = url.charAt(0) === '/' ? `https://api.twitch.tv/kraken${url}` : `https://api.twitch.tv/kraken/${url}`; }
 
-  // We are inside a Node application, so we can use the request module..
-  if (_.isNode()) {
-    request(_.merge({ method: 'GET', json: true }, options, { url }), (err, res, body) => {
-      callback(err, res, body);
-    });
-  } else if (_.isExtension()) {
-    // Inside an extension -> we cannot use jsonp!
-    const xhrOptions = _.merge(options, { url, method: 'GET', headers: {} });
-    // prepare request
-    const xhr = new XMLHttpRequest();
-    xhr.open(xhrOptions.method, xhrOptions.url, true);
-    Object.keys(xhrOptions)
-      .forEach(name => xhr.setRequestHeader(name, xhrOptions.headers[name]));
-    xhr.responseType = 'json';
-    // set request handler
-    xhr.addEventListener('load', () => {
-      if (xhr.readyState === 4) {
-        if (xhr.status !== 200) {
-          callback(xhr.status, null, null);
-        } else {
-          callback(null, null, xhr.response);
-        }
-      }
-    });
-    // submit
-    xhr.send();
+  // If a callback is supplied, consume the promise and turn it into a callback (legacy preservation). Otherwise return a promise
+  if (!!callback && typeof callback === 'function')  {
+    let next = (global.process && process.nextTick) || global.setImmediate || function (f) { setTimeout(f, 0) };
+    request(url, options)
+      .then(result => result.json().then(json => next(function () { callback(null, result, json) })))
+      .catch(err => next(function () { callback(err) }))
+    return undefined;
   } else {
-    // Inside a web application, use jsonp..
-    // Callbacks must match the regex [a-zA-Z_$][\w$]*(\.[a-zA-Z_$][\w$]*)*
-    const script = document.createElement('script');
-
-    const callbackName = `jsonp_callback_${Math.round(100000 * Math.random())}`;
-    window[callbackName] = (data) => {
-      delete window[callbackName];
-      document.body.removeChild(script);
-      callback(null, null, data);
-    };
-
-    // Inject the script in the document..
-    script.src = `${url}${url.indexOf('?') >= 0 ? '&' : '?'}callback=${callbackName}`;
-    document.body.appendChild(script);
+    return request(url, options);
   }
 };
 
