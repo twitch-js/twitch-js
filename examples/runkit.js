@@ -1,17 +1,28 @@
 /* eslint-disable import/no-extraneous-dependencies, import/no-unresolved, no-console */
 
 // Require the TwitchJS library.
-const TwitchJS = require('twitch-js');
+const TwitchJS = require('../lib');
 
 // Setup the client with your configuration; more details here:
 // https://github.com/twitch-apis/twitch-js/wiki/Configuration.
 const options = {
-  channels: ['#isak_'],
-  // Provide an identity
+  connection: {
+    reconnect: true,
+    secure: true,
+  },
+  options: {
+    // Some methods may require a client ID. If needed, please provide a
+    // client ID below.
+    // clientId: CLIENT_ID,
+    debug: true,
+  },
+  // Some methods may require an identity. If needed, please provide one
+  // here. Prepend your token with "oauth:".
   // identity: {
-  //   username: "Isak_",
-  //   password: "oauth:a29b68aede41e25179a66c5978b21437"
+  //   username: 'twitchapis',
+  //   password: TOKEN,
   // },
+  channels: ['#twitchapis'],
 };
 
 const client = new TwitchJS.Client(options);
