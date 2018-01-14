@@ -1,7 +1,12 @@
 import nodeFetch from 'node-fetch';
 import fetchHelper from '../fetch-helper';
 
-const mockResponse = { _id: '44322889' };
+const mockJson = { data1: 'DATA_1' };
+
+const mockResponse = {
+  status: 200,
+  json: () => Promise.resolve(mockJson),
+};
 
 jest.mock('node-fetch');
 nodeFetch.mockImplementation(() => Promise.resolve(mockResponse));
@@ -21,7 +26,7 @@ describe('utils/fetch-helper', () => {
     expect.assertions(1);
     return expect(fetchHelper())
       .rejects
-      .toThrow('An endpoint is required.');
+      .toThrow();
   });
 
   test('should reject if clientId and token are missing', () => {
@@ -29,7 +34,7 @@ describe('utils/fetch-helper', () => {
 
     return expect(fetchHelper({ endpoint: 'endpoint' }))
       .rejects
-      .toThrow('A client ID or token is required.');
+      .toThrow();
   });
 
   test('should resolve if endpoint and clientId are provided', () => {
@@ -37,7 +42,7 @@ describe('utils/fetch-helper', () => {
 
     return expect(fetchHelper(optionsWithClientId))
       .resolves
-      .toEqual(mockResponse);
+      .toEqual(mockJson);
   });
 
   test('should resolve if endpoint and token are provided', () => {
@@ -45,6 +50,6 @@ describe('utils/fetch-helper', () => {
 
     return expect(fetchHelper(optionsWithToken))
       .resolves
-      .toEqual(mockResponse);
+      .toEqual(mockJson);
   });
 });
