@@ -4,7 +4,7 @@
 const TwitchJS = require('twitch-js');
 
 // Setup the client with your configuration; more details here:
-// https://github.com/marcandrews/twitch-js/wiki/Configuration.
+// https://github.com/twitch-apis/twitch-js/wiki/Configuration.
 const options = {
   channels: ['#isak_'],
   // Provide an identity
