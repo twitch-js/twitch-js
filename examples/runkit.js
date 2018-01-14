@@ -1,7 +1,7 @@
 /* eslint-disable import/no-extraneous-dependencies, import/no-unresolved, no-console */
 
 // Require the TwitchJS library.
-const TwitchJS = require('../lib');
+const TwitchJS = require('twitch-js');
 
 // Setup the client with your configuration; more details here:
 // https://github.com/twitch-apis/twitch-js/wiki/Configuration.
