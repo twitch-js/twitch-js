@@ -44,7 +44,7 @@
     "coveralls": "nyc report --reporter=text-lcov | coveralls",
     "prepublish": "npm run build",
     "prebuild": "npm run clean",
-    "build:cjs": "babel src --out-dir lib --source-maps",
+    "build:cjs": "babel src --out-dir lib --source-maps  --ignore tests,__tests__",
     "build:umd:dev": "webpack",
     "build:umd:prod": "cross-env NODE_ENV=PRODUCTION webpack",
     "build": "run-p build:**"
