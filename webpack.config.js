@@ -1,6 +1,7 @@
 const path = require('path');
 const webpack = require('webpack');
 const LodashModuleReplacementPlugin = require('lodash-webpack-plugin');
+const CompressionPlugin = require('compression-webpack-plugin');
 
 const isProdBuild = process.env.NODE_ENV === 'PRODUCTION';
 
@@ -37,5 +38,6 @@ module.exports = {
       },
       sourceMap: true,
     }),
+    new CompressionPlugin(),
   ] : [],
 };
