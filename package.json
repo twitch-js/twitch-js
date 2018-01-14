@@ -52,7 +52,6 @@
   "dependencies": {
     "lodash": "^4.17.4",
     "node-fetch": "^1.7.3",
-    "request": "2.74.0",
     "validator": "^9.2.0",
     "whatwg-fetch": "^2.0.3",
     "ws": "1.0.1"
@@ -90,7 +89,6 @@
   },
   "browser": {
     "ws": false,
-    "request": false,
     "node-fetch": "./src/shims/fetch.js"
   }
 }
