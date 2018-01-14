@@ -1,6 +1,6 @@
 {
   "name": "twitch-js",
-  "version": "1.2.8",
+  "version": "2.0.0-alpha.1",
   "description": "Javascript library for the Twitch Messaging Interface.",
   "license": "MIT",
   "author": "Schmoopiie",
@@ -21,10 +21,10 @@
   ],
   "repository": {
     "type": "git",
-    "url": "git://github.com/marcandrews/twitch-js.git"
+    "url": "git://github.com/twitch-apis/twitch-js.git"
   },
   "bugs": {
-    "url": "https://github.com/marcandrews/twitch-js/issues"
+    "url": "https://github.com/twitch-apis/twitch-js/issues"
   },
   "main": "lib/index.js",
   "files": [
