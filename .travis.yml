@@ -6,6 +6,6 @@ cache:
     - "node_modules"
 script:
   - npm run lint
-  - npm run jest
+  - npm run jest -- --coverage
   - npm run test:coverage
 after_success: npm run coveralls

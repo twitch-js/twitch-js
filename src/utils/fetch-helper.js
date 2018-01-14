@@ -1,6 +1,6 @@
 import fetchFn from 'node-fetch';
 
-const checkStatus = (response) => {
+export const checkStatus = (response) => {
   if (response.status >= 200 && response.status < 300) {
     return response;
   }
@@ -10,9 +10,9 @@ const checkStatus = (response) => {
   throw error;
 };
 
-const parseJson = response => response.json();
+export const parseJson = response => response.json();
 
-const fetchHelper = ({
+export default ({
   endpoint,
   method = 'GET',
   clientId,
@@ -43,5 +43,3 @@ const fetchHelper = ({
     .then(checkStatus)
     .then(parseJson);
 };
-
-export default fetchHelper;

@@ -1,15 +1,15 @@
 import nodeFetch from 'node-fetch';
-import fetchHelper from '../fetch-helper';
+import fetchHelper, { checkStatus, parseJson } from '../fetch-helper';
 
 const mockJson = { data1: 'DATA_1' };
 
 const mockResponse = {
   status: 200,
-  json: () => Promise.resolve(mockJson),
+  json: jest.fn(() => Promise.resolve(mockJson)),
 };
 
 jest.mock('node-fetch');
-nodeFetch.mockImplementation(() => Promise.resolve(mockResponse));
+nodeFetch.mockImplementation(jest.fn(() => Promise.resolve(mockResponse)));
 
 const optionsWithClientId = {
   endpoint: 'ENDPOINT',
@@ -22,34 +22,54 @@ const optionsWithToken = {
 };
 
 describe('utils/fetch-helper', () => {
-  test('should reject if endpoint is missing', () => {
-    expect.assertions(1);
-    return expect(fetchHelper())
-      .rejects
-      .toThrow();
+  describe('checkStatus', () => {
+    test('should return response on successful response', () => {
+      expect(checkStatus(mockResponse)).toEqual(mockResponse);
+    });
+
+    test('should throw on unsuccessful response', () => {
+      expect(() => checkStatus({ ...mockResponse, status: 404 })).toThrow();
+    });
   });
 
-  test('should reject if clientId and token are missing', () => {
-    expect.assertions(1);
+  describe('parseJson', () => {
+    test('should call json on response', () => {
+      parseJson(mockResponse);
 
-    return expect(fetchHelper({ endpoint: 'endpoint' }))
-      .rejects
-      .toThrow();
+      expect(mockResponse.json).toHaveBeenCalled();
+    });
   });
 
-  test('should resolve if endpoint and clientId are provided', () => {
-    expect.assertions(1);
+  describe('fetchHelper', () => {
+    test('should reject if endpoint is missing', () => {
+      expect.assertions(1);
+      return expect(fetchHelper())
+        .rejects
+        .toThrow();
+    });
 
-    return expect(fetchHelper(optionsWithClientId))
-      .resolves
-      .toEqual(mockJson);
-  });
+    test('should reject if clientId and token are missing', () => {
+      expect.assertions(1);
 
-  test('should resolve if endpoint and token are provided', () => {
-    expect.assertions(1);
+      return expect(fetchHelper({ endpoint: 'endpoint' }))
+        .rejects
+        .toThrow();
+    });
 
-    return expect(fetchHelper(optionsWithToken))
-      .resolves
-      .toEqual(mockJson);
+    test('should resolve if endpoint and clientId are provided', () => {
+      expect.assertions(1);
+
+      return expect(fetchHelper(optionsWithClientId))
+        .resolves
+        .toEqual(mockJson);
+    });
+
+    test('should resolve if endpoint and token are provided', () => {
+      expect.assertions(1);
+
+      return expect(fetchHelper(optionsWithToken))
+        .resolves
+        .toEqual(mockJson);
+    });
   });
 });
