@@ -1,55 +1,22 @@
-const request = require('request');
-const _ = require('./utils');
+import { get } from 'lodash';
+import isURL from 'validator/lib/isURL';
 
-const api = function api(options, callback) {
-  // Set the url to options.uri or options.url..
-  let url = _.get(options.url, null) === null ? _.get(options.uri, null) : _.get(options.url, null);
+import fetchHelper from './utils/fetch-helper';
 
-  // Make sure it is a valid url..
-  if (!_.isURL(url)) { url = url.charAt(0) === '/' ? `https://api.twitch.tv/kraken${url}` : `https://api.twitch.tv/kraken/${url}`; }
+const api = async (options = {}, callback) => {
+  // Set the url to options.uri or options.url.
+  const urlFromOptions = options.url || options.uri;
 
-  // We are inside a Node application, so we can use the request module..
-  if (_.isNode()) {
-    request(_.merge({ method: 'GET', json: true }, options, { url }), (err, res, body) => {
-      callback(err, res, body);
-    });
-  } else if (_.isExtension()) {
-    // Inside an extension -> we cannot use jsonp!
-    const xhrOptions = _.merge(options, { url, method: 'GET', headers: {} });
-    // prepare request
-    const xhr = new XMLHttpRequest();
-    xhr.open(xhrOptions.method, xhrOptions.url, true);
-    Object.keys(xhrOptions)
-      .forEach(name => xhr.setRequestHeader(name, xhrOptions.headers[name]));
-    xhr.responseType = 'json';
-    // set request handler
-    xhr.addEventListener('load', () => {
-      if (xhr.readyState === 4) {
-        if (xhr.status !== 200) {
-          callback(xhr.status, null, null);
-        } else {
-          callback(null, null, xhr.response);
-        }
-      }
-    });
-    // submit
-    xhr.send();
-  } else {
-    // Inside a web application, use jsonp..
-    // Callbacks must match the regex [a-zA-Z_$][\w$]*(\.[a-zA-Z_$][\w$]*)*
-    const script = document.createElement('script');
+  const url = isURL(urlFromOptions)
+    ? urlFromOptions
+    : `https://api.twitch.tv/kraken/${urlFromOptions.replace(/^\//, '')}`;
 
-    const callbackName = `jsonp_callback_${Math.round(100000 * Math.random())}`;
-    window[callbackName] = (data) => {
-      delete window[callbackName];
-      document.body.removeChild(script);
-      callback(null, null, data);
-    };
+  const body = await fetchHelper({
+    endpoint: url,
+    clientId: get(options, 'headers.Client-ID'),
+  });
 
-    // Inject the script in the document..
-    script.src = `${url}${url.indexOf('?') >= 0 ? '&' : '?'}callback=${callbackName}`;
-    document.body.appendChild(script);
-  }
+  callback(false, null, body);
 };
 
 module.exports = api;

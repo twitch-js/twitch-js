@@ -353,7 +353,11 @@ describe('client events', function() {
         var data = e.data;
         var expected = e.expected;
         it(`should emit ${name}`, function(cb) {
-            var client = new tmi.client();
+            var client = new tmi.client({
+                options: {
+                    clientId: 'CLIENT_ID',
+                },
+            });
 
             client.on(name, function() {
                 var args = Array.prototype.slice.call(arguments);
