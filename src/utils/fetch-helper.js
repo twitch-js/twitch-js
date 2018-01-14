@@ -1,4 +1,16 @@
-import nodeFetch from 'node-fetch';
+import fetchFn from 'node-fetch';
+
+const checkStatus = (response) => {
+  if (response.status >= 200 && response.status < 300) {
+    return response;
+  }
+
+  const error = new Error(`${response.url} ${response.statusText}`);
+  error.response = response;
+  throw error;
+};
+
+const parseJson = response => response.json();
 
 const fetchHelper = ({
   endpoint,
@@ -15,9 +27,6 @@ const fetchHelper = ({
     return Promise.reject(new Error('A client ID or token is required.'));
   }
 
-  // In the browser, nodeFetch resolves to false, so use window.fetch instead.
-  const fetchFn = nodeFetch || window.fetch;
-
   // Construct headers object.
   const headers = token
     ? { Authorization: `OAuth ${token}` }
@@ -31,7 +40,8 @@ const fetchHelper = ({
       Accept: 'application/vnd.twitchtv.v5+json',
     },
   })
-    .then(res => res.json());
+    .then(checkStatus)
+    .then(parseJson);
 };
 
 export default fetchHelper;

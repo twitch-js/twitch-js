@@ -54,6 +54,7 @@
     "node-fetch": "^1.7.3",
     "request": "2.74.0",
     "validator": "^9.2.0",
+    "whatwg-fetch": "^2.0.3",
     "ws": "1.0.1"
   },
   "devDependencies": {
@@ -90,6 +91,6 @@
   "browser": {
     "ws": false,
     "request": false,
-    "node-fetch": false
+    "node-fetch": "./src/shims/fetch.js"
   }
 }
