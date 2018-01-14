@@ -50,6 +50,7 @@
     "build": "run-p build:**"
   },
   "dependencies": {
+    "node-fetch": "^1.7.3",
     "request": "2.74.0",
     "ws": "1.0.1"
   },
@@ -82,6 +83,7 @@
   },
   "browser": {
     "ws": false,
-    "request": false
+    "request": false,
+    "node-fetch": false
   }
 }
