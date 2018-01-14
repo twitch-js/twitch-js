@@ -8,7 +8,7 @@
     "node": true,
     "browser": true
   },
-  "extends": "airbnb-base",
+  "extends": ["airbnb-base", "plugin:jest/recommended"],
   "rules": {
     "camelcase": 1,
     "consistent-return": 1,
