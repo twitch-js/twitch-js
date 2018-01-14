@@ -1,6 +1,6 @@
 {
   "name": "twitch-js",
-  "version": "1.2.10",
+  "version": "2.0.0-alpha.1",
   "description": "Javascript library for the Twitch Messaging Interface.",
   "license": "MIT",
   "author": "Schmoopiie",
