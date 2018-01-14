@@ -1,3 +1,7 @@
+# Warning
+
+This branch is under active development; expect **breaking changes**. Please use [v1](https://github.com/twitch-apis/twitch-js/tree/v1) instead. If you still choose to use this branch, use version pinning, refer to the diffs, and update accordingly to avoid regressions.
+
 # TwitchJS
 
 [![Travis branch](https://img.shields.io/travis/twitch-apis/twitch-js/master.svg)](https://travis-ci.org/twitch-apis/twitch-js)
@@ -18,7 +22,7 @@ If you wish to contribute, please see the [CONTRIBUTING](https://github.com/twit
 
 1.  [**Home / Getting started**](https://github.com/twitch-apis/twitch-js/wiki)
 1.  [**Examples**](https://github.com/twitch-apis/twitch-js/wiki/Examples)
-1.  **Chat client**
+1.  **Chat**
     1. [Configuration](https://github.com/twitch-apis/twitch-js/wiki/Configuration)
     1. [Commands](https://github.com/twitch-apis/twitch-js/wiki/Commands)
     1. [Events](https://github.com/twitch-apis/twitch-js/wiki/Events)
