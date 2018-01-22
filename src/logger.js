@@ -15,7 +15,7 @@ const levels = {
 // Logger implementation..
 function log(level) {
   // Return a console message depending on the logging level..
-  return (message) => {
+  return message => {
     if (levels[level] >= levels[currentLevel]) {
       console.log(`[${_.formatDate(new Date())}] ${level}: ${message}`);
     }
