@@ -27,7 +27,9 @@ queue.prototype.next = function next() {
   const at = this.queue[i];
   const nextInQueue = this.queue[this.index];
 
-  if (!at) { return; }
+  if (!at) {
+    return;
+  }
 
   at.fn();
   if (nextInQueue) {

@@ -3,24 +3,36 @@ const _ = require('./utils');
 
 const api = function api(options, callback) {
   // Set the url to options.uri or options.url..
-  let url = _.get(options.url, null) === null ? _.get(options.uri, null) : _.get(options.url, null);
+  let url =
+    _.get(options.url, null) === null
+      ? _.get(options.uri, null)
+      : _.get(options.url, null);
 
   // Make sure it is a valid url..
-  if (!_.isURL(url)) { url = url.charAt(0) === '/' ? `https://api.twitch.tv/kraken${url}` : `https://api.twitch.tv/kraken/${url}`; }
+  if (!_.isURL(url)) {
+    url =
+      url.charAt(0) === '/'
+        ? `https://api.twitch.tv/kraken${url}`
+        : `https://api.twitch.tv/kraken/${url}`;
+  }
 
   // We are inside a Node application, so we can use the request module..
   if (_.isNode()) {
-    request(_.merge({ method: 'GET', json: true }, options, { url }), (err, res, body) => {
-      callback(err, res, body);
-    });
+    request(
+      _.merge({ method: 'GET', json: true }, options, { url }),
+      (err, res, body) => {
+        callback(err, res, body);
+      },
+    );
   } else if (_.isExtension()) {
     // Inside an extension -> we cannot use jsonp!
     const xhrOptions = _.merge(options, { url, method: 'GET', headers: {} });
     // prepare request
     const xhr = new XMLHttpRequest();
     xhr.open(xhrOptions.method, xhrOptions.url, true);
-    Object.keys(xhrOptions)
-      .forEach(name => xhr.setRequestHeader(name, xhrOptions.headers[name]));
+    Object.keys(xhrOptions).forEach(name =>
+      xhr.setRequestHeader(name, xhrOptions.headers[name]),
+    );
     xhr.responseType = 'json';
     // set request handler
     xhr.addEventListener('load', () => {
@@ -40,14 +52,16 @@ const api = function api(options, callback) {
     const script = document.createElement('script');
 
     const callbackName = `jsonp_callback_${Math.round(100000 * Math.random())}`;
-    window[callbackName] = (data) => {
+    window[callbackName] = data => {
       delete window[callbackName];
       document.body.removeChild(script);
       callback(null, null, data);
     };
 
     // Inject the script in the document..
-    script.src = `${url}${url.indexOf('?') >= 0 ? '&' : '?'}callback=${callbackName}`;
+    script.src = `${url}${
+      url.indexOf('?') >= 0 ? '&' : '?'
+    }callback=${callbackName}`;
     document.body.appendChild(script);
   }
 };

@@ -41,7 +41,9 @@ module.exports = {
       tags['badges-raw'] = tags.badges;
       tags.badges = badgesParsed;
     }
-    if (_.isBoolean(tags.badges)) { tags['badges-raw'] = null; }
+    if (_.isBoolean(tags.badges)) {
+      tags['badges-raw'] = null;
+    }
 
     return tags;
   },
@@ -61,7 +63,9 @@ module.exports = {
       tags['emotes-raw'] = tags.emotes;
       tags.emotes = emotesParsed;
     }
-    if (_.isBoolean(tags.emotes)) { tags['emotes-raw'] = null; }
+    if (_.isBoolean(tags.emotes)) {
+      tags['emotes-raw'] = null;
+    }
 
     return tags;
   },
@@ -99,9 +103,9 @@ module.exports = {
   transformEmotes: function transformEmotes(emotes) {
     let transformed = '';
 
-    Object.keys(emotes).forEach((id) => {
+    Object.keys(emotes).forEach(id => {
       transformed = `${transformed + id}:`;
-      emotes[id].forEach((index) => {
+      emotes[id].forEach(index => {
         transformed = `${transformed + index.join('-')},`;
       });
       transformed = `${transformed.slice(0, -1)}/`;

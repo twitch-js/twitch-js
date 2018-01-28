@@ -6,12 +6,21 @@ function followersonly(channel, minutes) {
   minutes = _.get(minutes, 30);
 
   // Send the command to the server and race the Promise against a delay..
-  return this._sendCommand(this._getPromiseDelay(), channel, `/followers ${minutes}`, (resolve, reject) => {
-    // Received _promiseFollowers event, resolve or reject..
-    this.once('_promiseFollowers', (err) => {
-      if (!err) { resolve([channel, ~~minutes]); } else { reject(err); }
-    });
-  });
+  return this._sendCommand(
+    this._getPromiseDelay(),
+    channel,
+    `/followers ${minutes}`,
+    (resolve, reject) => {
+      // Received _promiseFollowers event, resolve or reject..
+      this.once('_promiseFollowers', err => {
+        if (!err) {
+          resolve([channel, ~~minutes]);
+        } else {
+          reject(err);
+        }
+      });
+    },
+  );
 }
 
 // Disable followers-only mode on a channel..
@@ -19,12 +28,21 @@ function followersonlyoff(channel) {
   channel = _.channel(channel);
 
   // Send the command to the server and race the Promise against a delay..
-  return this._sendCommand(this._getPromiseDelay(), channel, '/followersoff', (resolve, reject) => {
-    // Received _promiseFollowersoff event, resolve or reject..
-    this.once('_promiseFollowersoff', (err) => {
-      if (!err) { resolve([channel]); } else { reject(err); }
-    });
-  });
+  return this._sendCommand(
+    this._getPromiseDelay(),
+    channel,
+    '/followersoff',
+    (resolve, reject) => {
+      // Received _promiseFollowersoff event, resolve or reject..
+      this.once('_promiseFollowersoff', err => {
+        if (!err) {
+          resolve([channel]);
+        } else {
+          reject(err);
+        }
+      });
+    },
+  );
 }
 
 // Leave a channel..
@@ -32,12 +50,21 @@ function part(channel) {
   channel = _.channel(channel);
 
   // Send the command to the server and race the Promise against a delay..
-  return this._sendCommand(this._getPromiseDelay(), null, `PART ${channel}`, (resolve, reject) => {
-    // Received _promisePart event, resolve or reject..
-    this.once('_promisePart', (err) => {
-      if (!err) { resolve([channel]); } else { reject(err); }
-    });
-  });
+  return this._sendCommand(
+    this._getPromiseDelay(),
+    null,
+    `PART ${channel}`,
+    (resolve, reject) => {
+      // Received _promisePart event, resolve or reject..
+      this.once('_promisePart', err => {
+        if (!err) {
+          resolve([channel]);
+        } else {
+          reject(err);
+        }
+      });
+    },
+  );
 }
 
 // Enable R9KBeta mode on a channel..
@@ -45,12 +72,21 @@ function r9kbeta(channel) {
   channel = _.channel(channel);
 
   // Send the command to the server and race the Promise against a delay..
-  return this._sendCommand(this._getPromiseDelay(), channel, '/r9kbeta', (resolve, reject) => {
-    // Received _promiseR9kbeta event, resolve or reject..
-    this.once('_promiseR9kbeta', (err) => {
-      if (!err) { resolve([channel]); } else { reject(err); }
-    });
-  });
+  return this._sendCommand(
+    this._getPromiseDelay(),
+    channel,
+    '/r9kbeta',
+    (resolve, reject) => {
+      // Received _promiseR9kbeta event, resolve or reject..
+      this.once('_promiseR9kbeta', err => {
+        if (!err) {
+          resolve([channel]);
+        } else {
+          reject(err);
+        }
+      });
+    },
+  );
 }
 
 // Disable R9KBeta mode on a channel..
@@ -58,12 +94,21 @@ function r9kbetaoff(channel) {
   channel = _.channel(channel);
 
   // Send the command to the server and race the Promise against a delay..
-  return this._sendCommand(this._getPromiseDelay(), channel, '/r9kbetaoff', (resolve, reject) => {
-    // Received _promiseR9kbetaoff event, resolve or reject..
-    this.once('_promiseR9kbetaoff', (err) => {
-      if (!err) { resolve([channel]); } else { reject(err); }
-    });
-  });
+  return this._sendCommand(
+    this._getPromiseDelay(),
+    channel,
+    '/r9kbetaoff',
+    (resolve, reject) => {
+      // Received _promiseR9kbetaoff event, resolve or reject..
+      this.once('_promiseR9kbetaoff', err => {
+        if (!err) {
+          resolve([channel]);
+        } else {
+          reject(err);
+        }
+      });
+    },
+  );
 }
 
 // Enable slow mode on a channel..
@@ -72,12 +117,21 @@ function slow(channel, seconds) {
   seconds = _.get(seconds, 300);
 
   // Send the command to the server and race the Promise against a delay..
-  return this._sendCommand(this._getPromiseDelay(), channel, `/slow ${seconds}`, (resolve, reject) => {
-    // Received _promiseSlow event, resolve or reject..
-    this.once('_promiseSlow', (err) => {
-      if (!err) { resolve([channel, ~~seconds]); } else { reject(err); }
-    });
-  });
+  return this._sendCommand(
+    this._getPromiseDelay(),
+    channel,
+    `/slow ${seconds}`,
+    (resolve, reject) => {
+      // Received _promiseSlow event, resolve or reject..
+      this.once('_promiseSlow', err => {
+        if (!err) {
+          resolve([channel, ~~seconds]);
+        } else {
+          reject(err);
+        }
+      });
+    },
+  );
 }
 
 // Disable slow mode on a channel..
@@ -85,12 +139,21 @@ function slowoff(channel) {
   channel = _.channel(channel);
 
   // Send the command to the server and race the Promise against a delay..
-  return this._sendCommand(this._getPromiseDelay(), channel, '/slowoff', (resolve, reject) => {
-    // Received _promiseSlowoff event, resolve or reject..
-    this.once('_promiseSlowoff', (err) => {
-      if (!err) { resolve([channel]); } else { reject(err); }
-    });
-  });
+  return this._sendCommand(
+    this._getPromiseDelay(),
+    channel,
+    '/slowoff',
+    (resolve, reject) => {
+      // Received _promiseSlowoff event, resolve or reject..
+      this.once('_promiseSlowoff', err => {
+        if (!err) {
+          resolve([channel]);
+        } else {
+          reject(err);
+        }
+      });
+    },
+  );
 }
 
 module.exports = {
@@ -100,11 +163,17 @@ module.exports = {
     message = `\u0001ACTION ${message}\u0001`;
 
     // Send the command to the server and race the Promise against a delay..
-    return this._sendMessage(this._getPromiseDelay(), channel, message, (resolve) => {
-      // At this time, there is no possible way to detect if a message has been sent has been eaten
-      // by the server, so we can only resolve the Promise.
-      resolve([channel, message]);
-    });
+    return this._sendMessage(
+      this._getPromiseDelay(),
+      channel,
+      message,
+      resolve => {
+        // At this time, there is no possible way to detect
+        // if a message has been sent has been eaten
+        // by the server, so we can only resolve the Promise.
+        resolve([channel, message]);
+      },
+    );
   },
 
   // Ban username on channel..
@@ -114,12 +183,21 @@ module.exports = {
     reason = _.get(reason, '');
 
     // Send the command to the server and race the Promise against a delay..
-    return this._sendCommand(this._getPromiseDelay(), channel, `/ban ${username} ${reason}`, (resolve, reject) => {
-      // Received _promiseBan event, resolve or reject..
-      this.once('_promiseBan', (err) => {
-        if (!err) { resolve([channel, username, reason]); } else { reject(err); }
-      });
-    });
+    return this._sendCommand(
+      this._getPromiseDelay(),
+      channel,
+      `/ban ${username} ${reason}`,
+      (resolve, reject) => {
+        // Received _promiseBan event, resolve or reject..
+        this.once('_promiseBan', err => {
+          if (!err) {
+            resolve([channel, username, reason]);
+          } else {
+            reject(err);
+          }
+        });
+      },
+    );
   },
 
   // Clear all messages on a channel..
@@ -127,12 +205,21 @@ module.exports = {
     channel = _.channel(channel);
 
     // Send the command to the server and race the Promise against a delay..
-    return this._sendCommand(this._getPromiseDelay(), channel, '/clear', (resolve, reject) => {
-      // Received _promiseClear event, resolve or reject..
-      this.once('_promiseClear', (err) => {
-        if (!err) { resolve([channel]); } else { reject(err); }
-      });
-    });
+    return this._sendCommand(
+      this._getPromiseDelay(),
+      channel,
+      '/clear',
+      (resolve, reject) => {
+        // Received _promiseClear event, resolve or reject..
+        this.once('_promiseClear', err => {
+          if (!err) {
+            resolve([channel]);
+          } else {
+            reject(err);
+          }
+        });
+      },
+    );
   },
 
   // Change the color of your username..
@@ -140,12 +227,21 @@ module.exports = {
     newColor = _.get(newColor, channel);
 
     // Send the command to the server and race the Promise against a delay..
-    return this._sendCommand(this._getPromiseDelay(), '#tmijs', `/color ${newColor}`, (resolve, reject) => {
-      // Received _promiseColor event, resolve or reject..
-      this.once('_promiseColor', (err) => {
-        if (!err) { resolve([newColor]); } else { reject(err); }
-      });
-    });
+    return this._sendCommand(
+      this._getPromiseDelay(),
+      '#tmijs',
+      `/color ${newColor}`,
+      (resolve, reject) => {
+        // Received _promiseColor event, resolve or reject..
+        this.once('_promiseColor', err => {
+          if (!err) {
+            resolve([newColor]);
+          } else {
+            reject(err);
+          }
+        });
+      },
+    );
   },
 
   // Run commercial on a channel for X seconds..
@@ -154,12 +250,21 @@ module.exports = {
     seconds = _.get(seconds, 30);
 
     // Send the command to the server and race the Promise against a delay..
-    return this._sendCommand(this._getPromiseDelay(), channel, `/commercial ${seconds}`, (resolve, reject) => {
-      // Received _promiseCommercial event, resolve or reject..
-      this.once('_promiseCommercial', (err) => {
-        if (!err) { resolve([channel, ~~seconds]); } else { reject(err); }
-      });
-    });
+    return this._sendCommand(
+      this._getPromiseDelay(),
+      channel,
+      `/commercial ${seconds}`,
+      (resolve, reject) => {
+        // Received _promiseCommercial event, resolve or reject..
+        this.once('_promiseCommercial', err => {
+          if (!err) {
+            resolve([channel, ~~seconds]);
+          } else {
+            reject(err);
+          }
+        });
+      },
+    );
   },
 
   // Enable emote-only mode on a channel..
@@ -167,12 +272,21 @@ module.exports = {
     channel = _.channel(channel);
 
     // Send the command to the server and race the Promise against a delay..
-    return this._sendCommand(this._getPromiseDelay(), channel, '/emoteonly', (resolve, reject) => {
-      // Received _promiseEmoteonly event, resolve or reject..
-      this.once('_promiseEmoteonly', (err) => {
-        if (!err) { resolve([channel]); } else { reject(err); }
-      });
-    });
+    return this._sendCommand(
+      this._getPromiseDelay(),
+      channel,
+      '/emoteonly',
+      (resolve, reject) => {
+        // Received _promiseEmoteonly event, resolve or reject..
+        this.once('_promiseEmoteonly', err => {
+          if (!err) {
+            resolve([channel]);
+          } else {
+            reject(err);
+          }
+        });
+      },
+    );
   },
 
   // Disable emote-only mode on a channel..
@@ -180,12 +294,21 @@ module.exports = {
     channel = _.channel(channel);
 
     // Send the command to the server and race the Promise against a delay..
-    return this._sendCommand(this._getPromiseDelay(), channel, '/emoteonlyoff', (resolve, reject) => {
-      // Received _promiseEmoteonlyoff event, resolve or reject..
-      this.once('_promiseEmoteonlyoff', (err) => {
-        if (!err) { resolve([channel]); } else { reject(err); }
-      });
-    });
+    return this._sendCommand(
+      this._getPromiseDelay(),
+      channel,
+      '/emoteonlyoff',
+      (resolve, reject) => {
+        // Received _promiseEmoteonlyoff event, resolve or reject..
+        this.once('_promiseEmoteonlyoff', err => {
+          if (!err) {
+            resolve([channel]);
+          } else {
+            reject(err);
+          }
+        });
+      },
+    );
   },
 
   // Enable followers-only mode on a channel..
@@ -206,12 +329,21 @@ module.exports = {
     target = _.username(target);
 
     // Send the command to the server and race the Promise against a delay..
-    return this._sendCommand(2000, channel, `/host ${target}`, (resolve, reject) => {
-      // Received _promiseHost event, resolve or reject..
-      this.once('_promiseHost', (err, remaining) => {
-        if (!err) { resolve([channel, target, ~~remaining]); } else { reject(err); }
-      });
-    });
+    return this._sendCommand(
+      2000,
+      channel,
+      `/host ${target}`,
+      (resolve, reject) => {
+        // Received _promiseHost event, resolve or reject..
+        this.once('_promiseHost', (err, remaining) => {
+          if (!err) {
+            resolve([channel, target, ~~remaining]);
+          } else {
+            reject(err);
+          }
+        });
+      },
+    );
   },
 
   // Join a channel..
@@ -219,12 +351,21 @@ module.exports = {
     channel = _.channel(channel);
 
     // Send the command to the server and race the Promise against a delay..
-    return this._sendCommand(this._getPromiseDelay(), null, `JOIN ${channel}`, (resolve, reject) => {
-      // Received _promiseJoin event, resolve or reject..
-      this.once('_promiseJoin', (err) => {
-        if (!err) { resolve([channel]); } else { reject(err); }
-      });
-    });
+    return this._sendCommand(
+      this._getPromiseDelay(),
+      null,
+      `JOIN ${channel}`,
+      (resolve, reject) => {
+        // Received _promiseJoin event, resolve or reject..
+        this.once('_promiseJoin', err => {
+          if (!err) {
+            resolve([channel]);
+          } else {
+            reject(err);
+          }
+        });
+      },
+    );
   },
 
   // Mod username on channel..
@@ -233,12 +374,21 @@ module.exports = {
     username = _.username(username);
 
     // Send the command to the server and race the Promise against a delay..
-    return this._sendCommand(this._getPromiseDelay(), channel, `/mod ${username}`, (resolve, reject) => {
-      // Received _promiseMod event, resolve or reject..
-      this.once('_promiseMod', (err) => {
-        if (!err) { resolve([channel, username]); } else { reject(err); }
-      });
-    });
+    return this._sendCommand(
+      this._getPromiseDelay(),
+      channel,
+      `/mod ${username}`,
+      (resolve, reject) => {
+        // Received _promiseMod event, resolve or reject..
+        this.once('_promiseMod', err => {
+          if (!err) {
+            resolve([channel, username]);
+          } else {
+            reject(err);
+          }
+        });
+      },
+    );
   },
 
   // Get list of mods on a channel..
@@ -246,21 +396,30 @@ module.exports = {
     channel = _.channel(channel);
 
     // Send the command to the server and race the Promise against a delay..
-    return this._sendCommand(this._getPromiseDelay(), channel, '/mods', (resolve, reject) => {
-      // Received _promiseMods event, resolve or reject..
-      this.once('_promiseMods', (err, mods) => {
-        if (!err) {
-          // Update the internal list of moderators..
-          mods.forEach((username) => {
-            if (!this.moderators[channel]) { this.moderators[channel] = []; }
-            if (this.moderators[channel].indexOf(username) < 0) {
-              this.moderators[channel].push(username);
-            }
-          });
-          resolve(mods);
-        } else { reject(err); }
-      });
-    });
+    return this._sendCommand(
+      this._getPromiseDelay(),
+      channel,
+      '/mods',
+      (resolve, reject) => {
+        // Received _promiseMods event, resolve or reject..
+        this.once('_promiseMods', (err, mods) => {
+          if (!err) {
+            // Update the internal list of moderators..
+            mods.forEach(username => {
+              if (!this.moderators[channel]) {
+                this.moderators[channel] = [];
+              }
+              if (this.moderators[channel].indexOf(username) < 0) {
+                this.moderators[channel].push(username);
+              }
+            });
+            resolve(mods);
+          } else {
+            reject(err);
+          }
+        });
+      },
+    );
   },
 
   // Leave a channel..
@@ -272,7 +431,7 @@ module.exports = {
   // Send a ping to the server..
   ping: function ping() {
     // Send the command to the server and race the Promise against a delay..
-    return this._sendCommand(this._getPromiseDelay(), null, 'PING', (resolve) => {
+    return this._sendCommand(this._getPromiseDelay(), null, 'PING', resolve => {
       // Update the internal ping timeout check interval..
       this.latency = new Date();
       this.pingTimeout = setTimeout(() => {
@@ -287,7 +446,9 @@ module.exports = {
       }, _.get(this.opts.connection.timeout, 9999));
 
       // Received _promisePing event, resolve or reject..
-      this.once('_promisePing', (latency) => { resolve([parseFloat(latency)]); });
+      this.once('_promisePing', latency => {
+        resolve([parseFloat(latency)]);
+      });
     });
   },
 
@@ -306,36 +467,56 @@ module.exports = {
   // Send a raw message to the server..
   raw: function raw(message) {
     // Send the command to the server and race the Promise against a delay..
-    return this._sendCommand(this._getPromiseDelay(), null, message, (resolve) => {
-      resolve([message]);
-    });
+    return this._sendCommand(
+      this._getPromiseDelay(),
+      null,
+      message,
+      resolve => {
+        resolve([message]);
+      },
+    );
   },
 
   // Send a message on a channel..
   say: function say(channel, message) {
     channel = _.channel(channel);
 
-    if ((message.startsWith('.') && !message.startsWith('..')) || message.startsWith('/') || message.startsWith('\\')) {
+    if (
+      (message.startsWith('.') && !message.startsWith('..')) ||
+      message.startsWith('/') ||
+      message.startsWith('\\')
+    ) {
       // Check if the message is an action message..
       if (message.substr(1, 3) === 'me ') {
         return this.action(channel, message.substr(4));
       }
 
       // Send the command to the server and race the Promise against a delay..
-      return this._sendCommand(this._getPromiseDelay(), channel, message, (resolve) => {
-        // At this time, there is no possible way to detect if a message has
-        // been sent has been eaten by the server, so we can only resolve the
-        // Promise.
-        resolve([channel, message]);
-      });
+      return this._sendCommand(
+        this._getPromiseDelay(),
+        channel,
+        message,
+        resolve => {
+          // At this time, there is no possible way to detect if a message has
+          // been sent has been eaten by the server, so we can only resolve the
+          // Promise.
+          resolve([channel, message]);
+        },
+      );
     }
 
     // Send the command to the server and race the Promise against a delay..
-    return this._sendMessage(this._getPromiseDelay(), channel, message, (resolve) => {
-      // At this time, there is no possible way to detect if a message has been sent has been eaten
-      // by the server, so we can only resolve the Promise.
-      resolve([channel, message]);
-    });
+    return this._sendMessage(
+      this._getPromiseDelay(),
+      channel,
+      message,
+      resolve => {
+        // At this time, there is no possible way to detect
+        // if a message has been sent has been eaten
+        // by the server, so we can only resolve the Promise.
+        resolve([channel, message]);
+      },
+    );
   },
 
   // Enable slow mode on a channel..
@@ -355,12 +536,21 @@ module.exports = {
     channel = _.channel(channel);
 
     // Send the command to the server and race the Promise against a delay..
-    return this._sendCommand(this._getPromiseDelay(), channel, '/subscribers', (resolve, reject) => {
-      // Received _promiseSubscribers event, resolve or reject..
-      this.once('_promiseSubscribers', (err) => {
-        if (!err) { resolve([channel]); } else { reject(err); }
-      });
-    });
+    return this._sendCommand(
+      this._getPromiseDelay(),
+      channel,
+      '/subscribers',
+      (resolve, reject) => {
+        // Received _promiseSubscribers event, resolve or reject..
+        this.once('_promiseSubscribers', err => {
+          if (!err) {
+            resolve([channel]);
+          } else {
+            reject(err);
+          }
+        });
+      },
+    );
   },
 
   // Disable subscribers mode on a channel..
@@ -368,12 +558,21 @@ module.exports = {
     channel = _.channel(channel);
 
     // Send the command to the server and race the Promise against a delay..
-    return this._sendCommand(this._getPromiseDelay(), channel, '/subscribersoff', (resolve, reject) => {
-      // Received _promiseSubscribersoff event, resolve or reject..
-      this.once('_promiseSubscribersoff', (err) => {
-        if (!err) { resolve([channel]); } else { reject(err); }
-      });
-    });
+    return this._sendCommand(
+      this._getPromiseDelay(),
+      channel,
+      '/subscribersoff',
+      (resolve, reject) => {
+        // Received _promiseSubscribersoff event, resolve or reject..
+        this.once('_promiseSubscribersoff', err => {
+          if (!err) {
+            resolve([channel]);
+          } else {
+            reject(err);
+          }
+        });
+      },
+    );
   },
 
   // Timeout username on channel for X seconds..
@@ -390,12 +589,21 @@ module.exports = {
     reason = _.get(reason, '');
 
     // Send the command to the server and race the Promise against a delay..
-    return this._sendCommand(this._getPromiseDelay(), channel, `/timeout ${username} ${seconds} ${reason}`, (resolve, reject) => {
-      // Received _promiseTimeout event, resolve or reject..
-      this.once('_promiseTimeout', (err) => {
-        if (!err) { resolve([channel, username, ~~seconds, reason]); } else { reject(err); }
-      });
-    });
+    return this._sendCommand(
+      this._getPromiseDelay(),
+      channel,
+      `/timeout ${username} ${seconds} ${reason}`,
+      (resolve, reject) => {
+        // Received _promiseTimeout event, resolve or reject..
+        this.once('_promiseTimeout', err => {
+          if (!err) {
+            resolve([channel, username, ~~seconds, reason]);
+          } else {
+            reject(err);
+          }
+        });
+      },
+    );
   },
 
   // Unban username on channel..
@@ -404,12 +612,21 @@ module.exports = {
     username = _.username(username);
 
     // Send the command to the server and race the Promise against a delay..
-    return this._sendCommand(this._getPromiseDelay(), channel, `/unban ${username}`, (resolve, reject) => {
-      // Received _promiseUnban event, resolve or reject..
-      this.once('_promiseUnban', (err) => {
-        if (!err) { resolve([channel, username]); } else { reject(err); }
-      });
-    });
+    return this._sendCommand(
+      this._getPromiseDelay(),
+      channel,
+      `/unban ${username}`,
+      (resolve, reject) => {
+        // Received _promiseUnban event, resolve or reject..
+        this.once('_promiseUnban', err => {
+          if (!err) {
+            resolve([channel, username]);
+          } else {
+            reject(err);
+          }
+        });
+      },
+    );
   },
 
   // End the current hosting..
@@ -419,8 +636,12 @@ module.exports = {
     // Send the command to the server and race the Promise against a delay..
     return this._sendCommand(2000, channel, '/unhost', (resolve, reject) => {
       // Received _promiseUnhost event, resolve or reject..
-      this.once('_promiseUnhost', (err) => {
-        if (!err) { resolve([channel]); } else { reject(err); }
+      this.once('_promiseUnhost', err => {
+        if (!err) {
+          resolve([channel]);
+        } else {
+          reject(err);
+        }
       });
     });
   },
@@ -431,12 +652,21 @@ module.exports = {
     username = _.username(username);
 
     // Send the command to the server and race the Promise against a delay..
-    return this._sendCommand(this._getPromiseDelay(), channel, `/unmod ${username}`, (resolve, reject) => {
-      // Received _promiseUnmod event, resolve or reject..
-      this.once('_promiseUnmod', (err) => {
-        if (!err) { resolve([channel, username]); } else { reject(err); }
-      });
-    });
+    return this._sendCommand(
+      this._getPromiseDelay(),
+      channel,
+      `/unmod ${username}`,
+      (resolve, reject) => {
+        // Received _promiseUnmod event, resolve or reject..
+        this.once('_promiseUnmod', err => {
+          if (!err) {
+            resolve([channel, username]);
+          } else {
+            reject(err);
+          }
+        });
+      },
+    );
   },
 
   // Send an whisper message to a user..
@@ -449,24 +679,33 @@ module.exports = {
     }
 
     // Send the command to the server and race the Promise against a delay..
-    return this._sendCommand(this._getPromiseDelay(), '#tmijs', `/w ${username} ${message}`, (resolve) => {
-      const from = _.channel(username);
-      const userstate = _.merge({
-        'message-type': 'whisper',
-        'message-id': null,
-        'thread-id': null,
-        username: this.getUsername(),
-      }, this.globaluserstate);
+    return this._sendCommand(
+      this._getPromiseDelay(),
+      '#tmijs',
+      `/w ${username} ${message}`,
+      resolve => {
+        const from = _.channel(username);
+        const userstate = _.merge(
+          {
+            'message-type': 'whisper',
+            'message-id': null,
+            'thread-id': null,
+            username: this.getUsername(),
+          },
+          this.globaluserstate,
+        );
 
-      // Emit for both, whisper and message..
-      this.emits(['whisper', 'message'], [
-        [from, userstate, message, true],
-        [from, userstate, message, true],
-      ]);
+        // Emit for both, whisper and message..
+        this.emits(
+          ['whisper', 'message'],
+          [[from, userstate, message, true], [from, userstate, message, true]],
+        );
 
-      // At this time, there is no possible way to detect if a message has been sent has been eaten
-      // by the server, so we can only resolve the Promise.
-      resolve([username, message]);
-    });
+        // At this time, there is no possible way to detect
+        // if a message has been sent has been eaten
+        // by the server, so we can only resolve the Promise.
+        resolve([username, message]);
+      },
+    );
   },
 };
