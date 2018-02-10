@@ -1,16 +1,15 @@
 import fetchFn from 'node-fetch';
 
-export const checkStatus = response => {
-  if (response.status >= 200 && response.status < 300) {
-    return response;
-  }
+export const parseResponse = response =>
+  response.json().then(json => {
+    if (!response.ok) {
+      const error = new Error(`${response.url} ${response.statusText}`);
+      error.response = json;
+      throw error;
+    }
 
-  const error = new Error(`${response.url} ${response.statusText}`);
-  error.response = response;
-  throw error;
-};
-
-export const parseJson = response => response.json();
+    return json;
+  });
 
 export default ({
   endpoint,
@@ -32,14 +31,15 @@ export default ({
     ? { Authorization: `OAuth ${token}` }
     : { 'Client-ID': clientId };
 
-  return fetchFn(endpoint, {
+  // Construct options object.
+  const options = {
     ...otherProps,
     method,
     headers: {
       ...headers,
       Accept: 'application/vnd.twitchtv.v5+json',
     },
-  })
-    .then(checkStatus)
-    .then(parseJson);
+  };
+
+  return fetchFn(endpoint, options).then(parseResponse);
 };
