@@ -1,6 +1,6 @@
 /* eslint-disable wrap-iife, func-names, prefer-destructuring, no-console */
 
-(function () {
+(function() {
   // To get started with this example, specify a channel with which to connect.
   const channels = ['#twitchapis'];
 
@@ -35,7 +35,10 @@
   client.on('chat', (channel, userstate, message, self) => {
     // You can do something with the chat message here ...
     console.info({
-      channel, userstate, message, self,
+      channel,
+      userstate,
+      message,
+      self,
     });
   });
 

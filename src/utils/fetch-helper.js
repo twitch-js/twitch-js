@@ -1,6 +1,6 @@
 import fetchFn from 'node-fetch';
 
-export const checkStatus = (response) => {
+export const checkStatus = response => {
   if (response.status >= 200 && response.status < 300) {
     return response;
   }

@@ -43,33 +43,27 @@ describe('utils/fetch-helper', () => {
   describe('fetchHelper', () => {
     test('should reject if endpoint is missing', () => {
       expect.assertions(1);
-      return expect(fetchHelper())
-        .rejects
-        .toThrow();
+      return expect(fetchHelper()).rejects.toThrow();
     });
 
     test('should reject if clientId and token are missing', () => {
       expect.assertions(1);
 
-      return expect(fetchHelper({ endpoint: 'endpoint' }))
-        .rejects
-        .toThrow();
+      return expect(fetchHelper({ endpoint: 'endpoint' })).rejects.toThrow();
     });
 
     test('should resolve if endpoint and clientId are provided', () => {
       expect.assertions(1);
 
-      return expect(fetchHelper(optionsWithClientId))
-        .resolves
-        .toEqual(mockJson);
+      return expect(fetchHelper(optionsWithClientId)).resolves.toEqual(
+        mockJson,
+      );
     });
 
     test('should resolve if endpoint and token are provided', () => {
       expect.assertions(1);
 
-      return expect(fetchHelper(optionsWithToken))
-        .resolves
-        .toEqual(mockJson);
+      return expect(fetchHelper(optionsWithToken)).resolves.toEqual(mockJson);
     });
   });
 });
