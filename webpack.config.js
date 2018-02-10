@@ -1,5 +1,7 @@
-const webpack = require('webpack');
 const path = require('path');
+const webpack = require('webpack');
+const LodashModuleReplacementPlugin = require('lodash-webpack-plugin');
+const CompressionPlugin = require('compression-webpack-plugin');
 
 const isProdBuild = process.env.NODE_ENV === 'PRODUCTION';
 
@@ -25,6 +27,7 @@ module.exports = {
   devtool: 'source-map',
 
   plugins: isProdBuild ? [
+    new LodashModuleReplacementPlugin,
     new webpack.optimize.UglifyJsPlugin({
       compressor: {
         pure_getters: true,
@@ -35,5 +38,6 @@ module.exports = {
       },
       sourceMap: true,
     }),
+    new CompressionPlugin(),
   ] : [],
 };
