@@ -340,7 +340,11 @@ describe('client events', () => {
     const data = e.data;
     const expected = e.expected;
     it(`should emit ${name}`, cb => {
-      const client = new tmi.client();
+      const client = new tmi.client({
+        options: {
+          clientId: 'CLIENT_ID',
+        },
+      });
 
       client.on(name, (...args) => {
         'Should have reached this callback'.should.be.ok();
@@ -348,11 +352,9 @@ describe('client events', () => {
           expected.forEach((d, index) => {
             if (args[index] === null) {
               /*
-                        *  null is a special case for deep object comparison
-                        *  using should.
-                        *  Since null is not an object, we cannot call
-                        *  null.should
-                        * */
+               * null is a special case for deep object comparison using should.
+               * Since null is not an object, we cannot call null.should
+               */
               (args[index] === d).should.be.true();
             } else args[index].should.eql(d);
           });
