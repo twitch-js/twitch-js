@@ -94,9 +94,10 @@
     "mocha": "2.2.5",
     "npm-run-all": "4.1.2",
     "nyc": "^11.3.0",
-    "regenerator-runtime": "^0.11.1",
     "prettier": "^1.10.2",
+    "regenerator-runtime": "^0.11.1",
     "rimraf": "2.5.2",
+    "semver": "^5.5.0",
     "should": "7.0.4",
     "webpack": "3.10.0"
   },
