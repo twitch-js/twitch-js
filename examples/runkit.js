@@ -30,8 +30,9 @@ const client = new TwitchJS.Client(options);
 // Add chat event listener that will respond to "!command" messages with:
 // "Hello world!".
 client.on('chat', (channel, userstate, message, self) => {
-  console
-    .log(`Message "${message}" received from ${userstate['display-name']}`);
+  console.log(
+    `Message "${message}" received from ${userstate['display-name']}`,
+  );
 
   // Do not repond if the message is from the connected identity.
   if (self) return;
