@@ -27,7 +27,7 @@
     "url": "https://github.com/twitch-apis/twitch-js/issues"
   },
   "engines": {
-    "node": ">8",
+    "node": ">=8",
     "yarn": "^1.3.2"
   },
   "main": "lib/index.js",
