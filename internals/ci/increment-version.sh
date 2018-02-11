@@ -2,6 +2,7 @@
 
 # Retrieve current version.
 PACKAGE_VERSION=$(node -p "require('./package.json').version")
+echo "Current version: $PACKAGE_VERSION"
 
 # Determine next version.
 if [[ $PACKAGE_VERSION =~ ^[0-9]\.[0-9]\.[0-9]$ ]]; then
@@ -16,6 +17,7 @@ else
 fi
 
 # Incrememnt version.
+echo "Next version: $NEXT_VERSION"
 npm version $NEXT_VERSION -m "$NEXT_VERSION"
 
 # Travis CI should take care of deploying build to NPM from here.

@@ -14,12 +14,15 @@ after_success: yarn coveralls
 before_deploy: ./internals/ci/increment-version.sh
 
 deploy:
-  provider: npm
-  email: NPM_EMAIL
-  api_key: NPM_AUTH_TOKEN
-  on:
-    branch: master
-  on:
-    branch: v1
+  - provider: npm
+    email: NPM_EMAIL
+    api_key: NPM_AUTH_TOKEN
+    on:
+      branch: master
+  - provider: npm
+    email: NPM_EMAIL
+    api_key: NPM_AUTH_TOKEN
+    on:
+      branch: v1
 
 after_deply: git push && git push --tags
