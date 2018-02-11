@@ -27,4 +27,4 @@ deploy:
     on:
       branch: v1
 
-after_deploy: git push && git push --tags
+after_deploy: git push origin HEAD:$TRAVIS_BRANCH --follow-tags
