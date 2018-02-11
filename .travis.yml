@@ -5,7 +5,21 @@ cache:
   directories:
     - "node_modules"
 script:
-  - npm run lint
-  - npm run jest -- --coverage
-  - npm run test:coverage
-after_success: npm run coveralls
+  - yarn lint
+  - yarn jest -- --coverage
+  - yarn test:coverage
+
+after_success: yarn coveralls
+
+before_deploy: ./internals/ci/increment-version.sh
+
+deploy:
+  provider: npm
+  email: NPM_EMAIL
+  api_key: NPM_AUTH_TOKEN
+  on:
+    branch: master
+  on:
+    branch: v1
+
+after_deply: git push && git push --tags
