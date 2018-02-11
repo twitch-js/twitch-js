@@ -15,14 +15,14 @@ before_deploy: ./internals/ci/increment-version.sh
 
 deploy:
   - provider: npm
-    email: NPM_EMAIL
-    api_key: NPM_AUTH_TOKEN
+    email: $NPM_EMAIL
+    api_key: $NPM_AUTH_TOKEN
     skip_cleanup: true
     on:
       branch: master
   - provider: npm
-    email: NPM_EMAIL
-    api_key: NPM_AUTH_TOKEN
+    email: $NPM_EMAIL
+    api_key: $NPM_AUTH_TOKEN
     skip_cleanup: true
     on:
       branch: v1
