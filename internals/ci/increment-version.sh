@@ -2,8 +2,8 @@
 
 # Add GitHub deploy key.
 $(npm bin)/set-up-ssh \
-  --key "$encrypted_XXXXXXXXXXXX_key" \
-  --iv "$encrypted_XXXXXXXXXXXX_iv" \
+  --key "$encrypted_786809254db8_key" \
+  --iv "$encrypted_786809254db8_iv" \
   --path-encrypted-key ".travis/github_deploy_key.enc"
 
 # Set GitHub user for commits.
