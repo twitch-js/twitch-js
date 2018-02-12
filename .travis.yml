@@ -27,5 +27,6 @@ deploy:
     on:
       branch: v1
 
-after_deploy:
-  - git push origin HEAD:$TRAVIS_BRANCH --follow-tags
+# Currently disabled until twitch-apis/twitch-js/issues/41 can be resolved.
+# after_deploy:
+#   - git push origin HEAD:$TRAVIS_BRANCH --follow-tags
