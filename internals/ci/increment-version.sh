@@ -1,29 +1,5 @@
 #!/bin/bash
 
-# Add GitHub deployment key.
-# See https://goo.gl/cYHFm1 for more information.
-
-# Decrypt the file containing the private key.
-openssl aes-256-cbc \
-  -K $encrypted_786809254db8_key \
-  -iv $encrypted_786809254db8_iv \
-  -in ".travis/github-deployment-key.enc" \
-  -out "$SSH_FILE" -d
-
-# Enable SSH authentication.
-chmod 600 "$SSH_FILE" \
-  && printf "%s\n" \
-    "Host github.com" \
-    "  IdentityFile $SSH_FILE" \
-    "  LogLevel ERROR" >> ~/.ssh/config
-
-# Set GitHub user for commits.
-git config --global user.email "travis@travis-ci.org"
-git config --global user.name "Travis CI"
-
-# Use SSH origin.
-git remote set-url origin git@github.com:twitch-apis/twitch-js.git
-
 # Retrieve current version.
 PACKAGE_VERSION=$(node -p "require('./package.json').version")
 echo "Current version: $PACKAGE_VERSION"
