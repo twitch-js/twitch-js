@@ -28,5 +28,4 @@ deploy:
       branch: v1
 
 after_deploy:
-  - git remote set-url origin git@github.com:twitch-apis/twitch-js.git
   - git push origin HEAD:$TRAVIS_BRANCH --follow-tags
