@@ -721,6 +721,12 @@ client.prototype.handleMessage = function handleMessage(message) {
               //
               break;
 
+            
+            case "msg_rejected_mandatory":
+              this.log.info(`[${channel}] ${msg}`);
+              this.emits(["notice", "_promiseMandatoryMsg"], [[channel, msgid, msg], [null]]);
+              break;
+            
             default:
               if (
                 msg.includes('Login unsuccessful') ||
