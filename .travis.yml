@@ -4,14 +4,34 @@ node_js:
 cache:
   directories:
     - "node_modules"
+
 script:
   - yarn lint
   - yarn jest -- --coverage
   - yarn test:coverage
 
-after_success: yarn coveralls
+after_success:
+  - yarn coveralls
 
-before_deploy: ./internals/ci/increment-version.sh
+before_deploy: |
+  # Retrieve current version.
+  PACKAGE_VERSION=$(node -p "require('./package.json').version")
+
+  # Determine next version.
+  if [[ $PACKAGE_VERSION =~ ^[0-9]\.[0-9]\.[0-9]$ ]]; then
+    # Regular versions get a 'pre' version tag.
+    NEXT_VERSION=`$(npm bin)/semver \
+      $PACKAGE_VERSION \
+      --increment prerelease \
+      --preid pre`
+  else
+    # Prerelease versions retain version tag.
+    NEXT_VERSION=`$(npm bin)/semver $PACKAGE_VERSION --increment prerelease`
+  fi
+
+  # Incrememnt version and append [ci skip] to the commit message to prevent
+  # Travis CI from proccessing this build.
+  npm version $NEXT_VERSION --message "$NEXT_VERSION [ci skip]"
 
 deploy:
   - provider: npm
@@ -27,6 +47,5 @@ deploy:
     on:
       branch: v1
 
-# Currently disabled until twitch-apis/twitch-js/issues/41 can be resolved.
-# after_deploy:
-#   - git push origin HEAD:$TRAVIS_BRANCH --follow-tags
+after_deploy:
+  - git push --follow-tags https://$GITHUB_TOKEN@github.com/$TRAVIS_REPO_SLUG HEAD:$TRAVIS_BRANCH
