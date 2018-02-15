@@ -27,6 +27,12 @@ const events = [
     ],
   },
   {
+    name: 'automodinreview',
+    data:
+      '@msg-id=msg_rejected :tmi.twitch.tv NOTICE #schmoopiie :Hey! Your message is being checked by mods and has not been sent.',
+    expected: ['#schmoopiie'],
+  },
+  {
     name: 'ban',
     data:
       '@ban-reason=this\\sis\\sa\\stest :tmi.twitch.tv CLEARCHAT #schmoopiie :schmoopiie',
@@ -115,6 +121,12 @@ const events = [
     name: 'mod',
     data: ':jtv MODE #schmoopiie +o schmoopiie',
     expected: ['#schmoopiie', 'schmoopiie'],
+  },
+  {
+    name: 'mandatorymsg',
+    data:
+      "@msg-id=msg_rejected_mandatory :tmi.twitch.tv NOTICE #schmoopiie :Your message wasn't posted due to conflicts with the channel's moderation settings.",
+    expected: ['#schmoopiie'],
   },
   {
     name: 'mods',
@@ -347,6 +359,7 @@ describe('client events', () => {
       });
 
       client.on(name, (...args) => {
+        console.log(name);
         'Should have reached this callback'.should.be.ok();
         if (expected) {
           expected.forEach((d, index) => {
