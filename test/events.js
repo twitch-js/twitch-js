@@ -359,7 +359,6 @@ describe('client events', () => {
       });
 
       client.on(name, (...args) => {
-        console.log(name);
         'Should have reached this callback'.should.be.ok();
         if (expected) {
           expected.forEach((d, index) => {
