@@ -723,11 +723,11 @@ client.prototype.handleMessage = function handleMessage(message) {
 
             case 'msg_rejected':
               this.log.info(`[${channel}] ${msg}`);
-              this.emit('automodinreview', channel);
+              this.emit('automodinreview', { channel });
               break;
             case 'msg_rejected_mandatory':
               this.log.info(`[${channel}] ${msg}`);
-              this.emit('automodrejected', channel);
+              this.emit('automodrejected', { channel });
               break;
 
             default:
