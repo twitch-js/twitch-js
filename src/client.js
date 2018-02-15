@@ -722,12 +722,12 @@ client.prototype.handleMessage = function handleMessage(message) {
               break;
 
             case 'msg_rejected':
+              this.log.info(`[${channel}] ${msg}`);
+              this.emit('automodinreview', channel);
+              break;
             case 'msg_rejected_mandatory':
               this.log.info(`[${channel}] ${msg}`);
-              this.emits(
-                ['notice', '_promiseMandatoryMsg'],
-                [[channel, msgid, msg], [null]],
-              );
+              this.emit('mandatorymsg', channel);
               break;
 
             default:
