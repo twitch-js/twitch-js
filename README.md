@@ -20,15 +20,15 @@ If you wish to contribute, please see the [CONTRIBUTING](https://github.com/twit
 
 ## Documentation
 
-1.  [**Home / Getting started**](/docs/1.%20Home%20-%20Getting%20Started.md)
-1.  [**Examples**](/docs/2.%20Examples.md)
-1.  **Chat**
-    1. [Configuration](/docs/3.%20i.%20Configuration.md)
-    1. [Commands](/docs/3.%20ii.%20Commands.md)
-    1. [Events](/docs/3.%20iii.%20Events.md)
-    1. [Methods](/docs/3.%20iv.%20Methods.md)
-1.  [**API**](/docs/4.%20API.md)
-1.  [**Useful functions**](/docs/5.%20Useful%20functions.md)
+1.  [**Home / Getting started**](/docs/HomeGettingStarted.md)
+1.  [**Examples**](/docs/Examples.md)
+1.  [**Chat**](/docs/Chat/)
+    1. [Configuration](/docs/Chat/Configuration.md)
+    1. [Commands](/docs/Chat/Commands.md)
+    1. [Events](/docs/Chat/Events.md)
+    1. [Methods](/docs/Chat/Methods.md)
+1.  [**API**](/docs/API.md)
+1.  [**Useful functions**](/docs/UsefulFunctions.md)
 
 
 ## Special thanks
