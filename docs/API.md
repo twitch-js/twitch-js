@@ -1,4 +1,4 @@
-# API
+# API
 
 Query the [Twitch API](https://github.com/justintv/Twitch-API), aka Kraken, in your application or your website. It supports AJAX requests but has its limitations.
 
