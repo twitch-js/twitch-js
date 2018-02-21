@@ -20,15 +20,15 @@ If you wish to contribute, please see the [CONTRIBUTING](https://github.com/twit
 
 ## Documentation
 
-1.  [**Home / Getting started**](https://github.com/twitch-apis/twitch-js/wiki)
-1.  [**Examples**](https://github.com/twitch-apis/twitch-js/wiki/Examples)
-1.  **Chat**
-    1. [Configuration](https://github.com/twitch-apis/twitch-js/wiki/Configuration)
-    1. [Commands](https://github.com/twitch-apis/twitch-js/wiki/Commands)
-    1. [Events](https://github.com/twitch-apis/twitch-js/wiki/Events)
-    1. [Methods](https://github.com/twitch-apis/twitch-js/wiki/Functions)
-1.  [**API**](https://github.com/twitch-apis/twitch-js/wiki/Twitch-API)
-1.  [**Useful functions**](https://github.com/twitch-apis/twitch-js/wiki/Useful-functions)
+1.  [**Home / Getting started**](/docs/HomeGettingStarted.md)
+1.  [**Examples**](/docs/Examples.md)
+1.  [**Chat**](/docs/Chat/)
+    1. [Configuration](/docs/Chat/Configuration.md)
+    1. [Commands](/docs/Chat/Commands.md)
+    1. [Events](/docs/Chat/Events.md)
+    1. [Methods](/docs/Chat/Methods.md)
+1.  [**API**](/docs/API.md)
+1.  [**Useful functions**](/docs/UsefulFunctions.md)
 
 
 ## Special thanks
