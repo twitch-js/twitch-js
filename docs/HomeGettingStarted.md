@@ -33,4 +33,4 @@ If you are not using a module bundler, precompiled builds are available in the [
     ```
 
 ## More information
-For more information, please see the [Examples](https://github.com/marcandrews/twitch-js/wiki/Examples) section of the [Wiki](https://github.com/marcandrews/twitch-js/wiki).
+For more information, please see the [Examples](/docs/Examples.md) section of the [Wiki](/docs).

@@ -31,4 +31,4 @@ Each and every option listed below is optional. Running TwitchJS without options
 ``logger``: _Object_ - Custom logger with the methods ``info``, ``warn``, and ``error``
 
 ## More information
-For more information, see the [Examples](https://github.com/marcandrews/twitch-js/wiki/Examples) section of the [Wiki](https://github.com/marcandrews/twitch-js/wiki).
+For more information, see the [Examples](/docs/Examples.md) section of the [Wiki](/docs).
