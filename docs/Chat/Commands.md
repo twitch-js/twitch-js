@@ -81,8 +81,8 @@ client.ban("channel", "username", "reason");
 
 **Promises:**
 
-- Resolved on [ban_success](https://github.com/marcandrews/twitch-js/wiki/Events#notice)
-- Rejected on [already_banned](https://github.com/marcandrews/twitch-js/wiki/Events#notice), [bad_ban_admin](https://github.com/marcandrews/twitch-js/wiki/Events#notice), [bad_ban_broadcaster](https://github.com/marcandrews/twitch-js/wiki/Events#notice), [bad_ban_global_mod](https://github.com/marcandrews/twitch-js/wiki/Events#notice), [bad_ban_self](https://github.com/marcandrews/twitch-js/wiki/Events#notice), [bad_ban_staff](https://github.com/marcandrews/twitch-js/wiki/Events#notice), [no_permission](https://github.com/marcandrews/twitch-js/wiki/Events#notice), [usage_ban](https://github.com/marcandrews/twitch-js/wiki/Events#notice) or request timed out
+- Resolved on [ban_success](/docs/Events/Chat/Events.md#notice)
+- Rejected on [already_banned](/docs/Events/Chat/Events.md#notice), [bad_ban_admin](/docs/Events/Chat/Events.md#notice), [bad_ban_broadcaster](/docs/Events/Chat/Events.md#notice), [bad_ban_global_mod](/docs/Events/Chat/Events.md#notice), [bad_ban_self](/docs/Events/Chat/Events.md#notice), [bad_ban_staff](/docs/Events/Chat/Events.md#notice), [no_permission](/docs/Events/Chat/Events.md#notice), [usage_ban](/docs/Events/Chat/Events.md#notice) or request timed out
 
 ~~~ javascript
 client.ban("channel", "username", "reason").then(function(data) {
@@ -106,8 +106,8 @@ client.clear("channel");
 
 **Promises:**
 
-- Resolved on [clearchat](https://github.com/marcandrews/twitch-js/wiki/Events#clearchat) event
-- Rejected on [no_permission](https://github.com/marcandrews/twitch-js/wiki/Events#notice), [usage_clear](https://github.com/marcandrews/twitch-js/wiki/Events#notice) or request timed out
+- Resolved on [clearchat](/docs/Events/Chat/Events.md#clearchat) event
+- Rejected on [no_permission](/docs/Events/Chat/Events.md#notice), [usage_clear](/docs/Events/Chat/Events.md#notice) or request timed out
 
 ~~~ javascript
 client.clear("channel").then(function(data) {
@@ -150,8 +150,8 @@ client.color("SpringGreen");
 
 **Promises:**
 
-- Resolved on [color_changed](https://github.com/marcandrews/twitch-js/wiki/Events#notice)
-- Rejected on [turbo_only_color](https://github.com/marcandrews/twitch-js/wiki/Events#notice), [usage_color](https://github.com/marcandrews/twitch-js/wiki/Events#notice) or request timed out
+- Resolved on [color_changed](/docs/Events/Chat/Events.md#notice)
+- Rejected on [turbo_only_color](/docs/Events/Chat/Events.md#notice), [usage_color](/docs/Events/Chat/Events.md#notice) or request timed out
 
 ~~~ javascript
 client.color("#C0C0C0").then(function(data) {
@@ -176,8 +176,8 @@ client.commercial("channel", 30);
 
 **Promises:**
 
-- Resolved on [commercial_success](https://github.com/marcandrews/twitch-js/wiki/Events#notice)
-- Rejected on [bad_commercial_error](https://github.com/marcandrews/twitch-js/wiki/Events#notice), [no_permission](https://github.com/marcandrews/twitch-js/wiki/Events#notice), [usage_commercial](https://github.com/marcandrews/twitch-js/wiki/Events#notice) or request timed out
+- Resolved on [commercial_success](/docs/Events/Chat/Events.md#notice)
+- Rejected on [bad_commercial_error](/docs/Events/Chat/Events.md#notice), [no_permission](/docs/Events/Chat/Events.md#notice), [usage_commercial](/docs/Events/Chat/Events.md#notice) or request timed out
 
 ~~~ javascript
 client.commercial("channel", 30).then(function(data) {
@@ -245,8 +245,8 @@ client.emoteonly("channel");
 
 **Promises:**
 
-- Resolved on [emote_only_on](https://github.com/marcandrews/twitch-js/wiki/Events#notice)
-- Rejected on [usage_emote_only_on](https://github.com/marcandrews/twitch-js/wiki/Events#notice), [already_emote_only_on](https://github.com/marcandrews/twitch-js/wiki/Events#notice), [no_permission](https://github.com/marcandrews/twitch-js/wiki/Events#notice) or request timed out
+- Resolved on [emote_only_on](/docs/Events/Chat/Events.md#notice)
+- Rejected on [usage_emote_only_on](/docs/Events/Chat/Events.md#notice), [already_emote_only_on](/docs/Events/Chat/Events.md#notice), [no_permission](/docs/Events/Chat/Events.md#notice) or request timed out
 
 ~~~ javascript
 client.emoteonly("channel").then(function(data) {
@@ -270,8 +270,8 @@ client.emoteonlyoff("channel");
 
 **Promises:**
 
-- Resolved on [emote_only_off](https://github.com/marcandrews/twitch-js/wiki/Events#notice)
-- Rejected on [usage_emote_only_off](https://github.com/marcandrews/twitch-js/wiki/Events#notice), [already_emote_only_off](https://github.com/marcandrews/twitch-js/wiki/Events#notice), [no_permission](https://github.com/marcandrews/twitch-js/wiki/Events#notice) or request timed out
+- Resolved on [emote_only_off](/docs/Events/Chat/Events.md#notice)
+- Rejected on [usage_emote_only_off](/docs/Events/Chat/Events.md#notice), [already_emote_only_off](/docs/Events/Chat/Events.md#notice), [no_permission](/docs/Events/Chat/Events.md#notice) or request timed out
 
 ~~~ javascript
 client.emoteonlyoff("channel").then(function(data) {
@@ -296,8 +296,8 @@ client.followersonly("channel", 30);
 
 **Promises:**
 
-- Resolved on [ROOMSTATE](https://github.com/marcandrews/twitch-js/wiki/Events#notice)
-- Rejected on [no_permission](https://github.com/marcandrews/twitch-js/wiki/Events#notice) or request timed out
+- Resolved on [ROOMSTATE](/docs/Events/Chat/Events.md#notice)
+- Rejected on [no_permission](/docs/Events/Chat/Events.md#notice) or request timed out
 
 ~~~ javascript
 client.followersonly("channel", 30).then(function(data) {
@@ -321,8 +321,8 @@ client.followersonlyoff("channel");
 
 **Promises:**
 
-- Resolved on [ROOMSTATE](https://github.com/marcandrews/twitch-js/wiki/Events#notice)
-- Rejected on [no_permission](https://github.com/marcandrews/twitch-js/wiki/Events#notice) or request timed out
+- Resolved on [ROOMSTATE](/docs/Events/Chat/Events.md#notice)
+- Rejected on [no_permission](/docs/Events/Chat/Events.md#notice) or request timed out
 
 ~~~ javascript
 client.followersonlyoff("channel").then(function(data) {
@@ -347,8 +347,8 @@ client.host("channel", "target");
 
 **Promises:**
 
-- Resolved on [hosts_remaining](https://github.com/marcandrews/twitch-js/wiki/Events#notice)
-- Rejected on [bad_host_hosting](https://github.com/marcandrews/twitch-js/wiki/Events#notice), [bad_host_rate_exceeded](https://github.com/marcandrews/twitch-js/wiki/Events#notice), [no_permission](https://github.com/marcandrews/twitch-js/wiki/Events#notice), [usage_host](https://github.com/marcandrews/twitch-js/wiki/Events#notice) or request timed out
+- Resolved on [hosts_remaining](/docs/Events/Chat/Events.md#notice)
+- Rejected on [bad_host_hosting](/docs/Events/Chat/Events.md#notice), [bad_host_rate_exceeded](/docs/Events/Chat/Events.md#notice), [no_permission](/docs/Events/Chat/Events.md#notice), [usage_host](/docs/Events/Chat/Events.md#notice) or request timed out
 
 ~~~ javascript
 client.host("channel", "target").then(function(data) {
@@ -373,7 +373,7 @@ client.join("channel");
 **Promises:**
 
 - Resolved on success
-- Rejected on [msg_channel_suspended](https://github.com/marcandrews/twitch-js/wiki/Events#notice) or request timed out
+- Rejected on [msg_channel_suspended](/docs/Events/Chat/Events.md#notice) or request timed out
 
 ~~~ javascript
 client.join("channel").then(function(data) {
@@ -398,8 +398,8 @@ client.mod("channel", "username");
 
 **Promises:**
 
-- Resolved on [mod_success](https://github.com/marcandrews/twitch-js/wiki/Events#notice)
-- Rejected on [usage_mod](https://github.com/marcandrews/twitch-js/wiki/Events#notice), [bad_mod_banned](https://github.com/marcandrews/twitch-js/wiki/Events#notice), [bad_mod_mod](https://github.com/marcandrews/twitch-js/wiki/Events#notice) or request timed out
+- Resolved on [mod_success](/docs/Events/Chat/Events.md#notice)
+- Rejected on [usage_mod](/docs/Events/Chat/Events.md#notice), [bad_mod_banned](/docs/Events/Chat/Events.md#notice), [bad_mod_mod](/docs/Events/Chat/Events.md#notice) or request timed out
 
 ~~~ javascript
 client.mod("channel", "username").then(function(data) {
@@ -423,8 +423,8 @@ client.mods("channel");
 
 **Promises:**
 
-- Resolved on [room_mods](https://github.com/marcandrews/twitch-js/wiki/Events#notice) or [no_mods](https://github.com/marcandrews/twitch-js/wiki/Events#notice)
-- Rejected on [usage_mods](https://github.com/marcandrews/twitch-js/wiki/Events#notice) or request timed out
+- Resolved on [room_mods](/docs/Events/Chat/Events.md#notice) or [no_mods](/docs/Events/Chat/Events.md#notice)
+- Rejected on [usage_mods](/docs/Events/Chat/Events.md#notice) or request timed out
 
 ~~~ javascript
 client.mods("channel").then(function(data) {
@@ -469,7 +469,7 @@ client.ping();
 
 **Promises:**
 
-- Resolved on [PONG](https://github.com/marcandrews/twitch-js/wiki/Events#pong) received
+- Resolved on [PONG](/docs/Events/Chat/Events.md#pong) received
 - Rejected on request timed out
 
 ~~~ javascript
@@ -494,8 +494,8 @@ client.r9kbeta("channel");
 
 **Promises:**
 
-- Resolved on [r9k_on](https://github.com/marcandrews/twitch-js/wiki/Events#notice)
-- Rejected on [usage_r9k_on](https://github.com/marcandrews/twitch-js/wiki/Events#notice), [already_r9k_on](https://github.com/marcandrews/twitch-js/wiki/Events#notice), [no_permission](https://github.com/marcandrews/twitch-js/wiki/Events#notice) or request timed out
+- Resolved on [r9k_on](/docs/Events/Chat/Events.md#notice)
+- Rejected on [usage_r9k_on](/docs/Events/Chat/Events.md#notice), [already_r9k_on](/docs/Events/Chat/Events.md#notice), [no_permission](/docs/Events/Chat/Events.md#notice) or request timed out
 
 ~~~ javascript
 client.r9kbeta("channel").then(function(data) {
@@ -519,8 +519,8 @@ client.r9kbetaoff("channel");
 
 **Promises:**
 
-- Resolved on [r9k_off](https://github.com/marcandrews/twitch-js/wiki/Events#notice)
-- Rejected on [usage_r9k_off](https://github.com/marcandrews/twitch-js/wiki/Events#notice), [already_r9k_off](https://github.com/marcandrews/twitch-js/wiki/Events#notice), [no_permission](https://github.com/marcandrews/twitch-js/wiki/Events#notice) or request timed out
+- Resolved on [r9k_off](/docs/Events/Chat/Events.md#notice)
+- Rejected on [usage_r9k_off](/docs/Events/Chat/Events.md#notice), [already_r9k_off](/docs/Events/Chat/Events.md#notice), [no_permission](/docs/Events/Chat/Events.md#notice) or request timed out
 
 ~~~ javascript
 client.r9kbetaoff("channel").then(function(data) {
@@ -599,7 +599,7 @@ client.slow("channel", 300);
 **Promises:**
 
 - Resolved on success
-- Rejected on [usage_slow_on](https://github.com/marcandrews/twitch-js/wiki/Events#notice), [no_permission](https://github.com/marcandrews/twitch-js/wiki/Events#notice) or request timed out
+- Rejected on [usage_slow_on](/docs/Events/Chat/Events.md#notice), [no_permission](/docs/Events/Chat/Events.md#notice) or request timed out
 
 ~~~ javascript
 client.slow("channel", 300).then(function(data) {
@@ -624,7 +624,7 @@ client.slowoff("channel");
 **Promises:**
 
 - Resolved on success
-- Rejected on [usage_slow_off](https://github.com/marcandrews/twitch-js/wiki/Events#notice), [no_permission](https://github.com/marcandrews/twitch-js/wiki/Events#notice) or request timed out
+- Rejected on [usage_slow_off](/docs/Events/Chat/Events.md#notice), [no_permission](/docs/Events/Chat/Events.md#notice) or request timed out
 
 ~~~ javascript
 client.slowoff("channel", 300).then(function(data) {
@@ -648,8 +648,8 @@ client.subscribers("channel");
 
 **Promises:**
 
-- Resolved on [subs_on](https://github.com/marcandrews/twitch-js/wiki/Events#notice)
-- Rejected on [usage_subs_on](https://github.com/marcandrews/twitch-js/wiki/Events#notice), [already_subs_on](https://github.com/marcandrews/twitch-js/wiki/Events#notice), [no_permission](https://github.com/marcandrews/twitch-js/wiki/Events#notice) or request timed out
+- Resolved on [subs_on](/docs/Events/Chat/Events.md#notice)
+- Rejected on [usage_subs_on](/docs/Events/Chat/Events.md#notice), [already_subs_on](/docs/Events/Chat/Events.md#notice), [no_permission](/docs/Events/Chat/Events.md#notice) or request timed out
 
 ~~~ javascript
 client.subscribers("channel").then(function(data) {
@@ -673,8 +673,8 @@ client.subscribersoff("channel");
 
 **Promises:**
 
-- Resolved on [subs_off](https://github.com/marcandrews/twitch-js/wiki/Events#notice)
-- Rejected on [usage_subs_off](https://github.com/marcandrews/twitch-js/wiki/Events#notice), [already_subs_off](https://github.com/marcandrews/twitch-js/wiki/Events#notice), [no_permission](https://github.com/marcandrews/twitch-js/wiki/Events#notice) or request timed out
+- Resolved on [subs_off](/docs/Events/Chat/Events.md#notice)
+- Rejected on [usage_subs_off](/docs/Events/Chat/Events.md#notice), [already_subs_off](/docs/Events/Chat/Events.md#notice), [no_permission](/docs/Events/Chat/Events.md#notice) or request timed out
 
 ~~~ javascript
 client.subscribersoff("channel").then(function(data) {
@@ -701,8 +701,8 @@ client.timeout("channel", "username", 300, "reason");
 
 **Promises:**
 
-- Resolved on [timeout_success](https://github.com/marcandrews/twitch-js/wiki/Events#notice)
-- Rejected on [usage_timeout](https://github.com/marcandrews/twitch-js/wiki/Events#notice), [bad_timeout_admin](https://github.com/marcandrews/twitch-js/wiki/Events#notice), [bad_timeout_broadcaster](https://github.com/marcandrews/twitch-js/wiki/Events#notice), [bad_timeout_global_mod](https://github.com/marcandrews/twitch-js/wiki/Events#notice), [bad_timeout_self](https://github.com/marcandrews/twitch-js/wiki/Events#notice), [bad_timeout_staff](https://github.com/marcandrews/twitch-js/wiki/Events#notice), [no_permission](https://github.com/marcandrews/twitch-js/wiki/Events#notice) or request timed out
+- Resolved on [timeout_success](/docs/Events/Chat/Events.md#notice)
+- Rejected on [usage_timeout](/docs/Events/Chat/Events.md#notice), [bad_timeout_admin](/docs/Events/Chat/Events.md#notice), [bad_timeout_broadcaster](/docs/Events/Chat/Events.md#notice), [bad_timeout_global_mod](/docs/Events/Chat/Events.md#notice), [bad_timeout_self](/docs/Events/Chat/Events.md#notice), [bad_timeout_staff](/docs/Events/Chat/Events.md#notice), [no_permission](/docs/Events/Chat/Events.md#notice) or request timed out
 
 ~~~ javascript
 client.timeout("channel", "username", 300, "reason").then(function(data) {
@@ -727,8 +727,8 @@ client.unban("channel", "username");
 
 **Promises:**
 
-- Resolved on [unban_success](https://github.com/marcandrews/twitch-js/wiki/Events#notice)
-- Rejected on [usage_unban](https://github.com/marcandrews/twitch-js/wiki/Events#notice), [bad_unban_no_ban](https://github.com/marcandrews/twitch-js/wiki/Events#notice), [no_permission](https://github.com/marcandrews/twitch-js/wiki/Events#notice) or request timed out
+- Resolved on [unban_success](/docs/Events/Chat/Events.md#notice)
+- Rejected on [usage_unban](/docs/Events/Chat/Events.md#notice), [bad_unban_no_ban](/docs/Events/Chat/Events.md#notice), [no_permission](/docs/Events/Chat/Events.md#notice) or request timed out
 
 ~~~ javascript
 client.unban("channel", "username").then(function(data) {
@@ -753,7 +753,7 @@ client.unhost("channel");
 **Promises:**
 
 - Resolved on success
-- Rejected on [usage_unhost](https://github.com/marcandrews/twitch-js/wiki/Events#notice), [not_hosting](https://github.com/marcandrews/twitch-js/wiki/Events#notice), [no_permission](https://github.com/marcandrews/twitch-js/wiki/Events#notice) or request timed out
+- Rejected on [usage_unhost](/docs/Events/Chat/Events.md#notice), [not_hosting](/docs/Events/Chat/Events.md#notice), [no_permission](/docs/Events/Chat/Events.md#notice) or request timed out
 
 ~~~ javascript
 client.unhost("channel").then(function(data) {
@@ -778,8 +778,8 @@ client.unmod("channel", "username");
 
 **Promises:**
 
-- Resolved on [unmod_success](https://github.com/marcandrews/twitch-js/wiki/Events#notice)
-- Rejected on [usage_unmod](https://github.com/marcandrews/twitch-js/wiki/Events#notice), [bad_unmod_mod](https://github.com/marcandrews/twitch-js/wiki/Events#notice), [no_permission](https://github.com/marcandrews/twitch-js/wiki/Events#notice) or request timed out
+- Resolved on [unmod_success](/docs/Events/Chat/Events.md#notice)
+- Rejected on [usage_unmod](/docs/Events/Chat/Events.md#notice), [bad_unmod_mod](/docs/Events/Chat/Events.md#notice), [no_permission](/docs/Events/Chat/Events.md#notice) or request timed out
 
 ~~~ javascript
 client.unmod("channel", "username").then(function(data) {

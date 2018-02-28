@@ -4,7 +4,7 @@
 const TwitchJS = require('twitch-js');
 
 // Setup the client with your configuration; more details here:
-// https://github.com/twitch-apis/twitch-js/wiki/Configuration.
+// https://github.com/twitch-apis/twitch-js/blob/master/docs/Chat/Configuration.md
 const options = {
   connection: {
     reconnect: true,
