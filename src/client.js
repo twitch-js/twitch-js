@@ -721,6 +721,15 @@ client.prototype.handleMessage = function handleMessage(message) {
               //
               break;
 
+            case 'msg_rejected':
+              this.log.info(`[${channel}] ${msg}`);
+              this.emit('automodinreview', { channel });
+              break;
+            case 'msg_rejected_mandatory':
+              this.log.info(`[${channel}] ${msg}`);
+              this.emit('automodrejected', { channel });
+              break;
+
             default:
               if (
                 msg.includes('Login unsuccessful') ||

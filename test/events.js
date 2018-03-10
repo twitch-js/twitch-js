@@ -27,6 +27,18 @@ const events = [
     ],
   },
   {
+    name: 'automodinreview',
+    data:
+      '@msg-id=msg_rejected :tmi.twitch.tv NOTICE #schmoopiie :Hey! Your message is being checked by mods and has not been sent.',
+    expected: [{ channel: '#schmoopiie' }],
+  },
+  {
+    name: 'automodrejected',
+    data:
+      "@msg-id=msg_rejected_mandatory :tmi.twitch.tv NOTICE #schmoopiie :Your message wasn't posted due to conflicts with the channel's moderation settings.",
+    expected: [{ channel: '#schmoopiie' }],
+  },
+  {
     name: 'ban',
     data:
       '@ban-reason=this\\sis\\sa\\stest :tmi.twitch.tv CLEARCHAT #schmoopiie :schmoopiie',
