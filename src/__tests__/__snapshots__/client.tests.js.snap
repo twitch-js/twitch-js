@@ -1,0 +1,41 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`client events should emit subgift 1`] = `
+Array [
+  "#darksydephil",
+  "GlewmanIII",
+  "Skullgod",
+  Object {
+    "plan": "1000",
+    "planName": "Channel Subscription (darksydephil)",
+  },
+  Object {
+    "badges": Object {
+      "premium": "l",
+    },
+    "badges-raw": "premium/l",
+    "color": "#0700C7",
+    "display-name": "GlewmanIII",
+    "emotes": null,
+    "emotes-raw": null,
+    "id": "614be214-52bd-4d29-8e7b-b32800e37091",
+    "login": "glewmaniii",
+    "message-type": "subgift",
+    "mod": false,
+    "msg-id": "subgift",
+    "msg-param-months": "l",
+    "msg-param-recipient-display-name": "Skullgod",
+    "msg-param-recipient-id": "42328907",
+    "msg-param-recipient-user-name": "skullgod",
+    "msg-param-sub-plan": "1000",
+    "msg-param-sub-plan-name": "Channel\\\\sSubscription\\\\s(darksydephil)",
+    "room-id": "261767",
+    "subscriber": false,
+    "system-msg": "GlewmanIII\\\\sgifted\\\\sa\\\\s$4.99\\\\ssub\\\\sto\\\\sSkullgod!",
+    "tmi-sent-ts": "l510778455142",
+    "turbo": false,
+    "user-id": "31658625",
+    "user-type": null,
+  },
+]
+`;
