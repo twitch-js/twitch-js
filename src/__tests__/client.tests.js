@@ -1,5 +1,5 @@
 import TwitchJS from '../';
-import events from './__fixtures__/events';
+import events from './__fixtures__/events.json';
 
 const client = new TwitchJS.Client({
   options: { clientId: 'CLIENT_ID' },
