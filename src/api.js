@@ -7,13 +7,17 @@ const api = async (options = {}, cb) => {
   // Set the url to options.uri or options.url.
   const urlFromOptions = options.url || options.uri;
 
-  const url = isURL(urlFromOptions)
+  const endpoint = isURL(urlFromOptions)
     ? urlFromOptions
     : `https://api.twitch.tv/kraken/${urlFromOptions.replace(/^\//, '')}`;
 
+  const clientId = get(options, 'headers.Client-ID');
+  const tokenWithOauth = get(options, 'headers.Authorization');
+
   const body = await fetchHelper({
-    endpoint: url,
-    clientId: get(options, 'headers.Client-ID'),
+    endpoint,
+    clientId,
+    token: tokenWithOauth ? tokenWithOauth.replace(/^Oauth /, '') : undefined,
   });
 
   if (isFunction(cb)) {
