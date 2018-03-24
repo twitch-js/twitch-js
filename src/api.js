@@ -17,7 +17,7 @@ const api = async (options = {}, cb) => {
   const body = await fetchHelper({
     endpoint,
     clientId,
-    token: tokenWithOauth ? tokenWithOauth.replace(/^Oauth /, '') : undefined,
+    token: tokenWithOauth ? tokenWithOauth.replace(/^Oauth /i, '') : undefined,
   });
 
   if (isFunction(cb)) {
