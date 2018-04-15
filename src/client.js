@@ -871,6 +871,18 @@ client.prototype.handleMessage = function handleMessage(message) {
               { plan, planName },
               userstate,
             );
+          } else if (msgid === 'raid') {
+            const raider =
+              message.tags['msg-param-displayName'] ||
+              message.tags['msg-param-login'];
+            const viewers = parseInt(message.tags['msg-param-viewerCount'], 10);
+            const userstate = message.tags;
+
+            if (userstate) {
+              userstate['message-type'] = 'raid';
+            }
+
+            this.emit('raid', { channel, raider, viewers, userstate });
           }
           break;
         }

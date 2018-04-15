@@ -344,6 +344,41 @@ const events = [
       false,
     ],
   },
+  {
+    name: 'raid',
+    data:
+      '@badges=moderator/1;color=#008000;display-name=erei;emotes=;id=633704e9-0287-4450-840d-bee5893aca10;login=erei;mod=1;msg-id=raid;msg-param-displayName=erei;msg-param-login=erei;msg-param-viewerCount=2;room-id=40296908;subscriber=0;system-msg=2sraiderssfromsereishavesjoined\n!;tmi-sent-ts=1523758440009;turbo=0;user-id=179348319;user-type=mod :tmi.twitch.tv USERNOTICE #fitmit',
+    expected: [
+      {
+        channel: '#fitmit',
+        raider: 'erei',
+        userstate: {
+          badges: { moderator: '1' },
+          color: '#008000',
+          'display-name': 'erei',
+          emotes: null,
+          id: '633704e9-0287-4450-840d-bee5893aca10',
+          mod: true,
+          'room-id': '40296908',
+          subscriber: false,
+          'tmi-sent-ts': '1523758440009',
+          'system-msg': '2sraiderssfromsereishavesjoined\n!',
+          turbo: false,
+          'user-id': '179348319',
+          'user-type': 'mod',
+          'emotes-raw': null,
+          'badges-raw': 'moderator/1',
+          login: 'erei',
+          'msg-id': 'raid',
+          'msg-param-displayName': 'erei',
+          'msg-param-login': 'erei',
+          'msg-param-viewerCount': '2',
+          'message-type': 'raid',
+        },
+        viewers: 2,
+      },
+    ],
+  },
 ];
 
 describe('client events', () => {
