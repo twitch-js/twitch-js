@@ -875,14 +875,14 @@ client.prototype.handleMessage = function handleMessage(message) {
             const raider =
               message.tags['msg-param-displayName'] ||
               message.tags['msg-param-login'];
-            const viewers = Number(message.tags['msg-param-viewerCount']);
+            const viewers = parseInt(message.tags['msg-param-viewerCount'], 10);
             const userstate = message.tags;
 
             if (userstate) {
               userstate['message-type'] = 'raid';
             }
 
-            this.emit('raid', channel, raider, viewers, userstate);
+            this.emit('raid', { channel, raider, viewers, userstate });
           }
           break;
         }

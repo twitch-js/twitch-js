@@ -581,7 +581,7 @@ A [raid](https://help.twitch.tv/customer/portal/articles/2877820) occurred on a 
 * `userstate`: _Object_ - Userstate
 
 ```javascript
-client.on('raid', function(channel, raider, viewers, userstate) {
+client.on('raid', function({ channel, raider, viewers, userstate }) {
   // Do your stuff.
 });
 ```
