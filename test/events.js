@@ -379,6 +379,41 @@ const events = [
       },
     ],
   },
+  {
+    name: 'ritual',
+    data:
+      '@badges=;color=;display-name=SevenTest1;emotes=30259:0-6;id=37feed0f-b9c7-4c3a-b475-21c6c6d21c3d;login=seventest1;mod=0;msg-id=ritual;msg-param-ritual-name=new_chatter;room-id=6316121;subscriber=0;system-msg=Seventoessissnewshere!;tmi-sent-ts=1508363903826;turbo=0;user-id=131260580;user-type= :tmi.twitch.tv USERNOTICE #seventoes :HeyGuys',
+    expected: [
+      {
+        channel: '#seventoes',
+        username: 'SevenTest1',
+        type: 'new_chatter',
+        userstate: {
+          badges: null,
+          'badges-raw': null,
+          color: null,
+          'display-name': 'SevenTest1',
+          emotes: {
+            30259: ['0-6'],
+          },
+          'emotes-raw': '30259:0-6',
+          id: '37feed0f-b9c7-4c3a-b475-21c6c6d21c3d',
+          login: 'seventest1',
+          mod: false,
+          'msg-id': 'ritual',
+          'msg-param-ritual-name': 'new_chatter',
+          'room-id': '6316121',
+          subscriber: false,
+          'system-msg': 'Seventoessissnewshere!',
+          'tmi-sent-ts': '1508363903826',
+          turbo: false,
+          'user-id': '131260580',
+          'user-type': null,
+          'message-type': 'ritual',
+        },
+      },
+    ],
+  },
 ];
 
 describe('client events', () => {
