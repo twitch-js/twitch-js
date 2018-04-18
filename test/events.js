@@ -344,6 +344,76 @@ const events = [
       false,
     ],
   },
+  {
+    name: 'raid',
+    data:
+      '@badges=moderator/1;color=#008000;display-name=erei;emotes=;id=633704e9-0287-4450-840d-bee5893aca10;login=erei;mod=1;msg-id=raid;msg-param-displayName=erei;msg-param-login=erei;msg-param-viewerCount=2;room-id=40296908;subscriber=0;system-msg=2sraiderssfromsereishavesjoined\n!;tmi-sent-ts=1523758440009;turbo=0;user-id=179348319;user-type=mod :tmi.twitch.tv USERNOTICE #fitmit',
+    expected: [
+      {
+        channel: '#fitmit',
+        raider: 'erei',
+        userstate: {
+          badges: { moderator: '1' },
+          color: '#008000',
+          'display-name': 'erei',
+          emotes: null,
+          id: '633704e9-0287-4450-840d-bee5893aca10',
+          mod: true,
+          'room-id': '40296908',
+          subscriber: false,
+          'tmi-sent-ts': '1523758440009',
+          'system-msg': '2sraiderssfromsereishavesjoined\n!',
+          turbo: false,
+          'user-id': '179348319',
+          'user-type': 'mod',
+          'emotes-raw': null,
+          'badges-raw': 'moderator/1',
+          login: 'erei',
+          'msg-id': 'raid',
+          'msg-param-displayName': 'erei',
+          'msg-param-login': 'erei',
+          'msg-param-viewerCount': '2',
+          'message-type': 'raid',
+        },
+        viewers: 2,
+      },
+    ],
+  },
+  {
+    name: 'ritual',
+    data:
+      '@badges=;color=;display-name=SevenTest1;emotes=30259:0-6;id=37feed0f-b9c7-4c3a-b475-21c6c6d21c3d;login=seventest1;mod=0;msg-id=ritual;msg-param-ritual-name=new_chatter;room-id=6316121;subscriber=0;system-msg=Seventoessissnewshere!;tmi-sent-ts=1508363903826;turbo=0;user-id=131260580;user-type= :tmi.twitch.tv USERNOTICE #seventoes :HeyGuys',
+    expected: [
+      {
+        channel: '#seventoes',
+        username: 'SevenTest1',
+        type: 'new_chatter',
+        userstate: {
+          badges: null,
+          'badges-raw': null,
+          color: null,
+          'display-name': 'SevenTest1',
+          emotes: {
+            30259: ['0-6'],
+          },
+          'emotes-raw': '30259:0-6',
+          id: '37feed0f-b9c7-4c3a-b475-21c6c6d21c3d',
+          login: 'seventest1',
+          mod: false,
+          'msg-id': 'ritual',
+          'msg-param-ritual-name': 'new_chatter',
+          'room-id': '6316121',
+          subscriber: false,
+          'system-msg': 'Seventoessissnewshere!',
+          'tmi-sent-ts': '1508363903826',
+          turbo: false,
+          'user-id': '131260580',
+          'user-type': null,
+          'message-type': 'ritual',
+        },
+      },
+    ],
+  },
 ];
 
 describe('client events', () => {
