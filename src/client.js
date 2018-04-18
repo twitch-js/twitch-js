@@ -883,6 +883,16 @@ client.prototype.handleMessage = function handleMessage(message) {
             }
 
             this.emit('raid', { channel, raider, viewers, userstate });
+          } else if (msgid === 'ritual') {
+            const username = message.tags['display-name'] || message.tags.login;
+            const type = message.tags['msg-param-ritual-name'];
+            const userstate = message.tags;
+
+            if (userstate) {
+              userstate['message-type'] = 'ritual';
+            }
+
+            this.emit('ritual', { channel, username, type, userstate });
           }
           break;
         }

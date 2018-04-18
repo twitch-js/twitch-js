@@ -32,6 +32,7 @@ Some events will only be fired if you are logged in. If you are not familiar wit
 * [Raid](#raid) - A raid occurred on a channel.
 * [Reconnect](#reconnect) - Trying to reconnect to server.
 * [Resub](#resub) - Username has [resubbed](https://blog.twitch.tv/shout-out-your-channel-loyalty-with-resub-notifications-547d20b6efa2#.oxd0lqrc7) on a channel.
+* [Ritual](#ritual) - Username is new to the stream.
 * [Roomstate](#roomstate) - The current state of the channel.
 * [Serverchange](#serverchange) - Channel is no longer located on this cluster.
 * [Slowmode](#slowmode) - Gives you the current state of the channel.
@@ -618,6 +619,23 @@ client.on('resub', function(
   userstate,
   methods,
 ) {
+  // Do your stuff.
+});
+```
+
+### Ritual
+
+A [ritual](https://twitter.com/twitch/status/921465514857201664?lang=en) has occurred in a channel, username is new to chat.
+
+**Parameters**:
+
+* `channel`: _String_ - Channel name
+* `username`: _String_ - Name of the new chatter.
+* `type`: _String_ - Type of ritual that has occurred. Currently, only `new_chatter` is given.
+* `userstate`: _Object_ - Userstate
+
+```javascript
+client.on('ritual', function({ channel, username, type, userstate }) {
   // Do your stuff.
 });
 ```
