@@ -414,6 +414,17 @@ const events = [
       },
     ],
   },
+  // -- NOTICE Events --
+  {
+    name: 'notice',
+    data:
+      '@msg-id=raid_notice_restricted_chat :tmi.twitch.tv NOTICE #mychannel :This channel has follower or subscriber only chat.',
+    expected: [
+      '#mychannel',
+      'raid_notice_restricted_chat',
+      'This channel has follower or subscriber only chat.',
+    ],
+  },
 ];
 
 describe('client events', () => {
