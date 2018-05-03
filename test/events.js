@@ -425,6 +425,16 @@ const events = [
       'This channel has follower or subscriber only chat.',
     ],
   },
+  {
+    name: 'notice',
+    data:
+      '@msg-id=unraid_error_no_active_raid :tmi.twitch.tv NOTICE #mychannel :You do not have an active raid.',
+    expected: [
+      '#mychannel',
+      'unraid_error_no_active_raid',
+      'You do not have an active raid.',
+    ],
+  },
 ];
 
 describe('client events', () => {
