@@ -709,6 +709,7 @@ client.prototype.handleMessage = function handleMessage(message) {
             case 'msg_timedout':
             case 'no_help':
             case 'raid_notice_restricted_chat':
+            case 'unraid_error_no_active_raid':
             case 'usage_disconnect':
             case 'usage_help':
             case 'usage_me':
