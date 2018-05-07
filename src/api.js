@@ -15,13 +15,17 @@ const api = function api(options, callback) {
     });
   } else if (_.isExtension()) {
     // Inside an extension -> we cannot use jsonp!
-    const xhrOptions = _.merge(options, { url, method: 'GET', headers: {} });
+    const xhrOptions = _.merge({ method: 'GET', headers: {} }, options, { url });
+
     // prepare request
     const xhr = new XMLHttpRequest();
     xhr.open(xhrOptions.method, xhrOptions.url, true);
-    Object.keys(xhrOptions)
-      .forEach(name => xhr.setRequestHeader(name, xhrOptions.headers[name]));
+
+    Object.keys(xhrOptions.headers).forEach(name =>
+      xhr.setRequestHeader(name, xhrOptions.headers[name]));
+
     xhr.responseType = 'json';
+
     // set request handler
     xhr.addEventListener('load', () => {
       if (xhr.readyState === 4) {
@@ -32,6 +36,7 @@ const api = function api(options, callback) {
         }
       }
     });
+
     // submit
     xhr.send();
   } else {
