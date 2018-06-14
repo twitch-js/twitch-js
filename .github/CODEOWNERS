@@ -1,0 +1,8 @@
+# This file
+CODEOWNERS    @marcandrews
+
+# Documentation
+*.md          @marcandrews
+
+# Root files
+/*.*          @marcandrews

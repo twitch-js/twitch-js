@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <title>TwitchJS Example</title>
+  <meta name="description" content="TwitchJS Example">
+</head>
+
+<body>
+  <h1>TwitchJS Example</h1>
+  <p>Please see console</p>
+
+  <script src="https://unpkg.com/twitch-js@>2.0.0-beta"></script>
+  <script>
+    (function() {
+      // Provide your token, username and channel. You can generate a token
+      // here: https://twitchapps.com/tmi/
+      const token = TWITCH_TOKEN;
+      const username = TWITCH_USERNAME;
+
+      const channel = 'twitchapis';
+
+      const { chat, chatConstants } = new TwitchJs({ token, username });
+
+      const log = msg => console.log(msg);
+      chat.on(chatConstants.EVENTS.ALL, log);
+
+      // Connect ...
+      chat.connect().then(res => {
+        // Expose chat client for experimental purposes.
+        window.chat = chat;
+
+        return chat.join(channel)
+      })
+    })();
+  </script>
+</body>
+
+</html>

@@ -1,0 +1,11 @@
+{
+  "JOIN": ":ronni!ronni@ronni.tmi.twitch.tv JOIN #dallas",
+  "MODE": {
+    "OPERATOR_PLUS": ":jtv MODE #dallas +o ronni",
+    "OPERATOR_MINUS": ":jtv MODE #dallas -o ronni"
+  },
+  "NAMES": ":ronni.tmi.twitch.tv 353 ronni = #dallas :ronni fred wilma\n:ronni.tmi.twitch.tv 353 ronni = #dallas :barney betty\n:ronni.tmi.twitch.tv 366 ronni #dallas :End of /NAMES list",
+  "PART": ":ronni!ronni@ronni.tmi.twitch.tv PART #dallas",
+  "PING": "PING :tmi.twitch.tv",
+  "PONG": "PONG :tmi.twitch.tv"
+}

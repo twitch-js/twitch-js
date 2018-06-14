@@ -1,0 +1,41 @@
+{
+  "CLEARCHAT": {
+    "CHANNEL": ":tmi.twitch.tv CLEARCHAT #dallas",
+    "USER_WITH_REASON": "@ban-reason=Follow\\sthe\\srules :tmi.twitch.tv CLEARCHAT #dallas :ronni"
+  },
+  "HOSTTARGET": {
+    "START": ":tmi.twitch.tv HOSTTARGET #ronni :dallas 123",
+    "STOP": ":tmi.twitch.tv HOSTTARGET #ronni :- 456"
+  },
+  "NOTICE": {
+    "ALREADY_BANNED": "@msg-id=already_banned :tmi.twitch.tv NOTICE #dallas :<user> is already banned in this channel.",
+    "ALREADY_EMOTE_ONLY_OFF": "@msg-id=already_emote_only_off :tmi.twitch.tv NOTICE #dallas :This room is not in emote-only mode.",
+    "ALREADY_EMOTE_ONLY_ON": "@msg-id=already_emote_only_on :tmi.twitch.tv NOTICE #dallas :This room is already in emote-only mode.",
+    "ALREADY_R9K_OFF": "@msg-id=already_r9k_off :tmi.twitch.tv NOTICE #dallas :This room is not in r9k mode.",
+    "ALREADY_R9K_ON": "@msg-id=already_r9k_on :tmi.twitch.tv NOTICE #dallas :This room is already in r9k mode.",
+    "ALREADY_SUBS_OFF": "@msg-id=already_subs_off :tmi.twitch.tv NOTICE #dallas :This room is not in subscribers-only mode.",
+    "ALREADY_SUBS_ON": "@msg-id=already_subs_on :tmi.twitch.tv NOTICE #dallas :This room is already in subscribers-only mode.",
+    "BAD_HOST_HOSTING": "@msg-id=bad_host_hosting :tmi.twitch.tv NOTICE #dallas :This channel is hosting <channel>.",
+    "BAN_SUCCESS": "@msg-id=ban_success :tmi.twitch.tv NOTICE #dallas :<user> is now banned from this channel.",
+    "BAD_UNBAN_NO_BAN": "@msg-id=bad_unban_no_ban :tmi.twitch.tv NOTICE #dallas :<user> is not banned from this channel.",
+    "EMOTE_ONLY_OFF": "@msg-id=emote_only_off :tmi.twitch.tv NOTICE #dallas :This room is no longer in emote-only mode.",
+    "EMOTE_ONLY_ON": "@msg-id=emote_only_on :tmi.twitch.tv NOTICE #dallas :This room is now in emote-only mode.",
+    "HOST_OFF": "@msg-id=host_off :tmi.twitch.tv NOTICE #dallas :Exited host mode.",
+    "HOST_ON": "@msg-id=host_on :tmi.twitch.tv NOTICE #dallas :Now hosting <channel>.",
+    "HOSTS_REMAINING": "@msg-id=hosts_remaining :tmi.twitch.tv NOTICE #dallas :There are <number> host commands remaining this half hour.",
+    "MSG_CHANNEL_SUSPENDED": "@msg-id=msg_channel_suspended :tmi.twitch.tv NOTICE #dallas :This channel is suspended.",
+    "R9K_OFF": "@msg-id=r9k_off :tmi.twitch.tv NOTICE #dallas :This room is no longer in r9k mode.",
+    "R9K_ON": "@msg-id=r9k_on :tmi.twitch.tv NOTICE #dallas :This room is now in r9k mode.",
+    "SLOW_OFF": "@msg-id=slow_off :tmi.twitch.tv NOTICE #dallas :This room is no longer in slow mode.",
+    "SLOW_ON": "@msg-id=slow_on :tmi.twitch.tv NOTICE #dallas :This room is now in slow mode. You may send messages every <slow seconds> seconds.",
+    "SUBS_OFF": "@msg-id=subs_off :tmi.twitch.tv NOTICE #dallas :This room is no longer in subscribers-only mode.",
+    "SUBS_ON": "@msg-id=subs_on :tmi.twitch.tv NOTICE #dallas :This room is now in subscribers-only mode.",
+    "TIMEOUT_SUCCESS": "@msg-id=timeout_success :tmi.twitch.tv NOTICE #dallas :<user> has been timed out for <duration> seconds.",
+    "UNBAN_SUCCESS": "@msg-id=unban_success :tmi.twitch.tv NOTICE #dallas :<user> is no longer banned from this channel.",
+    "UNRECOGNIZED_CMD": "@msg-id=unrecognized_cmd :tmi.twitch.tv NOTICE #dallas :Unrecognized command: <command>"
+  },
+  "RECONNECT": ":tmi.twitch.tv RECONNECT",
+  "ROOMSTATE": {},
+  "USERNOTICE": {},
+  "USERSTATE": {}
+}

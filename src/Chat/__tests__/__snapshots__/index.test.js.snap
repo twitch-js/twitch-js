@@ -1,0 +1,849 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Chat should handle CLEARCHAT 1`] = `
+Object {
+  "_raw": ":tmi.twitch.tv CLEARCHAT #dallas",
+  "channel": "#dallas",
+  "command": "CLEARCHAT",
+  "isSelf": false,
+  "timestamp": 2018-01-01T00:00:00.000Z,
+}
+`;
+
+exports[`Chat should handle CLEARCHAT user with reason 1`] = `
+Object {
+  "_raw": "@ban-reason=Follow\\\\sthe\\\\srules :tmi.twitch.tv CLEARCHAT #dallas :ronni",
+  "channel": "#dallas",
+  "command": "CLEARCHAT",
+  "event": "USER_BANNED",
+  "isSelf": false,
+  "state": Object {
+    "banReason": "Follow the rules",
+  },
+  "timestamp": 2018-01-01T00:00:00.000Z,
+  "username": "ronni",
+}
+`;
+
+exports[`Chat should handle HOSTTARGET start 1`] = `
+Object {
+  "_raw": ":tmi.twitch.tv HOSTTARGET #ronni :dallas 123",
+  "channel": "#ronni",
+  "command": "HOSTTARGET",
+  "event": "HOST_ON",
+  "isSelf": false,
+  "numberOfViewers": undefined,
+  "timestamp": 2018-01-01T00:00:00.000Z,
+  "username": "dallas",
+}
+`;
+
+exports[`Chat should handle HOSTTARGET stop 1`] = `
+Object {
+  "_raw": ":tmi.twitch.tv HOSTTARGET #ronni :- 456",
+  "channel": "#ronni",
+  "command": "HOSTTARGET",
+  "event": "HOST_OFF",
+  "isSelf": false,
+  "numberOfViewers": undefined,
+  "timestamp": 2018-01-01T00:00:00.000Z,
+  "username": "-",
+}
+`;
+
+exports[`Chat should handle JOIN 1`] = `
+Object {
+  "_raw": ":ronni!ronni@ronni.tmi.twitch.tv JOIN #dallas",
+  "channel": "#dallas",
+  "command": "JOIN",
+  "isSelf": false,
+  "message": undefined,
+  "state": undefined,
+  "timestamp": 2018-01-01T00:00:00.000Z,
+  "username": "ronni",
+}
+`;
+
+exports[`Chat should handle MODE +o 1`] = `
+Object {
+  "_raw": ":jtv MODE #dallas +o ronni",
+  "channel": "#dallas",
+  "command": "MODE",
+  "event": "MOD_GAINED",
+  "isModerator": true,
+  "isSelf": false,
+  "message": undefined,
+  "state": undefined,
+  "timestamp": 2018-01-01T00:00:00.000Z,
+  "username": "ronni",
+}
+`;
+
+exports[`Chat should handle NAMES 1`] = `
+Array [
+  Object {
+    "_raw": ":ronni.tmi.twitch.tv 353 ronni = #dallas :ronni fred wilma",
+    "channel": "#dallas",
+    "command": "353",
+    "event": "353",
+    "isSelf": false,
+    "listType": "chatters",
+    "message": undefined,
+    "state": undefined,
+    "timestamp": 2018-01-01T00:00:00.000Z,
+    "usernames": Array [
+      "ronni",
+      "fred",
+      "wilma",
+    ],
+  },
+  Object {
+    "_raw": ":ronni.tmi.twitch.tv 353 ronni = #dallas :ronni fred wilma",
+    "channel": "#dallas",
+    "command": "353",
+    "event": "353",
+    "isSelf": false,
+    "listType": "chatters",
+    "message": undefined,
+    "state": undefined,
+    "timestamp": 2018-01-01T00:00:00.000Z,
+    "usernames": Array [
+      "ronni",
+      "fred",
+      "wilma",
+    ],
+  },
+  Object {
+    "_raw": ":ronni.tmi.twitch.tv 366 ronni #dallas :End of /NAMES list",
+    "channel": "#dallas",
+    "command": "366",
+    "event": "366",
+    "isSelf": false,
+    "message": "End of /NAMES list",
+    "state": undefined,
+    "timestamp": 2018-01-01T00:00:00.000Z,
+    "username": "ronni",
+  },
+]
+`;
+
+exports[`Chat should handle NOTICE ALREADY_BANNED 1`] = `
+Object {
+  "_raw": "@msg-id=already_banned :tmi.twitch.tv NOTICE #dallas :<user> is already banned in this channel.",
+  "channel": "#dallas",
+  "command": "NOTICE",
+  "event": "ALREADY_BANNED",
+  "isSelf": false,
+  "message": "<user> is already banned in this channel.",
+  "state": Object {
+    "msgId": "already_banned",
+  },
+  "timestamp": 2018-01-01T00:00:00.000Z,
+}
+`;
+
+exports[`Chat should handle NOTICE ALREADY_EMOTE_ONLY_OFF 1`] = `
+Object {
+  "_raw": "@msg-id=already_emote_only_off :tmi.twitch.tv NOTICE #dallas :This room is not in emote-only mode.",
+  "channel": "#dallas",
+  "command": "NOTICE",
+  "event": "ALREADY_EMOTE_ONLY_OFF",
+  "isSelf": false,
+  "message": "This room is not in emote-only mode.",
+  "state": Object {
+    "msgId": "already_emote_only_off",
+  },
+  "timestamp": 2018-01-01T00:00:00.000Z,
+}
+`;
+
+exports[`Chat should handle NOTICE ALREADY_EMOTE_ONLY_ON 1`] = `
+Object {
+  "_raw": "@msg-id=already_emote_only_on :tmi.twitch.tv NOTICE #dallas :This room is already in emote-only mode.",
+  "channel": "#dallas",
+  "command": "NOTICE",
+  "event": "ALREADY_EMOTE_ONLY_ON",
+  "isSelf": false,
+  "message": "This room is already in emote-only mode.",
+  "state": Object {
+    "msgId": "already_emote_only_on",
+  },
+  "timestamp": 2018-01-01T00:00:00.000Z,
+}
+`;
+
+exports[`Chat should handle NOTICE ALREADY_R9K_OFF 1`] = `
+Object {
+  "_raw": "@msg-id=already_r9k_off :tmi.twitch.tv NOTICE #dallas :This room is not in r9k mode.",
+  "channel": "#dallas",
+  "command": "NOTICE",
+  "event": "ALREADY_R9K_OFF",
+  "isSelf": false,
+  "message": "This room is not in r9k mode.",
+  "state": Object {
+    "msgId": "already_r9k_off",
+  },
+  "timestamp": 2018-01-01T00:00:00.000Z,
+}
+`;
+
+exports[`Chat should handle NOTICE ALREADY_R9K_ON 1`] = `
+Object {
+  "_raw": "@msg-id=already_r9k_on :tmi.twitch.tv NOTICE #dallas :This room is already in r9k mode.",
+  "channel": "#dallas",
+  "command": "NOTICE",
+  "event": "ALREADY_R9K_ON",
+  "isSelf": false,
+  "message": "This room is already in r9k mode.",
+  "state": Object {
+    "msgId": "already_r9k_on",
+  },
+  "timestamp": 2018-01-01T00:00:00.000Z,
+}
+`;
+
+exports[`Chat should handle NOTICE ALREADY_SUBS_OFF 1`] = `
+Object {
+  "_raw": "@msg-id=already_subs_off :tmi.twitch.tv NOTICE #dallas :This room is not in subscribers-only mode.",
+  "channel": "#dallas",
+  "command": "NOTICE",
+  "event": "ALREADY_SUBS_OFF",
+  "isSelf": false,
+  "message": "This room is not in subscribers-only mode.",
+  "state": Object {
+    "msgId": "already_subs_off",
+  },
+  "timestamp": 2018-01-01T00:00:00.000Z,
+}
+`;
+
+exports[`Chat should handle NOTICE ALREADY_SUBS_ON 1`] = `
+Object {
+  "_raw": "@msg-id=already_subs_on :tmi.twitch.tv NOTICE #dallas :This room is already in subscribers-only mode.",
+  "channel": "#dallas",
+  "command": "NOTICE",
+  "event": "ALREADY_SUBS_ON",
+  "isSelf": false,
+  "message": "This room is already in subscribers-only mode.",
+  "state": Object {
+    "msgId": "already_subs_on",
+  },
+  "timestamp": 2018-01-01T00:00:00.000Z,
+}
+`;
+
+exports[`Chat should handle NOTICE BAD_HOST_HOSTING 1`] = `
+Object {
+  "_raw": "@msg-id=bad_host_hosting :tmi.twitch.tv NOTICE #dallas :This channel is hosting <channel>.",
+  "channel": "#dallas",
+  "command": "NOTICE",
+  "event": "BAD_HOST_HOSTING",
+  "isSelf": false,
+  "message": "This channel is hosting <channel>.",
+  "state": Object {
+    "msgId": "bad_host_hosting",
+  },
+  "timestamp": 2018-01-01T00:00:00.000Z,
+}
+`;
+
+exports[`Chat should handle NOTICE BAD_UNBAN_NO_BAN 1`] = `
+Object {
+  "_raw": "@msg-id=bad_unban_no_ban :tmi.twitch.tv NOTICE #dallas :<user> is not banned from this channel.",
+  "channel": "#dallas",
+  "command": "NOTICE",
+  "event": "BAD_UNBAN_NO_BAN",
+  "isSelf": false,
+  "message": "<user> is not banned from this channel.",
+  "state": Object {
+    "msgId": "bad_unban_no_ban",
+  },
+  "timestamp": 2018-01-01T00:00:00.000Z,
+}
+`;
+
+exports[`Chat should handle NOTICE BAN_SUCCESS 1`] = `
+Object {
+  "_raw": "@msg-id=ban_success :tmi.twitch.tv NOTICE #dallas :<user> is now banned from this channel.",
+  "channel": "#dallas",
+  "command": "NOTICE",
+  "event": "BAN_SUCCESS",
+  "isSelf": false,
+  "message": "<user> is now banned from this channel.",
+  "state": Object {
+    "msgId": "ban_success",
+  },
+  "timestamp": 2018-01-01T00:00:00.000Z,
+}
+`;
+
+exports[`Chat should handle NOTICE EMOTE_ONLY_OFF 1`] = `
+Object {
+  "_raw": "@msg-id=emote_only_off :tmi.twitch.tv NOTICE #dallas :This room is no longer in emote-only mode.",
+  "channel": "#dallas",
+  "command": "NOTICE",
+  "event": "EMOTE_ONLY_OFF",
+  "isSelf": false,
+  "message": "This room is no longer in emote-only mode.",
+  "state": Object {
+    "msgId": "emote_only_off",
+  },
+  "timestamp": 2018-01-01T00:00:00.000Z,
+}
+`;
+
+exports[`Chat should handle NOTICE EMOTE_ONLY_ON 1`] = `
+Object {
+  "_raw": "@msg-id=emote_only_on :tmi.twitch.tv NOTICE #dallas :This room is now in emote-only mode.",
+  "channel": "#dallas",
+  "command": "NOTICE",
+  "event": "EMOTE_ONLY_ON",
+  "isSelf": false,
+  "message": "This room is now in emote-only mode.",
+  "state": Object {
+    "msgId": "emote_only_on",
+  },
+  "timestamp": 2018-01-01T00:00:00.000Z,
+}
+`;
+
+exports[`Chat should handle NOTICE HOST_OFF 1`] = `
+Object {
+  "_raw": "@msg-id=host_off :tmi.twitch.tv NOTICE #dallas :Exited host mode.",
+  "channel": "#dallas",
+  "command": "NOTICE",
+  "event": "HOST_OFF",
+  "isSelf": false,
+  "message": "Exited host mode.",
+  "state": Object {
+    "msgId": "host_off",
+  },
+  "timestamp": 2018-01-01T00:00:00.000Z,
+}
+`;
+
+exports[`Chat should handle NOTICE HOST_ON 1`] = `
+Object {
+  "_raw": "@msg-id=host_on :tmi.twitch.tv NOTICE #dallas :Now hosting <channel>.",
+  "channel": "#dallas",
+  "command": "NOTICE",
+  "event": "HOST_ON",
+  "isSelf": false,
+  "message": "Now hosting <channel>.",
+  "state": Object {
+    "msgId": "host_on",
+  },
+  "timestamp": 2018-01-01T00:00:00.000Z,
+}
+`;
+
+exports[`Chat should handle NOTICE HOSTS_REMAINING 1`] = `
+Object {
+  "_raw": "@msg-id=hosts_remaining :tmi.twitch.tv NOTICE #dallas :There are <number> host commands remaining this half hour.",
+  "channel": "#dallas",
+  "command": "NOTICE",
+  "event": "HOSTS_REMAINING",
+  "isSelf": false,
+  "message": "There are <number> host commands remaining this half hour.",
+  "state": Object {
+    "msgId": "hosts_remaining",
+  },
+  "timestamp": 2018-01-01T00:00:00.000Z,
+}
+`;
+
+exports[`Chat should handle NOTICE MSG_CHANNEL_SUSPENDED 1`] = `
+Object {
+  "_raw": "@msg-id=msg_channel_suspended :tmi.twitch.tv NOTICE #dallas :This channel is suspended.",
+  "channel": "#dallas",
+  "command": "NOTICE",
+  "event": "MSG_CHANNEL_SUSPENDED",
+  "isSelf": false,
+  "message": "This channel is suspended.",
+  "state": Object {
+    "msgId": "msg_channel_suspended",
+  },
+  "timestamp": 2018-01-01T00:00:00.000Z,
+}
+`;
+
+exports[`Chat should handle NOTICE R9K_OFF 1`] = `
+Object {
+  "_raw": "@msg-id=r9k_off :tmi.twitch.tv NOTICE #dallas :This room is no longer in r9k mode.",
+  "channel": "#dallas",
+  "command": "NOTICE",
+  "event": "R9K_OFF",
+  "isSelf": false,
+  "message": "This room is no longer in r9k mode.",
+  "state": Object {
+    "msgId": "r9k_off",
+  },
+  "timestamp": 2018-01-01T00:00:00.000Z,
+}
+`;
+
+exports[`Chat should handle NOTICE R9K_ON 1`] = `
+Object {
+  "_raw": "@msg-id=r9k_on :tmi.twitch.tv NOTICE #dallas :This room is now in r9k mode.",
+  "channel": "#dallas",
+  "command": "NOTICE",
+  "event": "R9K_ON",
+  "isSelf": false,
+  "message": "This room is now in r9k mode.",
+  "state": Object {
+    "msgId": "r9k_on",
+  },
+  "timestamp": 2018-01-01T00:00:00.000Z,
+}
+`;
+
+exports[`Chat should handle NOTICE SLOW_OFF 1`] = `
+Object {
+  "_raw": "@msg-id=slow_off :tmi.twitch.tv NOTICE #dallas :This room is no longer in slow mode.",
+  "channel": "#dallas",
+  "command": "NOTICE",
+  "event": "SLOW_OFF",
+  "isSelf": false,
+  "message": "This room is no longer in slow mode.",
+  "state": Object {
+    "msgId": "slow_off",
+  },
+  "timestamp": 2018-01-01T00:00:00.000Z,
+}
+`;
+
+exports[`Chat should handle NOTICE SLOW_ON 1`] = `
+Object {
+  "_raw": "@msg-id=slow_on :tmi.twitch.tv NOTICE #dallas :This room is now in slow mode. You may send messages every <slow seconds> seconds.",
+  "channel": "#dallas",
+  "command": "NOTICE",
+  "event": "SLOW_ON",
+  "isSelf": false,
+  "message": "This room is now in slow mode. You may send messages every <slow seconds> seconds.",
+  "state": Object {
+    "msgId": "slow_on",
+  },
+  "timestamp": 2018-01-01T00:00:00.000Z,
+}
+`;
+
+exports[`Chat should handle NOTICE SUBS_OFF 1`] = `
+Object {
+  "_raw": "@msg-id=subs_off :tmi.twitch.tv NOTICE #dallas :This room is no longer in subscribers-only mode.",
+  "channel": "#dallas",
+  "command": "NOTICE",
+  "event": "SUBS_OFF",
+  "isSelf": false,
+  "message": "This room is no longer in subscribers-only mode.",
+  "state": Object {
+    "msgId": "subs_off",
+  },
+  "timestamp": 2018-01-01T00:00:00.000Z,
+}
+`;
+
+exports[`Chat should handle NOTICE SUBS_ON 1`] = `
+Object {
+  "_raw": "@msg-id=subs_on :tmi.twitch.tv NOTICE #dallas :This room is now in subscribers-only mode.",
+  "channel": "#dallas",
+  "command": "NOTICE",
+  "event": "SUBS_ON",
+  "isSelf": false,
+  "message": "This room is now in subscribers-only mode.",
+  "state": Object {
+    "msgId": "subs_on",
+  },
+  "timestamp": 2018-01-01T00:00:00.000Z,
+}
+`;
+
+exports[`Chat should handle NOTICE TIMEOUT_SUCCESS 1`] = `
+Object {
+  "_raw": "@msg-id=timeout_success :tmi.twitch.tv NOTICE #dallas :<user> has been timed out for <duration> seconds.",
+  "channel": "#dallas",
+  "command": "NOTICE",
+  "event": "TIMEOUT_SUCCESS",
+  "isSelf": false,
+  "message": "<user> has been timed out for <duration> seconds.",
+  "state": Object {
+    "msgId": "timeout_success",
+  },
+  "timestamp": 2018-01-01T00:00:00.000Z,
+}
+`;
+
+exports[`Chat should handle NOTICE UNBAN_SUCCESS 1`] = `
+Object {
+  "_raw": "@msg-id=unban_success :tmi.twitch.tv NOTICE #dallas :<user> is no longer banned from this channel.",
+  "channel": "#dallas",
+  "command": "NOTICE",
+  "event": "UNBAN_SUCCESS",
+  "isSelf": false,
+  "message": "<user> is no longer banned from this channel.",
+  "state": Object {
+    "msgId": "unban_success",
+  },
+  "timestamp": 2018-01-01T00:00:00.000Z,
+}
+`;
+
+exports[`Chat should handle NOTICE UNRECOGNIZED_CMD 1`] = `
+Object {
+  "_raw": "@msg-id=unrecognized_cmd :tmi.twitch.tv NOTICE #dallas :Unrecognized command: <command>",
+  "channel": "#dallas",
+  "command": "NOTICE",
+  "event": "UNRECOGNIZED_CMD",
+  "isSelf": false,
+  "message": "Unrecognized command: <command>",
+  "state": Object {
+    "msgId": "unrecognized_cmd",
+  },
+  "timestamp": 2018-01-01T00:00:00.000Z,
+}
+`;
+
+exports[`Chat should handle PART 1`] = `
+Object {
+  "_raw": ":ronni!ronni@ronni.tmi.twitch.tv PART #dallas",
+  "channel": "#dallas",
+  "command": "PART",
+  "isSelf": false,
+  "message": undefined,
+  "state": undefined,
+  "timestamp": 2018-01-01T00:00:00.000Z,
+  "username": "ronni",
+}
+`;
+
+exports[`Chat should handle PRIVMSG should emit PRIVMSG 1`] = `
+Object {
+  "_raw": "@badges=global_mod/1,turbo/1;color=#0D4200;display-name=dallas;emotes=25:0-4,12-16/1902:6-10;id=b34ccfc7-4977-403a-8a94-33c6bac34fb8;mod=0;room-id=1337;subscriber=0;tmi-sent-ts=1507246572675;turbo=1;user-id=1337;user-type=global_mod :ronni!ronni@ronni.tmi.twitch.tv PRIVMSG #dallas :Kappa Keepo Kappa",
+  "channel": "#dallas",
+  "command": "PRIVMSG",
+  "isSelf": false,
+  "message": "Kappa Keepo Kappa",
+  "timestamp": 2018-01-01T00:00:00.000Z,
+  "userState": Object {
+    "badges": Object {
+      "global_mod": 1,
+      "turbo": 1,
+    },
+    "bits": undefined,
+    "color": "#0D4200",
+    "displayName": "dallas",
+    "emoteSets": undefined,
+    "emotes": Object {
+      "1902": Object {
+        "end": 10,
+        "start": 6,
+      },
+      "25": Object {
+        "end": 4,
+        "start": 0,
+      },
+    },
+    "id": "b34ccfc7-4977-403a-8a94-33c6bac34fb8",
+    "isModerator": false,
+    "isSubscriber": false,
+    "mod": "0",
+    "roomId": "1337",
+    "subscriber": "0",
+    "tmiSentTs": "1507246572675",
+    "turbo": "1",
+    "userId": "1337",
+    "userType": "global_mod",
+  },
+}
+`;
+
+exports[`Chat should handle PRIVMSG should emit PRIVMSG with bits 1`] = `
+Object {
+  "_raw": "@badges=staff/1,bits/1000;bits=100;color=;display-name=dallas;emotes=;id=b34ccfc7-4977-403a-8a94-33c6bac34fb8;mod=0;room-id=1337;subscriber=0;tmi-sent-ts=1507246572675;turbo=1;user-id=1337;user-type=staff :ronni!ronni@ronni.tmi.twitch.tv PRIVMSG #dallas :cheer100",
+  "bits": 100,
+  "channel": "#dallas",
+  "command": "PRIVMSG",
+  "event": "CHEER",
+  "isSelf": false,
+  "message": "cheer100",
+  "timestamp": 2018-01-01T00:00:00.000Z,
+  "userState": Object {
+    "badges": Object {
+      "bits": 1000,
+      "staff": 1,
+    },
+    "bits": undefined,
+    "color": true,
+    "displayName": "dallas",
+    "emoteSets": undefined,
+    "emotes": Object {},
+    "id": "b34ccfc7-4977-403a-8a94-33c6bac34fb8",
+    "isModerator": false,
+    "isSubscriber": false,
+    "mod": "0",
+    "roomId": "1337",
+    "subscriber": "0",
+    "tmiSentTs": "1507246572675",
+    "turbo": "1",
+    "userId": "1337",
+    "userType": "staff",
+  },
+}
+`;
+
+exports[`Chat should handle USERNOTICE RAID 1`] = `
+Object {
+  "_raw": "@badges=turbo/1;color=#9ACD32;display-name=TestChannel;emotes=;id=3d830f12-795c-447d-af3c-ea05e40fbddb;login=testchannel;mod=0;msg-id=raid;msg-param-displayName=TestChannel;msg-param-login=testchannel;msg-param-viewerCount=15;room-id=56379257;subscriber=0;system-msg=15\\\\sraiders\\\\sfrom\\\\sTestChannel\\\\shave\\\\sjoined\\\\n!;tmi-sent-ts=1507246572675;tmi-sent-ts=1507246572675;turbo=1;user-id=123456;user-type= :tmi.twitch.tv USERNOTICE #othertestchannel",
+  "channel": "#othertestchannel",
+  "command": "USERNOTICE",
+  "event": "RAID",
+  "isSelf": false,
+  "message": undefined,
+  "raiderDisplayName": "TestChannel",
+  "raiderUserName": "testchannel",
+  "raiderViewerCount": "15",
+  "systemMessage": "15 raiders from TestChannel have joined\\\\n!",
+  "timestamp": 2018-01-01T00:00:00.000Z,
+  "userState": Object {
+    "badges": Object {
+      "turbo": 1,
+    },
+    "bits": undefined,
+    "color": "#9ACD32",
+    "displayName": "TestChannel",
+    "emoteSets": undefined,
+    "emotes": Object {},
+    "id": "3d830f12-795c-447d-af3c-ea05e40fbddb",
+    "isModerator": false,
+    "isSubscriber": false,
+    "login": "testchannel",
+    "mod": "0",
+    "msgId": "raid",
+    "msgParamDisplayName": "TestChannel",
+    "msgParamLogin": "testchannel",
+    "msgParamViewerCount": "15",
+    "roomId": "56379257",
+    "subscriber": "0",
+    "systemMsg": "15\\\\sraiders\\\\sfrom\\\\sTestChannel\\\\shave\\\\sjoined\\\\n!",
+    "tmiSentTs": "1507246572675",
+    "turbo": "1",
+    "userId": "123456",
+    "userType": undefined,
+  },
+}
+`;
+
+exports[`Chat should handle USERNOTICE RESUBSCRIPTION 1`] = `
+Object {
+  "_raw": "@badges=staff/1,broadcaster/1,turbo/1;color=#008000;display-name=ronni;emotes=;id=db25007f-7a18-43eb-9379-80131e44d633;login=ronni;mod=0;msg-id=resub;msg-param-months=6;msg-param-sub-plan=Prime;msg-param-sub-plan-name=Prime;room-id=1337;subscriber=1;system-msg=ronni\\\\shas\\\\ssubscribed\\\\sfor\\\\s6\\\\smonths!;tmi-sent-ts=1507246572675;turbo=1;user-id=1337;user-type=staff :tmi.twitch.tv USERNOTICE #dallas :Great stream -- keep it up!",
+  "channel": "#dallas",
+  "command": "USERNOTICE",
+  "event": "RESUBSCRIPTION",
+  "isSelf": false,
+  "message": "Great stream -- keep it up!",
+  "months": "6",
+  "subPlan": "Prime",
+  "subPlanName": "Prime",
+  "systemMessage": "ronni has subscribed for 6 months!",
+  "timestamp": 2018-01-01T00:00:00.000Z,
+  "userState": Object {
+    "badges": Object {
+      "broadcaster": 1,
+      "staff": 1,
+      "turbo": 1,
+    },
+    "bits": undefined,
+    "color": "#008000",
+    "displayName": "ronni",
+    "emoteSets": undefined,
+    "emotes": Object {},
+    "id": "db25007f-7a18-43eb-9379-80131e44d633",
+    "isModerator": false,
+    "isSubscriber": true,
+    "login": "ronni",
+    "mod": "0",
+    "msgId": "resub",
+    "msgParamMonths": "6",
+    "msgParamSubPlan": "Prime",
+    "msgParamSubPlanName": "Prime",
+    "roomId": "1337",
+    "subscriber": "1",
+    "systemMsg": "ronni\\\\shas\\\\ssubscribed\\\\sfor\\\\s6\\\\smonths!",
+    "tmiSentTs": "1507246572675",
+    "turbo": "1",
+    "userId": "1337",
+    "userType": "staff",
+  },
+}
+`;
+
+exports[`Chat should handle USERNOTICE RITUAL 1`] = `
+Object {
+  "_raw": "@badges=;color=;display-name=SevenTest1;emotes=30259:0-6;id=37feed0f-b9c7-4c3a-b475-21c6c6d21c3d;login=seventest1;mod=0;msg-id=ritual;msg-param-ritual-name=new_chatter;room-id=6316121;subscriber=0;system-msg=Seventoes\\\\sis\\\\snew\\\\shere!;tmi-sent-ts=1508363903826;turbo=0;user-id=131260580;user-type= :tmi.twitch.tv USERNOTICE #seventoes :HeyGuys",
+  "channel": "#seventoes",
+  "command": "USERNOTICE",
+  "event": "RITUAL",
+  "isSelf": false,
+  "message": "HeyGuys",
+  "ritualName": "new_chatter",
+  "systemMessage": "Seventoes is new here!",
+  "timestamp": 2018-01-01T00:00:00.000Z,
+  "userState": Object {
+    "badges": Object {},
+    "bits": undefined,
+    "color": true,
+    "displayName": "SevenTest1",
+    "emoteSets": undefined,
+    "emotes": Object {
+      "30259": Object {
+        "end": 6,
+        "start": 0,
+      },
+    },
+    "id": "37feed0f-b9c7-4c3a-b475-21c6c6d21c3d",
+    "isModerator": false,
+    "isSubscriber": false,
+    "login": "seventest1",
+    "mod": "0",
+    "msgId": "ritual",
+    "msgParamRitualName": "new_chatter",
+    "roomId": "6316121",
+    "subscriber": "0",
+    "systemMsg": "Seventoes\\\\sis\\\\snew\\\\shere!",
+    "tmiSentTs": "1508363903826",
+    "turbo": "0",
+    "userId": "131260580",
+    "userType": undefined,
+  },
+}
+`;
+
+exports[`Chat should handle USERNOTICE SUBSCRIPTION 1`] = `
+Object {
+  "_raw": "@badges=staff/1,broadcaster/1,turbo/1;color=#008000;display-name=ronni;emotes=;id=db25007f-7a18-43eb-9379-80131e44d633;login=ronni;mod=0;msg-id=sub;msg-param-months=1;msg-param-sub-plan=Prime;msg-param-sub-plan-name=Prime;room-id=1337;subscriber=1;system-msg=ronni\\\\sjust\\\\ssubscribed\\\\swith\\\\sTwitch\\\\sPrime!;tmi-sent-ts=1507246572675;turbo=1;user-id=1337;user-type=staff :tmi.twitch.tv USERNOTICE #dallas :Great stream -- keep it up!",
+  "channel": "#dallas",
+  "command": "USERNOTICE",
+  "event": "SUBSCRIPTION",
+  "isSelf": false,
+  "message": "Great stream -- keep it up!",
+  "months": "1",
+  "subPlan": "Prime",
+  "subPlanName": "Prime",
+  "systemMessage": "ronni just subscribed with Twitch Prime!",
+  "timestamp": 2018-01-01T00:00:00.000Z,
+  "userState": Object {
+    "badges": Object {
+      "broadcaster": 1,
+      "staff": 1,
+      "turbo": 1,
+    },
+    "bits": undefined,
+    "color": "#008000",
+    "displayName": "ronni",
+    "emoteSets": undefined,
+    "emotes": Object {},
+    "id": "db25007f-7a18-43eb-9379-80131e44d633",
+    "isModerator": false,
+    "isSubscriber": true,
+    "login": "ronni",
+    "mod": "0",
+    "msgId": "sub",
+    "msgParamMonths": "1",
+    "msgParamSubPlan": "Prime",
+    "msgParamSubPlanName": "Prime",
+    "roomId": "1337",
+    "subscriber": "1",
+    "systemMsg": "ronni\\\\sjust\\\\ssubscribed\\\\swith\\\\sTwitch\\\\sPrime!",
+    "tmiSentTs": "1507246572675",
+    "turbo": "1",
+    "userId": "1337",
+    "userType": "staff",
+  },
+}
+`;
+
+exports[`Chat should handle USERNOTICE SUBSCRIPTION_GIFT 1`] = `
+Object {
+  "_raw": "@badges=staff/1,premium/1;color=#0000FF;display-name=TWW2;emotes=;id=e9176cd8-5e22-4684-ad40-ce53c2561c5e;login=tww2;mod=0;msg-id=subgift;msg-param-months=1;msg-param-recipient-display-name=Mr_Woodchuck;msg-param-recipient-id=89614178;msg-param-recipient-name=mr_woodchuck;msg-param-sub-plan-name=House\\\\sof\\\\sNyoro~n;msg-param-sub-plan=1000;room-id=19571752;subscriber=0;system-msg=TWW2\\\\sgifted\\\\sa\\\\sTier\\\\s1\\\\ssub\\\\sto\\\\sMr_Woodchuck!;tmi-sent-ts=1521159445153;turbo=0;user-id=13405587;user-type=staff :tmi.twitch.tv USERNOTICE #forstycup",
+  "channel": "#forstycup",
+  "command": "USERNOTICE",
+  "event": "SUBSCRIPTION_GIFT",
+  "isSelf": false,
+  "message": undefined,
+  "recipientDisplayName": "Mr_Woodchuck",
+  "recipientId": "89614178",
+  "recipientUserName": "mr_woodchuck",
+  "systemMessage": "TWW2 gifted a Tier 1 sub to Mr_Woodchuck!",
+  "timestamp": 2018-01-01T00:00:00.000Z,
+  "userState": Object {
+    "badges": Object {
+      "premium": 1,
+      "staff": 1,
+    },
+    "bits": undefined,
+    "color": "#0000FF",
+    "displayName": "TWW2",
+    "emoteSets": undefined,
+    "emotes": Object {},
+    "id": "e9176cd8-5e22-4684-ad40-ce53c2561c5e",
+    "isModerator": false,
+    "isSubscriber": false,
+    "login": "tww2",
+    "mod": "0",
+    "msgId": "subgift",
+    "msgParamMonths": "1",
+    "msgParamRecipientDisplayName": "Mr_Woodchuck",
+    "msgParamRecipientId": "89614178",
+    "msgParamRecipientName": "mr_woodchuck",
+    "msgParamSubPlan": "1000",
+    "msgParamSubPlanName": "House\\\\sof\\\\sNyoro~n",
+    "roomId": "19571752",
+    "subscriber": "0",
+    "systemMsg": "TWW2\\\\sgifted\\\\sa\\\\sTier\\\\s1\\\\ssub\\\\sto\\\\sMr_Woodchuck!",
+    "tmiSentTs": "1521159445153",
+    "turbo": "0",
+    "userId": "13405587",
+    "userType": "staff",
+  },
+}
+`;
+
+exports[`Chat should join channel 1`] = `
+Object {
+  "roomState": Object {
+    "broadcasterLanguage": "en",
+    "isEmoteOnly": false,
+    "isFollowersOnly": false,
+    "isR9kEnabled": false,
+    "isSubscribersOnly": false,
+    "roomId": undefined,
+    "slowDelay": 0,
+  },
+  "userState": Object {
+    "badges": Object {},
+    "bits": undefined,
+    "color": "#0D4200",
+    "displayName": "ronni",
+    "emoteSets": Array [
+      "0",
+      "33",
+      "50",
+      "237",
+      "793",
+      "2126",
+      "3517",
+      "4578",
+      "5569",
+      "9400",
+      "10337",
+      "12239",
+    ],
+    "emotes": Object {},
+    "isModerator": true,
+    "isSubscriber": true,
+    "mod": "1",
+    "subscriber": "1",
+    "turbo": "1",
+    "userType": "staff",
+  },
+}
+`;

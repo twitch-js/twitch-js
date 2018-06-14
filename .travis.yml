@@ -1,0 +1,63 @@
+language: node_js
+node_js:
+  - "lts/*"
+cache:
+  directories:
+    - "node_modules"
+
+script:
+  - yarn lint
+  - yarn test:coverage:report
+
+after_success:
+  - yarn coveralls
+
+before_deploy: |
+  # Handle release version number for NPM
+
+  # Retrieve current version.
+  PACKAGE_VERSION=$(node -p "require('./package.json').version")
+
+  LATEST_VERSION=$(npm view twitch-js@$PACKAGE_VERSION)
+
+  # If this version is unreleased ...
+  if [[ ${#LATEST_VERSION} -eq "0" ]]; then
+    # ... tag current version.
+    git tag \
+      --annotate v${PACKAGE_VERSION} \
+      --message "v${PACKAGE_VERSION} release"
+  else
+    # ... otherwise, determine next version.
+    if [[ $PACKAGE_VERSION =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+      # Regular versions get a 'pre' version tag.
+      NEXT_VERSION=`$(npm bin)/semver \
+        $PACKAGE_VERSION \
+        --increment prerelease \
+        --preid pre`
+    else
+      # Prerelease versions retain version tag.
+      NEXT_VERSION=`$(npm bin)/semver $PACKAGE_VERSION --increment prerelease`
+    fi
+
+    # Incrememnt version and append [ci skip] to the commit message to prevent
+    # Travis CI from proccessing this build.
+    npm version $NEXT_VERSION --message "v$NEXT_VERSION [ci skip]"
+  fi
+
+deploy:
+  - provider: npm
+    email: $NPM_EMAIL
+    api_key: $NPM_AUTH_TOKEN
+    skip_cleanup: true
+    on:
+      branch: master
+  - provider: npm
+    email: $NPM_EMAIL
+    api_key: $NPM_AUTH_TOKEN
+    skip_cleanup: true
+    tag: next
+    on:
+      branch: next
+
+after_deploy:
+  - git push --follow-tags https://$GITHUB_TOKEN@github.com/$TRAVIS_REPO_SLUG HEAD:$TRAVIS_BRANCH
