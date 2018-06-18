@@ -18,7 +18,7 @@ before_deploy: |
   PACKAGE_VERSION=$(node -p "require('./package.json').version")
 
   # Determine next version.
-  if [[ $PACKAGE_VERSION =~ ^[0-9]\.[0-9]\.[0-9]$ ]]; then
+  if [[ $PACKAGE_VERSION =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
     # Regular versions get a 'pre' version tag.
     NEXT_VERSION=`$(npm bin)/semver \
       $PACKAGE_VERSION \
@@ -45,7 +45,7 @@ deploy:
     api_key: $NPM_AUTH_TOKEN
     skip_cleanup: true
     on:
-      branch: v1
+      branch: next
 
 after_deploy:
   - git push --follow-tags https://$GITHUB_TOKEN@github.com/$TRAVIS_REPO_SLUG HEAD:$TRAVIS_BRANCH
