@@ -34,10 +34,12 @@ const self = {
   justinfan: () => `justinfan${Math.floor(Math.random() * 80000 + 1000)}`,
 
   // Return a valid password..
-  password: str =>
-    (str === 'SCHMOOPIIE' || '' || null
-      ? 'SCHMOOPIIE'
-      : `oauth:${str.toLowerCase().replace('oauth:', '')}`),
+  password: str => {
+    if (str === 'SCHMOOPIIE' || str === '' || str === null) {
+      return 'SCHMOOPIIE';
+    }
+    return `oauth:${str.toLowerCase().replace('oauth:', '')}`;
+  },
 
   // Race a promise against a delay..
   promiseDelay: time =>
