@@ -8,45 +8,54 @@ Query the [Twitch API](https://github.com/justintv/Twitch-API), aka Kraken, in y
 
 Using AJAX requests works fine with Twitch but, unlike Node or any other programming language, it has its limitations.
 
-~~~ javascript
-client.api({
-    url: "https://api.twitch.tv/kraken?client_id=CLIENT_ID"
-}, function(err, res, body) {
+```javascript
+client.api(
+  {
+    url: 'https://api.twitch.tv/kraken?client_id=CLIENT_ID',
+  },
+  function(err, res, body) {
     console.log(body);
-});
-~~~
+  },
+);
+```
 
 **Pro tips**:
 
-- Set the Client-ID in the URL with ``client_id=1dac77895e8f56fa1a71e7c43ef09d87``
-- Set the OAuth Token in the URL with ``oauth_token=3eb787117110834e079932bedfb8e6a7``
-- Set the method in the URL with ``_method=put``
+* Set the Client-ID in the URL with `client_id=1dac77895e8f56fa1a71e7c43ef09d87`
+* Set the OAuth Token in the URL with `oauth_token=3eb787117110834e079932bedfb8e6a7`
+* Set the method in the URL with `_method=put`
 
 ## Node
 
 We support all of the options available from the [request](https://github.com/request/request#requestoptions-callback) module. The response body is parsed as JSON.
 
-~~~ javascript
-client.api({
-    url: "https://api.twitch.tv/kraken/",
+```javascript
+client.api(
+  {
+    url: 'https://api.twitch.tv/kraken/',
     headers: {
-        "Client-ID": "1dac77895e8f56fa1a71e7c43ef09d87"
-    }
-}, function(err, res, body) {
+      'Client-ID': '1dac77895e8f56fa1a71e7c43ef09d87',
+    },
+  },
+  function(err, res, body) {
     console.log(body);
-});
-~~~
+  },
+);
+```
 
-~~~ javascript
-client.api({
-    url: "https://api.twitch.tv/kraken/user",
-    method: "GET",
+```javascript
+client.api(
+  {
+    url: 'https://api.twitch.tv/kraken/user',
+    method: 'GET',
     headers: {
-        "Accept": "application/vnd.twitchtv.v3+json",
-        "Authorization": "OAuth 3eb787117110834e079932bedfb8e6a7",
-        "Client-ID": "1dac77895e8f56fa1a71e7c43ef09d87"
-    }
-}, function(err, res, body) {
+      Accept: 'application/vnd.twitchtv.v3+json',
+      Authorization: 'OAuth 3eb787117110834e079932bedfb8e6a7',
+      'Client-ID': '1dac77895e8f56fa1a71e7c43ef09d87',
+    },
+  },
+  function(err, res, body) {
     console.log(body);
-});
-~~~
+  },
+);
+```

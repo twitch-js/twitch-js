@@ -26,18 +26,20 @@ module.exports = {
 
   devtool: 'source-map',
 
-  plugins: isProdBuild ? [
-    new LodashModuleReplacementPlugin,
-    new webpack.optimize.UglifyJsPlugin({
-      compressor: {
-        pure_getters: true,
-        unsafe: true,
-        unsafe_comps: true,
-        screw_ie8: true,
-        warnings: false,
-      },
-      sourceMap: true,
-    }),
-    new CompressionPlugin(),
-  ] : [],
+  plugins: isProdBuild
+    ? [
+        new LodashModuleReplacementPlugin(),
+        new webpack.optimize.UglifyJsPlugin({
+          compressor: {
+            pure_getters: true,
+            unsafe: true,
+            unsafe_comps: true,
+            screw_ie8: true,
+            warnings: false,
+          },
+          sourceMap: true,
+        }),
+        new CompressionPlugin(),
+      ]
+    : [],
 };
