@@ -1,7 +1,3 @@
-# Warning
-
-This branch is under active development; expect **breaking changes**. Please use [v1](https://github.com/twitch-apis/twitch-js/tree/v1) instead. If you still choose to use this branch, use version pinning, refer to the diffs, and update accordingly to avoid regressions.
-
 # TwitchJS
 
 [![Travis branch](https://img.shields.io/travis/twitch-apis/twitch-js/master.svg)](https://travis-ci.org/twitch-apis/twitch-js)
