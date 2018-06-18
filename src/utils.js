@@ -21,34 +21,50 @@ const self = {
   isRegex: str => /[\|\\\^\$\*\+\?\:\#]/.test(str),
 
   // Value is a string..
-  isString: str => typeof (str) === 'string',
+  isString: str => typeof str === 'string',
 
   // Value is a valid url..
-  isURL: str => RegExp('^(?:(?:https?|ftp)://)(?:\\S+(?::\\S*)?@)?(?:(?!(?:10|127)(?:\\.\\d{1,3}){3})(?!(?:169\\.254|192\\.168)(?:\\.\\d{1,3}){2})(?!172\\.(?:1[6-9]|2\\d|3[0-1])(?:\\.\\d{1,3}){2})(?:[1-9]\\d?|1\\d\\d|2[01]\\d|22[0-3])(?:\\.(?:1?\\d{1,2}|2[0-4]\\d|25[0-5])){2}(?:\\.(?:[1-9]\\d?|1\\d\\d|2[0-4]\\d|25[0-4]))|(?:(?:[a-z\\u00a1-\\uffff0-9]-*)*[a-z\\u00a1-\\uffff0-9]+)(?:\\.(?:[a-z\\u00a1-\\uffff0-9]-*)*[a-z\\u00a1-\\uffff0-9]+)*(?:\\.(?:[a-z\\u00a1-\\uffff]{2,}))\\.?)(?::\\d{2,5})?(?:[/?#]\\S*)?$', 'i').test(str),
+  isURL: str =>
+    RegExp(
+      '^(?:(?:https?|ftp)://)(?:\\S+(?::\\S*)?@)?(?:(?!(?:10|127)(?:\\.\\d{1,3}){3})(?!(?:169\\.254|192\\.168)(?:\\.\\d{1,3}){2})(?!172\\.(?:1[6-9]|2\\d|3[0-1])(?:\\.\\d{1,3}){2})(?:[1-9]\\d?|1\\d\\d|2[01]\\d|22[0-3])(?:\\.(?:1?\\d{1,2}|2[0-4]\\d|25[0-5])){2}(?:\\.(?:[1-9]\\d?|1\\d\\d|2[0-4]\\d|25[0-4]))|(?:(?:[a-z\\u00a1-\\uffff0-9]-*)*[a-z\\u00a1-\\uffff0-9]+)(?:\\.(?:[a-z\\u00a1-\\uffff0-9]-*)*[a-z\\u00a1-\\uffff0-9]+)*(?:\\.(?:[a-z\\u00a1-\\uffff]{2,}))\\.?)(?::\\d{2,5})?(?:[/?#]\\S*)?$',
+      'i',
+    ).test(str),
 
   // Return a random justinfan username..
-  justinfan: () => `justinfan${Math.floor((Math.random() * 80000) + 1000)}`,
+  justinfan: () => `justinfan${Math.floor(Math.random() * 80000 + 1000)}`,
 
   // Return a valid password..
-  password: str => (str === 'SCHMOOPIIE' || '' || null ? 'SCHMOOPIIE' : `oauth:${str.toLowerCase().replace('oauth:', '')}`),
+  password: str => {
+    if (str === 'SCHMOOPIIE' || str === '' || str === null) {
+      return 'SCHMOOPIIE';
+    }
+    return `oauth:${str.toLowerCase().replace('oauth:', '')}`;
+  },
 
   // Race a promise against a delay..
-  promiseDelay: time => new Promise(((resolve) => { setTimeout(resolve, time); })),
+  promiseDelay: time =>
+    new Promise(resolve => {
+      setTimeout(resolve, time);
+    }),
 
   // Replace all occurences of a string using an object..
   replaceAll: (str, obj) => {
-    if (str === null || typeof str === 'undefined') { return null; }
-    Object.keys(obj).forEach((x) => {
+    if (str === null || typeof str === 'undefined') {
+      return null;
+    }
+    Object.keys(obj).forEach(x => {
       str = str.replace(new RegExp(x, 'g'), obj[x]);
     });
     return str;
   },
 
-  unescapeHtml: safe => safe.replace(/\\&amp\\;/g, '&')
-    .replace(/\\&lt\\;/g, '<')
-    .replace(/\\&gt\\;/g, '>')
-    .replace(/\\&quot\\;/g, '"')
-    .replace(/\\&#039\\;/g, "'"),
+  unescapeHtml: safe =>
+    safe
+      .replace(/\\&amp\\;/g, '&')
+      .replace(/\\&lt\\;/g, '<')
+      .replace(/\\&gt\\;/g, '>')
+      .replace(/\\&quot\\;/g, '"')
+      .replace(/\\&#039\\;/g, "'"),
 
   // Add word to a string..
   addWord: (line, word) => {
@@ -59,23 +75,26 @@ const self = {
   },
 
   // Return a valid channel name..
-  channel: (str) => {
+  channel: str => {
     const channel = typeof str === 'undefined' || str === null ? '' : str;
-    return channel.charAt(0) === '#' ?
-      channel.toLowerCase() : `#${channel.toLowerCase()}`;
+    return channel.charAt(0) === '#'
+      ? channel.toLowerCase()
+      : `#${channel.toLowerCase()}`;
   },
 
   // Extract a number from a string..
-  extractNumber: (str) => {
+  extractNumber: str => {
     const parts = str.split(' ');
     for (let i = 0; i < parts.length; i++) {
-      if (self.isInteger(parts[i])) { return ~~parts[i]; }
+      if (self.isInteger(parts[i])) {
+        return ~~parts[i];
+      }
     }
     return 0;
   },
 
   // Format the date..
-  formatDate: (date) => {
+  formatDate: date => {
     let hours = date.getHours();
     let mins = date.getMinutes();
 
@@ -88,7 +107,7 @@ const self = {
   // Inherit the prototype methods from one constructor into another..
   inherits: (ctor, superCtor) => {
     ctor.super_ = superCtor;
-    const TempCtor = function () {};
+    const TempCtor = function() {};
     TempCtor.prototype = superCtor.prototype;
     ctor.prototype = new TempCtor();
     ctor.prototype.constructor = ctor;
@@ -141,14 +160,14 @@ const self = {
     const hash = {};
     const ret = [];
 
-    arr1.forEach((value) => {
+    arr1.forEach(value => {
       if (!hash[value]) {
         hash[value] = true;
         ret.push(value);
       }
     });
 
-    arr2.forEach((value) => {
+    arr2.forEach(value => {
       if (!hash[value]) {
         hash[value] = true;
         ret.push(value);
@@ -159,9 +178,11 @@ const self = {
   },
 
   // Return a valid username..
-  username: (str) => {
+  username: str => {
     const username = typeof str === 'undefined' || str === null ? '' : str;
-    return username.charAt(0) === '#' ? username.substring(1).toLowerCase() : username.toLowerCase();
+    return username.charAt(0) === '#'
+      ? username.substring(1).toLowerCase()
+      : username.toLowerCase();
   },
 };
 

@@ -4,7 +4,48 @@ node_js:
 cache:
   directories:
     - "node_modules"
+
 script:
-  - npm run lint
-  - npm run test:coverage
-after_success: npm run coveralls
+  - yarn lint
+  - yarn jest -- --coverage
+  - yarn test:coverage
+
+after_success:
+  - yarn coveralls
+
+before_deploy: |
+  # Retrieve current version.
+  PACKAGE_VERSION=$(node -p "require('./package.json').version")
+
+  # Determine next version.
+  if [[ $PACKAGE_VERSION =~ ^[0-9]\.[0-9]\.[0-9]$ ]]; then
+    # Regular versions get a 'pre' version tag.
+    NEXT_VERSION=`$(npm bin)/semver \
+      $PACKAGE_VERSION \
+      --increment prerelease \
+      --preid pre`
+  else
+    # Prerelease versions retain version tag.
+    NEXT_VERSION=`$(npm bin)/semver $PACKAGE_VERSION --increment prerelease`
+  fi
+
+  # Incrememnt version and append [ci skip] to the commit message to prevent
+  # Travis CI from proccessing this build.
+  npm version $NEXT_VERSION --message "$NEXT_VERSION [ci skip]"
+
+deploy:
+  - provider: npm
+    email: $NPM_EMAIL
+    api_key: $NPM_AUTH_TOKEN
+    skip_cleanup: true
+    on:
+      branch: master
+  - provider: npm
+    email: $NPM_EMAIL
+    api_key: $NPM_AUTH_TOKEN
+    skip_cleanup: true
+    on:
+      branch: v1
+
+after_deploy:
+  - git push --follow-tags https://$GITHUB_TOKEN@github.com/$TRAVIS_REPO_SLUG HEAD:$TRAVIS_BRANCH
