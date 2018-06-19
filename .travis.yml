@@ -14,6 +14,8 @@ after_success:
   - yarn coveralls
 
 before_deploy: |
+  # Handle release version number for NPM
+
   # Retrieve current version.
   PACKAGE_VERSION=$(node -p "require('./package.json').version")
 
@@ -21,26 +23,27 @@ before_deploy: |
 
   # If this version is unreleased ...
   if [[ ${#LATEST_VERSION} -eq "0" ]]; then
-    # ... tag current version and exit.
-    git tag v${PACKAGE_VERSION}
-    exit 0
-  fi
-
-  # Determine next version.
-  if [[ $PACKAGE_VERSION =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
-    # Regular versions get a 'pre' version tag.
-    NEXT_VERSION=`$(npm bin)/semver \
-      $PACKAGE_VERSION \
-      --increment prerelease \
-      --preid pre`
+    # ... tag current version.
+    git tag \
+      --annotate v${PACKAGE_VERSION} \
+      --message "v${PACKAGE_VERSION} release"
   else
-    # Prerelease versions retain version tag.
-    NEXT_VERSION=`$(npm bin)/semver $PACKAGE_VERSION --increment prerelease`
-  fi
+    # ... otherwise, determine next version.
+    if [[ $PACKAGE_VERSION =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+      # Regular versions get a 'pre' version tag.
+      NEXT_VERSION=`$(npm bin)/semver \
+        $PACKAGE_VERSION \
+        --increment prerelease \
+        --preid pre`
+    else
+      # Prerelease versions retain version tag.
+      NEXT_VERSION=`$(npm bin)/semver $PACKAGE_VERSION --increment prerelease`
+    fi
 
-  # Incrememnt version and append [ci skip] to the commit message to prevent
-  # Travis CI from proccessing this build.
-  npm version $NEXT_VERSION --message "$NEXT_VERSION [ci skip]"
+    # Incrememnt version and append [ci skip] to the commit message to prevent
+    # Travis CI from proccessing this build.
+    npm version $NEXT_VERSION --message "v$NEXT_VERSION [ci skip]"
+  fi
 
 deploy:
   - provider: npm
