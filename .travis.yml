@@ -17,6 +17,15 @@ before_deploy: |
   # Retrieve current version.
   PACKAGE_VERSION=$(node -p "require('./package.json').version")
 
+  LATEST_VERSION=$(npm view twitch-js@$PACKAGE_VERSION)
+
+  # If this version is unreleased ...
+  if [[ ${#LATEST_VERSION} -eq "0" ]]; then
+    # ... tag current version and exit.
+    git tag v${PACKAGE_VERSION}
+    exit 0
+  fi
+
   # Determine next version.
   if [[ $PACKAGE_VERSION =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
     # Regular versions get a 'pre' version tag.
@@ -39,13 +48,7 @@ deploy:
     api_key: $NPM_AUTH_TOKEN
     skip_cleanup: true
     on:
-      branch: master
-  - provider: npm
-    email: $NPM_EMAIL
-    api_key: $NPM_AUTH_TOKEN
-    skip_cleanup: true
-    on:
-      branch: next
+      condition: $TRAVIS_BRANCH =~ ^master|next$
 
 after_deploy:
   - git push --follow-tags https://$GITHUB_TOKEN@github.com/$TRAVIS_REPO_SLUG HEAD:$TRAVIS_BRANCH
