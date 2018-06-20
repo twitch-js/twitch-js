@@ -55,3 +55,11 @@ deploy:
 
 after_deploy:
   - git push --follow-tags https://$GITHUB_TOKEN@github.com/$TRAVIS_REPO_SLUG HEAD:$TRAVIS_BRANCH
+
+notifications:
+  webhooks:
+    urls:
+      - $GITTER_WEBHOOK_URL
+    on_success: change
+    on_failure: always
+    on_start: never
