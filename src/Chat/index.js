@@ -73,6 +73,9 @@ class Chat extends EventEmitter {
           // Create commands.
           Object.assign(this, commandsFactory.call(this))
 
+          this.send = this.send.bind(this, client)
+          this.disconnect = this.disconnect.bind(this, client)
+
           // Bind events.
           client.on(constants.EVENTS.ALL, handleMessage, this)
 
@@ -80,9 +83,6 @@ class Chat extends EventEmitter {
           client.once(constants.EVENTS.DISCONNECTED, this.disconnect)
 
           this.readyState = 2
-
-          this.send = this.send.bind(this, client)
-          this.disconnect = this.disconnect.bind(this, client)
 
           handleMessage.call(this, globalUserStateMessage)
 
@@ -309,17 +309,6 @@ function handleMessage(baseMessage) {
           : `${preMessage.command}/${channel}`
       this.emit(eventName, preMessage)
   }
-}
-
-function handleDisconnect(client) {
-  this.readyState = 3
-
-  client.removeAllListeners()
-
-  this.userState = {}
-  this.channels = {}
-
-  this.readyState = 4
 }
 
 export { constants }
