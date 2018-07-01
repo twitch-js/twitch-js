@@ -36,6 +36,13 @@ class Client extends EventEmitter {
     this.disconnect = this.disconnect.bind({ ws })
   }
 
+  /**
+   * Send message to Twitch
+   * @param {string} message
+   * @param {Object} options
+   * @param {number} options.priority
+   * @param {MessageWeightProps} ...options.weighProps
+   */
   send(message, { priority, ...weighProps } = {}) {
     const fn = this.ws.send.bind(this.ws, message)
 

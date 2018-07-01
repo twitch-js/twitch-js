@@ -12,11 +12,34 @@ import * as parsers from './utils/parsers'
 import * as sanitizers from './utils/sanitizers'
 import * as validators from './utils/validators'
 
+/**
+ * Chat client
+ *
+ * @example <caption>Connecting to Twitch</caption>
+ * const token = OAUTH_TOKEN
+ * const username = USERNAME
+ * const chat = new Chat({ token, username })
+ *
+ * chat.connect().then(globalUserState => {
+ *   // Do stuff ...
+ * })
+ */
 class Chat extends EventEmitter {
+  /** @type {number} */
   readyState = 0
+
+  /** @type {Object} */
   userState = {}
+
+  /** @type {Object} */
   channels = {}
 
+  /**
+   * Chat constructor
+   * @param {Object} options
+   * @param {string} options.token - Twitch Kraken token
+   * @param {string} options.username - Twitch username
+   */
   constructor(maybeOptions) {
     super()
 
@@ -24,6 +47,10 @@ class Chat extends EventEmitter {
     this.options = validators.chatOptions(maybeOptions)
   }
 
+  /**
+   * Connect to Twitch IRC.
+   * @return {Promise<GlobalUserState, string>} Global user state message
+   */
   connect() {
     const connect = new Promise((resolve, reject) => {
       if (this.readyState === 1) {
@@ -50,14 +77,12 @@ class Chat extends EventEmitter {
           client.on(constants.EVENTS.ALL, handleMessage, this)
 
           // Listen for disconnect.
-          client.once(
-            constants.EVENTS.DISCONNECTED,
-            handleDisconnect.bind(this, client),
-          )
+          client.once(constants.EVENTS.DISCONNECTED, this.disconnect)
 
           this.readyState = 2
-          this.send = handleSend.bind(this, client)
-          this.disconnect = client.disconnect
+
+          this.send = this.send.bind(this, client)
+          this.disconnect = this.disconnect.bind(this, client)
 
           handleMessage.call(this, globalUserStateMessage)
 
@@ -76,7 +101,27 @@ class Chat extends EventEmitter {
     ])
   }
 
-  join = maybeChannel => {
+  /**
+   * Sends a raw message to Twitch.
+   * @param {string} message - Message to send.
+   */
+  send(client, message) {
+    client.send(message)
+  }
+
+  /** Disconnect from Twitch IRC. */
+  disconnect(client) {
+    this.readyState = 3
+
+    client.removeAllListeners()
+
+    this.userState = {}
+    this.channels = {}
+
+    this.readyState = 4
+  }
+
+  join(maybeChannel) {
     const channel = sanitizers.channel(maybeChannel)
 
     const roomState = utils.onceResolve(
@@ -107,14 +152,14 @@ class Chat extends EventEmitter {
     ])
   }
 
-  part = maybeChannel => {
+  part(maybeChannel) {
     const channel = sanitizers.channel(maybeChannel)
 
     this.channels[channel] = undefined
     this.send(`${constants.COMMANDS.PART} ${channel}`)
   }
 
-  say = (maybeChannel, message) => {
+  say(maybeChannel, message) {
     const channel = sanitizers.channel(maybeChannel)
 
     const userState = utils.onceResolve(
@@ -135,12 +180,13 @@ class Chat extends EventEmitter {
     ])
   }
 
-  broadcast = message =>
-    Promise.all(
+  broadcast(message) {
+    return Promise.all(
       Object.keys(this.channels).map(channel => this.say(channel, message)),
     )
+  }
 
-  emit = (eventName, message) => {
+  emit(eventName, message) {
     const events = eventName.split('/').reduce((parents, current) => {
       const eventPartial = [...parents, current]
       super.emit(eventPartial.join('/'), message)
@@ -150,10 +196,6 @@ class Chat extends EventEmitter {
     // Emit all events.
     super.emit(constants.EVENTS.ALL, message)
   }
-}
-
-function handleSend(client, message) {
-  client.send(message)
 }
 
 function handleMessage(baseMessage) {

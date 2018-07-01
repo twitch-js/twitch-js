@@ -18,6 +18,7 @@ Object {
   "event": "USER_BANNED",
   "isSelf": false,
   "state": Object {
+    "banDuration": undefined,
     "banReason": "Follow the rules",
   },
   "timestamp": 2018-01-01T00:00:00.000Z,
@@ -815,7 +816,6 @@ Object {
     "isFollowersOnly": false,
     "isR9kEnabled": false,
     "isSubscribersOnly": false,
-    "roomId": undefined,
     "slowDelay": 0,
   },
   "userState": Object {

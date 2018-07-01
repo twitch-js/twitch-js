@@ -11,9 +11,20 @@ const base = rawMessages => {
   return rawMessagesV.map(rawMessage => {
     const { raw, tags, command, params: [channel, message] } = parse(rawMessage)
 
+    /**
+     * Parsed base message
+     * @typedef {Object} BaseMessage
+     * @property {string} _raw Un-parsed message
+     * @property {Date} timestamp Timestamp
+     * @property {string} command Command
+     * @property {Object} state Message state
+     * @property {string} [channel] Channel
+     * @property {string} [message] Message
+     * @property {string} [event] Associated event
+     */
     return {
       _raw: raw,
-      timestamp: timestamp(parseInt(tags['tmi-sent-ts'], 10)),
+      timestamp: generalTimestamp(parseInt(tags['tmi-sent-ts'], 10)),
       command,
       channel,
       state: isEmpty(tags) ? undefined : camelcaseKeys(tags),
@@ -32,12 +43,40 @@ const joinOrPartMessage = baseMessage => {
     channel,
   ] = /:(.+)!(.+)@(.+).tmi.twitch.tv (JOIN|PART) (#.+)/g.exec(baseMessage._raw)
 
+  /**
+   * JOIN/PART message
+   * @typedef {BaseMessage} JoinOrPartMessage
+   * @property {string} username Username (lower-case)
+   */
   return {
     ...baseMessage,
     channel,
     command,
     username,
     message: undefined,
+  }
+}
+
+const globalUserStateMessage = baseMessage => {
+  const { state: userState, ...other } = baseMessage
+
+  /**
+   * GLOBALUSERSTATE message
+   * @typedef {BaseMessage} GlobalUserStateMessage
+   * @property {Object} userState
+   * @property {string} userState.username
+   */
+  return {
+    userState: {
+      ...userState,
+      badges: badges(userState.badges),
+      emotes: emotes(userState.emotes),
+      emoteSets: emoteSets(userState.emoteSets),
+      userType: userType(userState.userType),
+      isTurboSubscriber: generalBoolean(userState.turbo),
+      username: toLower(userState.displayName),
+    },
+    ...other,
   }
 }
 
@@ -52,6 +91,12 @@ const namesMessage = baseMessage => {
 
   const namesV = names.split(' ')
 
+  /**
+   * NAMES message
+   * @typedef {BaseMessage} NamesMessage
+   * @property {Array<string>} usernames Array of usernames present in channel
+   * @property {('mods'|'chatters')} listType
+   */
   return {
     ...baseMessage,
     channel,
@@ -71,6 +116,10 @@ const namesEndMessage = baseMessage => {
     message,
   ] = /:(.+).tmi.twitch.tv 366 (.+) (#.+) :(.+)/g.exec(baseMessage._raw)
 
+  /**
+   * End of NAMES message
+   * @typedef {NamesMessage} NamesEndMessage
+   */
   return {
     ...baseMessage,
     channel,
@@ -90,6 +139,13 @@ const modeMessage = baseMessage => {
 
   const isModerator = mode === '+'
 
+  /**
+   * MODE message
+   * @typedef {BaseMessage} ModeMessage
+   * @property {string} event
+   * @property {boolean} isModerator
+   * @property {string} username
+   */
   return {
     ...baseMessage,
     event: isModerator
@@ -115,6 +171,11 @@ const hostTargetMessage = baseMessage => {
 
   const { state, message, ...other } = baseMessage
 
+  /**
+   * HOSTTARGET message
+   * @typedef {BaseMessage} HostTargetMessage
+   * @property {number} [numberOfViewers] Number of viewers
+   */
   return {
     ...other,
     channel,
@@ -134,37 +195,31 @@ const clearChatMessage = baseMessage => {
   const { state, message: username, ...other } = baseMessage
 
   if (typeof username !== 'undefined') {
-    // User banned.
+    /**
+     * CLEARCHAT (user banned) message
+     * @typedef {BaseMessage} ClearChatUserBannedMessage
+     * @property {Object} state
+     * @property {string} state.banReason
+     * @property {string} state.banDuration
+     * @property {string} username
+     */
     return {
       ...other,
       state: {
         ...state,
-        banReason: generalMessage(state.banReason),
+        banReason: generalString(state.banReason),
+        banDuration: generalNumber(state.banDuration),
       },
       event: constants.EVENTS.USER_BANNED,
       username,
     }
   }
 
-  // Chat cleared.
+  /**
+   * CLEARCHAT message
+   * @typedef {BaseMessage} ClearChatMessage
+   */
   return {
-    ...other,
-  }
-}
-
-const globalUserStateMessage = baseMessage => {
-  const { state: userState, ...other } = baseMessage
-
-  return {
-    userState: {
-      ...userState,
-      badges: badges(userState.badges),
-      emotes: emotes(userState.emotes),
-      emoteSets: emoteSets(userState.emoteSets),
-      userType: userType(userState.userType),
-      isTurboSubscriber: boolean(userState.turbo),
-      username: toLower(userState.displayName),
-    },
     ...other,
   }
 }
@@ -178,8 +233,8 @@ const userStateMessage = baseMessage => {
       badges: badges(userState.badges),
       emotes: emotes(userState.emotes),
       emoteSets: emoteSets(userState.emoteSets),
-      isModerator: boolean(userState.mod),
-      isSubscriber: boolean(userState.subscriber),
+      isModerator: generalBoolean(userState.mod),
+      isSubscriber: generalBoolean(userState.subscriber),
       userType: userType(userState.userType),
       bits: undefined,
     },
@@ -192,13 +247,22 @@ const roomStateMessage = baseMessage => {
   const { state: roomState, ...other } = baseMessage
 
   return {
+    /**
+     * ROOMSTATE Tag
+     * @typedef {Object} RoomState
+     * @property {string} broadcasterLanguage
+     * @property {boolean} isFollowersOnly
+     * @property {boolean} isSubscribersOnly
+     * @property {boolean} isEmoteOnly
+     * @property {boolean} isR9kEnabled
+     * @property {number} slowDelay
+     */
     roomState: {
-      roomId: roomState.roomId,
       broadcasterLanguage: broadcasterLanguage(roomState.broadcasterLang),
-      isFollowersOnly: boolean(roomState.followersOnly),
-      isSubscribersOnly: boolean(roomState.subsOny),
-      isEmoteOnly: boolean(roomState.emoteOnly),
-      isR9kEnabled: boolean(roomState.r9k),
+      isFollowersOnly: generalBoolean(roomState.followersOnly),
+      isSubscribersOnly: generalBoolean(roomState.subsOny),
+      isEmoteOnly: generalBoolean(roomState.emoteOnly),
+      isR9kEnabled: generalBoolean(roomState.r9k),
       slowDelay: parseInt(roomState.slow, 10),
     },
     ...other,
@@ -239,27 +303,27 @@ const userNoticeMessage = baseMessage => {
         userState,
         ...other,
         event: constants.EVENTS.SUBSCRIPTION,
-        systemMessage: generalMessage(userState.systemMsg),
+        systemMessage: generalString(userState.systemMsg),
         months: userState.msgParamMonths,
         subPlan: userState.msgParamSubPlan,
-        subPlanName: generalMessage(userState.msgParamSubPlanName),
+        subPlanName: generalString(userState.msgParamSubPlanName),
       }
     case constants.USER_NOTICE_MESSAGE_IDS.RESUBSCRIPTION:
       return {
         userState,
         ...other,
         event: constants.EVENTS.RESUBSCRIPTION,
-        systemMessage: generalMessage(userState.systemMsg),
+        systemMessage: generalString(userState.systemMsg),
         months: userState.msgParamMonths,
         subPlan: userState.msgParamSubPlan,
-        subPlanName: generalMessage(userState.msgParamSubPlanName),
+        subPlanName: generalString(userState.msgParamSubPlanName),
       }
     case constants.USER_NOTICE_MESSAGE_IDS.SUBSCRIPTION_GIFT:
       return {
         userState,
         ...other,
         event: constants.EVENTS.SUBSCRIPTION_GIFT,
-        systemMessage: generalMessage(userState.systemMsg),
+        systemMessage: generalString(userState.systemMsg),
         recipientDisplayName: userState.msgParamRecipientDisplayName,
         recipientId: userState.msgParamRecipientId,
         recipientUserName: userState.msgParamRecipientName,
@@ -269,7 +333,7 @@ const userNoticeMessage = baseMessage => {
         userState,
         ...other,
         event: constants.EVENTS.RAID,
-        systemMessage: generalMessage(userState.systemMsg),
+        systemMessage: generalString(userState.systemMsg),
         raiderDisplayName: userState.msgParamDisplayName,
         raiderUserName: userState.msgParamLogin,
         raiderViewerCount: userState.msgParamViewerCount,
@@ -279,7 +343,7 @@ const userNoticeMessage = baseMessage => {
         userState,
         ...other,
         event: constants.EVENTS.RITUAL,
-        systemMessage: generalMessage(userState.systemMsg),
+        systemMessage: generalString(userState.systemMsg),
         ritualName: userState.msgParamRitualName,
       }
     default:
@@ -287,12 +351,19 @@ const userNoticeMessage = baseMessage => {
   }
 }
 
-const timestamp = maybeTimestamp => {
+const generalString = maybeMessage => replace(maybeMessage, /\\s/g, ' ')
+
+const generalNumber = maybeNumber => {
+  const number = parseInt(maybeNumber, 10)
+  return isFinite(number) ? number : undefined
+}
+
+const generalBoolean = maybeBoolean => maybeBoolean === '1'
+
+const generalTimestamp = maybeTimestamp => {
   const timestamp = new Date(parseInt(maybeTimestamp, 10))
   return timestamp.toString() !== 'Invalid Date' ? timestamp : new Date()
 }
-
-const boolean = maybeBoolean => maybeBoolean === '1'
 
 const userType = maybeUserType => {
   return typeof maybeUserType === 'string' ? maybeUserType : undefined
@@ -335,8 +406,6 @@ const bits = maybeBits => {
     ? { event: 'CHEER', bits: parseInt(maybeBits, 10) }
     : {}
 }
-
-const generalMessage = maybeMessage => replace(maybeMessage, /\\s/g, ' ')
 
 const mods = message => {
   const [, modList] = message.split(': ')
