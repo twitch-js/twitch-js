@@ -37,9 +37,9 @@ describe('Chat/Client', () => {
     client.disconnect()
   })
 
-  afterAll(() => {
-    wss.close()
+  afterAll(done => {
     Date = realDate
+    wss.close(done)
   })
 
   test('should connect', done => {

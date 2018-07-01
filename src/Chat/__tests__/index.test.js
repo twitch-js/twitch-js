@@ -43,9 +43,9 @@ describe('Chat', () => {
     chat.removeAllListeners()
   })
 
-  afterAll(() => {
+  afterAll(done => {
     Date = realDate
-    wss.close()
+    wss.close(done)
   })
 
   test('should join channel', async () => {
