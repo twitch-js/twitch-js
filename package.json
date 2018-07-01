@@ -52,7 +52,10 @@
     "build:lib": "babel src --out-dir lib --source-maps --ignore __tests__",
     "build:dist:dev": "webpack",
     "build:dist:prod": "webpack --env.production",
-    "build": "run-p build:**"
+    "build": "run-p build:**",
+    "predocs": "rimraf docs",
+    "docs:dev": "npm run predocs && nodemon --exec esdoc",
+    "docs": "esdoc"
   },
   "dependencies": {
     "babel-runtime": "^6.26.0",
@@ -86,6 +89,9 @@
     "babel-preset-stage-2": "^6.24.1",
     "codecov": "^3.0.2",
     "compression-webpack-plugin": "^1.1.3",
+    "esdoc": "^1.1.0",
+    "esdoc-ecmascript-proposal-plugin": "^1.0.0",
+    "esdoc-standard-plugin": "^1.0.0",
     "eslint": "^4.19.1",
     "eslint-config-prettier": "^2.9.0",
     "eslint-plugin-import": "2.8.0",
@@ -102,9 +108,7 @@
     "semver": "^5.5.0",
     "webpack": "^3.12.0"
   },
-  "optionalDependencies": {
-    "uws": "^10.148.1"
-  },
+  "optionalDependencies": {},
   "browser": {
     "form-data": "./shims/form-data.js",
     "node-fetch": "./shims/node-fetch.js",
@@ -190,6 +194,10 @@
       }
     ]
   },
+  "nodemonConfig": {
+    "watch": ["examples", "shims", "src", "package.json"],
+    "delay": "500"
+  },
   "jest": {
     "testPathIgnorePatterns": [
       "<rootDir>/__mocks__",
@@ -211,6 +219,22 @@
     "*.md": [
       "prettier --write",
       "git add"
+    ]
+  },
+  "esdoc": {
+    "source": "./src",
+    "destination": "./docs",
+    "plugins": [
+      {
+        "name": "esdoc-standard-plugin",
+        "option": {}
+      },
+      {
+        "name": "esdoc-ecmascript-proposal-plugin",
+        "option": {
+          "all": true
+        }
+      }
     ]
   }
 }

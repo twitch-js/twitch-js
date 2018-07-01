@@ -1,3 +1,6 @@
+# Temporarily ignore docs until CI/CD
+docs
+
 # Environment variables
 *.env
 
