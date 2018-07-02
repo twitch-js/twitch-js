@@ -1,0 +1,400 @@
+import { parse } from 'irc-message'
+import camelcaseKeys from 'camelcase-keys'
+
+import { isEmpty, isFinite, toNumber, toUpper } from 'lodash'
+
+import * as constants from '../../constants'
+import * as typeParsers from './types'
+import * as tagParsers from './tags'
+
+const base = rawMessages => {
+  const rawMessagesV = rawMessages.replace(/\r\n$/, '').split(/\n/g)
+
+  return rawMessagesV.map(rawMessage => {
+    const { raw, tags, command, params: [channel, message] } = parse(rawMessage)
+
+    /**
+     * Parsed base message
+     * @typedef {Object} BaseMessage
+     * @property {string} _raw Un-parsed message
+     * @property {Date} timestamp Timestamp
+     * @property {string} command Command
+     * @property {ClearChatTags|GlobalUserStateTags|PrivateMessageTags|RoomStateTags|UserNoticeTags|UserStateTags} tags Twitch tags
+     * @property {string} [channel] Channel
+     * @property {string} [message] Message
+     * @property {string} [event] Associated event
+     */
+    return {
+      _raw: raw,
+      timestamp: typeParsers.generalTimestamp(
+        parseInt(tags['tmi-sent-ts'], 10),
+      ),
+      command,
+      channel,
+      tags: isEmpty(tags) ? undefined : camelcaseKeys(tags),
+      message,
+    }
+  })
+}
+
+const joinOrPartMessage = baseMessage => {
+  const [
+    ,
+    username,
+    ,
+    ,
+    command,
+    channel,
+  ] = /:(.+)!(.+)@(.+).tmi.twitch.tv (JOIN|PART) (#.+)/g.exec(baseMessage._raw)
+
+  /**
+   * JOIN/PART message
+   * @typedef {BaseMessage} JoinOrPartMessage
+   * @property {string} username Username (lower-case)
+   * @see https://dev.twitch.tv/docs/irc/membership/#join-twitch-membership
+   */
+  return {
+    ...baseMessage,
+    channel,
+    command,
+    username,
+    message: undefined,
+  }
+}
+
+const modeMessage = baseMessage => {
+  const [
+    ,
+    channel,
+    mode,
+    username,
+  ] = /:[^\s]+ MODE (#[^\s]+) (-|\+)o ([^\s]+)/g.exec(baseMessage._raw)
+
+  const isModerator = mode === '+'
+
+  /**
+   * MODE message
+   * @typedef {BaseMessage} ModeMessage
+   * @property {string} event
+   * @property {string} username
+   * @property {boolean} isModerator
+   * @see https://dev.twitch.tv/docs/irc/membership/#mode-twitch-membership
+   */
+  return {
+    ...baseMessage,
+    event: isModerator
+      ? constants.EVENTS.MOD_GAINED
+      : constants.EVENTS.MOD_LOST,
+    channel,
+    username,
+    message: undefined,
+    isModerator,
+  }
+}
+
+const namesMessage = baseMessage => {
+  const [
+    ,
+    ,
+    ,
+    channel,
+    names,
+  ] = /:(.+).tmi.twitch.tv 353 (.+) = (#.+) :(.+)/g.exec(baseMessage._raw)
+
+  const namesV = names.split(' ')
+
+  /**
+   * NAMES message
+   * @typedef {BaseMessage} NamesMessage
+   * @property {Array<string>} usernames Array of usernames present in channel
+   * @property {('mods'|'chatters')} listType
+   * @see https://dev.twitch.tv/docs/irc/membership/#names-twitch-membership
+   */
+  return {
+    ...baseMessage,
+    channel,
+    event: constants.EVENTS.NAMES,
+    usernames: namesV,
+    listType: names.length > 1000 ? 'mods' : 'chatters',
+    message: undefined,
+  }
+}
+
+const namesEndMessage = baseMessage => {
+  const [
+    ,
+    username,
+    ,
+    channel,
+    message,
+  ] = /:(.+).tmi.twitch.tv 366 (.+) (#.+) :(.+)/g.exec(baseMessage._raw)
+
+  /**
+   * End of NAMES message
+   * @typedef {NamesMessage} NamesEndMessage
+   * @see https://dev.twitch.tv/docs/irc/membership/#names-twitch-membership
+   */
+  return {
+    ...baseMessage,
+    channel,
+    event: constants.EVENTS.NAMES_END,
+    username,
+    message,
+  }
+}
+
+const globalUserStateMessage = baseMessage => {
+  const { tags, ...other } = baseMessage
+
+  /**
+   * GLOBALUSERSTATE message
+   * @typedef {BaseMessage} GlobalUserStateMessage
+   * @property {GlobalUserStateTags} tags
+   */
+  return {
+    tags: tagParsers.globalUserState(tags),
+    ...other,
+  }
+}
+
+const clearChatMessage = baseMessage => {
+  const { tags, message: username, ...other } = baseMessage
+
+  if (typeof username !== 'undefined') {
+    /**
+     * CLEARCHAT (user banned) message
+     * @typedef {BaseMessage} ClearChatUserBannedMessage
+     * @property {ClearChatTags} tags
+     * @property {string} username
+     * @see https://dev.twitch.tv/docs/irc/commands/#clearchat-twitch-commands
+     * @see https://dev.twitch.tv/docs/irc/tags/#clearchat-twitch-tags
+     */
+    return {
+      ...other,
+      tags: {
+        ...tags,
+        banReason: typeParsers.generalString(tags.banReason),
+        banDuration: typeParsers.generalNumber(tags.banDuration),
+      },
+      event: constants.EVENTS.USER_BANNED,
+      username,
+    }
+  }
+
+  /**
+   * CLEARCHAT message
+   * @typedef {BaseMessage} ClearChatMessage
+   * @see https://dev.twitch.tv/docs/irc/commands/#clearchat-twitch-commands
+   * @see https://dev.twitch.tv/docs/irc/tags/#clearchat-twitch-tags
+   */
+  return {
+    ...other,
+  }
+}
+
+const hostTargetMessage = baseMessage => {
+  const [
+    ,
+    channel,
+    username,
+    numberOfViewers,
+  ] = /:tmi.twitch.tv HOSTTARGET (#[^\s]+) :([^\s]+)?\s?(\d+)?/g.exec(
+    baseMessage._raw,
+  )
+  const isStopped = username === '-'
+
+  /**
+   * HOSTTARGET message
+   * @typedef {BaseMessage} HostTargetMessage
+   * @property {number} [numberOfViewers] Number of viewers
+   * @see
+   * @see https://dev.twitch.tv/docs/irc/commands/#hosttarget-twitch-commands
+   */
+  return {
+    ...baseMessage,
+    channel,
+    username,
+    event: toUpper(
+      isStopped
+        ? constants.NOTICE_MESSAGE_IDS.HOST_OFF
+        : constants.NOTICE_MESSAGE_IDS.HOST_ON,
+    ),
+    numberOfViewers: isFinite(toNumber(numberOfViewers))
+      ? parseInt(numberOfViewers, 10)
+      : undefined,
+    message: undefined,
+  }
+}
+
+const roomStateMessage = baseMessage => {
+  const { tags, ...other } = baseMessage
+
+  /**
+   * ROOMSTATE message
+   * @typedef {Object} RoomStateMessage
+   * @property {RoomStateTags} tags
+   */
+  return {
+    tags: tagParsers.roomState(tags),
+    ...other,
+  }
+}
+
+const noticeMessage = baseMessage => {
+  const { tags, ...other } = baseMessage
+
+  const event = toUpper(tags.msgId)
+
+  switch (tags.msgId) {
+    case constants.NOTICE_MESSAGE_IDS.ROOM_MODS:
+      /**
+       * NOTICE message
+       * @typedef {NoticeMessage} NoticeMessage
+       * @property {Array<string>} mods
+       */
+      return { event, tags, mods: typeParsers.mods(other.message), ...other }
+    default:
+      /**
+       * NOTICE message
+       * @typedef {BaseMessage} NoticeMessage
+       * @property {string} event
+       * @property {Object} tags
+       */
+      return { event, tags, ...other }
+  }
+}
+
+const userStateMessage = baseMessage => {
+  const { tags, ...other } = baseMessage
+
+  return {
+    /**
+     * USERSTATE message
+     * @typedef {BaseMessage} UserStateMessage
+     * @property {UserStateTags} tags
+     * @property {'CHEER'} [event]
+     * @property {number} [bits]
+     */
+    tags: tagParsers.userState(tags),
+    ...other,
+    ...typeParsers.cheerEvent(tags.bits),
+  }
+}
+
+/**
+ * PRIVMSG message
+ * @typedef {UserStateMessage} PrivateMessage
+ */
+const privateMessage = userStateMessage
+
+const userNoticeMessage = baseMessage => {
+  const tags = tagParsers.userNotice(baseMessage.tags)
+
+  switch (tags.msgId) {
+    case constants.USER_NOTICE_MESSAGE_IDS.SUBSCRIPTION:
+      /**
+       * USERNOTICE/SUBSCRIPTION message
+       * @typedef {UserStateMessage} UserNoticeSubscriptionMessage
+       * @property {'SUBSCRIPTION'} event
+       * @property {string} systemMessage
+       * @property {string} months
+       * @property {string} subPlan
+       * @property {string} subPlanName
+       */
+      return {
+        ...baseMessage,
+        tags,
+        event: constants.EVENTS.SUBSCRIPTION,
+        systemMessage: typeParsers.generalString(tags.systemMsg),
+        months: tags.msgParamMonths,
+        subPlan: tags.msgParamSubPlan,
+        subPlanName: typeParsers.generalString(tags.msgParamSubPlanName),
+      }
+    case constants.USER_NOTICE_MESSAGE_IDS.RESUBSCRIPTION:
+      /**
+       * USERNOTICE/REUBSCRIPTION message
+       * @typedef {UserNoticeSubscriptionMessage} UserNoticeResubscriptionMessage
+       * @property {'RESUBSCRIPTION'} event
+       */
+      return {
+        ...baseMessage,
+        tags,
+        event: constants.EVENTS.RESUBSCRIPTION,
+        systemMessage: typeParsers.generalString(tags.systemMsg),
+        months: tags.msgParamMonths,
+        subPlan: tags.msgParamSubPlan,
+        subPlanName: typeParsers.generalString(tags.msgParamSubPlanName),
+      }
+    case constants.USER_NOTICE_MESSAGE_IDS.SUBSCRIPTION_GIFT:
+      /**
+       * USERNOTICE/SUBSCRIPTION_GIFT message
+       * @typedef {UserStateMessage} UserNoticeSubscriptionGiftMessage
+       * @property {'SUBSCRIPTION_GIFT'} event
+       * @property {string} systemMessage
+       * @property {string} recipientDisplayName
+       * @property {string} recipientId
+       * @property {string} recipientUserName
+       */
+      return {
+        ...baseMessage,
+        tags,
+        event: constants.EVENTS.SUBSCRIPTION_GIFT,
+        systemMessage: typeParsers.generalString(tags.systemMsg),
+        recipientDisplayName: tags.msgParamRecipientDisplayName,
+        recipientId: tags.msgParamRecipientId,
+        recipientUserName: tags.msgParamRecipientName,
+      }
+    case constants.USER_NOTICE_MESSAGE_IDS.RAID:
+      /**
+       * USERNOTICE/RAID message
+       * @typedef {UserStateMessage} UserNoticeRaidMessage
+       * @property {'RAID'} event
+       * @property {string} systemMessage
+       * @property {string} raiderDisplayName
+       * @property {string} raiderUserName
+       * @property {string} raiderViewerCount
+       */
+      return {
+        ...baseMessage,
+        tags,
+        event: constants.EVENTS.RAID,
+        systemMessage: typeParsers.generalString(tags.systemMsg),
+        raiderDisplayName: tags.msgParamDisplayName,
+        raiderUserName: tags.msgParamLogin,
+        raiderViewerCount: tags.msgParamViewerCount,
+      }
+    case constants.USER_NOTICE_MESSAGE_IDS.RITUAL:
+      /**
+       * USERNOTICE/RITUAL message
+       * @typedef {UserStateMessage} UserNoticeRitualMessage
+       * @property {'RITUAL'} event
+       * @property {string} systemMessage
+       * @property {string} ritualName
+       */
+      return {
+        ...baseMessage,
+        tags,
+        event: constants.EVENTS.RITUAL,
+        systemMessage: typeParsers.generalString(tags.systemMsg),
+        ritualName: tags.msgParamRitualName,
+      }
+    default:
+      return { ...baseMessage, tags }
+  }
+}
+
+export {
+  modeMessage,
+  hostTargetMessage,
+  joinOrPartMessage,
+  namesMessage,
+  namesEndMessage,
+  clearChatMessage,
+  globalUserStateMessage,
+  userStateMessage,
+  roomStateMessage,
+  noticeMessage,
+  userNoticeMessage,
+  privateMessage,
+}
+export default base

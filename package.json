@@ -40,7 +40,7 @@
   "runkitExampleFilename": "examples/runkit.js",
   "scripts": {
     "clean": "rimraf lib dist",
-    "lint": "eslint \"{examples,src}/**/*.js\"",
+    "lint": "eslint \"{__mocks__,examples,shims,src}/**/*.js\"",
     "test": "jest",
     "pretest:coverage": "rimraf coverage",
     "test:coverage": "jest --collectCoverage",
@@ -156,11 +156,13 @@
       "sourceType": "module"
     },
     "env": {
+      "es6": true,
       "node": true,
       "browser": true
     },
     "extends": [
       "prettier",
+      "eslint:recommended",
       "plugin:import/errors",
       "plugin:import/warnings",
       "plugin:jest/recommended"
@@ -195,7 +197,12 @@
     ]
   },
   "nodemonConfig": {
-    "watch": ["examples", "shims", "src", "package.json"],
+    "watch": [
+      "examples",
+      "shims",
+      "src",
+      "package.json"
+    ],
     "delay": "500"
   },
   "jest": {

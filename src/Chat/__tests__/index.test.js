@@ -9,6 +9,8 @@ import { onceResolve } from '../../utils'
 import Chat, { constants } from '../index'
 
 describe('Chat', () => {
+  jest.setTimeout(500)
+
   let realDate
 
   let wss
@@ -44,6 +46,7 @@ describe('Chat', () => {
   })
 
   afterAll(done => {
+    // eslint-disable-next-line no-global-assign
     Date = realDate
     wss.close(done)
   })
@@ -93,7 +96,7 @@ describe('Chat', () => {
     server.send(membership.MODE.OPERATOR_PLUS)
   })
 
-  test('should handle MODE -o', () => {
+  test('should handle MODE -o', done => {
     chat.on(constants.EVENTS.MODE, message => {
       expect(message).toMatchSnapshot()
       done()

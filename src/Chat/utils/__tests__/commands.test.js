@@ -1,6 +1,6 @@
 import { EventEmitter } from 'eventemitter3'
 
-import { commandCreator, commandsFactory } from '../commands'
+import { commandCreator } from '../commands'
 import * as constants from '../../constants'
 
 jest.useFakeTimers()

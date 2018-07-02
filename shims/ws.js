@@ -1,3 +1,4 @@
+/* global MozWebSocket */
 // https://github.com/maxogden/websocket-stream/blob/48dc3ddf943e5ada668c31ccd94e9186f02fafbd/ws-fallback.js
 
 var ws;

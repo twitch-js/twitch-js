@@ -10,7 +10,7 @@ describe('utils', () => {
       const ms = 123
       const reason = 'MESSAGE'
 
-      const actual = utils.delayReject(ms, reason).catch(rejectedReason => {
+      const actual = utils.delayReject(ms, reason).catch(() => {
         expect(setTimeout).toHaveBeenLastCalledWith(
           expect.any(Function),
           ms,

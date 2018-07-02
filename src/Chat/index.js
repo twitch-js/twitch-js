@@ -1,6 +1,6 @@
 import { EventEmitter } from 'eventemitter3'
 
-import { get, split } from 'lodash'
+import { get } from 'lodash'
 
 import * as utils from '../utils'
 
@@ -14,7 +14,6 @@ import * as validators from './utils/validators'
 
 /**
  * Chat client
- *
  * @example <caption>Connecting to Twitch</caption>
  * const token = OAUTH_TOKEN
  * const username = USERNAME
@@ -25,7 +24,15 @@ import * as validators from './utils/validators'
  * })
  */
 class Chat extends EventEmitter {
-  /** @type {number} */
+  /**
+   * Chat client ready state:
+   * * **0** not ready
+   * * **1** connecting
+   * * **2** connected
+   * * **3** disconnecting
+   * * **4** disconnected
+   * @type {0|1|2|3|4}
+   */
   readyState = 0
 
   /** @type {Object} */
@@ -52,12 +59,15 @@ class Chat extends EventEmitter {
    * @return {Promise<GlobalUserState, string>} Global user state message
    */
   connect() {
-    const connect = new Promise((resolve, reject) => {
+    const connect = new Promise(resolve => {
       if (this.readyState === 1) {
         // Already trying to connect, so resolve when connected.
-        client.once(constants.EVENTS.CONNECTED, globalUserStateMessage => {
-          resolve(globalUserStateMessage)
-        })
+        this.once(
+          constants.EVENTS.GLOBAL_USER_STATE,
+          globalUserStateMessage => {
+            resolve(globalUserStateMessage)
+          },
+        )
       } else if (this.readyState === 2) {
         // Already connected.
         resolve(this.userState)
@@ -135,8 +145,9 @@ class Chat extends EventEmitter {
     )
 
     const join = Promise.all([this.connect, roomState, userState]).then(
-      ([, { roomState }, { userState }]) => {
+      ([, { channel, tags: roomState }, { tags: userState }]) => {
         const response = { roomState, userState }
+        this.channels[channel] = response
         return response
       },
     )
@@ -187,7 +198,7 @@ class Chat extends EventEmitter {
   }
 
   emit(eventName, message) {
-    const events = eventName.split('/').reduce((parents, current) => {
+    eventName.split('/').reduce((parents, current) => {
       const eventPartial = [...parents, current]
       super.emit(eventPartial.join('/'), message)
       return eventPartial
@@ -212,10 +223,11 @@ function handleMessage(baseMessage) {
   const preMessage = { ...baseMessage, isSelf }
 
   switch (preMessage.command) {
-    case constants.EVENTS.JOIN:
+    case constants.EVENTS.JOIN: {
       const message = parsers.joinOrPartMessage(preMessage)
       this.emit(`${message.command}/${channel}`, message)
       break
+    }
     case constants.EVENTS.PART: {
       const message = parsers.joinOrPartMessage(preMessage)
       this.channels[message.channel] = undefined
@@ -258,7 +270,7 @@ function handleMessage(baseMessage) {
 
     case constants.EVENTS.GLOBAL_USER_STATE: {
       const message = parsers.globalUserStateMessage(preMessage)
-      this.userState = message.userState
+      this.userState = message.tags
       this.emit(message.command, message)
       break
     }
@@ -302,12 +314,13 @@ function handleMessage(baseMessage) {
       break
     }
 
-    default:
+    default: {
       const eventName =
         channel === '#'
           ? preMessage.command
           : `${preMessage.command}/${channel}`
       this.emit(eventName, preMessage)
+    }
   }
 }
 

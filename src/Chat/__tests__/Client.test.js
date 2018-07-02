@@ -38,6 +38,7 @@ describe('Chat/Client', () => {
   })
 
   afterAll(done => {
+    // eslint-disable-next-line no-global-assign
     Date = realDate
     wss.close(done)
   })
