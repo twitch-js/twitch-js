@@ -312,7 +312,7 @@ const userNoticeMessage = baseMessage => {
       }
     case constants.USER_NOTICE_MESSAGE_IDS.RESUBSCRIPTION:
       /**
-       * USERNOTICE/REUBSCRIPTION message
+       * USERNOTICE/RESUBSCRIPTION message
        * @typedef {UserNoticeSubscriptionMessage} UserNoticeResubscriptionMessage
        * @property {'RESUBSCRIPTION'} event
        */

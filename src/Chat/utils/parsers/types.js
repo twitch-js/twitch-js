@@ -23,6 +23,18 @@ const broadcasterLanguage = maybeLanguage => {
 }
 
 const badges = maybeBadges => {
+  /**
+   * Badges tag
+   * @typedef {Object} BadgesTag
+   * @property {boolean} [admin]
+   * @property {number} [bits]
+   * @property {boolean} [broadcaster]
+   * @property {boolean} [globalMod]
+   * @property {boolean} [moderator]
+   * @property {boolean} [subscriber]
+   * @property {boolean} [staff]
+   * @property {boolean} [turbo]
+   */
   return typeof maybeBadges === 'string'
     ? maybeBadges.split(',').reduce((parsed, badge) => {
         const [key, value] = badge.split('/')
@@ -32,6 +44,12 @@ const badges = maybeBadges => {
 }
 
 const emotes = maybeEmotes => {
+  /**
+   * Emote tag
+   * @typedef {Object} EmoteTag
+   * @property {number} start
+   * @property {number} end
+   */
   return typeof maybeEmotes === 'string'
     ? maybeEmotes.split('/').reduce((parsed, emote) => {
         const [key, value] = emote.split(':')

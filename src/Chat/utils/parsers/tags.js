@@ -19,7 +19,7 @@ const clearChat = tags => ({
  * GLOBALUSERSTATE tags
  * @typedef {Object} GlobalUserStateTags
  * @property {Array<string>} emoteSets
- * @property {string} username
+ * @property {string} userType
  * @property {string} username
  * @property {boolean} isTurboSubscriber
  * @see https://dev.twitch.tv/docs/irc/tags#globaluserstate-twitch-tags
@@ -68,9 +68,12 @@ const userNotice = (...args) => userState(...args)
 /**
  * USERSTATE tags
  * @typedef {Object} UserStateTags
+ * @property {BadgesTag} badges
+ * @property {number} [bits]
+ * @property {Object<number, EmoteTag>} emotes
  * @property {Array<string>} emoteSets
- * @property {string} username
- * @property {string} username
+ * @property {boolean} isModerator
+ * @property {boolean} isSubscriber
  * @property {boolean} isTurboSubscriber
  * @see https://dev.twitch.tv/docs/irc/tags#userstate-twitch-tags
  */

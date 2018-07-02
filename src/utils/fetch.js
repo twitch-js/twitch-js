@@ -6,11 +6,12 @@ import { stringify } from 'qs'
  * Fetches URL
  * @param {string} url
  * @param {Object} [options]
- * @param {string} [options.method]
+ * @param {string} [options.method='get']
  * @param {Header} [options.headers]
  * @param {Object} [options.search]
  * @param {Object|FormData} [options.body]
  * @param {Object} [qsOptions]
+ * @return {Promise<Object, Object>}
  */
 const fetchUtil = (url, options = {}, qsOptions = {}) => {
   const isBodyJson =

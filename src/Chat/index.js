@@ -35,28 +35,29 @@ class Chat extends EventEmitter {
    */
   readyState = 0
 
-  /** @type {Object} */
+  /** @type {GlobalUserStateTags} */
   userState = {}
 
-  /** @type {Object} */
+  /** @type {Object.<string, ChannelState>} */
   channels = {}
 
   /**
    * Chat constructor
-   * @param {Object} options
-   * @param {string} options.token - Twitch Kraken token
-   * @param {string} options.username - Twitch username
+   * @param {ChatOptions} options
    */
   constructor(maybeOptions) {
     super()
 
-    // Validate options.
+    /**
+     * Valid options
+     * @type {ChatOptions}
+     */
     this.options = validators.chatOptions(maybeOptions)
   }
 
   /**
-   * Connect to Twitch IRC.
-   * @return {Promise<GlobalUserState, string>} Global user state message
+   * Connect to Twitch.
+   * @return {Promise<GlobalUserStateMessage, string>} Global user state message
    */
   connect() {
     const connect = new Promise(resolve => {
@@ -119,7 +120,11 @@ class Chat extends EventEmitter {
     client.send(message)
   }
 
-  /** Disconnect from Twitch IRC. */
+  /**
+   * Disconnect from Twitch.
+   * @param {undefined} client
+   * @return {void}
+   */
   disconnect(client) {
     this.readyState = 3
 
@@ -131,6 +136,11 @@ class Chat extends EventEmitter {
     this.readyState = 4
   }
 
+  /**
+   * Join a channel.
+   * @param {string} channel
+   * @return {Promise<ChannelState, string>}
+   */
   join(maybeChannel) {
     const channel = sanitizers.channel(maybeChannel)
 
@@ -146,6 +156,11 @@ class Chat extends EventEmitter {
 
     const join = Promise.all([this.connect, roomState, userState]).then(
       ([, { channel, tags: roomState }, { tags: userState }]) => {
+        /**
+         * @typedef {Object} ChannelState
+         * @property {RoomStateTags} roomState
+         * @property {UserStateTags} userState
+         */
         const response = { roomState, userState }
         this.channels[channel] = response
         return response
@@ -163,6 +178,11 @@ class Chat extends EventEmitter {
     ])
   }
 
+  /**
+   * Leave a channel.
+   * @param {string} channel
+   * @return {void}
+   */
   part(maybeChannel) {
     const channel = sanitizers.channel(maybeChannel)
 
@@ -170,6 +190,12 @@ class Chat extends EventEmitter {
     this.send(`${constants.COMMANDS.PART} ${channel}`)
   }
 
+  /**
+   * Say a message in a channel.
+   * @param {string} channel
+   * @param {string} message
+   * @return {Promise<userStateMessage, string>}
+   */
   say(maybeChannel, message) {
     const channel = sanitizers.channel(maybeChannel)
 
@@ -191,12 +217,18 @@ class Chat extends EventEmitter {
     ])
   }
 
+  /**
+   * Broadcast message to all connected channels.
+   * @param {string} message
+   * @return {void}
+   */
   broadcast(message) {
     return Promise.all(
       Object.keys(this.channels).map(channel => this.say(channel, message)),
     )
   }
 
+  /** @private */
   emit(eventName, message) {
     eventName.split('/').reduce((parents, current) => {
       const eventPartial = [...parents, current]

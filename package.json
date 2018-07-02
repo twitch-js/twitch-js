@@ -108,7 +108,9 @@
     "semver": "^5.5.0",
     "webpack": "^3.12.0"
   },
-  "optionalDependencies": {},
+  "optionalDependencies": {
+    "uws": "^10.148.1"
+  },
   "browser": {
     "form-data": "./shims/form-data.js",
     "node-fetch": "./shims/node-fetch.js",
@@ -234,7 +236,13 @@
     "plugins": [
       {
         "name": "esdoc-standard-plugin",
-        "option": {}
+        "option": {
+          "brand": {
+            "title": "TwitchJS",
+            "description": "A community-centric, community-supported Twitch JavaScript SDK.",
+            "repository": "https://github.com/twitch-apis/twitch-js/tree/next"
+          }
+        }
       },
       {
         "name": "esdoc-ecmascript-proposal-plugin",
