@@ -9,8 +9,6 @@ import { onceResolve } from '../../utils'
 import Chat, { constants } from '../index'
 
 describe('Chat', () => {
-  jest.setTimeout(500)
-
   let realDate
 
   let wss
