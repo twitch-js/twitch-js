@@ -9,8 +9,6 @@ import { onceResolve } from '../../utils'
 import Chat, { constants } from '../index'
 
 describe('Chat', () => {
-  jest.setTimeout(30000)
-
   let realDate
 
   let wss
@@ -22,11 +20,10 @@ describe('Chat', () => {
     port: 6667,
     token: 'TOKEN',
     username: 'USERNAME',
-    connectionTimeout: 30000,
     ssl: false,
   }
 
-  beforeAll(async () => {
+  beforeAll(done => {
     realDate = Date
     const DATE_TO_USE = new Date('2018')
     global.Date = jest.fn(() => DATE_TO_USE)
@@ -38,7 +35,7 @@ describe('Chat', () => {
     })
 
     chat = new Chat(options)
-    await chat.connect()
+    chat.connect(() => done())
   })
 
   afterEach(() => {
