@@ -30,12 +30,16 @@ describe('Chat', () => {
 
     // Create WebSocket Server.
     wss = new WebSocket.Server({ port: options.port })
-    wss.on('connection', ws => {
-      server = ws
+
+    const resolveOnConnection = new Promise(resolve => {
+      wss.on('connection', ws => {
+        server = ws
+        resolve()
+      })
     })
 
     chat = new Chat(options)
-    return chat.connect()
+    return Promise.all([resolveOnConnection, chat.connect()])
   })
 
   afterEach(() => {
