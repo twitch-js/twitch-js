@@ -24,7 +24,7 @@ describe('Chat', () => {
   }
 
   beforeAll(() => {
-    realDate = Date
+    realDate = global.Date
     const DATE_TO_USE = new Date('2018')
     global.Date = jest.fn(() => DATE_TO_USE)
 
@@ -47,8 +47,7 @@ describe('Chat', () => {
   })
 
   afterAll(done => {
-    // eslint-disable-next-line no-global-assign
-    Date = realDate
+    global.Date = realDate
     wss.close(done)
   })
 
