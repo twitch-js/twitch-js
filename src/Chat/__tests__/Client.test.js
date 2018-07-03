@@ -17,7 +17,6 @@ describe('Chat/Client', () => {
     port: 6668,
     token: 'TOKEN',
     username: 'USERNAME',
-    connectionTimeout: 1000,
     ssl: false,
   }
 

@@ -23,7 +23,7 @@ describe('Chat', () => {
     ssl: false,
   }
 
-  beforeAll(done => {
+  beforeAll(() => {
     realDate = Date
     const DATE_TO_USE = new Date('2018')
     global.Date = jest.fn(() => DATE_TO_USE)
@@ -35,7 +35,7 @@ describe('Chat', () => {
     })
 
     chat = new Chat(options)
-    chat.connect(() => done())
+    return chat.connect()
   })
 
   afterEach(() => {
