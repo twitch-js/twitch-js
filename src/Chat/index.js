@@ -81,6 +81,8 @@ class Chat extends EventEmitter {
 
         // Once the client is connected ...
         client.once(constants.EVENTS.CONNECTED, globalUserStateMessage => {
+          this.readyState = 2
+
           // Create commands.
           Object.assign(this, commandsFactory.call(this))
 
@@ -92,8 +94,6 @@ class Chat extends EventEmitter {
 
           // Listen for disconnect.
           client.once(constants.EVENTS.DISCONNECTED, this.disconnect)
-
-          this.readyState = 2
 
           handleMessage.call(this, globalUserStateMessage)
 
