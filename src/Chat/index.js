@@ -14,6 +14,7 @@ import * as validators from './utils/validators'
 
 /**
  * Chat client
+ *
  * @example <caption>Connecting to Twitch</caption>
  * const token = OAUTH_TOKEN
  * const username = USERNAME
@@ -31,7 +32,7 @@ class Chat extends EventEmitter {
    * * **2** connected
    * * **3** disconnecting
    * * **4** disconnected
-   * @type {0|1|2|3|4}
+   * @type {number}
    */
   readyState = 0
 
@@ -123,7 +124,6 @@ class Chat extends EventEmitter {
   /**
    * Disconnect from Twitch.
    * @param {undefined} client
-   * @return {void}
    */
   disconnect(client) {
     this.readyState = 3
@@ -181,7 +181,6 @@ class Chat extends EventEmitter {
   /**
    * Leave a channel.
    * @param {string} channel
-   * @return {void}
    */
   part(maybeChannel) {
     const channel = sanitizers.channel(maybeChannel)
@@ -194,7 +193,7 @@ class Chat extends EventEmitter {
    * Say a message in a channel.
    * @param {string} channel
    * @param {string} message
-   * @return {Promise<userStateMessage, string>}
+   * @return {Promise<UserStateMessage, string>}
    */
   say(maybeChannel, message) {
     const channel = sanitizers.channel(maybeChannel)
@@ -220,7 +219,7 @@ class Chat extends EventEmitter {
   /**
    * Broadcast message to all connected channels.
    * @param {string} message
-   * @return {void}
+   * @return {Promise<Array<UserStateMessage>>}
    */
   broadcast(message) {
     return Promise.all(

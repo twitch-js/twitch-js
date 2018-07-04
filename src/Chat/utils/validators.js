@@ -11,8 +11,8 @@ const chatOptions = maybeOptions => {
    * @typedef {Object} ChatOptions
    * @property {string} username
    * @property {string} token
-   * @property {number} [connectionTimeout=CONNECTION_TIMEOUT]
-   * @property {number} [joinTimeout=JOIN_TIMEOUT]
+   * @property {number} [connectionTimeout={@link CONNECTION_TIMEOUT}]
+   * @property {number} [joinTimeout={@link JOIN_TIMEOUT}]
    * @property {boolean} [debug=false]
    */
   const shape = {

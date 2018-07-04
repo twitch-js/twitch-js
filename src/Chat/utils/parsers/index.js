@@ -15,7 +15,7 @@ const base = rawMessages => {
 
     /**
      * Parsed base message
-     * @typedef {Object} BaseMessage
+     * @mixin BaseMessage
      * @property {string} _raw Un-parsed message
      * @property {Date} timestamp Timestamp
      * @property {string} command Command
@@ -48,10 +48,18 @@ const joinOrPartMessage = baseMessage => {
   ] = /:(.+)!(.+)@(.+).tmi.twitch.tv (JOIN|PART) (#.+)/g.exec(baseMessage._raw)
 
   /**
-   * JOIN/PART message
-   * @typedef {BaseMessage} JoinOrPartMessage
+   * JOIN message
+   * @event Chat#JOIN
+   * @mixes BaseMessage JoinOrPartMessage
    * @property {string} username Username (lower-case)
    * @see https://dev.twitch.tv/docs/irc/membership/#join-twitch-membership
+   */
+  /**
+   * PART message
+   * @event Chat#PART
+   * @mixes BaseMessage JoinOrPartMessage
+   * @property {string} username Username (lower-case)
+   * @see https://dev.twitch.tv/docs/irc/membership/#part-twitch-membership
    */
   return {
     ...baseMessage,
@@ -74,7 +82,8 @@ const modeMessage = baseMessage => {
 
   /**
    * MODE message
-   * @typedef {BaseMessage} ModeMessage
+   * @event Chat#MODE
+   * @mixes BaseMessage ModeMessage
    * @property {string} event
    * @property {string} username
    * @property {boolean} isModerator
@@ -105,7 +114,8 @@ const namesMessage = baseMessage => {
 
   /**
    * NAMES message
-   * @typedef {BaseMessage} NamesMessage
+   * @event Chat#NAMES
+   * @mixes BaseMessage NamesMessage
    * @property {Array<string>} usernames Array of usernames present in channel
    * @property {('mods'|'chatters')} listType
    * @see https://dev.twitch.tv/docs/irc/membership/#names-twitch-membership
@@ -131,7 +141,8 @@ const namesEndMessage = baseMessage => {
 
   /**
    * End of NAMES message
-   * @typedef {NamesMessage} NamesEndMessage
+   * @event Chat#NAMES_END
+   * @mixes BaseMessage NamesEndMessage
    * @see https://dev.twitch.tv/docs/irc/membership/#names-twitch-membership
    */
   return {
@@ -148,7 +159,8 @@ const globalUserStateMessage = baseMessage => {
 
   /**
    * GLOBALUSERSTATE message
-   * @typedef {BaseMessage} GlobalUserStateMessage
+   * @event Chat#GLOBALUSERSTATE
+   * @mixes BaseMessage GlobalUserStateMessage
    * @property {GlobalUserStateTags} tags
    */
   return {
@@ -163,7 +175,8 @@ const clearChatMessage = baseMessage => {
   if (typeof username !== 'undefined') {
     /**
      * CLEARCHAT (user banned) message
-     * @typedef {BaseMessage} ClearChatUserBannedMessage
+     * @event Chat#CLEARCHAT/USER_BANNED
+     * @mixes BaseMessage ClearChatUserBannedMessage
      * @property {ClearChatTags} tags
      * @property {string} username
      * @see https://dev.twitch.tv/docs/irc/commands/#clearchat-twitch-commands
@@ -183,7 +196,8 @@ const clearChatMessage = baseMessage => {
 
   /**
    * CLEARCHAT message
-   * @typedef {BaseMessage} ClearChatMessage
+   * @event Chat#CLEARCHAT
+   * @mixes BaseMessage ClearChatMessage
    * @see https://dev.twitch.tv/docs/irc/commands/#clearchat-twitch-commands
    * @see https://dev.twitch.tv/docs/irc/tags/#clearchat-twitch-tags
    */
@@ -205,9 +219,9 @@ const hostTargetMessage = baseMessage => {
 
   /**
    * HOSTTARGET message
-   * @typedef {BaseMessage} HostTargetMessage
+   * @event Chat#HOSTTARGET
+   * @mixes BaseMessage HostTargetMessage
    * @property {number} [numberOfViewers] Number of viewers
-   * @see
    * @see https://dev.twitch.tv/docs/irc/commands/#hosttarget-twitch-commands
    */
   return {
@@ -231,7 +245,8 @@ const roomStateMessage = baseMessage => {
 
   /**
    * ROOMSTATE message
-   * @typedef {Object} RoomStateMessage
+   * @event Chat#ROOMSTATE
+   * @mixes BaseMessage RoomStateMessage
    * @property {RoomStateTags} tags
    */
   return {
@@ -249,16 +264,21 @@ const noticeMessage = baseMessage => {
     case constants.NOTICE_MESSAGE_IDS.ROOM_MODS:
       /**
        * NOTICE message
-       * @typedef {NoticeMessage} NoticeMessage
+       * @event Chat#NOTICE/ROOM_MODS
+       * @mixes NoticeMessage NoticeMessage
+       * @property {'ROOM_MODS'} event
        * @property {Array<string>} mods
        */
       return { event, tags, mods: typeParsers.mods(other.message), ...other }
     default:
       /**
        * NOTICE message
-       * @typedef {BaseMessage} NoticeMessage
+       * @event Chat#NOTICE
+       * @mixes BaseMessage
+       * @mixin NoticeMessage
        * @property {string} event
        * @property {Object} tags
+       * @see https://dev.twitch.tv/docs/irc/commands/#msg-id-tags-for-the-notice-commands-capability
        */
       return { event, tags, ...other }
   }
@@ -267,14 +287,17 @@ const noticeMessage = baseMessage => {
 const userStateMessage = baseMessage => {
   const { tags, ...other } = baseMessage
 
+  /**
+   * USERSTATE message
+   * @mixin UserStateMessage
+   * @mixes BaseMessage
+   * @property {UserStateTags} tags
+   */
+  /**
+   * @event Chat#USERSTATE
+   * @mixes UserStateMessage UserStateMessage
+   */
   return {
-    /**
-     * USERSTATE message
-     * @typedef {BaseMessage} UserStateMessage
-     * @property {UserStateTags} tags
-     * @property {'CHEER'} [event]
-     * @property {number} [bits]
-     */
     tags: tagParsers.userState(tags),
     ...other,
     ...typeParsers.cheerEvent(tags.bits),
@@ -283,7 +306,11 @@ const userStateMessage = baseMessage => {
 
 /**
  * PRIVMSG message
- * @typedef {UserStateMessage} PrivateMessage
+ * @event Chat#PRIVMSG
+ * @mixes UserStateMessage PrivateMessage
+ * @property {'CHEER'} [event]
+ * @property {string} [event]
+ * @property {number} [bits]
  */
 const privateMessage = userStateMessage
 
@@ -294,7 +321,8 @@ const userNoticeMessage = baseMessage => {
     case constants.USER_NOTICE_MESSAGE_IDS.SUBSCRIPTION:
       /**
        * USERNOTICE/SUBSCRIPTION message
-       * @typedef {UserStateMessage} UserNoticeSubscriptionMessage
+       * @event Chat#USERNOTICE/SUBSCRIPTION
+       * @mixes UserStateMessage UserNoticeSubscriptionMessage
        * @property {'SUBSCRIPTION'} event
        * @property {string} systemMessage
        * @property {string} months
@@ -313,7 +341,8 @@ const userNoticeMessage = baseMessage => {
     case constants.USER_NOTICE_MESSAGE_IDS.RESUBSCRIPTION:
       /**
        * USERNOTICE/RESUBSCRIPTION message
-       * @typedef {UserNoticeSubscriptionMessage} UserNoticeResubscriptionMessage
+       * @event Chat#USERNOTICE/RESUBSCRIPTION
+       * @mixes UserNoticeSubscriptionMessage UserNoticeResubscriptionMessage
        * @property {'RESUBSCRIPTION'} event
        */
       return {
@@ -328,7 +357,8 @@ const userNoticeMessage = baseMessage => {
     case constants.USER_NOTICE_MESSAGE_IDS.SUBSCRIPTION_GIFT:
       /**
        * USERNOTICE/SUBSCRIPTION_GIFT message
-       * @typedef {UserStateMessage} UserNoticeSubscriptionGiftMessage
+       * @event Chat#USERNOTICE/SUBSCRIPTION_GIFT
+       * @mixes UserStateMessage UserNoticeSubscriptionGiftMessage
        * @property {'SUBSCRIPTION_GIFT'} event
        * @property {string} systemMessage
        * @property {string} recipientDisplayName
@@ -347,7 +377,8 @@ const userNoticeMessage = baseMessage => {
     case constants.USER_NOTICE_MESSAGE_IDS.RAID:
       /**
        * USERNOTICE/RAID message
-       * @typedef {UserStateMessage} UserNoticeRaidMessage
+       * @event Chat#USERNOTICE/RAID
+       * @mixes UserStateMessage UserNoticeRaidMessage
        * @property {'RAID'} event
        * @property {string} systemMessage
        * @property {string} raiderDisplayName
@@ -366,7 +397,8 @@ const userNoticeMessage = baseMessage => {
     case constants.USER_NOTICE_MESSAGE_IDS.RITUAL:
       /**
        * USERNOTICE/RITUAL message
-       * @typedef {UserStateMessage} UserNoticeRitualMessage
+       * @event Chat#USERNOTICE/RITUAL
+       * @mixes UserStateMessage UserNoticeRitualMessage
        * @property {'RITUAL'} event
        * @property {string} systemMessage
        * @property {string} ritualName
