@@ -1,18 +1,20 @@
 import invariant from 'invariant'
 
-import {
-  conformsTo,
-  defaultsDeep,
-  isString,
-  isFinite,
-  isBoolean,
-  isFunction,
-} from 'lodash'
+import { conformsTo, defaultsDeep, isString, isFinite, isBoolean } from 'lodash'
 
 import * as constants from '../constants'
 import * as sanitizers from './sanitizers'
 
 const chatOptions = maybeOptions => {
+  /**
+   * Chat options
+   * @typedef {Object} ChatOptions
+   * @property {string} username
+   * @property {string} token OAuth token (use {@link https://twitchapps.com/tmi/} to generate one)
+   * @property {number} [connectionTimeout={@link CONNECTION_TIMEOUT}]
+   * @property {number} [joinTimeout={@link JOIN_TIMEOUT}]
+   * @property {boolean} [debug=false]
+   */
   const shape = {
     username: isString,
     token: isString,
@@ -66,15 +68,4 @@ const clientOptions = maybeOptions => {
   return options
 }
 
-const queueOptions = options => {
-  const shape = {
-    sendFn: isFunction,
-  }
-
-  invariant(
-    conformsTo(options, shape),
-    '[twitch-js/Chat/Queue] options: Expected valid options',
-  )
-}
-
-export { chatOptions, clientOptions, queueOptions }
+export { chatOptions, clientOptions }

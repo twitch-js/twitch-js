@@ -15,7 +15,7 @@ const log = msg => console.log(JSON.stringify(msg, null, 2));
 chat.on(chatConstants.EVENTS.ALL, log);
 
 // Connect ...
-chat.connect().then(res => {
+chat.connect().then(() => {
   // ... and then join a channel or channels.
   chat.join(channel);
 });

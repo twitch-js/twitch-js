@@ -17,7 +17,6 @@ describe('Chat/Client', () => {
     port: 6668,
     token: 'TOKEN',
     username: 'USERNAME',
-    connectionTimeout: 1000,
     ssl: false,
   }
 
@@ -37,9 +36,10 @@ describe('Chat/Client', () => {
     client.disconnect()
   })
 
-  afterAll(() => {
-    wss.close()
+  afterAll(done => {
+    // eslint-disable-next-line no-global-assign
     Date = realDate
+    wss.close(done)
   })
 
   test('should connect', done => {

@@ -14,7 +14,7 @@ function commandCreator({ command, timeout, confirmations = [] }) {
         : Promise.resolve()
 
     const unrecognized = new Promise((resolve, reject) => {
-      this.once(constants.NOTICE_MESSAGE_IDS.UNRECOGNIZED_COMMAND, message => {
+      this.once(constants.NOTICE_MESSAGE_IDS.UNRECOGNIZED_COMMAND, () => {
         reject(constants.ERROR_COMMAND_UNRECOGNIZED)
       })
     })

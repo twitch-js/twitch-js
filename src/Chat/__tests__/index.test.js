@@ -20,32 +20,35 @@ describe('Chat', () => {
     port: 6667,
     token: 'TOKEN',
     username: 'USERNAME',
-    connectionTimeout: 1000,
     ssl: false,
   }
 
   beforeAll(() => {
-    realDate = Date
+    realDate = global.Date
     const DATE_TO_USE = new Date('2018')
     global.Date = jest.fn(() => DATE_TO_USE)
 
     // Create WebSocket Server.
     wss = new WebSocket.Server({ port: options.port })
-    wss.on('connection', ws => {
-      server = ws
+
+    const resolveOnConnection = new Promise(resolve => {
+      wss.on('connection', ws => {
+        server = ws
+        resolve()
+      })
     })
 
     chat = new Chat(options)
-    return chat.connect()
+    return Promise.all([resolveOnConnection, chat.connect()])
   })
 
   afterEach(() => {
     chat.removeAllListeners()
   })
 
-  afterAll(() => {
-    Date = realDate
-    wss.close()
+  afterAll(done => {
+    global.Date = realDate
+    wss.close(done)
   })
 
   test('should join channel', async () => {
@@ -93,7 +96,7 @@ describe('Chat', () => {
     server.send(membership.MODE.OPERATOR_PLUS)
   })
 
-  test('should handle MODE -o', () => {
+  test('should handle MODE -o', done => {
     chat.on(constants.EVENTS.MODE, message => {
       expect(message).toMatchSnapshot()
       done()

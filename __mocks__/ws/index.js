@@ -9,8 +9,12 @@ class Server extends WebSocket.Server {
 
     this.on('connection', ws => {
       ws.on('message', message => {
-        const [, command, argv = ''] = /^(\w+) (.+)/.exec(message)
-        const args = argv.split(' ')
+        const [
+          ,
+          command,
+          // argv = '',
+        ] = /^(\w+) (.+)/.exec(message)
+        // const args = argv.split(' ')
 
         switch (command) {
           case 'NICK':

@@ -40,10 +40,10 @@
   "runkitExampleFilename": "examples/runkit.js",
   "scripts": {
     "clean": "rimraf lib dist",
-    "lint": "eslint \"{examples,src}/**/*.js\"",
+    "lint": "eslint \"{__mocks__,examples,shims,src}/**/*.js\"",
     "test": "jest",
     "pretest:coverage": "rimraf coverage",
-    "test:coverage": "jest --collectCoverage",
+    "test:coverage": "jest --runInBand --collectCoverage",
     "test:coverage:report": "npm run test:coverage && codecov",
     "precommit": "lint-staged",
     "prettier": "prettier --write \"**/*.{js,md}\"",
@@ -52,7 +52,10 @@
     "build:lib": "babel src --out-dir lib --source-maps --ignore __tests__",
     "build:dist:dev": "webpack",
     "build:dist:prod": "webpack --env.production",
-    "build": "run-p build:**"
+    "build": "run-p build:**",
+    "predocs": "rimraf docs",
+    "docs:dev": "nodemon --exec npm run docs",
+    "docs": "jsdoc -c jsdoc.json"
   },
   "dependencies": {
     "babel-runtime": "^6.26.0",
@@ -73,7 +76,7 @@
   },
   "devDependencies": {
     "babel-cli": "^6.24.1",
-    "babel-core": "^6.26.0",
+    "babel-core": "^6.26.3",
     "babel-eslint": "8.0.3",
     "babel-jest": "^22.0.6",
     "babel-loader": "7.1.2",
@@ -92,6 +95,7 @@
     "eslint-plugin-jest": "^21.17.0",
     "husky": "^0.14.3",
     "jest": "^23.1.0",
+    "jsdoc": "^3.5.5",
     "lint-staged": "^6.0.1",
     "lodash-webpack-plugin": "^0.11.4",
     "nodemon": "^1.17.5",
@@ -152,11 +156,13 @@
       "sourceType": "module"
     },
     "env": {
+      "es6": true,
       "node": true,
       "browser": true
     },
     "extends": [
       "prettier",
+      "eslint:recommended",
       "plugin:import/errors",
       "plugin:import/warnings",
       "plugin:jest/recommended"
@@ -190,6 +196,15 @@
       }
     ]
   },
+  "nodemonConfig": {
+    "watch": [
+      "examples",
+      "shims",
+      "src",
+      "package.json"
+    ],
+    "delay": "500"
+  },
   "jest": {
     "testPathIgnorePatterns": [
       "<rootDir>/__mocks__",
@@ -211,6 +226,28 @@
     "*.md": [
       "prettier --write",
       "git add"
+    ]
+  },
+  "esdoc": {
+    "source": "./src",
+    "destination": "./docs",
+    "plugins": [
+      {
+        "name": "esdoc-standard-plugin",
+        "option": {
+          "brand": {
+            "title": "TwitchJS",
+            "description": "A community-centric, community-supported Twitch JavaScript SDK.",
+            "repository": "https://github.com/twitch-apis/twitch-js/tree/next"
+          }
+        }
+      },
+      {
+        "name": "esdoc-ecmascript-proposal-plugin",
+        "option": {
+          "all": true
+        }
+      }
     ]
   }
 }

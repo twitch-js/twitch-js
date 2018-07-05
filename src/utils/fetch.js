@@ -2,25 +2,17 @@ import fetch from 'node-fetch'
 import FormData from 'form-data'
 import { stringify } from 'qs'
 
-const parseResponse = response =>
-  response
-    .json()
-    .then(json => {
-      if (!response.ok) {
-        const error = new Error(`${response.url} ${response.statusText}`)
-        error.response = json
-        throw error
-      }
-      return json
-    })
-    .catch(error => {
-      error.ok = false
-      error.status = response.status
-      error.statusText = response.statusText
-      error.url = response.url
-      throw error
-    })
-
+/**
+ * Fetches URL
+ * @param {string} url
+ * @param {Object} [options]
+ * @param {string} [options.method='get']
+ * @param {Header} [options.headers]
+ * @param {Object} [options.search]
+ * @param {Object|FormData} [options.body]
+ * @param {Object} [qsOptions]
+ * @return {Promise<Object, Object>}
+ */
 const fetchUtil = (url, options = {}, qsOptions = {}) => {
   const isBodyJson =
     !(options.body instanceof FormData) && typeof options.body === 'object'
@@ -44,6 +36,26 @@ const fetchUtil = (url, options = {}, qsOptions = {}) => {
     body,
   }).then(parseResponse)
 }
+
+/** @ignore */
+const parseResponse = response =>
+  response
+    .json()
+    .then(json => {
+      if (!response.ok) {
+        const error = new Error(`${response.url} ${response.statusText}`)
+        error.response = json
+        throw error
+      }
+      return json
+    })
+    .catch(error => {
+      error.ok = false
+      error.status = response.status
+      error.statusText = response.statusText
+      error.url = response.url
+      throw error
+    })
 
 export { parseResponse }
 export default fetchUtil

@@ -17,7 +17,8 @@ Object {
   "command": "CLEARCHAT",
   "event": "USER_BANNED",
   "isSelf": false,
-  "state": Object {
+  "tags": Object {
+    "banDuration": undefined,
     "banReason": "Follow the rules",
   },
   "timestamp": 2018-01-01T00:00:00.000Z,
@@ -32,7 +33,9 @@ Object {
   "command": "HOSTTARGET",
   "event": "HOST_ON",
   "isSelf": false,
-  "numberOfViewers": undefined,
+  "message": undefined,
+  "numberOfViewers": 123,
+  "tags": undefined,
   "timestamp": 2018-01-01T00:00:00.000Z,
   "username": "dallas",
 }
@@ -45,7 +48,9 @@ Object {
   "command": "HOSTTARGET",
   "event": "HOST_OFF",
   "isSelf": false,
-  "numberOfViewers": undefined,
+  "message": undefined,
+  "numberOfViewers": 456,
+  "tags": undefined,
   "timestamp": 2018-01-01T00:00:00.000Z,
   "username": "-",
 }
@@ -58,7 +63,7 @@ Object {
   "command": "JOIN",
   "isSelf": false,
   "message": undefined,
-  "state": undefined,
+  "tags": undefined,
   "timestamp": 2018-01-01T00:00:00.000Z,
   "username": "ronni",
 }
@@ -73,7 +78,22 @@ Object {
   "isModerator": true,
   "isSelf": false,
   "message": undefined,
-  "state": undefined,
+  "tags": undefined,
+  "timestamp": 2018-01-01T00:00:00.000Z,
+  "username": "ronni",
+}
+`;
+
+exports[`Chat should handle MODE -o 1`] = `
+Object {
+  "_raw": ":jtv MODE #dallas -o ronni",
+  "channel": "#dallas",
+  "command": "MODE",
+  "event": "MOD_LOST",
+  "isModerator": false,
+  "isSelf": false,
+  "message": undefined,
+  "tags": undefined,
   "timestamp": 2018-01-01T00:00:00.000Z,
   "username": "ronni",
 }
@@ -89,7 +109,7 @@ Array [
     "isSelf": false,
     "listType": "chatters",
     "message": undefined,
-    "state": undefined,
+    "tags": undefined,
     "timestamp": 2018-01-01T00:00:00.000Z,
     "usernames": Array [
       "ronni",
@@ -105,7 +125,7 @@ Array [
     "isSelf": false,
     "listType": "chatters",
     "message": undefined,
-    "state": undefined,
+    "tags": undefined,
     "timestamp": 2018-01-01T00:00:00.000Z,
     "usernames": Array [
       "ronni",
@@ -120,7 +140,7 @@ Array [
     "event": "366",
     "isSelf": false,
     "message": "End of /NAMES list",
-    "state": undefined,
+    "tags": undefined,
     "timestamp": 2018-01-01T00:00:00.000Z,
     "username": "ronni",
   },
@@ -135,7 +155,7 @@ Object {
   "event": "ALREADY_BANNED",
   "isSelf": false,
   "message": "<user> is already banned in this channel.",
-  "state": Object {
+  "tags": Object {
     "msgId": "already_banned",
   },
   "timestamp": 2018-01-01T00:00:00.000Z,
@@ -150,7 +170,7 @@ Object {
   "event": "ALREADY_EMOTE_ONLY_OFF",
   "isSelf": false,
   "message": "This room is not in emote-only mode.",
-  "state": Object {
+  "tags": Object {
     "msgId": "already_emote_only_off",
   },
   "timestamp": 2018-01-01T00:00:00.000Z,
@@ -165,7 +185,7 @@ Object {
   "event": "ALREADY_EMOTE_ONLY_ON",
   "isSelf": false,
   "message": "This room is already in emote-only mode.",
-  "state": Object {
+  "tags": Object {
     "msgId": "already_emote_only_on",
   },
   "timestamp": 2018-01-01T00:00:00.000Z,
@@ -180,7 +200,7 @@ Object {
   "event": "ALREADY_R9K_OFF",
   "isSelf": false,
   "message": "This room is not in r9k mode.",
-  "state": Object {
+  "tags": Object {
     "msgId": "already_r9k_off",
   },
   "timestamp": 2018-01-01T00:00:00.000Z,
@@ -195,7 +215,7 @@ Object {
   "event": "ALREADY_R9K_ON",
   "isSelf": false,
   "message": "This room is already in r9k mode.",
-  "state": Object {
+  "tags": Object {
     "msgId": "already_r9k_on",
   },
   "timestamp": 2018-01-01T00:00:00.000Z,
@@ -210,7 +230,7 @@ Object {
   "event": "ALREADY_SUBS_OFF",
   "isSelf": false,
   "message": "This room is not in subscribers-only mode.",
-  "state": Object {
+  "tags": Object {
     "msgId": "already_subs_off",
   },
   "timestamp": 2018-01-01T00:00:00.000Z,
@@ -225,7 +245,7 @@ Object {
   "event": "ALREADY_SUBS_ON",
   "isSelf": false,
   "message": "This room is already in subscribers-only mode.",
-  "state": Object {
+  "tags": Object {
     "msgId": "already_subs_on",
   },
   "timestamp": 2018-01-01T00:00:00.000Z,
@@ -240,7 +260,7 @@ Object {
   "event": "BAD_HOST_HOSTING",
   "isSelf": false,
   "message": "This channel is hosting <channel>.",
-  "state": Object {
+  "tags": Object {
     "msgId": "bad_host_hosting",
   },
   "timestamp": 2018-01-01T00:00:00.000Z,
@@ -255,7 +275,7 @@ Object {
   "event": "BAD_UNBAN_NO_BAN",
   "isSelf": false,
   "message": "<user> is not banned from this channel.",
-  "state": Object {
+  "tags": Object {
     "msgId": "bad_unban_no_ban",
   },
   "timestamp": 2018-01-01T00:00:00.000Z,
@@ -270,7 +290,7 @@ Object {
   "event": "BAN_SUCCESS",
   "isSelf": false,
   "message": "<user> is now banned from this channel.",
-  "state": Object {
+  "tags": Object {
     "msgId": "ban_success",
   },
   "timestamp": 2018-01-01T00:00:00.000Z,
@@ -285,7 +305,7 @@ Object {
   "event": "EMOTE_ONLY_OFF",
   "isSelf": false,
   "message": "This room is no longer in emote-only mode.",
-  "state": Object {
+  "tags": Object {
     "msgId": "emote_only_off",
   },
   "timestamp": 2018-01-01T00:00:00.000Z,
@@ -300,7 +320,7 @@ Object {
   "event": "EMOTE_ONLY_ON",
   "isSelf": false,
   "message": "This room is now in emote-only mode.",
-  "state": Object {
+  "tags": Object {
     "msgId": "emote_only_on",
   },
   "timestamp": 2018-01-01T00:00:00.000Z,
@@ -315,7 +335,7 @@ Object {
   "event": "HOST_OFF",
   "isSelf": false,
   "message": "Exited host mode.",
-  "state": Object {
+  "tags": Object {
     "msgId": "host_off",
   },
   "timestamp": 2018-01-01T00:00:00.000Z,
@@ -330,7 +350,7 @@ Object {
   "event": "HOST_ON",
   "isSelf": false,
   "message": "Now hosting <channel>.",
-  "state": Object {
+  "tags": Object {
     "msgId": "host_on",
   },
   "timestamp": 2018-01-01T00:00:00.000Z,
@@ -345,7 +365,7 @@ Object {
   "event": "HOSTS_REMAINING",
   "isSelf": false,
   "message": "There are <number> host commands remaining this half hour.",
-  "state": Object {
+  "tags": Object {
     "msgId": "hosts_remaining",
   },
   "timestamp": 2018-01-01T00:00:00.000Z,
@@ -360,7 +380,7 @@ Object {
   "event": "MSG_CHANNEL_SUSPENDED",
   "isSelf": false,
   "message": "This channel is suspended.",
-  "state": Object {
+  "tags": Object {
     "msgId": "msg_channel_suspended",
   },
   "timestamp": 2018-01-01T00:00:00.000Z,
@@ -375,7 +395,7 @@ Object {
   "event": "R9K_OFF",
   "isSelf": false,
   "message": "This room is no longer in r9k mode.",
-  "state": Object {
+  "tags": Object {
     "msgId": "r9k_off",
   },
   "timestamp": 2018-01-01T00:00:00.000Z,
@@ -390,7 +410,7 @@ Object {
   "event": "R9K_ON",
   "isSelf": false,
   "message": "This room is now in r9k mode.",
-  "state": Object {
+  "tags": Object {
     "msgId": "r9k_on",
   },
   "timestamp": 2018-01-01T00:00:00.000Z,
@@ -405,7 +425,7 @@ Object {
   "event": "SLOW_OFF",
   "isSelf": false,
   "message": "This room is no longer in slow mode.",
-  "state": Object {
+  "tags": Object {
     "msgId": "slow_off",
   },
   "timestamp": 2018-01-01T00:00:00.000Z,
@@ -420,7 +440,7 @@ Object {
   "event": "SLOW_ON",
   "isSelf": false,
   "message": "This room is now in slow mode. You may send messages every <slow seconds> seconds.",
-  "state": Object {
+  "tags": Object {
     "msgId": "slow_on",
   },
   "timestamp": 2018-01-01T00:00:00.000Z,
@@ -435,7 +455,7 @@ Object {
   "event": "SUBS_OFF",
   "isSelf": false,
   "message": "This room is no longer in subscribers-only mode.",
-  "state": Object {
+  "tags": Object {
     "msgId": "subs_off",
   },
   "timestamp": 2018-01-01T00:00:00.000Z,
@@ -450,7 +470,7 @@ Object {
   "event": "SUBS_ON",
   "isSelf": false,
   "message": "This room is now in subscribers-only mode.",
-  "state": Object {
+  "tags": Object {
     "msgId": "subs_on",
   },
   "timestamp": 2018-01-01T00:00:00.000Z,
@@ -465,7 +485,7 @@ Object {
   "event": "TIMEOUT_SUCCESS",
   "isSelf": false,
   "message": "<user> has been timed out for <duration> seconds.",
-  "state": Object {
+  "tags": Object {
     "msgId": "timeout_success",
   },
   "timestamp": 2018-01-01T00:00:00.000Z,
@@ -480,7 +500,7 @@ Object {
   "event": "UNBAN_SUCCESS",
   "isSelf": false,
   "message": "<user> is no longer banned from this channel.",
-  "state": Object {
+  "tags": Object {
     "msgId": "unban_success",
   },
   "timestamp": 2018-01-01T00:00:00.000Z,
@@ -495,7 +515,7 @@ Object {
   "event": "UNRECOGNIZED_CMD",
   "isSelf": false,
   "message": "Unrecognized command: <command>",
-  "state": Object {
+  "tags": Object {
     "msgId": "unrecognized_cmd",
   },
   "timestamp": 2018-01-01T00:00:00.000Z,
@@ -509,7 +529,7 @@ Object {
   "command": "PART",
   "isSelf": false,
   "message": undefined,
-  "state": undefined,
+  "tags": undefined,
   "timestamp": 2018-01-01T00:00:00.000Z,
   "username": "ronni",
 }
@@ -522,8 +542,7 @@ Object {
   "command": "PRIVMSG",
   "isSelf": false,
   "message": "Kappa Keepo Kappa",
-  "timestamp": 2018-01-01T00:00:00.000Z,
-  "userState": Object {
+  "tags": Object {
     "badges": Object {
       "global_mod": 1,
       "turbo": 1,
@@ -545,6 +564,7 @@ Object {
     "id": "b34ccfc7-4977-403a-8a94-33c6bac34fb8",
     "isModerator": false,
     "isSubscriber": false,
+    "isTurboSubscriber": true,
     "mod": "0",
     "roomId": "1337",
     "subscriber": "0",
@@ -553,6 +573,7 @@ Object {
     "userId": "1337",
     "userType": "global_mod",
   },
+  "timestamp": 2018-01-01T00:00:00.000Z,
 }
 `;
 
@@ -565,13 +586,12 @@ Object {
   "event": "CHEER",
   "isSelf": false,
   "message": "cheer100",
-  "timestamp": 2018-01-01T00:00:00.000Z,
-  "userState": Object {
+  "tags": Object {
     "badges": Object {
       "bits": 1000,
       "staff": 1,
     },
-    "bits": undefined,
+    "bits": 100,
     "color": true,
     "displayName": "dallas",
     "emoteSets": undefined,
@@ -579,6 +599,7 @@ Object {
     "id": "b34ccfc7-4977-403a-8a94-33c6bac34fb8",
     "isModerator": false,
     "isSubscriber": false,
+    "isTurboSubscriber": true,
     "mod": "0",
     "roomId": "1337",
     "subscriber": "0",
@@ -587,6 +608,7 @@ Object {
     "userId": "1337",
     "userType": "staff",
   },
+  "timestamp": 2018-01-01T00:00:00.000Z,
 }
 `;
 
@@ -602,8 +624,7 @@ Object {
   "raiderUserName": "testchannel",
   "raiderViewerCount": "15",
   "systemMessage": "15 raiders from TestChannel have joined\\\\n!",
-  "timestamp": 2018-01-01T00:00:00.000Z,
-  "userState": Object {
+  "tags": Object {
     "badges": Object {
       "turbo": 1,
     },
@@ -615,6 +636,7 @@ Object {
     "id": "3d830f12-795c-447d-af3c-ea05e40fbddb",
     "isModerator": false,
     "isSubscriber": false,
+    "isTurboSubscriber": true,
     "login": "testchannel",
     "mod": "0",
     "msgId": "raid",
@@ -629,6 +651,7 @@ Object {
     "userId": "123456",
     "userType": undefined,
   },
+  "timestamp": 2018-01-01T00:00:00.000Z,
 }
 `;
 
@@ -644,8 +667,7 @@ Object {
   "subPlan": "Prime",
   "subPlanName": "Prime",
   "systemMessage": "ronni has subscribed for 6 months!",
-  "timestamp": 2018-01-01T00:00:00.000Z,
-  "userState": Object {
+  "tags": Object {
     "badges": Object {
       "broadcaster": 1,
       "staff": 1,
@@ -659,6 +681,7 @@ Object {
     "id": "db25007f-7a18-43eb-9379-80131e44d633",
     "isModerator": false,
     "isSubscriber": true,
+    "isTurboSubscriber": true,
     "login": "ronni",
     "mod": "0",
     "msgId": "resub",
@@ -673,6 +696,7 @@ Object {
     "userId": "1337",
     "userType": "staff",
   },
+  "timestamp": 2018-01-01T00:00:00.000Z,
 }
 `;
 
@@ -686,8 +710,7 @@ Object {
   "message": "HeyGuys",
   "ritualName": "new_chatter",
   "systemMessage": "Seventoes is new here!",
-  "timestamp": 2018-01-01T00:00:00.000Z,
-  "userState": Object {
+  "tags": Object {
     "badges": Object {},
     "bits": undefined,
     "color": true,
@@ -702,6 +725,7 @@ Object {
     "id": "37feed0f-b9c7-4c3a-b475-21c6c6d21c3d",
     "isModerator": false,
     "isSubscriber": false,
+    "isTurboSubscriber": false,
     "login": "seventest1",
     "mod": "0",
     "msgId": "ritual",
@@ -714,6 +738,7 @@ Object {
     "userId": "131260580",
     "userType": undefined,
   },
+  "timestamp": 2018-01-01T00:00:00.000Z,
 }
 `;
 
@@ -729,8 +754,7 @@ Object {
   "subPlan": "Prime",
   "subPlanName": "Prime",
   "systemMessage": "ronni just subscribed with Twitch Prime!",
-  "timestamp": 2018-01-01T00:00:00.000Z,
-  "userState": Object {
+  "tags": Object {
     "badges": Object {
       "broadcaster": 1,
       "staff": 1,
@@ -744,6 +768,7 @@ Object {
     "id": "db25007f-7a18-43eb-9379-80131e44d633",
     "isModerator": false,
     "isSubscriber": true,
+    "isTurboSubscriber": true,
     "login": "ronni",
     "mod": "0",
     "msgId": "sub",
@@ -758,6 +783,7 @@ Object {
     "userId": "1337",
     "userType": "staff",
   },
+  "timestamp": 2018-01-01T00:00:00.000Z,
 }
 `;
 
@@ -773,8 +799,7 @@ Object {
   "recipientId": "89614178",
   "recipientUserName": "mr_woodchuck",
   "systemMessage": "TWW2 gifted a Tier 1 sub to Mr_Woodchuck!",
-  "timestamp": 2018-01-01T00:00:00.000Z,
-  "userState": Object {
+  "tags": Object {
     "badges": Object {
       "premium": 1,
       "staff": 1,
@@ -787,6 +812,7 @@ Object {
     "id": "e9176cd8-5e22-4684-ad40-ce53c2561c5e",
     "isModerator": false,
     "isSubscriber": false,
+    "isTurboSubscriber": false,
     "login": "tww2",
     "mod": "0",
     "msgId": "subgift",
@@ -804,19 +830,23 @@ Object {
     "userId": "13405587",
     "userType": "staff",
   },
+  "timestamp": 2018-01-01T00:00:00.000Z,
 }
 `;
 
 exports[`Chat should join channel 1`] = `
 Object {
   "roomState": Object {
+    "broadcasterLang": "en",
     "broadcasterLanguage": "en",
     "isEmoteOnly": false,
     "isFollowersOnly": false,
     "isR9kEnabled": false,
     "isSubscribersOnly": false,
-    "roomId": undefined,
+    "r9k": "0",
+    "slow": "0",
     "slowDelay": 0,
+    "subsOnly": "0",
   },
   "userState": Object {
     "badges": Object {},
@@ -840,6 +870,7 @@ Object {
     "emotes": Object {},
     "isModerator": true,
     "isSubscriber": true,
+    "isTurboSubscriber": true,
     "mod": "1",
     "subscriber": "1",
     "turbo": "1",

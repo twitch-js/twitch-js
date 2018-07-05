@@ -36,6 +36,13 @@ class Client extends EventEmitter {
     this.disconnect = this.disconnect.bind({ ws })
   }
 
+  /**
+   * Send message to Twitch
+   * @param {string} message
+   * @param {Object} options
+   * @param {number} options.priority
+   * @param {MessageWeightProps} ...options.weighProps
+   */
   send(message, { priority, ...weighProps } = {}) {
     const fn = this.ws.send.bind(this.ws, message)
 
@@ -70,20 +77,21 @@ function handleMessage(messageEvent) {
     const messages = baseParser(rawMessage)
 
     messages.forEach(message => {
-      switch (message.command) {
-        // Handle PING/PONG.
-        case constants.COMMANDS.PING:
-          this.send('PONG :tmi.twitch.tv', { priority })
-        // Handle successful connections.
-        case constants.COMMANDS.GLOBAL_USER_STATE:
-          this.emit(constants.EVENTS.CONNECTED, {
-            ...message,
-            command: constants.EVENTS.CONNECTED,
-          })
-        default:
-          // Emit all messages.
-          this.emit(constants.EVENTS.ALL, message)
+      // Handle PING/PONG.
+      if (message.command === constants.COMMANDS.PING) {
+        this.send('PONG :tmi.twitch.tv', { priority })
       }
+
+      // Handle successful connections.
+      if (message.command === constants.COMMANDS.GLOBAL_USER_STATE) {
+        this.emit(constants.EVENTS.CONNECTED, {
+          ...message,
+          command: constants.EVENTS.CONNECTED,
+        })
+      }
+
+      // Emit all messages.
+      this.emit(constants.EVENTS.ALL, message)
     })
   } catch (error) {
     const message = {

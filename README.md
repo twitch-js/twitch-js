@@ -1,10 +1,3 @@
-# Warning
-
-This branch is under active development; expect **breaking changes**. Please use
-[v1](https://github.com/twitch-apis/twitch-js/tree/master) instead. If you still
-choose to use this branch, use version pinning, refer to the diffs, and update
-accordingly to avoid regressions.
-
 # TwitchJS
 
 [![Travis branch](https://img.shields.io/travis/twitch-apis/twitch-js/master.svg?longCache=true&style=flat-square)](https://travis-ci.org/twitch-apis/twitch-js)
@@ -16,6 +9,13 @@ accordingly to avoid regressions.
 [![Gitter](https://img.shields.io/gitter/room/twitch-apis/twitch-js.svg?longCache=true&style=flat-square)](https://gitter.im/twitch-apis/twitch-js)
 
 A community-centric, community-supported Twitch JavaScript SDK.
+
+## Warning
+
+This branch is under active development; expect **breaking changes**. Please use
+[v1](https://github.com/twitch-apis/twitch-js/tree/master) instead. If you still
+choose to use this branch, use version pinning, refer to the diffs, and update
+accordingly to avoid regressions.
 
 ## Features
 
@@ -30,14 +30,47 @@ A community-centric, community-supported Twitch JavaScript SDK.
 
 ### In progress...
 
-* [ ] Chat command confirmations
-* [ ] Logging
-* [ ] Backwards compatibility with tmi.js@~1.2.0 and twitch.js@~1.2.0
-* [ ] Documentation
-* [ ] Kraken API helper
-* [ ] Helix API
-* [ ] 100% test coverage
-* [ ] TypeScript definitions
+Here are the
+[planned features](https://github.com/twitch-apis/twitch-js/milestone/1). If you
+feel something is missing, create an issue or submit a PR against the next
+branch.
+
+## Getting started
+
+### CommonJS
+
+If you are using a module bundler, such [Webpack](https://webpack.js.org/),
+[Browserify](http://browserify.org/), or a in a Node environment:
+
+1. Add TwitchJS to your project:
+   ```bash
+   npm install --save twitch-js@next
+   ```
+2. Import TwitchJS
+
+   ```js
+   // ES2015 syntax
+   import Twitch from 'twitch-js'
+
+   // OR ES5 syntax
+   var twitch = require('twitch-js')
+   ```
+
+### UMD
+
+If you are not using a module bundler, precompiled builds are available in the
+[`dist` folder](https://unpkg.com/twitch-js@>2.0.0-beta/dist/):
+
+1. Include a script tag in your HTML:
+   ```html
+   <script src="//unpkg.com/twitch-js@>2.0.0-beta/dist/twitch-js.min.js"></script>
+   ```
+2. Consume the library:
+   ```html
+   <script type="javascript">
+     window.TwitchJS ...
+   </script>
+   ```
 
 ## Documentation
 
