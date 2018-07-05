@@ -1,3 +1,7 @@
+/**
+ * @external EventEmitter3
+ * @see {@link https://github.com/primus/eventemitter3 EventEmitter3}
+ */
 import { EventEmitter } from 'eventemitter3'
 
 import { get } from 'lodash'
@@ -14,24 +18,57 @@ import * as validators from './utils/validators'
 
 /**
  * Chat client
+ * @extends external:EventEmitter3
  *
- * @example <caption>Connecting to Twitch</caption>
- * const token = OAUTH_TOKEN
- * const username = USERNAME
+ * @emits Chat#*
+ * @emits Chat#CLEARCHAT
+ * @emits Chat#CLEARCHAT/USER_BANNED
+ * @emits Chat#GLOBALUSERSTATE
+ * @emits Chat#HOSTTARGET
+ * @emits Chat#JOIN
+ * @emits Chat#MODE
+ * @emits Chat#NAMES
+ * @emits Chat#NAMES_END
+ * @emits Chat#NOTICE
+ * @emits Chat#NOTICE/ROOM_MODS
+ * @emits Chat#PART
+ * @emits Chat#PRIVMSG
+ * @emits Chat#ROOMSTATE
+ * @emits Chat#USERNOTICE/RAID
+ * @emits Chat#USERNOTICE/RESUBSCRIPTION
+ * @emits Chat#USERNOTICE/RITUAL
+ * @emits Chat#USERNOTICE/SUBSCRIPTION
+ * @emits Chat#USERNOTICE/SUBSCRIPTION_GIFT
+ * @emits Chat#USERSTATE
+ *
+ * @example <caption>Connecting to Twitch and joining #dallas</caption>
+ * const token = 'cfabdegwdoklmawdzdo98xt2fo512y'
+ * const username = 'dallas'
+ * const channel = '#dallas'
  * const chat = new Chat({ token, username })
  *
  * chat.connect().then(globalUserState => {
- *   // Do stuff ...
+ *   // Listen to all messages
+ *   chat.on('*', message => {
+ *     // Do stuff with message ...
+ *   })
+ *
+ *   // Listen to PRIVMSG
+ *   chat.on('PRIVMSG', privateMessage => {
+ *     // Do stuff with privateMessage ...
+ *   })
+ *
+ *   // Do other stuff ...
+ *
+ *   chat.join(channel).then(channelState => {
+ *     // Do stuff with channelState...
+ *   })
  * })
  */
 class Chat extends EventEmitter {
   /**
-   * Chat client ready state:
-   * * **0** not ready
-   * * **1** connecting
-   * * **2** connected
-   * * **3** disconnecting
-   * * **4** disconnected
+   * Chat client ready state: **0** not ready; **1** connecting; **2**
+   * connected **3**; disconnecting, or; **4** disconnected.
    * @type {number}
    */
   readyState = 0
@@ -43,14 +80,14 @@ class Chat extends EventEmitter {
   channels = {}
 
   /**
-   * Chat constructor
+   * Chat constructor.
    * @param {ChatOptions} options
    */
   constructor(maybeOptions) {
     super()
 
     /**
-     * Valid options
+     * Validated options.
      * @type {ChatOptions}
      */
     this.options = validators.chatOptions(maybeOptions)
@@ -123,7 +160,6 @@ class Chat extends EventEmitter {
 
   /**
    * Disconnect from Twitch.
-   * @param {undefined} client
    */
   disconnect(client) {
     this.readyState = 3
@@ -140,6 +176,33 @@ class Chat extends EventEmitter {
    * Join a channel.
    * @param {string} channel
    * @return {Promise<ChannelState, string>}
+   *
+   * @example <caption>Joining #dallas</caption>
+   * const channel = '#dallas'
+   *
+   * chat.join(channel).then(channelState => {
+   *   // Do stuff with channelState...
+   * })
+   *
+   * @example <caption>Joining multiple channels</caption>
+   * const channels = ['#dallas', '#ronni']
+   *
+   * Promise.all(channels.map(channel => chat.join(channel)))
+   *   .then(channelStates => {
+   *     // Listen to all PRIVMSG
+   *     chat.on('PRIVMSG', privateMessage => {
+   *       // Do stuff with privateMessage ...
+   *     })
+   *
+   *     // Listen to PRIVMSG from #dallas ONLY
+   *     chat.on('PRIVMSG/#dallas', privateMessage => {
+   *       // Do stuff with privateMessage ...
+   *     })
+   *     // Listen to all PRIVMSG from #ronni ONLY
+   *     chat.on('PRIVMSG/#ronni, privateMessage => {
+   *       // Do stuff with privateMessage ...
+   *     })
+   *   })
    */
   join(maybeChannel) {
     const channel = sanitizers.channel(maybeChannel)
@@ -235,7 +298,10 @@ class Chat extends EventEmitter {
       return eventPartial
     }, [])
 
-    // Emit all events.
+    /**
+     * All events are also emitted with this event name.
+     * @event Chat#*
+     */
     super.emit(constants.EVENTS.ALL, message)
   }
 }

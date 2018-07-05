@@ -59,7 +59,7 @@ const roomState = tags => ({
   isSubscribersOnly: types.generalBoolean(tags.subsOnly),
 })
 
-/** PRIVMSG tags
+/** USERNOTICE tags
  * @typedef {UserStateTags} UserNoticeTags
  * @see https://dev.twitch.tv/docs/irc/tags#usernotice-twitch-tags
  */

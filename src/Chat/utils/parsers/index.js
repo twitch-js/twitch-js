@@ -160,8 +160,13 @@ const globalUserStateMessage = baseMessage => {
   /**
    * GLOBALUSERSTATE message
    * @event Chat#GLOBALUSERSTATE
-   * @mixes BaseMessage GlobalUserStateMessage
+   * @mixin GlobalUserStateMessage
+   * @mixes BaseMessage
    * @property {GlobalUserStateTags} tags
+   */
+  /**
+   * @event Chat#GLOBALUSERSTATE
+   * @mixes GlobalUserStateMessage
    */
   return {
     tags: tagParsers.globalUserState(tags),
@@ -263,7 +268,7 @@ const noticeMessage = baseMessage => {
   switch (tags.msgId) {
     case constants.NOTICE_MESSAGE_IDS.ROOM_MODS:
       /**
-       * NOTICE message
+       * NOTICE/ROOM_MODS message
        * @event Chat#NOTICE/ROOM_MODS
        * @mixes NoticeMessage NoticeMessage
        * @property {'ROOM_MODS'} event
@@ -274,11 +279,17 @@ const noticeMessage = baseMessage => {
       /**
        * NOTICE message
        * @event Chat#NOTICE
-       * @mixes BaseMessage
        * @mixin NoticeMessage
-       * @property {string} event
+       * @mixes BaseMessage
+       * @property {string} event `msg-id` tag (snake uppercase)
        * @property {Object} tags
        * @see https://dev.twitch.tv/docs/irc/commands/#msg-id-tags-for-the-notice-commands-capability
+       */
+
+      /**
+       * NOTICE message
+       * @event Chat#NOTICE
+       * @mixes NoticeMessage
        */
       return { event, tags, ...other }
   }
