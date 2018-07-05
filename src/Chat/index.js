@@ -242,7 +242,7 @@ class Chat extends EventEmitter {
   }
 
   /**
-   * Leave a channel.
+   * Depart from a channel.
    * @param {string} channel
    */
   part(maybeChannel) {
@@ -253,7 +253,7 @@ class Chat extends EventEmitter {
   }
 
   /**
-   * Say a message in a channel.
+   * Send a message to a channel.
    * @param {string} channel
    * @param {string} message
    * @return {Promise<UserStateMessage, string>}

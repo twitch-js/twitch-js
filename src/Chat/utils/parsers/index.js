@@ -48,14 +48,14 @@ const joinOrPartMessage = baseMessage => {
   ] = /:(.+)!(.+)@(.+).tmi.twitch.tv (JOIN|PART) (#.+)/g.exec(baseMessage._raw)
 
   /**
-   * JOIN message
+   * Join a channel.
    * @event Chat#JOIN
    * @mixes BaseMessage JoinOrPartMessage
    * @property {string} username Username (lower-case)
    * @see https://dev.twitch.tv/docs/irc/membership/#join-twitch-membership
    */
   /**
-   * PART message
+   * Depart from a channel.
    * @event Chat#PART
    * @mixes BaseMessage JoinOrPartMessage
    * @property {string} username Username (lower-case)
@@ -81,7 +81,7 @@ const modeMessage = baseMessage => {
   const isModerator = mode === '+'
 
   /**
-   * MODE message
+   * Gain/lose moderator (operator) status in a channel.
    * @event Chat#MODE
    * @mixes BaseMessage ModeMessage
    * @property {string} event
@@ -113,7 +113,7 @@ const namesMessage = baseMessage => {
   const namesV = names.split(' ')
 
   /**
-   * NAMES message
+   * List current chatters in a channel.
    * @event Chat#NAMES
    * @mixes BaseMessage NamesMessage
    * @property {Array<string>} usernames Array of usernames present in channel
@@ -140,7 +140,7 @@ const namesEndMessage = baseMessage => {
   ] = /:(.+).tmi.twitch.tv 366 (.+) (#.+) :(.+)/g.exec(baseMessage._raw)
 
   /**
-   * End of NAMES message
+   * End of list current chatters in a channel.
    * @event Chat#NAMES_END
    * @mixes BaseMessage NamesEndMessage
    * @see https://dev.twitch.tv/docs/irc/membership/#names-twitch-membership
@@ -158,13 +158,13 @@ const globalUserStateMessage = baseMessage => {
   const { tags, ...other } = baseMessage
 
   /**
-   * GLOBALUSERSTATE message
    * @event Chat#GLOBALUSERSTATE
    * @mixin GlobalUserStateMessage
    * @mixes BaseMessage
    * @property {GlobalUserStateTags} tags
    */
   /**
+   * On successful login.
    * @event Chat#GLOBALUSERSTATE
    * @mixes GlobalUserStateMessage
    */
@@ -179,7 +179,7 @@ const clearChatMessage = baseMessage => {
 
   if (typeof username !== 'undefined') {
     /**
-     * CLEARCHAT (user banned) message
+     * Temporary or permanent ban on a channel.
      * @event Chat#CLEARCHAT/USER_BANNED
      * @mixes BaseMessage ClearChatUserBannedMessage
      * @property {ClearChatTags} tags
@@ -200,7 +200,7 @@ const clearChatMessage = baseMessage => {
   }
 
   /**
-   * CLEARCHAT message
+   * All chat is cleared (deleted).
    * @event Chat#CLEARCHAT
    * @mixes BaseMessage ClearChatMessage
    * @see https://dev.twitch.tv/docs/irc/commands/#clearchat-twitch-commands
@@ -223,7 +223,7 @@ const hostTargetMessage = baseMessage => {
   const isStopped = username === '-'
 
   /**
-   * HOSTTARGET message
+   * Host starts or stops a message.
    * @event Chat#HOSTTARGET
    * @mixes BaseMessage HostTargetMessage
    * @property {number} [numberOfViewers] Number of viewers
@@ -249,7 +249,7 @@ const roomStateMessage = baseMessage => {
   const { tags, ...other } = baseMessage
 
   /**
-   * ROOMSTATE message
+   * When a user joins a channel or a room setting is changed.
    * @event Chat#ROOMSTATE
    * @mixes BaseMessage RoomStateMessage
    * @property {RoomStateTags} tags
@@ -277,7 +277,6 @@ const noticeMessage = baseMessage => {
       return { event, tags, mods: typeParsers.mods(other.message), ...other }
     default:
       /**
-       * NOTICE message
        * @event Chat#NOTICE
        * @mixin NoticeMessage
        * @mixes BaseMessage
@@ -287,7 +286,7 @@ const noticeMessage = baseMessage => {
        */
 
       /**
-       * NOTICE message
+       * General notices from the server.
        * @event Chat#NOTICE
        * @mixes NoticeMessage
        */
@@ -305,6 +304,7 @@ const userStateMessage = baseMessage => {
    * @property {UserStateTags} tags
    */
   /**
+   * When a user joins a channel or sends a PRIVMSG to a channel.
    * @event Chat#USERSTATE
    * @mixes UserStateMessage UserStateMessage
    */
@@ -316,7 +316,7 @@ const userStateMessage = baseMessage => {
 }
 
 /**
- * PRIVMSG message
+ * When a user joins a channel or sends a PRIVMSG to a channel.
  * @event Chat#PRIVMSG
  * @mixes UserStateMessage PrivateMessage
  * @property {'CHEER'} [event]
@@ -331,7 +331,7 @@ const userNoticeMessage = baseMessage => {
   switch (tags.msgId) {
     case constants.USER_NOTICE_MESSAGE_IDS.SUBSCRIPTION:
       /**
-       * USERNOTICE/SUBSCRIPTION message
+       * On subscription (first month) to a channel.
        * @event Chat#USERNOTICE/SUBSCRIPTION
        * @mixes UserStateMessage UserNoticeSubscriptionMessage
        * @property {'SUBSCRIPTION'} event
@@ -351,7 +351,7 @@ const userNoticeMessage = baseMessage => {
       }
     case constants.USER_NOTICE_MESSAGE_IDS.RESUBSCRIPTION:
       /**
-       * USERNOTICE/RESUBSCRIPTION message
+       * On resubscription (subsequent months) to a channel.
        * @event Chat#USERNOTICE/RESUBSCRIPTION
        * @mixes UserNoticeSubscriptionMessage UserNoticeResubscriptionMessage
        * @property {'RESUBSCRIPTION'} event
@@ -367,7 +367,7 @@ const userNoticeMessage = baseMessage => {
       }
     case constants.USER_NOTICE_MESSAGE_IDS.SUBSCRIPTION_GIFT:
       /**
-       * USERNOTICE/SUBSCRIPTION_GIFT message
+       * On subscription gift to a channel.
        * @event Chat#USERNOTICE/SUBSCRIPTION_GIFT
        * @mixes UserStateMessage UserNoticeSubscriptionGiftMessage
        * @property {'SUBSCRIPTION_GIFT'} event
@@ -387,7 +387,7 @@ const userNoticeMessage = baseMessage => {
       }
     case constants.USER_NOTICE_MESSAGE_IDS.RAID:
       /**
-       * USERNOTICE/RAID message
+       * On channel raid.
        * @event Chat#USERNOTICE/RAID
        * @mixes UserStateMessage UserNoticeRaidMessage
        * @property {'RAID'} event
@@ -407,7 +407,7 @@ const userNoticeMessage = baseMessage => {
       }
     case constants.USER_NOTICE_MESSAGE_IDS.RITUAL:
       /**
-       * USERNOTICE/RITUAL message
+       * On channel ritual.
        * @event Chat#USERNOTICE/RITUAL
        * @mixes UserStateMessage UserNoticeRitualMessage
        * @property {'RITUAL'} event
