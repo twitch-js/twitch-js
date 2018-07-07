@@ -1,8 +1,8 @@
-# TwitchJS
+# [TwitchJS](https://twitch-apis.github.io/twitch-js)
 
 [![Travis branch](https://img.shields.io/travis/twitch-apis/twitch-js/master.svg?longCache=true&style=flat-square)](https://travis-ci.org/twitch-apis/twitch-js)
 [![npm](https://img.shields.io/npm/v/twitch-js.svg?longCache=true&style=flat-square)](https://www.npmjs.com/package/twitch-js)
-[![npm](https://img.shields.io/npm/v/twitch-js/next.svg?longCache=true&style=flat-square)](https://www.npmjs.com/package/twitch-js)
+[![npm](https://img.shields.io/npm/v/twitch-js/next.svg?longCache=true&style=flat-square)](https://www.npmjs.com/package/twitch-js/v/next)
 [![npm](https://img.shields.io/npm/dm/twitch-js.svg?longCache=true&style=flat-square)](https://www.npmjs.com/package/twitch-js)
 [![GitHub issues](https://img.shields.io/github/issues/twitch-apis/twitch-js.svg?longCache=true&style=flat-square)](https://github.com/twitch-apis/twitch-js/issues)
 [![Coverage Status](https://img.shields.io/codecov/c/github/twitch-apis/twitch-js/next.svg?longCache=true&style=flat-square)](https://codecov.io/gh/twitch-apis/twitch-js/branch/next)
@@ -71,10 +71,6 @@ If you are not using a module bundler, precompiled builds are available in the
      window.TwitchJS ...
    </script>
    ```
-
-## Documentation
-
-Coming soon.
 
 ## Contribution guidelines
 

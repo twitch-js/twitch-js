@@ -53,9 +53,8 @@
     "build:dist:dev": "webpack",
     "build:dist:prod": "webpack --env.production",
     "build": "run-p build:**",
-    "predocs": "rimraf docs",
-    "docs:dev": "nodemon --exec npm run docs",
-    "docs": "jsdoc -c jsdoc.json"
+    "jsdoc2md:watch": "nodemon --exec npm run jsdoc2md",
+    "jsdoc2md": "node scripts/jsdoc2md/generateDocs.js"
   },
   "dependencies": {
     "babel-runtime": "^6.26.0",
@@ -89,13 +88,14 @@
     "babel-preset-stage-2": "^6.24.1",
     "codecov": "^3.0.2",
     "compression-webpack-plugin": "^1.1.3",
+    "docusaurus-init": "^1.0.2",
     "eslint": "^4.19.1",
     "eslint-config-prettier": "^2.9.0",
     "eslint-plugin-import": "2.8.0",
     "eslint-plugin-jest": "^21.17.0",
     "husky": "^0.14.3",
     "jest": "^23.1.0",
-    "jsdoc": "^3.5.5",
+    "jsdoc-to-markdown": "^4.0.1",
     "lint-staged": "^6.0.1",
     "lodash-webpack-plugin": "^0.11.4",
     "nodemon": "^1.17.5",
@@ -201,7 +201,8 @@
       "examples",
       "shims",
       "src",
-      "package.json"
+      "*.js",
+      "*.json"
     ],
     "delay": "500"
   },

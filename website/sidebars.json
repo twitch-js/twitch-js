@@ -1,0 +1,19 @@
+{
+  "docs":{
+    "Introduction":[
+      "getting-started"
+    ],
+    "Examples":[
+      "examples-node",
+      "examples-browser"
+    ],
+    "API":[
+      "api/class",
+      "api/constant",
+      "api/external",
+      "api/function",
+      "api/mixin",
+      "api/typedef"
+    ]
+  }
+}
