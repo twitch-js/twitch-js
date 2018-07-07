@@ -1,4 +1,4 @@
-const TwitchJs = require('twitch-js@2.0.0-beta.1').default;
+const TwitchJs = require('twitch-js').default;
 
 // Provide your token, username and channel. You can generate a token here:
 // https://twitchapps.com/tmi/
