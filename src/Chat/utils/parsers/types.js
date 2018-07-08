@@ -34,6 +34,7 @@ const badges = maybeBadges => {
    * @property {boolean} [subscriber]
    * @property {boolean} [staff]
    * @property {boolean} [turbo]
+   * @see https://dev.twitch.tv/docs/irc/tags/#privmsg-twitch-tags
    */
   return typeof maybeBadges === 'string'
     ? maybeBadges.split(',').reduce((parsed, badge) => {
@@ -49,6 +50,7 @@ const emotes = maybeEmotes => {
    * @typedef {Object} EmoteTag
    * @property {number} start
    * @property {number} end
+   * @see https://dev.twitch.tv/docs/irc/tags/#privmsg-twitch-tags
    */
   return typeof maybeEmotes === 'string'
     ? maybeEmotes.split('/').reduce((parsed, emote) => {

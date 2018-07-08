@@ -1,4 +1,5 @@
 /**
+ * EventEmitter3 is a high performance EventEmitter
  * @external EventEmitter3
  * @see {@link https://github.com/primus/eventemitter3 EventEmitter3}
  */
@@ -43,7 +44,7 @@ import * as validators from './utils/validators'
  *
  * @example <caption>Connecting to Twitch and joining #dallas</caption>
  * const token = 'cfabdegwdoklmawdzdo98xt2fo512y'
- * const username = 'dallas'
+ * const username = 'ronni'
  * const channel = '#dallas'
  * const chat = new Chat({ token, username })
  *
@@ -199,7 +200,7 @@ class Chat extends EventEmitter {
    *       // Do stuff with privateMessage ...
    *     })
    *     // Listen to all PRIVMSG from #ronni ONLY
-   *     chat.on('PRIVMSG/#ronni, privateMessage => {
+   *     chat.on('PRIVMSG/#ronni', privateMessage => {
    *       // Do stuff with privateMessage ...
    *     })
    *   })
@@ -221,6 +222,7 @@ class Chat extends EventEmitter {
       ([, { channel, tags: roomState }, { tags: userState }]) => {
         /**
          * @typedef {Object} ChannelState
+         * Channel state information
          * @property {RoomStateTags} roomState
          * @property {UserStateTags} userState
          */

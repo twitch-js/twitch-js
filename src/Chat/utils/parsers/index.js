@@ -14,12 +14,12 @@ const base = rawMessages => {
     const { raw, tags, command, params: [channel, message] } = parse(rawMessage)
 
     /**
-     * Parsed base message
+     * Base message parsed from Twitch
      * @mixin BaseMessage
      * @property {string} _raw Un-parsed message
      * @property {Date} timestamp Timestamp
      * @property {string} command Command
-     * @property {ClearChatTags|GlobalUserStateTags|PrivateMessageTags|RoomStateTags|UserNoticeTags|UserStateTags} tags Twitch tags
+     * @property {(ClearChatTags|GlobalUserStateTags|PrivateMessageTags|RoomStateTags|UserNoticeTags|UserStateTags)} tags Twitch tags
      * @property {string} [channel] Channel
      * @property {string} [message] Message
      * @property {string} [event] Associated event
@@ -158,7 +158,7 @@ const globalUserStateMessage = baseMessage => {
   const { tags, ...other } = baseMessage
 
   /**
-   * @event Chat#GLOBALUSERSTATE
+   * GLOBALUSERSTATE message
    * @mixin GlobalUserStateMessage
    * @mixes BaseMessage
    * @property {GlobalUserStateTags} tags
@@ -278,17 +278,17 @@ const noticeMessage = baseMessage => {
     default:
       /**
        * @event Chat#NOTICE
-       * @mixin NoticeMessage
-       * @mixes BaseMessage
+       * @mixes NoticeMessage
        * @property {string} event `msg-id` tag (snake uppercase)
        * @property {Object} tags
        * @see https://dev.twitch.tv/docs/irc/commands/#msg-id-tags-for-the-notice-commands-capability
        */
 
       /**
-       * General notices from the server.
-       * @event Chat#NOTICE
-       * @mixes NoticeMessage
+       * NOTICE message
+       * @mixin NoticeMessage
+       * @property {string} event `msg-id` tag (snake uppercase)
+       * @property {Object} tags
        */
       return { event, tags, ...other }
   }
