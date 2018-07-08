@@ -1,10 +1,14 @@
 import camelcaseKeys from 'camelcase-keys'
-import { replace } from 'lodash'
+import { get, includes, replace } from 'lodash'
 
 import fetchUtil from '../utils/fetch'
 import * as validators from './utils/validators'
 
 class Api {
+  readyState = 1
+
+  status = {}
+
   constructor(maybeOptions = {}) {
     const options = validators.apiOptions(maybeOptions)
 
@@ -15,12 +19,31 @@ class Api {
       'Client-ID': options.clientId ? options.clientId : undefined,
       Authorization: options.token ? `OAuth ${options.token}` : undefined,
     }
+  }
 
-    const instance = this.get.bind(this)
-    instance.get = this.get.bind(this)
-    instance.post = this.post.bind(this)
+  initialize() {
+    if (this.readyState === 2) {
+      return Promise.resolve()
+    }
 
-    return instance
+    return this.get().then(statusResponse => {
+      this.readyState = 2
+      this.status = statusResponse
+
+      return true
+    })
+  }
+
+  hasScope(scope) {
+    return new Promise((resolve, reject) => {
+      if (this.readyState !== 2) {
+        return reject(false)
+      }
+
+      return includes(get(this.status, 'token.authorization.scopes', []), scope)
+        ? resolve(true)
+        : reject(false)
+    })
   }
 
   get(url, options = {}) {
@@ -30,9 +53,13 @@ class Api {
   post(url, options = {}) {
     return fetch.call(this, url, { ...options, method: 'post' })
   }
+
+  put(url, options = {}) {
+    return fetch.call(this, url, { ...options, method: 'put' })
+  }
 }
 
-function fetch(maybeUrl, options = {}) {
+function fetch(maybeUrl = '', options = {}) {
   const url = replace(maybeUrl, /^\//g, '')
 
   return fetchUtil(`${this.options.urlRoot}/${url}`, {
