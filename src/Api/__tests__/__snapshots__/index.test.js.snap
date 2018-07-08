@@ -1,0 +1,21 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Api initialize should resolve if already initialized 1`] = `undefined`;
+
+exports[`Api initialize should set readyState and status 1`] = `
+Object {
+  "token": Object {
+    "authorization": Object {
+      "createdAt": "2016-12-14T15:51:16Z",
+      "scopes": Array [
+        "user_read",
+      ],
+      "updatedAt": "2016-12-14T15:51:16Z",
+    },
+    "clientId": "uo6dggojyb8d6soh92zknwmi5ej1q2",
+    "userId": "44322889",
+    "userName": "dallas",
+    "valid": true,
+  },
+}
+`;

@@ -1,5 +1,6 @@
 import TwitchJs from '../index'
 import Chat, { constants as chatConstants } from '../Chat'
+import Api from '../Api'
 
 describe('TwitchJs', () => {
   const token = 'TOKEN'
@@ -15,8 +16,6 @@ describe('TwitchJs', () => {
   test('should instantiate Api', () => {
     const twitchJs = new TwitchJs({ token, username })
 
-    expect(typeof twitchJs.api).toBe('function')
-    expect(typeof twitchJs.api.get).toBe('function')
-    expect(typeof twitchJs.api.post).toBe('function')
+    expect(twitchJs.api).toBeInstanceOf(Api)
   })
 })

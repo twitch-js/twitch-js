@@ -1,0 +1,15 @@
+{
+  "token": {
+     "authorization": {
+        "created_at": "2016-12-14T15:51:16Z",
+        "scopes": [
+           "user_read"
+        ],
+        "updated_at": "2016-12-14T15:51:16Z"
+     },
+     "client_id": "uo6dggojyb8d6soh92zknwmi5ej1q2",
+     "user_id": "44322889",
+     "user_name": "dallas",
+     "valid": true
+  }
+}
