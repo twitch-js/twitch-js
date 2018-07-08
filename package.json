@@ -94,7 +94,7 @@
     "eslint-plugin-import": "2.8.0",
     "eslint-plugin-jest": "^21.17.0",
     "husky": "^0.14.3",
-    "jest": "^23.1.0",
+    "jest": "^23.3.0",
     "jsdoc-to-markdown": "^4.0.1",
     "lint-staged": "^6.0.1",
     "lodash-webpack-plugin": "^0.11.4",
