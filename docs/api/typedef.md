@@ -7,6 +7,12 @@ sidebar_label: Type Definitions
 ## Typedefs
 
 <dl>
+<dt><a href="#ApiStatusState">ApiStatusState</a> : <code>Object</code></dt>
+<dd><p>API status state.</p>
+</dd>
+<dt><a href="#ApiOptions">ApiOptions</a> : <code>Object</code></dt>
+<dd><p>API options</p>
+</dd>
 <dt><a href="#ChannelState">ChannelState</a> : <code>Object</code></dt>
 <dd><p>Channel state information</p>
 </dd>
@@ -37,7 +43,80 @@ sidebar_label: Type Definitions
 <dt><a href="#ChatOptions">ChatOptions</a> : <code>Object</code></dt>
 <dd><p>Chat options</p>
 </dd>
+<dt><a href="#FetchOptions">FetchOptions</a> : <code>Object</code></dt>
+<dd><p>Fetch options</p>
+</dd>
 </dl>
+
+<a name="ApiStatusState"></a>
+
+## ApiStatusState : <code>Object</code>
+
+API status state.
+
+**Kind**: global typedef  
+**Properties**
+
+<table>
+  <thead>
+    <tr>
+      <th>Name</th><th>Type</th>
+    </tr>
+  </thead>
+  <tbody>
+<tr>
+    <td>token</td><td><code>Object</code></td>
+    </tr><tr>
+    <td>token.authorization</td><td><code>Object</code></td>
+    </tr><tr>
+    <td>token.authorization.scopes</td><td><code>Array.&lt;string&gt;</code></td>
+    </tr><tr>
+    <td>token.authorization.createdAt</td><td><code>string</code></td>
+    </tr><tr>
+    <td>token.authorization.updatedAt</td><td><code>string</code></td>
+    </tr><tr>
+    <td>token.clientId</td><td><code>string</code></td>
+    </tr><tr>
+    <td>token.userId</td><td><code>string</code></td>
+    </tr><tr>
+    <td>token.userName</td><td><code>string</code></td>
+    </tr><tr>
+    <td>token.valid</td><td><code>boolean</code></td>
+    </tr>  </tbody>
+</table>
+
+---
+
+<a name="ApiOptions"></a>
+
+## ApiOptions : <code>Object</code>
+
+API options
+
+**Kind**: global typedef  
+**Properties**
+
+<table>
+  <thead>
+    <tr>
+      <th>Name</th><th>Type</th><th>Default</th><th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+<tr>
+    <td>[clientId]</td><td><code>string</code></td><td></td><td><p>Optional if token is defined.</p>
+</td>
+    </tr><tr>
+    <td>[token]</td><td><code>string</code></td><td></td><td><p>Optional if clientId is defined.</p>
+</td>
+    </tr><tr>
+    <td>[urlRoot]</td><td><code>string</code></td><td></td><td></td>
+    </tr><tr>
+    <td>[debug]</td><td><code>boolean</code></td><td><code>false</code></td><td></td>
+    </tr>  </tbody>
+</table>
+
+---
 
 <a name="ChannelState"></a>
 
@@ -303,6 +382,35 @@ Chat options
     <td>[joinTimeout]</td><td><code>number</code></td><td><code>{@link JOIN_TIMEOUT}</code></td><td></td>
     </tr><tr>
     <td>[debug]</td><td><code>boolean</code></td><td><code>false</code></td><td></td>
+    </tr>  </tbody>
+</table>
+
+---
+
+<a name="FetchOptions"></a>
+
+## FetchOptions : <code>Object</code>
+
+Fetch options
+
+**Kind**: global typedef  
+**Properties**
+
+<table>
+  <thead>
+    <tr>
+      <th>Name</th><th>Type</th><th>Default</th>
+    </tr>
+  </thead>
+  <tbody>
+<tr>
+    <td>[options.method]</td><td><code>string</code></td><td><code>&quot;&#x27;get&#x27;&quot;</code></td>
+    </tr><tr>
+    <td>[options.headers]</td><td><code>Header</code></td><td></td>
+    </tr><tr>
+    <td>[options.search]</td><td><code>Object</code></td><td></td>
+    </tr><tr>
+    <td>[options.body]</td><td><code>Object</code> | <code>FormData</code></td><td></td>
     </tr>  </tbody>
 </table>
 

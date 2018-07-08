@@ -4,6 +4,14 @@ import { conformsTo, defaultsDeep, isBoolean, isString } from 'lodash'
 import * as constants from '../constants'
 
 const apiOptions = maybeOptions => {
+  /**
+   * API options
+   * @typedef {Object} ApiOptions
+   * @property {string} [clientId] Optional if token is defined.
+   * @property {string} [token] Optional if clientId is defined.
+   * @property {string} [urlRoot]
+   * @property {boolean} [debug=false]
+   */
   const shape = {
     debug: isBoolean,
   }

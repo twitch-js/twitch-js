@@ -49,7 +49,7 @@
     "prettier": "prettier --write \"**/*.{js,md}\"",
     "prepublish": "npm run build",
     "prebuild": "npm run clean",
-    "build:lib": "babel src --out-dir lib --source-maps --ignore __tests__",
+    "build:lib": "babel src --out-dir lib --source-maps",
     "build:dist:dev": "webpack",
     "build:dist:prod": "webpack --env.production",
     "build": "run-p build:**",
@@ -147,6 +147,9 @@
     },
     "plugins": [
       "lodash"
+    ],
+    "ignore": [
+      "__*"
     ]
   },
   "eslintConfig": {
@@ -227,28 +230,6 @@
     "*.md": [
       "prettier --write",
       "git add"
-    ]
-  },
-  "esdoc": {
-    "source": "./src",
-    "destination": "./docs",
-    "plugins": [
-      {
-        "name": "esdoc-standard-plugin",
-        "option": {
-          "brand": {
-            "title": "TwitchJS",
-            "description": "A community-centric, community-supported Twitch JavaScript SDK.",
-            "repository": "https://github.com/twitch-apis/twitch-js/tree/next"
-          }
-        }
-      },
-      {
-        "name": "esdoc-ecmascript-proposal-plugin",
-        "option": {
-          "all": true
-        }
-      }
     ]
   }
 }

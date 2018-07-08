@@ -3,13 +3,18 @@ import FormData from 'form-data'
 import { stringify } from 'qs'
 
 /**
+ * Fetch options
+ * @typedef {Object} FetchOptions
+ * @property {string} [options.method='get']
+ * @property {Header} [options.headers]
+ * @property {Object} [options.search]
+ * @property {Object|FormData} [options.body]
+ */
+
+/**
  * Fetches URL
  * @param {string} url
- * @param {Object} [options]
- * @param {string} [options.method='get']
- * @param {Header} [options.headers]
- * @param {Object} [options.search]
- * @param {Object|FormData} [options.body]
+ * @param {FetchOptions} [options]
  * @param {Object} [qsOptions]
  * @return {Promise<Object, Object>}
  */

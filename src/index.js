@@ -19,6 +19,7 @@ class TwitchJs {
    * @param {string} options.token
    * @param {string} options.username
    * @param {ChatOptions} [options.chat]
+   * @param {ApiOptions} [options.api]
    */
   constructor({ token, username, chat, api }) {
     /** @type {Chat} */
@@ -26,6 +27,7 @@ class TwitchJs {
     /** @type {Object} */
     this.chatConstants = ChatConstants
 
+    /** @type {Api} */
     this.api = new Api({ ...api, token, username })
   }
 }

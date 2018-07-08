@@ -4,11 +4,39 @@ import { get, includes, replace } from 'lodash'
 import fetchUtil from '../utils/fetch'
 import * as validators from './utils/validators'
 
+/**
+ * API client
+ */
 class Api {
+  /**
+   * API client ready state : **1** ready; **2** initialized.
+   * @type {number}
+   */
   readyState = 1
 
+  /**
+   * API status state.
+   * @typedef {Object} ApiStatusState
+   * @property {Object} token
+   * @property {Object} token.authorization
+   * @property {Array<string>} token.authorization.scopes
+   * @property {string} token.authorization.createdAt
+   * @property {string} token.authorization.updatedAt
+   * @property {string} token.clientId
+   * @property {string} token.userId
+   * @property {string} token.userName
+   * @property {boolean} token.valid
+   */
+  /**
+   * API status.
+   * @type {ApiStatusState}
+   */
   status = {}
 
+  /**
+   * API constructor.
+   * @param {ApiOptions} options
+   */
   constructor(maybeOptions = {}) {
     const options = validators.apiOptions(maybeOptions)
 
@@ -21,6 +49,10 @@ class Api {
     }
   }
 
+  /**
+   * Initialize API client and retrieve status.
+   * @returns {Promise<ApiStatusState, Object>}
+   */
   initialize() {
     if (this.readyState === 2) {
       return Promise.resolve()
@@ -30,10 +62,16 @@ class Api {
       this.readyState = 2
       this.status = statusResponse
 
-      return true
+      return statusResponse
     })
   }
 
+  /**
+   * Check if current credentials include scope.
+   * @param {string} scope Scope to check.
+   * @return {Promise<boolean, boolean>}
+   * @see https://dev.twitch.tv/docs/authentication/#twitch-api-v5
+   */
   hasScope(scope) {
     return new Promise((resolve, reject) => {
       if (this.readyState !== 2) {
@@ -46,16 +84,31 @@ class Api {
     })
   }
 
-  get(url, options = {}) {
-    return fetch.call(this, url, options)
+  /**
+   * GET endpoint.
+   * @param {string} endpoint
+   * @param {FetchOptions} [options]
+   */
+  get(endpoint, options = {}) {
+    return fetch.call(this, endpoint, options)
   }
 
-  post(url, options = {}) {
-    return fetch.call(this, url, { ...options, method: 'post' })
+  /**
+   * POST endpoint.
+   * @param {string} endpoint
+   * @param {FetchOptions} [options={method:'post'}]
+   */
+  post(endpoint, options = {}) {
+    return fetch.call(this, endpoint, { ...options, method: 'post' })
   }
 
-  put(url, options = {}) {
-    return fetch.call(this, url, { ...options, method: 'put' })
+  /**
+   * PUT endpoint.
+   * @param {string} endpoint
+   * @param {FetchOptions} [options={method:'put'}]
+   */
+  put(endpoint, options = {}) {
+    return fetch.call(this, endpoint, { ...options, method: 'put' })
   }
 }
 
