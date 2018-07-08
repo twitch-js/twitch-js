@@ -1,4 +1,5 @@
 import Chat, { constants as ChatConstants } from './Chat'
+import Api from './Api'
 
 /**
  * TwitchJs client
@@ -19,11 +20,13 @@ class TwitchJs {
    * @param {string} options.username
    * @param {ChatOptions} [options.chat]
    */
-  constructor({ token, username, chat }) {
+  constructor({ token, username, chat, api }) {
     /** @type {Chat} */
     this.chat = new Chat({ ...chat, token, username })
     /** @type {Object} */
     this.chatConstants = ChatConstants
+
+    this.api = new Api({ ...api, token, username })
   }
 }
 
