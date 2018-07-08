@@ -129,6 +129,9 @@
             }
           ],
           "stage-2"
+        ],
+        "ignore": [
+          "__*"
         ]
       },
       "test": {
@@ -147,9 +150,6 @@
     },
     "plugins": [
       "lodash"
-    ],
-    "ignore": [
-      "__*"
     ]
   },
   "eslintConfig": {
