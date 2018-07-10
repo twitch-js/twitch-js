@@ -49,7 +49,7 @@
     "prettier": "prettier --write \"**/*.{js,md}\"",
     "prepublish": "npm run build",
     "prebuild": "npm run clean",
-    "build:lib": "babel src --out-dir lib --source-maps",
+    "build:lib": "cross-env BABEL_ENV=production babel src --out-dir lib --source-maps",
     "build:dist:dev": "webpack",
     "build:dist:prod": "webpack --env.production",
     "build": "run-p build:**",
@@ -88,6 +88,7 @@
     "babel-preset-stage-2": "^6.24.1",
     "codecov": "^3.0.2",
     "compression-webpack-plugin": "^1.1.3",
+    "cross-env": "^5.2.0",
     "docusaurus-init": "^1.0.2",
     "eslint": "^4.19.1",
     "eslint-config-prettier": "^2.9.0",
@@ -117,7 +118,7 @@
   },
   "babel": {
     "env": {
-      "development": {
+      "production": {
         "presets": [
           [
             "env",
@@ -133,21 +134,19 @@
         "ignore": [
           "__*"
         ]
-      },
-      "test": {
-        "presets": [
-          [
-            "env",
-            {
-              "targets": {
-                "node": "current"
-              }
-            }
-          ],
-          "stage-2"
-        ]
       }
     },
+    "presets": [
+      [
+        "env",
+        {
+          "targets": {
+            "node": "current"
+          }
+        }
+      ],
+      "stage-2"
+    ],
     "plugins": [
       "lodash"
     ]
