@@ -17,10 +17,10 @@ If you are using a module bundler, such [Webpack](https://webpack.js.org/),
 
    ```js
    // ES2015 syntax
-   import Twitch from 'twitch-js'
+   import TwitchJS from 'twitch-js'
 
    // OR ES5 syntax
-   var twitch = require('twitch-js')
+   var TwitchJS = require('twitch-js').default
    ```
 
 ## UMD
