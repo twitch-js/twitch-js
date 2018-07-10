@@ -5,10 +5,10 @@ import { stringify } from 'qs'
 /**
  * Fetch options
  * @typedef {Object} FetchOptions
- * @property {string} [options.method='get']
- * @property {Header} [options.headers]
- * @property {Object} [options.search]
- * @property {Object|FormData} [options.body]
+ * @property {string} [options.method=get] The request method, e.g., `get`, `post`.
+ * @property {Object} [options.headers] Any headers you want to add to your request.
+ * @property {Object} [options.search] Any query parameters you want to add to your request.
+ * @property {Object|FormData} [options.body] Any body that you want to add to your request.
  */
 
 /**

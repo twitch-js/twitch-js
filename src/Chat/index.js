@@ -46,7 +46,7 @@ import * as validators from './utils/validators'
  * const token = 'cfabdegwdoklmawdzdo98xt2fo512y'
  * const username = 'ronni'
  * const channel = '#dallas'
- * const chat = new Chat({ token, username })
+ * const { chat } = new TwitchJs({ token, username })
  *
  * chat.connect().then(globalUserState => {
  *   // Listen to all messages

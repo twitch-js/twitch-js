@@ -35,6 +35,6 @@ If you are not using a module bundler, precompiled builds are available in the
 2. Consume the library:
    ```html
    <script type="javascript">
-     window.TwitchJS ...
+     window.TwitchJs ...
    </script>
    ```

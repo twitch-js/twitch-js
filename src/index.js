@@ -3,12 +3,16 @@ import Api from './Api'
 
 /**
  * TwitchJs client
- * @example <caption>Connecting to Twitch</caption>
- * const token = OAUTH_TOKEN
- * const username = USERNAME
+ * @example <caption>Instantiating TwitchJS</caption>
+ * const token = 'cfabdegwdoklmawdzdo98xt2fo512y'
+ * const username = 'ronni'
  * const twitchJs = new TwitchJs({ token, username })
  *
  * twitchJs.chat.connect().then(globalUserState => {
+ *   // Do stuff ...
+ * })
+ *
+ * twitchJs.api.get('channel').then(response => {
  *   // Do stuff ...
  * })
  */

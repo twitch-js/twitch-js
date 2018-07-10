@@ -4,19 +4,19 @@ title: Classes
 sidebar_label: Classes
 ---
 
-## Classes
+## Index
 
 <dl>
 <dt><a href="#Api">Api</a></dt>
-<dd><p>API client</p>
+  <dd><p>API client</p>
 </dd>
-<dt><a href="#Chat">Chat</a> ⇐ <code>external:EventEmitter3</code></dt>
-<dd><p>Chat client</p>
+  <dt><a href="#Chat">Chat</a> ⇐ <code>external:EventEmitter3</code></dt>
+  <dd><p>Chat client</p>
 </dd>
-<dt><a href="#TwitchJs">TwitchJs</a></dt>
-<dd><p>TwitchJs client</p>
+  <dt><a href="#TwitchJs">TwitchJs</a></dt>
+  <dd><p>TwitchJs client</p>
 </dd>
-</dl>
+  </dl>
 
 <a name="Api"></a>
 
@@ -58,6 +58,18 @@ API constructor.
     </tr>  </tbody>
 </table>
 
+**Example** _(Get Featured Streams)_
+
+```js
+const token = 'cfabdegwdoklmawdzdo98xt2fo512y'
+const username = 'ronni'
+const { api } = new TwitchJs({ token, username })
+
+api.get('streams/featured').then(response => {
+  // Do stuff ...
+})
+```
+
 ---
 
 <a name="Api+readyState"></a>
@@ -86,7 +98,8 @@ API status.
 
 Initialize API client and retrieve status.
 
-**Kind**: instance method of [<code>Api</code>](#Api)
+**Kind**: instance method of [<code>Api</code>](#Api)  
+**See**: https://dev.twitch.tv/docs/v5/#root-url
 
 ---
 
@@ -94,7 +107,7 @@ Initialize API client and retrieve status.
 
 ### api.hasScope(scope) ⇒ <code>Promise.&lt;boolean, boolean&gt;</code>
 
-Check if current credentials include scope.
+Check if current credentials include `scope`.
 
 **Kind**: instance method of [<code>Api</code>](#Api)  
 **See**: https://dev.twitch.tv/docs/authentication/#twitch-api-v5
@@ -135,6 +148,14 @@ GET endpoint.
     <td>[options]</td><td><code>FetchOptions</code></td>
     </tr>  </tbody>
 </table>
+
+**Example** _(Get Live Streams)_
+
+```js
+api.get('streams', { search: { game: 'Overwatch' } }).then(response => {
+  // Do stuff with response ...
+})
+```
 
 ---
 
@@ -279,7 +300,7 @@ Chat constructor.
 const token = 'cfabdegwdoklmawdzdo98xt2fo512y'
 const username = 'ronni'
 const channel = '#dallas'
-const chat = new Chat({ token, username })
+const { chat } = new TwitchJs({ token, username })
 
 chat.connect().then(globalUserState => {
   // Listen to all messages
@@ -1026,14 +1047,18 @@ TwitchJs constructor
     </tr>  </tbody>
 </table>
 
-**Example** _(Connecting to Twitch)_
+**Example** _(Instantiating TwitchJS)_
 
 ```js
-const token = OAUTH_TOKEN
-const username = USERNAME
+const token = 'cfabdegwdoklmawdzdo98xt2fo512y'
+const username = 'ronni'
 const twitchJs = new TwitchJs({ token, username })
 
 twitchJs.chat.connect().then(globalUserState => {
+  // Do stuff ...
+})
+
+twitchJs.api.get('channel').then(response => {
   // Do stuff ...
 })
 ```

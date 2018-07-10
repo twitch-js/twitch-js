@@ -6,6 +6,15 @@ import * as validators from './utils/validators'
 
 /**
  * API client
+ *
+ * @example <caption>Get Featured Streams</caption>
+ * const token = 'cfabdegwdoklmawdzdo98xt2fo512y'
+ * const username = 'ronni'
+ * const { api } = new TwitchJs({ token, username })
+ *
+ * api.get('streams/featured').then(response => {
+ *   // Do stuff ...
+ * })
  */
 class Api {
   /**
@@ -52,6 +61,7 @@ class Api {
   /**
    * Initialize API client and retrieve status.
    * @returns {Promise<ApiStatusState, Object>}
+   * @see https://dev.twitch.tv/docs/v5/#root-url
    */
   initialize() {
     if (this.readyState === 2) {
@@ -67,7 +77,7 @@ class Api {
   }
 
   /**
-   * Check if current credentials include scope.
+   * Check if current credentials include `scope`.
    * @param {string} scope Scope to check.
    * @return {Promise<boolean, boolean>}
    * @see https://dev.twitch.tv/docs/authentication/#twitch-api-v5
@@ -88,6 +98,12 @@ class Api {
    * GET endpoint.
    * @param {string} endpoint
    * @param {FetchOptions} [options]
+   *
+   * @example <caption>Get Live Streams</caption>
+   * api.get('streams', { search: { game: 'Overwatch' } })
+   *   .then(response => {
+   *     // Do stuff with response ...
+   *   })
    */
   get(endpoint, options = {}) {
     return fetch.call(this, endpoint, options)
