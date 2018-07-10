@@ -33,6 +33,7 @@ sidebar_label: Browser
 
       // Get featured streams.
       api.get('streams/featured').then(response => {
+        console.log(response);
         // Do stuff ...
       });
 

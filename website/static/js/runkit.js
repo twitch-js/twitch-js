@@ -19,6 +19,7 @@ const { api, chat, chatConstants } = new TwitchJs({ token, username });
 
 // Get featured streams.
 api.get('streams/featured').then(response => {
+  console.log(response);
   // Do stuff ...
 });
 
