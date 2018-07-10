@@ -1,1 +1,1 @@
-module.export = window.FormData;
+module.exports = window.FormData;

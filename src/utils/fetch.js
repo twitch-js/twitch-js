@@ -20,7 +20,9 @@ import { stringify } from 'qs'
  */
 const fetchUtil = (url, options = {}, qsOptions = {}) => {
   const isBodyJson =
-    !(options.body instanceof FormData) && typeof options.body === 'object'
+    options.body &&
+    !(options.body instanceof FormData) &&
+    typeof options.body === 'object'
 
   const body = isBodyJson ? JSON.stringify(options.body) : options.body
 
