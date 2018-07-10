@@ -28,8 +28,13 @@ sidebar_label: Browser
 
       const channel = 'twitchapis';
 
-      // Instantiate Chat client.
-      const { chat, chatConstants } = new TwitchJs({ token, username });
+      // Instantiate clients.
+      const { api, chat, chatConstants } = new TwitchJs({ token, username });
+
+      // Get featured streams.
+      api.get('streams/featured').then(response => {
+        // Do stuff ...
+      });
 
       // Listen to all events.
       const log = msg => console.log(msg);

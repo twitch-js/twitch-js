@@ -21,18 +21,23 @@
 
       const channel = 'twitchapis';
 
-      const { chat, chatConstants } = new TwitchJs({ token, username });
+      // Instantiate clients.
+      const { api, chat, chatConstants } = new TwitchJs({ token, username });
 
+      // Get featured streams.
+      api.get('streams/featured').then(response => {
+        // Do stuff ...
+      });
+
+      // Listen to all events.
       const log = msg => console.log(msg);
       chat.on(chatConstants.EVENTS.ALL, log);
 
       // Connect ...
-      chat.connect().then(res => {
-        // Expose chat client for experimental purposes.
-        window.chat = chat;
-
-        return chat.join(channel)
-      })
+      chat.connect().then(() => {
+        // ... and then join the channel.
+        chat.join(channel);
+      });
     })();
   </script>
 </body>
