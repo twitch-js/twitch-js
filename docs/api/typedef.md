@@ -4,40 +4,119 @@ title: Type Definitions
 sidebar_label: Type Definitions
 ---
 
-## Typedefs
+## Index
 
 <dl>
-<dt><a href="#ChannelState">ChannelState</a> : <code>Object</code></dt>
-<dd><p>Channel state information</p>
+<dt><a href="#ApiStatusState">ApiStatusState</a> : <code>Object</code></dt>
+  <dd><p>API status state.</p>
 </dd>
-<dt><a href="#ClearChatTags">ClearChatTags</a> : <code>Object</code></dt>
-<dd><p>CLEARCHAT tags</p>
+  <dt><a href="#ApiOptions">ApiOptions</a> : <code>Object</code></dt>
+  <dd><p>API options</p>
 </dd>
-<dt><a href="#GlobalUserStateTags">GlobalUserStateTags</a> : <code>Object</code></dt>
-<dd><p>GLOBALUSERSTATE tags</p>
+  <dt><a href="#ChannelState">ChannelState</a> : <code>Object</code></dt>
+  <dd><p>Channel state information</p>
 </dd>
-<dt><a href="#PrivateMessageTags">PrivateMessageTags</a> : <code><a href="#UserStateTags">UserStateTags</a></code></dt>
-<dd><p>PRIVMSG tags</p>
+  <dt><a href="#ClearChatTags">ClearChatTags</a> : <code>Object</code></dt>
+  <dd><p>CLEARCHAT tags</p>
 </dd>
-<dt><a href="#RoomStateTags">RoomStateTags</a> : <code>Object</code></dt>
-<dd><p>ROOMSTATE Tag</p>
+  <dt><a href="#GlobalUserStateTags">GlobalUserStateTags</a> : <code>Object</code></dt>
+  <dd><p>GLOBALUSERSTATE tags</p>
 </dd>
-<dt><a href="#UserNoticeTags">UserNoticeTags</a> : <code><a href="#UserStateTags">UserStateTags</a></code></dt>
-<dd><p>USERNOTICE tags</p>
+  <dt><a href="#PrivateMessageTags">PrivateMessageTags</a> : <code><a href="#UserStateTags">UserStateTags</a></code></dt>
+  <dd><p>PRIVMSG tags</p>
 </dd>
-<dt><a href="#UserStateTags">UserStateTags</a> : <code>Object</code></dt>
-<dd><p>USERSTATE tags</p>
+  <dt><a href="#RoomStateTags">RoomStateTags</a> : <code>Object</code></dt>
+  <dd><p>ROOMSTATE Tag</p>
 </dd>
-<dt><a href="#BadgesTag">BadgesTag</a> : <code>Object</code></dt>
-<dd><p>Badges tag</p>
+  <dt><a href="#UserNoticeTags">UserNoticeTags</a> : <code><a href="#UserStateTags">UserStateTags</a></code></dt>
+  <dd><p>USERNOTICE tags</p>
 </dd>
-<dt><a href="#EmoteTag">EmoteTag</a> : <code>Object</code></dt>
-<dd><p>Emote tag</p>
+  <dt><a href="#UserStateTags">UserStateTags</a> : <code>Object</code></dt>
+  <dd><p>USERSTATE tags</p>
 </dd>
-<dt><a href="#ChatOptions">ChatOptions</a> : <code>Object</code></dt>
-<dd><p>Chat options</p>
+  <dt><a href="#BadgesTag">BadgesTag</a> : <code>Object</code></dt>
+  <dd><p>Badges tag</p>
 </dd>
-</dl>
+  <dt><a href="#EmoteTag">EmoteTag</a> : <code>Object</code></dt>
+  <dd><p>Emote tag</p>
+</dd>
+  <dt><a href="#ChatOptions">ChatOptions</a> : <code>Object</code></dt>
+  <dd><p>Chat options</p>
+</dd>
+  <dt><a href="#FetchOptions">FetchOptions</a> : <code>Object</code></dt>
+  <dd><p>Fetch options</p>
+</dd>
+  </dl>
+
+<a name="ApiStatusState"></a>
+
+## ApiStatusState : <code>Object</code>
+
+API status state.
+
+**Kind**: global typedef  
+**Properties**
+
+<table>
+  <thead>
+    <tr>
+      <th>Name</th><th>Type</th>
+    </tr>
+  </thead>
+  <tbody>
+<tr>
+    <td>token</td><td><code>Object</code></td>
+    </tr><tr>
+    <td>token.authorization</td><td><code>Object</code></td>
+    </tr><tr>
+    <td>token.authorization.scopes</td><td><code>Array.&lt;string&gt;</code></td>
+    </tr><tr>
+    <td>token.authorization.createdAt</td><td><code>string</code></td>
+    </tr><tr>
+    <td>token.authorization.updatedAt</td><td><code>string</code></td>
+    </tr><tr>
+    <td>token.clientId</td><td><code>string</code></td>
+    </tr><tr>
+    <td>token.userId</td><td><code>string</code></td>
+    </tr><tr>
+    <td>token.userName</td><td><code>string</code></td>
+    </tr><tr>
+    <td>token.valid</td><td><code>boolean</code></td>
+    </tr>  </tbody>
+</table>
+
+---
+
+<a name="ApiOptions"></a>
+
+## ApiOptions : <code>Object</code>
+
+API options
+
+**Kind**: global typedef  
+**Properties**
+
+<table>
+  <thead>
+    <tr>
+      <th>Name</th><th>Type</th><th>Default</th><th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+<tr>
+    <td>[clientId]</td><td><code>string</code></td><td></td><td><p>Optional if token is defined.</p>
+</td>
+    </tr><tr>
+    <td>[token]</td><td><code>string</code></td><td></td><td><p>Optional if clientId is defined.</p>
+</td>
+    </tr><tr>
+    <td>[urlRoot]</td><td><code>string</code></td><td></td><td></td>
+    </tr><tr>
+    <td>[debug]</td><td><code>boolean</code></td><td><code>false</code></td><td></td>
+    </tr>  </tbody>
+</table>
+
+---
 
 <a name="ChannelState"></a>
 
@@ -303,6 +382,39 @@ Chat options
     <td>[joinTimeout]</td><td><code>number</code></td><td><code>{@link JOIN_TIMEOUT}</code></td><td></td>
     </tr><tr>
     <td>[debug]</td><td><code>boolean</code></td><td><code>false</code></td><td></td>
+    </tr>  </tbody>
+</table>
+
+---
+
+<a name="FetchOptions"></a>
+
+## FetchOptions : <code>Object</code>
+
+Fetch options
+
+**Kind**: global typedef  
+**Properties**
+
+<table>
+  <thead>
+    <tr>
+      <th>Name</th><th>Type</th><th>Default</th><th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+<tr>
+    <td>[options.method]</td><td><code>string</code></td><td><code>&quot;get&quot;</code></td><td><p>The request method, e.g., <code>get</code>, <code>post</code>.</p>
+</td>
+    </tr><tr>
+    <td>[options.headers]</td><td><code>Object</code></td><td></td><td><p>Any headers you want to add to your request.</p>
+</td>
+    </tr><tr>
+    <td>[options.search]</td><td><code>Object</code></td><td></td><td><p>Any query parameters you want to add to your request.</p>
+</td>
+    </tr><tr>
+    <td>[options.body]</td><td><code>Object</code> | <code>FormData</code></td><td></td><td><p>Any body that you want to add to your request.</p>
+</td>
     </tr>  </tbody>
 </table>
 

@@ -4,22 +4,22 @@ title: Mixins
 sidebar_label: Mixins
 ---
 
-## Mixins
+## Index
 
 <dl>
 <dt><a href="#BaseMessage">BaseMessage</a></dt>
-<dd><p>Base message parsed from Twitch</p>
+  <dd><p>Base message parsed from Twitch</p>
 </dd>
-<dt><a href="#GlobalUserStateMessage">GlobalUserStateMessage</a></dt>
-<dd><p>GLOBALUSERSTATE message</p>
+  <dt><a href="#GlobalUserStateMessage">GlobalUserStateMessage</a></dt>
+  <dd><p>GLOBALUSERSTATE message</p>
 </dd>
-<dt><a href="#NoticeMessage">NoticeMessage</a></dt>
-<dd><p>NOTICE message</p>
+  <dt><a href="#NoticeMessage">NoticeMessage</a></dt>
+  <dd><p>NOTICE message</p>
 </dd>
-<dt><a href="#UserStateMessage">UserStateMessage</a></dt>
-<dd><p>USERSTATE message</p>
+  <dt><a href="#UserStateMessage">UserStateMessage</a></dt>
+  <dd><p>USERSTATE message</p>
 </dd>
-</dl>
+  </dl>
 
 <a name="BaseMessage"></a>
 

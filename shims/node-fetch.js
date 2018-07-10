@@ -1,3 +1,3 @@
 require('whatwg-fetch');
 
-module.export = window.fetch;
+module.exports = window.fetch;

@@ -87,3 +87,9 @@ doc.
 ## License
 
 MIT
+
+TwitchJS is not affiliated, associated, authorized, endorsed by, or in any way
+officially connected with [Twitch](https://www.twitch.tv/), or any of its
+subsidiaries or its affiliates. The name "Twitch" as well as related names,
+marks, emblems and images are registered trademarks of
+[Twitch](https://www.twitch.tv/).

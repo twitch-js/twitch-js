@@ -3,19 +3,26 @@ import FormData from 'form-data'
 import { stringify } from 'qs'
 
 /**
+ * Fetch options
+ * @typedef {Object} FetchOptions
+ * @property {string} [options.method=get] The request method, e.g., `get`, `post`.
+ * @property {Object} [options.headers] Any headers you want to add to your request.
+ * @property {Object} [options.search] Any query parameters you want to add to your request.
+ * @property {Object|FormData} [options.body] Any body that you want to add to your request.
+ */
+
+/**
  * Fetches URL
  * @param {string} url
- * @param {Object} [options]
- * @param {string} [options.method='get']
- * @param {Header} [options.headers]
- * @param {Object} [options.search]
- * @param {Object|FormData} [options.body]
+ * @param {FetchOptions} [options]
  * @param {Object} [qsOptions]
  * @return {Promise<Object, Object>}
  */
 const fetchUtil = (url, options = {}, qsOptions = {}) => {
   const isBodyJson =
-    !(options.body instanceof FormData) && typeof options.body === 'object'
+    options.body &&
+    !(options.body instanceof FormData) &&
+    typeof options.body === 'object'
 
   const body = isBodyJson ? JSON.stringify(options.body) : options.body
 

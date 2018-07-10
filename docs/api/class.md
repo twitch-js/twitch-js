@@ -4,16 +4,208 @@ title: Classes
 sidebar_label: Classes
 ---
 
-## Classes
+## Index
 
 <dl>
-<dt><a href="#Chat">Chat</a> ⇐ <code>external:EventEmitter3</code></dt>
-<dd><p>Chat client</p>
+<dt><a href="#Api">Api</a></dt>
+  <dd><p>API client</p>
 </dd>
-<dt><a href="#TwitchJs">TwitchJs</a></dt>
-<dd><p>TwitchJs client</p>
+  <dt><a href="#Chat">Chat</a> ⇐ <code>external:EventEmitter3</code></dt>
+  <dd><p>Chat client</p>
 </dd>
-</dl>
+  <dt><a href="#TwitchJs">TwitchJs</a></dt>
+  <dd><p>TwitchJs client</p>
+</dd>
+  </dl>
+
+<a name="Api"></a>
+
+## Api
+
+API client
+
+**Kind**: global class
+
+* [Api](#Api)
+  * [new Api(options)](#new_Api_new)
+  * [.readyState](#Api+readyState) : <code>number</code>
+  * [.status](#Api+status) : <code>ApiStatusState</code>
+  * [.initialize()](#Api+initialize) ⇒ <code>Promise.&lt;ApiStatusState,
+    Object&gt;</code>
+  * [.hasScope(scope)](#Api+hasScope) ⇒ <code>Promise.&lt;boolean,
+    boolean&gt;</code>
+  * [.get(endpoint, [options])](#Api+get)
+  * [.post(endpoint, [options])](#Api+post)
+  * [.put(endpoint, [options])](#Api+put)
+
+---
+
+<a name="new_Api_new"></a>
+
+### new Api(options)
+
+API constructor.
+
+<table>
+  <thead>
+    <tr>
+      <th>Param</th><th>Type</th>
+    </tr>
+  </thead>
+  <tbody>
+<tr>
+    <td>options</td><td><code>ApiOptions</code></td>
+    </tr>  </tbody>
+</table>
+
+**Example** _(Get Featured Streams)_
+
+```js
+const token = 'cfabdegwdoklmawdzdo98xt2fo512y'
+const username = 'ronni'
+const { api } = new TwitchJs({ token, username })
+
+api.get('streams/featured').then(response => {
+  // Do stuff ...
+})
+```
+
+---
+
+<a name="Api+readyState"></a>
+
+### api.readyState : <code>number</code>
+
+API client ready state : **1** ready; **2** initialized.
+
+**Kind**: instance property of [<code>Api</code>](#Api)
+
+---
+
+<a name="Api+status"></a>
+
+### api.status : <code>ApiStatusState</code>
+
+API status.
+
+**Kind**: instance property of [<code>Api</code>](#Api)
+
+---
+
+<a name="Api+initialize"></a>
+
+### api.initialize() ⇒ <code>Promise.&lt;ApiStatusState, Object&gt;</code>
+
+Initialize API client and retrieve status.
+
+**Kind**: instance method of [<code>Api</code>](#Api)  
+**See**: https://dev.twitch.tv/docs/v5/#root-url
+
+---
+
+<a name="Api+hasScope"></a>
+
+### api.hasScope(scope) ⇒ <code>Promise.&lt;boolean, boolean&gt;</code>
+
+Check if current credentials include `scope`.
+
+**Kind**: instance method of [<code>Api</code>](#Api)  
+**See**: https://dev.twitch.tv/docs/authentication/#twitch-api-v5
+
+<table>
+  <thead>
+    <tr>
+      <th>Param</th><th>Type</th><th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+<tr>
+    <td>scope</td><td><code>string</code></td><td><p>Scope to check.</p>
+</td>
+    </tr>  </tbody>
+</table>
+
+---
+
+<a name="Api+get"></a>
+
+### api.get(endpoint, [options])
+
+GET endpoint.
+
+**Kind**: instance method of [<code>Api</code>](#Api)
+
+<table>
+  <thead>
+    <tr>
+      <th>Param</th><th>Type</th>
+    </tr>
+  </thead>
+  <tbody>
+<tr>
+    <td>endpoint</td><td><code>string</code></td>
+    </tr><tr>
+    <td>[options]</td><td><code>FetchOptions</code></td>
+    </tr>  </tbody>
+</table>
+
+**Example** _(Get Live Streams)_
+
+```js
+api.get('streams', { search: { game: 'Overwatch' } }).then(response => {
+  // Do stuff with response ...
+})
+```
+
+---
+
+<a name="Api+post"></a>
+
+### api.post(endpoint, [options])
+
+POST endpoint.
+
+**Kind**: instance method of [<code>Api</code>](#Api)
+
+<table>
+  <thead>
+    <tr>
+      <th>Param</th><th>Type</th><th>Default</th>
+    </tr>
+  </thead>
+  <tbody>
+<tr>
+    <td>endpoint</td><td><code>string</code></td><td></td>
+    </tr><tr>
+    <td>[options]</td><td><code>FetchOptions</code></td><td><code>{method:&#x27;post&#x27;}</code></td>
+    </tr>  </tbody>
+</table>
+
+---
+
+<a name="Api+put"></a>
+
+### api.put(endpoint, [options])
+
+PUT endpoint.
+
+**Kind**: instance method of [<code>Api</code>](#Api)
+
+<table>
+  <thead>
+    <tr>
+      <th>Param</th><th>Type</th><th>Default</th>
+    </tr>
+  </thead>
+  <tbody>
+<tr>
+    <td>endpoint</td><td><code>string</code></td><td></td>
+    </tr><tr>
+    <td>[options]</td><td><code>FetchOptions</code></td><td><code>{method:&#x27;put&#x27;}</code></td>
+    </tr>  </tbody>
+</table>
+
+---
 
 <a name="Chat"></a>
 
@@ -108,7 +300,7 @@ Chat constructor.
 const token = 'cfabdegwdoklmawdzdo98xt2fo512y'
 const username = 'ronni'
 const channel = '#dallas'
-const chat = new Chat({ token, username })
+const { chat } = new TwitchJs({ token, username })
 
 chat.connect().then(globalUserState => {
   // Listen to all messages
@@ -825,6 +1017,7 @@ TwitchJs client
   * [new TwitchJs(options)](#new_TwitchJs_new)
   * [.chat](#TwitchJs+chat) : [<code>Chat</code>](#Chat)
   * [.chatConstants](#TwitchJs+chatConstants) : <code>Object</code>
+  * [.api](#TwitchJs+api) : [<code>Api</code>](#Api)
 
 ---
 
@@ -849,17 +1042,23 @@ TwitchJs constructor
     <td>options.username</td><td><code>string</code></td>
     </tr><tr>
     <td>[options.chat]</td><td><code>ChatOptions</code></td>
+    </tr><tr>
+    <td>[options.api]</td><td><code>ApiOptions</code></td>
     </tr>  </tbody>
 </table>
 
-**Example** _(Connecting to Twitch)_
+**Example** _(Instantiating TwitchJS)_
 
 ```js
-const token = OAUTH_TOKEN
-const username = USERNAME
+const token = 'cfabdegwdoklmawdzdo98xt2fo512y'
+const username = 'ronni'
 const twitchJs = new TwitchJs({ token, username })
 
 twitchJs.chat.connect().then(globalUserState => {
+  // Do stuff ...
+})
+
+twitchJs.api.get('channel').then(response => {
   // Do stuff ...
 })
 ```
@@ -877,6 +1076,14 @@ twitchJs.chat.connect().then(globalUserState => {
 <a name="TwitchJs+chatConstants"></a>
 
 ### twitchJs.chatConstants : <code>Object</code>
+
+**Kind**: instance property of [<code>TwitchJs</code>](#TwitchJs)
+
+---
+
+<a name="TwitchJs+api"></a>
+
+### twitchJs.api : [<code>Api</code>](#Api)
 
 **Kind**: instance property of [<code>TwitchJs</code>](#TwitchJs)
 

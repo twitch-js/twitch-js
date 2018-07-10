@@ -84,7 +84,17 @@ class Footer extends React.Component {
           </div>
         </section>
 
-        <section className="copyright">{this.props.config.copyright}</section>
+        <div className="wrapper">
+          <section className="copyright">{this.props.config.copyright}</section>
+          <section className="copyright no-affiliation">
+            TwitchJS is not affiliated, associated, authorized, endorsed by, or
+            in any way officially connected with{' '}
+            <a href="https://www.twitch.tv/">Twitch</a>, or any of its
+            subsidiaries or its affiliates. The name "Twitch" as well as related
+            names, marks, emblems and images are registered trademarks of{' '}
+            <a href="https://www.twitch.tv/">Twitch</a>.
+          </section>
+        </div>
       </footer>
     )
   }

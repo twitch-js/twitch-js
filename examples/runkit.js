@@ -7,15 +7,21 @@ const username = process.env.TWITCH_USERNAME;
 
 const channel = 'twitchapis';
 
-// Instantiate Chat client.
-const { chat, chatConstants } = new TwitchJs({ token, username });
+// Instantiate clients.
+const { api, chat, chatConstants } = new TwitchJs({ token, username });
 
-// Specify event handlers.
-const log = msg => console.log(JSON.stringify(msg, null, 2));
+// Get featured streams.
+api.get('streams/featured').then(response => {
+  console.log(response);
+  // Do stuff ...
+});
+
+// Listen to all events.
+const log = msg => console.log(msg);
 chat.on(chatConstants.EVENTS.ALL, log);
 
 // Connect ...
 chat.connect().then(() => {
-  // ... and then join a channel or channels.
+  // ... and then join the channel.
   chat.join(channel);
 });

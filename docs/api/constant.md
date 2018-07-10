@@ -4,14 +4,14 @@ title: Constants
 sidebar_label: Constants
 ---
 
-## Constants
+## Index
 
 <dl>
 <dt><a href="#CONNECTION_TIMEOUT">CONNECTION_TIMEOUT</a> : <code>number</code></dt>
-<dd></dd>
-<dt><a href="#JOIN_TIMEOUT">JOIN_TIMEOUT</a> : <code>number</code></dt>
-<dd></dd>
-</dl>
+  <dd></dd>
+  <dt><a href="#JOIN_TIMEOUT">JOIN_TIMEOUT</a> : <code>number</code></dt>
+  <dd></dd>
+  </dl>
 
 <a name="CONNECTION_TIMEOUT"></a>
 

@@ -9,6 +9,8 @@ const inputFile = 'src/**/*.js'
 const outputDir = './docs/api'
 const partials = fs.readdirSync(`${__dirname}/partials`)
 
+console.log(partials.map(partial => partial.replace(/\..+/g, '')))
+
 const titleMap = {
   class: 'Classes',
   mixin: 'Mixins',
@@ -57,7 +59,7 @@ Object.entries(templateDataByKind).forEach(([kind, kindTemplateData]) => {
     template: template,
     'no-gfm': true,
     separators: true,
-    partial: partials,
+    partial: partials.map(partial => `${__dirname}/partials/${partial}`),
   })
   fs.writeFileSync(path.resolve(outputDir, `${kind}.md`), output)
 })
