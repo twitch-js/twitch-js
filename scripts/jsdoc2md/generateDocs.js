@@ -6,16 +6,15 @@ const groupBy = require('lodash/groupBy')
 
 // Paths and files.
 const inputFile = 'src/**/*.js'
-const outputDir = './docs/api'
+const outputDir = './docs/reference'
 const partials = fs.readdirSync(`${__dirname}/partials`)
-
-console.log(partials.map(partial => partial.replace(/\..+/g, '')))
 
 const titleMap = {
   class: 'Classes',
   mixin: 'Mixins',
   member: 'Members',
   namespace: 'Objects',
+  enum: 'Enums',
   constant: 'Constants',
   function: 'Functions',
   event: 'Events',

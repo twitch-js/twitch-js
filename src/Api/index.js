@@ -99,7 +99,7 @@ class Api {
    * @param {string} endpoint
    * @param {FetchOptions} [options]
    *
-   * @example <caption>Get Live Streams</caption>
+   * @example <caption>Get Live Overwatch Streams</caption>
    * api.get('streams', { search: { game: 'Overwatch' } })
    *   .then(response => {
    *     // Do stuff with response ...

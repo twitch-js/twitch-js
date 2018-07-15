@@ -4,7 +4,7 @@ title: Mixins
 sidebar_label: Mixins
 ---
 
-## Index
+## Overview
 
 <dl>
 <dt><a href="#BaseMessage">BaseMessage</a></dt>
@@ -24,7 +24,6 @@ sidebar_label: Mixins
 <a name="BaseMessage"></a>
 
 ## BaseMessage
-
 Base message parsed from Twitch
 
 **Kind**: global mixin  
@@ -61,12 +60,12 @@ Base message parsed from Twitch
     </tr>  </tbody>
 </table>
 
----
+
+* * *
 
 <a name="GlobalUserStateMessage"></a>
 
 ## GlobalUserStateMessage
-
 GLOBALUSERSTATE message
 
 **Kind**: global mixin  
@@ -85,12 +84,12 @@ GLOBALUSERSTATE message
     </tr>  </tbody>
 </table>
 
----
+
+* * *
 
 <a name="NoticeMessage"></a>
 
 ## NoticeMessage
-
 NOTICE message
 
 **Kind**: global mixin  
@@ -111,12 +110,12 @@ NOTICE message
     </tr>  </tbody>
 </table>
 
----
+
+* * *
 
 <a name="UserStateMessage"></a>
 
 ## UserStateMessage
-
 USERSTATE message
 
 **Kind**: global mixin  
@@ -135,4 +134,6 @@ USERSTATE message
     </tr>  </tbody>
 </table>
 
----
+
+* * *
+

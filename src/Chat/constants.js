@@ -117,6 +117,12 @@ export const MESSAGE_IDS = {
   ...USER_NOTICE_MESSAGE_IDS,
 }
 
+/**
+ * Chat events
+ * @readonly
+ * @enum {string}
+ * @property {string} RAW
+ */
 export const EVENTS = {
   ...COMMANDS,
 
@@ -153,7 +159,7 @@ export const CHAT_COMMANDS = {
   COMMERCIAL: 'commercial',
   EMOTE_ONLY: 'emoteonly',
   EMOTE_ONLY_OFF: 'emoteonlyoff',
-  FOLLOWERS_ONLY: 'followersonly',
+  FOLLOWERS_ONLY: 'followers',
   FOLLOWERS_ONLY_OFF: 'followersonlyoff',
   HOST: 'host',
   MOD: 'mod',

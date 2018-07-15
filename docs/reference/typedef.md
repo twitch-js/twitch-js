@@ -4,7 +4,7 @@ title: Type Definitions
 sidebar_label: Type Definitions
 ---
 
-## Index
+## Overview
 
 <dl>
 <dt><a href="#ApiStatusState">ApiStatusState</a> : <code>Object</code></dt>
@@ -51,7 +51,6 @@ sidebar_label: Type Definitions
 <a name="ApiStatusState"></a>
 
 ## ApiStatusState : <code>Object</code>
-
 API status state.
 
 **Kind**: global typedef  
@@ -85,12 +84,12 @@ API status state.
     </tr>  </tbody>
 </table>
 
----
+
+* * *
 
 <a name="ApiOptions"></a>
 
 ## ApiOptions : <code>Object</code>
-
 API options
 
 **Kind**: global typedef  
@@ -116,12 +115,12 @@ API options
     </tr>  </tbody>
 </table>
 
----
+
+* * *
 
 <a name="ChannelState"></a>
 
 ## ChannelState : <code>Object</code>
-
 Channel state information
 
 **Kind**: global typedef  
@@ -141,12 +140,12 @@ Channel state information
     </tr>  </tbody>
 </table>
 
----
+
+* * *
 
 <a name="ClearChatTags"></a>
 
 ## ClearChatTags : <code>Object</code>
-
 CLEARCHAT tags
 
 **Kind**: global typedef  
@@ -167,12 +166,12 @@ CLEARCHAT tags
     </tr>  </tbody>
 </table>
 
----
+
+* * *
 
 <a name="GlobalUserStateTags"></a>
 
 ## GlobalUserStateTags : <code>Object</code>
-
 GLOBALUSERSTATE tags
 
 **Kind**: global typedef  
@@ -197,23 +196,22 @@ GLOBALUSERSTATE tags
     </tr>  </tbody>
 </table>
 
----
+
+* * *
 
 <a name="PrivateMessageTags"></a>
 
 ## PrivateMessageTags : [<code>UserStateTags</code>](#UserStateTags)
-
 PRIVMSG tags
 
 **Kind**: global typedef  
-**See**: https://dev.twitch.tv/docs/irc/tags#privmsg-twitch-tags
+**See**: https://dev.twitch.tv/docs/irc/tags#privmsg-twitch-tags  
 
----
+* * *
 
 <a name="RoomStateTags"></a>
 
 ## RoomStateTags : <code>Object</code>
-
 ROOMSTATE Tag
 
 **Kind**: global typedef  
@@ -242,23 +240,22 @@ ROOMSTATE Tag
     </tr>  </tbody>
 </table>
 
----
+
+* * *
 
 <a name="UserNoticeTags"></a>
 
 ## UserNoticeTags : [<code>UserStateTags</code>](#UserStateTags)
-
 USERNOTICE tags
 
 **Kind**: global typedef  
-**See**: https://dev.twitch.tv/docs/irc/tags#usernotice-twitch-tags
+**See**: https://dev.twitch.tv/docs/irc/tags#usernotice-twitch-tags  
 
----
+* * *
 
 <a name="UserStateTags"></a>
 
 ## UserStateTags : <code>Object</code>
-
 USERSTATE tags
 
 **Kind**: global typedef  
@@ -289,12 +286,12 @@ USERSTATE tags
     </tr>  </tbody>
 </table>
 
----
+
+* * *
 
 <a name="BadgesTag"></a>
 
 ## BadgesTag : <code>Object</code>
-
 Badges tag
 
 **Kind**: global typedef  
@@ -327,12 +324,12 @@ Badges tag
     </tr>  </tbody>
 </table>
 
----
+
+* * *
 
 <a name="EmoteTag"></a>
 
 ## EmoteTag : <code>Object</code>
-
 Emote tag
 
 **Kind**: global typedef  
@@ -353,12 +350,12 @@ Emote tag
     </tr>  </tbody>
 </table>
 
----
+
+* * *
 
 <a name="ChatOptions"></a>
 
 ## ChatOptions : <code>Object</code>
-
 Chat options
 
 **Kind**: global typedef  
@@ -385,12 +382,12 @@ Chat options
     </tr>  </tbody>
 </table>
 
----
+
+* * *
 
 <a name="FetchOptions"></a>
 
 ## FetchOptions : <code>Object</code>
-
 Fetch options
 
 **Kind**: global typedef  
@@ -418,4 +415,6 @@ Fetch options
     </tr>  </tbody>
 </table>
 
----
+
+* * *
+

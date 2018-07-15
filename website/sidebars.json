@@ -1,19 +1,23 @@
 {
   "docs":{
     "Introduction":[
-      "getting-started"
+      "getting-started",
+      "authentication",
+      "messaging",
+      "api"
     ],
     "Examples":[
       "examples-node",
       "examples-browser"
     ],
-    "API":[
-      "api/class",
-      "api/constant",
-      "api/external",
-      "api/function",
-      "api/mixin",
-      "api/typedef"
+    "Reference":[
+      "reference/class",
+      "reference/function",
+      "reference/constant",
+      "reference/enum",
+      "reference/mixin",
+      "reference/typedef",
+      "reference/external"
     ]
   }
 }

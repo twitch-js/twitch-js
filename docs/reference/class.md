@@ -4,7 +4,7 @@ title: Classes
 sidebar_label: Classes
 ---
 
-## Index
+## Overview
 
 <dl>
 <dt><a href="#Api">Api</a></dt>
@@ -21,29 +21,26 @@ sidebar_label: Classes
 <a name="Api"></a>
 
 ## Api
-
 API client
 
-**Kind**: global class
+**Kind**: global class  
 
 * [Api](#Api)
-  * [new Api(options)](#new_Api_new)
-  * [.readyState](#Api+readyState) : <code>number</code>
-  * [.status](#Api+status) : <code>ApiStatusState</code>
-  * [.initialize()](#Api+initialize) ⇒ <code>Promise.&lt;ApiStatusState,
-    Object&gt;</code>
-  * [.hasScope(scope)](#Api+hasScope) ⇒ <code>Promise.&lt;boolean,
-    boolean&gt;</code>
-  * [.get(endpoint, [options])](#Api+get)
-  * [.post(endpoint, [options])](#Api+post)
-  * [.put(endpoint, [options])](#Api+put)
+    * [new Api(options)](#new_Api_new)
+    * [.readyState](#Api+readyState) : <code>number</code>
+    * [.status](#Api+status) : <code>ApiStatusState</code>
+    * [.initialize()](#Api+initialize) ⇒ <code>Promise.&lt;ApiStatusState, Object&gt;</code>
+    * [.hasScope(scope)](#Api+hasScope) ⇒ <code>Promise.&lt;boolean, boolean&gt;</code>
+    * [.get(endpoint, [options])](#Api+get)
+    * [.post(endpoint, [options])](#Api+post)
+    * [.put(endpoint, [options])](#Api+put)
 
----
+
+* * *
 
 <a name="new_Api_new"></a>
 
 ### new Api(options)
-
 API constructor.
 
 <table>
@@ -58,8 +55,7 @@ API constructor.
     </tr>  </tbody>
 </table>
 
-**Example** _(Get Featured Streams)_
-
+**Example** *(Get Featured Streams)*  
 ```js
 const token = 'cfabdegwdoklmawdzdo98xt2fo512y'
 const username = 'ronni'
@@ -70,48 +66,43 @@ api.get('streams/featured').then(response => {
 })
 ```
 
----
+* * *
 
 <a name="Api+readyState"></a>
 
 ### api.readyState : <code>number</code>
-
 API client ready state : **1** ready; **2** initialized.
 
-**Kind**: instance property of [<code>Api</code>](#Api)
+**Kind**: instance property of [<code>Api</code>](#Api)  
 
----
+* * *
 
 <a name="Api+status"></a>
 
 ### api.status : <code>ApiStatusState</code>
-
 API status.
 
-**Kind**: instance property of [<code>Api</code>](#Api)
+**Kind**: instance property of [<code>Api</code>](#Api)  
 
----
+* * *
 
 <a name="Api+initialize"></a>
 
 ### api.initialize() ⇒ <code>Promise.&lt;ApiStatusState, Object&gt;</code>
-
 Initialize API client and retrieve status.
 
 **Kind**: instance method of [<code>Api</code>](#Api)  
-**See**: https://dev.twitch.tv/docs/v5/#root-url
+**See**: https://dev.twitch.tv/docs/v5/#root-url  
 
----
+* * *
 
 <a name="Api+hasScope"></a>
 
 ### api.hasScope(scope) ⇒ <code>Promise.&lt;boolean, boolean&gt;</code>
-
 Check if current credentials include `scope`.
 
 **Kind**: instance method of [<code>Api</code>](#Api)  
-**See**: https://dev.twitch.tv/docs/authentication/#twitch-api-v5
-
+**See**: https://dev.twitch.tv/docs/authentication/#twitch-api-v5  
 <table>
   <thead>
     <tr>
@@ -125,16 +116,15 @@ Check if current credentials include `scope`.
     </tr>  </tbody>
 </table>
 
----
+
+* * *
 
 <a name="Api+get"></a>
 
 ### api.get(endpoint, [options])
-
 GET endpoint.
 
-**Kind**: instance method of [<code>Api</code>](#Api)
-
+**Kind**: instance method of [<code>Api</code>](#Api)  
 <table>
   <thead>
     <tr>
@@ -149,24 +139,22 @@ GET endpoint.
     </tr>  </tbody>
 </table>
 
-**Example** _(Get Live Streams)_
-
+**Example** *(Get Live Overwatch Streams)*  
 ```js
-api.get('streams', { search: { game: 'Overwatch' } }).then(response => {
-  // Do stuff with response ...
-})
+api.get('streams', { search: { game: 'Overwatch' } })
+  .then(response => {
+    // Do stuff with response ...
+  })
 ```
 
----
+* * *
 
 <a name="Api+post"></a>
 
 ### api.post(endpoint, [options])
-
 POST endpoint.
 
-**Kind**: instance method of [<code>Api</code>](#Api)
-
+**Kind**: instance method of [<code>Api</code>](#Api)  
 <table>
   <thead>
     <tr>
@@ -181,16 +169,15 @@ POST endpoint.
     </tr>  </tbody>
 </table>
 
----
+
+* * *
 
 <a name="Api+put"></a>
 
 ### api.put(endpoint, [options])
-
 PUT endpoint.
 
-**Kind**: instance method of [<code>Api</code>](#Api)
-
+**Kind**: instance method of [<code>Api</code>](#Api)  
 <table>
   <thead>
     <tr>
@@ -205,81 +192,58 @@ PUT endpoint.
     </tr>  </tbody>
 </table>
 
----
+
+* * *
 
 <a name="Chat"></a>
 
 ## Chat ⇐ <code>external:EventEmitter3</code>
-
 Chat client
 
 **Kind**: global class  
 **Extends**: <code>external:EventEmitter3</code>  
-**Emits**: [<code>\*</code>](#Chat+event_*),
-[<code>CLEARCHAT</code>](#Chat+event_CLEARCHAT),
-[<code>CLEARCHAT/USER_BANNED</code>](#Chat+event_CLEARCHAT/USER_BANNED),
-[<code>GLOBALUSERSTATE</code>](#Chat+event_GLOBALUSERSTATE),
-[<code>HOSTTARGET</code>](#Chat+event_HOSTTARGET),
-[<code>JOIN</code>](#Chat+event_JOIN), [<code>MODE</code>](#Chat+event_MODE),
-[<code>NAMES</code>](#Chat+event_NAMES),
-[<code>NAMES_END</code>](#Chat+event_NAMES_END),
-[<code>NOTICE</code>](#Chat+event_NOTICE),
-[<code>NOTICE/ROOM_MODS</code>](#Chat+event_NOTICE/ROOM_MODS),
-[<code>PART</code>](#Chat+event_PART),
-[<code>PRIVMSG</code>](#Chat+event_PRIVMSG),
-[<code>ROOMSTATE</code>](#Chat+event_ROOMSTATE),
-[<code>USERNOTICE/RAID</code>](#Chat+event_USERNOTICE/RAID),
-[<code>USERNOTICE/RESUBSCRIPTION</code>](#Chat+event_USERNOTICE/RESUBSCRIPTION),
-[<code>USERNOTICE/RITUAL</code>](#Chat+event_USERNOTICE/RITUAL),
-[<code>USERNOTICE/SUBSCRIPTION</code>](#Chat+event_USERNOTICE/SUBSCRIPTION),
-[<code>USERNOTICE/SUBSCRIPTION_GIFT</code>](#Chat+event_USERNOTICE/SUBSCRIPTION_GIFT),
-[<code>USERSTATE</code>](#Chat+event_USERSTATE)
+**Emits**: [<code>\*</code>](#Chat+event_*), [<code>CLEARCHAT</code>](#Chat+event_CLEARCHAT), [<code>CLEARCHAT/USER_BANNED</code>](#Chat+event_CLEARCHAT/USER_BANNED), [<code>GLOBALUSERSTATE</code>](#Chat+event_GLOBALUSERSTATE), [<code>HOSTTARGET</code>](#Chat+event_HOSTTARGET), [<code>JOIN</code>](#Chat+event_JOIN), [<code>MODE</code>](#Chat+event_MODE), [<code>NAMES</code>](#Chat+event_NAMES), [<code>NAMES_END</code>](#Chat+event_NAMES_END), [<code>NOTICE</code>](#Chat+event_NOTICE), [<code>NOTICE/ROOM_MODS</code>](#Chat+event_NOTICE/ROOM_MODS), [<code>PART</code>](#Chat+event_PART), [<code>PRIVMSG</code>](#Chat+event_PRIVMSG), [<code>ROOMSTATE</code>](#Chat+event_ROOMSTATE), [<code>USERNOTICE/RAID</code>](#Chat+event_USERNOTICE/RAID), [<code>USERNOTICE/RESUBSCRIPTION</code>](#Chat+event_USERNOTICE/RESUBSCRIPTION), [<code>USERNOTICE/RITUAL</code>](#Chat+event_USERNOTICE/RITUAL), [<code>USERNOTICE/SUBSCRIPTION</code>](#Chat+event_USERNOTICE/SUBSCRIPTION), [<code>USERNOTICE/SUBSCRIPTION_GIFT</code>](#Chat+event_USERNOTICE/SUBSCRIPTION_GIFT), [<code>USERSTATE</code>](#Chat+event_USERSTATE)  
 
 * [Chat](#Chat) ⇐ <code>external:EventEmitter3</code>
-  * [new Chat(options)](#new_Chat_new)
-  * [.readyState](#Chat+readyState) : <code>number</code>
-  * [.userState](#Chat+userState) : <code>GlobalUserStateTags</code>
-  * [.channels](#Chat+channels) : <code>Object.&lt;string,
-    ChannelState&gt;</code>
-  * [.options](#Chat+options) : <code>ChatOptions</code>
-  * [.connect()](#Chat+connect) ⇒ <code>Promise.&lt;GlobalUserStateMessage,
-    string&gt;</code>
-  * [.send(message)](#Chat+send)
-  * [.disconnect()](#Chat+disconnect)
-  * [.join(channel)](#Chat+join) ⇒ <code>Promise.&lt;ChannelState,
-    string&gt;</code>
-  * [.part(channel)](#Chat+part)
-  * [.say(channel, message)](#Chat+say) ⇒ <code>Promise.&lt;UserStateMessage,
-    string&gt;</code>
-  * [.broadcast(message)](#Chat+broadcast) ⇒
-    <code>Promise.&lt;Array.&lt;UserStateMessage&gt;&gt;</code>
-  * ["\*"](#Chat+event_*)
-  * ["JOIN"](#Chat+event_JOIN)
-  * ["PART"](#Chat+event_PART)
-  * ["MODE"](#Chat+event_MODE)
-  * ["NAMES"](#Chat+event_NAMES)
-  * ["NAMES_END"](#Chat+event_NAMES_END)
-  * ["GLOBALUSERSTATE"](#Chat+event_GLOBALUSERSTATE)
-  * ["CLEARCHAT/USER_BANNED"](#Chat+event_CLEARCHAT/USER_BANNED)
-  * ["CLEARCHAT"](#Chat+event_CLEARCHAT)
-  * ["HOSTTARGET"](#Chat+event_HOSTTARGET)
-  * ["ROOMSTATE"](#Chat+event_ROOMSTATE)
-  * ["NOTICE/ROOM_MODS"](#Chat+event_NOTICE/ROOM_MODS)
-  * ["NOTICE"](#Chat+event_NOTICE)
-  * ["USERSTATE"](#Chat+event_USERSTATE)
-  * ["PRIVMSG"](#Chat+event_PRIVMSG)
-  * ["USERNOTICE/SUBSCRIPTION"](#Chat+event_USERNOTICE/SUBSCRIPTION)
-  * ["USERNOTICE/RESUBSCRIPTION"](#Chat+event_USERNOTICE/RESUBSCRIPTION)
-  * ["USERNOTICE/SUBSCRIPTION_GIFT"](#Chat+event_USERNOTICE/SUBSCRIPTION_GIFT)
-  * ["USERNOTICE/RAID"](#Chat+event_USERNOTICE/RAID)
-  * ["USERNOTICE/RITUAL"](#Chat+event_USERNOTICE/RITUAL)
+    * [new Chat(options)](#new_Chat_new)
+    * [.readyState](#Chat+readyState) : <code>number</code>
+    * [.userState](#Chat+userState) : <code>GlobalUserStateTags</code>
+    * [.channels](#Chat+channels) : <code>Object.&lt;string, ChannelState&gt;</code>
+    * [.options](#Chat+options) : <code>ChatOptions</code>
+    * [.connect()](#Chat+connect) ⇒ <code>Promise.&lt;GlobalUserStateMessage, string&gt;</code>
+    * [.send(message)](#Chat+send)
+    * [.disconnect()](#Chat+disconnect)
+    * [.join(channel)](#Chat+join) ⇒ <code>Promise.&lt;ChannelState, string&gt;</code>
+    * [.part(channel)](#Chat+part)
+    * [.say(channel, message)](#Chat+say) ⇒ <code>Promise.&lt;UserStateMessage, string&gt;</code>
+    * [.broadcast(message)](#Chat+broadcast) ⇒ <code>Promise.&lt;Array.&lt;UserStateMessage&gt;&gt;</code>
+    * ["*"](#Chat+event_*)
+    * ["JOIN"](#Chat+event_JOIN)
+    * ["PART"](#Chat+event_PART)
+    * ["MODE"](#Chat+event_MODE)
+    * ["NAMES"](#Chat+event_NAMES)
+    * ["NAMES_END"](#Chat+event_NAMES_END)
+    * ["GLOBALUSERSTATE"](#Chat+event_GLOBALUSERSTATE)
+    * ["CLEARCHAT/USER_BANNED"](#Chat+event_CLEARCHAT/USER_BANNED)
+    * ["CLEARCHAT"](#Chat+event_CLEARCHAT)
+    * ["HOSTTARGET"](#Chat+event_HOSTTARGET)
+    * ["ROOMSTATE"](#Chat+event_ROOMSTATE)
+    * ["NOTICE/ROOM_MODS"](#Chat+event_NOTICE/ROOM_MODS)
+    * ["NOTICE"](#Chat+event_NOTICE)
+    * ["USERSTATE"](#Chat+event_USERSTATE)
+    * ["PRIVMSG"](#Chat+event_PRIVMSG)
+    * ["USERNOTICE/SUBSCRIPTION"](#Chat+event_USERNOTICE/SUBSCRIPTION)
+    * ["USERNOTICE/RESUBSCRIPTION"](#Chat+event_USERNOTICE/RESUBSCRIPTION)
+    * ["USERNOTICE/SUBSCRIPTION_GIFT"](#Chat+event_USERNOTICE/SUBSCRIPTION_GIFT)
+    * ["USERNOTICE/RAID"](#Chat+event_USERNOTICE/RAID)
+    * ["USERNOTICE/RITUAL"](#Chat+event_USERNOTICE/RITUAL)
 
----
+
+* * *
 
 <a name="new_Chat_new"></a>
 
 ### new Chat(options)
-
 Chat constructor.
 
 <table>
@@ -294,8 +258,7 @@ Chat constructor.
     </tr>  </tbody>
 </table>
 
-**Example** _(Connecting to Twitch and joining #dallas)_
-
+**Example** *(Connecting to Twitch and joining #dallas)*  
 ```js
 const token = 'cfabdegwdoklmawdzdo98xt2fo512y'
 const username = 'ronni'
@@ -321,65 +284,57 @@ chat.connect().then(globalUserState => {
 })
 ```
 
----
+* * *
 
 <a name="Chat+readyState"></a>
 
 ### chat.readyState : <code>number</code>
+Chat client ready state: **0** not ready; **1** connecting; **2**
+connected **3**; disconnecting, or; **4** disconnected.
 
-Chat client ready state: **0** not ready; **1** connecting; **2** connected
-**3**; disconnecting, or; **4** disconnected.
+**Kind**: instance property of [<code>Chat</code>](#Chat)  
 
-**Kind**: instance property of [<code>Chat</code>](#Chat)
-
----
+* * *
 
 <a name="Chat+userState"></a>
 
 ### chat.userState : <code>GlobalUserStateTags</code>
+**Kind**: instance property of [<code>Chat</code>](#Chat)  
 
-**Kind**: instance property of [<code>Chat</code>](#Chat)
-
----
+* * *
 
 <a name="Chat+channels"></a>
 
 ### chat.channels : <code>Object.&lt;string, ChannelState&gt;</code>
+**Kind**: instance property of [<code>Chat</code>](#Chat)  
 
-**Kind**: instance property of [<code>Chat</code>](#Chat)
-
----
+* * *
 
 <a name="Chat+options"></a>
 
 ### chat.options : <code>ChatOptions</code>
-
 Validated options.
 
-**Kind**: instance property of [<code>Chat</code>](#Chat)
+**Kind**: instance property of [<code>Chat</code>](#Chat)  
 
----
+* * *
 
 <a name="Chat+connect"></a>
 
 ### chat.connect() ⇒ <code>Promise.&lt;GlobalUserStateMessage, string&gt;</code>
-
 Connect to Twitch.
 
 **Kind**: instance method of [<code>Chat</code>](#Chat)  
-**Returns**: <code>Promise.&lt;GlobalUserStateMessage, string&gt;</code> - Global
-user state message
+**Returns**: <code>Promise.&lt;GlobalUserStateMessage, string&gt;</code> - Global user state message  
 
----
+* * *
 
 <a name="Chat+send"></a>
 
 ### chat.send(message)
-
 Sends a raw message to Twitch.
 
-**Kind**: instance method of [<code>Chat</code>](#Chat)
-
+**Kind**: instance method of [<code>Chat</code>](#Chat)  
 <table>
   <thead>
     <tr>
@@ -393,26 +348,24 @@ Sends a raw message to Twitch.
     </tr>  </tbody>
 </table>
 
----
+
+* * *
 
 <a name="Chat+disconnect"></a>
 
 ### chat.disconnect()
-
 Disconnect from Twitch.
 
-**Kind**: instance method of [<code>Chat</code>](#Chat)
+**Kind**: instance method of [<code>Chat</code>](#Chat)  
 
----
+* * *
 
 <a name="Chat+join"></a>
 
 ### chat.join(channel) ⇒ <code>Promise.&lt;ChannelState, string&gt;</code>
-
 Join a channel.
 
-**Kind**: instance method of [<code>Chat</code>](#Chat)
-
+**Kind**: instance method of [<code>Chat</code>](#Chat)  
 <table>
   <thead>
     <tr>
@@ -425,8 +378,7 @@ Join a channel.
     </tr>  </tbody>
 </table>
 
-**Example** _(Joining #dallas)_
-
+**Example** *(Joining #dallas)*  
 ```js
 const channel = '#dallas'
 
@@ -434,39 +386,36 @@ chat.join(channel).then(channelState => {
   // Do stuff with channelState...
 })
 ```
-
-**Example** _(Joining multiple channels)_
-
+**Example** *(Joining multiple channels)*  
 ```js
 const channels = ['#dallas', '#ronni']
 
-Promise.all(channels.map(channel => chat.join(channel))).then(channelStates => {
-  // Listen to all PRIVMSG
-  chat.on('PRIVMSG', privateMessage => {
-    // Do stuff with privateMessage ...
-  })
+Promise.all(channels.map(channel => chat.join(channel)))
+  .then(channelStates => {
+    // Listen to all PRIVMSG
+    chat.on('PRIVMSG', privateMessage => {
+      // Do stuff with privateMessage ...
+    })
 
-  // Listen to PRIVMSG from #dallas ONLY
-  chat.on('PRIVMSG/#dallas', privateMessage => {
-    // Do stuff with privateMessage ...
+    // Listen to PRIVMSG from #dallas ONLY
+    chat.on('PRIVMSG/#dallas', privateMessage => {
+      // Do stuff with privateMessage ...
+    })
+    // Listen to all PRIVMSG from #ronni ONLY
+    chat.on('PRIVMSG/#ronni', privateMessage => {
+      // Do stuff with privateMessage ...
+    })
   })
-  // Listen to all PRIVMSG from #ronni ONLY
-  chat.on('PRIVMSG/#ronni', privateMessage => {
-    // Do stuff with privateMessage ...
-  })
-})
 ```
 
----
+* * *
 
 <a name="Chat+part"></a>
 
 ### chat.part(channel)
-
 Depart from a channel.
 
-**Kind**: instance method of [<code>Chat</code>](#Chat)
-
+**Kind**: instance method of [<code>Chat</code>](#Chat)  
 <table>
   <thead>
     <tr>
@@ -479,16 +428,15 @@ Depart from a channel.
     </tr>  </tbody>
 </table>
 
----
+
+* * *
 
 <a name="Chat+say"></a>
 
 ### chat.say(channel, message) ⇒ <code>Promise.&lt;UserStateMessage, string&gt;</code>
-
 Send a message to a channel.
 
-**Kind**: instance method of [<code>Chat</code>](#Chat)
-
+**Kind**: instance method of [<code>Chat</code>](#Chat)  
 <table>
   <thead>
     <tr>
@@ -503,16 +451,15 @@ Send a message to a channel.
     </tr>  </tbody>
 </table>
 
----
+
+* * *
 
 <a name="Chat+broadcast"></a>
 
 ### chat.broadcast(message) ⇒ <code>Promise.&lt;Array.&lt;UserStateMessage&gt;&gt;</code>
-
 Broadcast message to all connected channels.
 
-**Kind**: instance method of [<code>Chat</code>](#Chat)
-
+**Kind**: instance method of [<code>Chat</code>](#Chat)  
 <table>
   <thead>
     <tr>
@@ -525,22 +472,21 @@ Broadcast message to all connected channels.
     </tr>  </tbody>
 </table>
 
----
+
+* * *
 
 <a name="Chat+event_*"></a>
 
-### "\*"
-
+### "*"
 All events are also emitted with this event name.
 
-**Kind**: event emitted by [<code>Chat</code>](#Chat)
+**Kind**: event emitted by [<code>Chat</code>](#Chat)  
 
----
+* * *
 
 <a name="Chat+event_JOIN"></a>
 
 ### "JOIN"
-
 Join a channel.
 
 **Kind**: event emitted by [<code>Chat</code>](#Chat)  
@@ -561,12 +507,12 @@ Join a channel.
     </tr>  </tbody>
 </table>
 
----
+
+* * *
 
 <a name="Chat+event_PART"></a>
 
 ### "PART"
-
 Depart from a channel.
 
 **Kind**: event emitted by [<code>Chat</code>](#Chat)  
@@ -587,12 +533,12 @@ Depart from a channel.
     </tr>  </tbody>
 </table>
 
----
+
+* * *
 
 <a name="Chat+event_MODE"></a>
 
 ### "MODE"
-
 Gain/lose moderator (operator) status in a channel.
 
 **Kind**: event emitted by [<code>Chat</code>](#Chat)  
@@ -616,12 +562,12 @@ Gain/lose moderator (operator) status in a channel.
     </tr>  </tbody>
 </table>
 
----
+
+* * *
 
 <a name="Chat+event_NAMES"></a>
 
 ### "NAMES"
-
 List current chatters in a channel.
 
 **Kind**: event emitted by [<code>Chat</code>](#Chat)  
@@ -644,43 +590,41 @@ List current chatters in a channel.
     </tr>  </tbody>
 </table>
 
----
+
+* * *
 
 <a name="Chat+event_NAMES_END"></a>
 
 ### "NAMES_END"
-
 End of list current chatters in a channel.
 
 **Kind**: event emitted by [<code>Chat</code>](#Chat)  
 **Mixes**: <code>BaseMessage</code>  
-**See**: https://dev.twitch.tv/docs/irc/membership/#names-twitch-membership
+**See**: https://dev.twitch.tv/docs/irc/membership/#names-twitch-membership  
 
----
+* * *
 
 <a name="Chat+event_GLOBALUSERSTATE"></a>
 
 ### "GLOBALUSERSTATE"
-
 On successful login.
 
 **Kind**: event emitted by [<code>Chat</code>](#Chat)  
-**Mixes**: <code>GlobalUserStateMessage</code>
+**Mixes**: <code>GlobalUserStateMessage</code>  
 
----
+* * *
 
 <a name="Chat+event_CLEARCHAT/USER_BANNED"></a>
 
 ### "CLEARCHAT/USER_BANNED"
-
 Temporary or permanent ban on a channel.
 
 **Kind**: event emitted by [<code>Chat</code>](#Chat)  
 **Mixes**: <code>BaseMessage</code>  
 **See**
 
-* https://dev.twitch.tv/docs/irc/commands/#clearchat-twitch-commands
-* https://dev.twitch.tv/docs/irc/tags/#clearchat-twitch-tags
+- https://dev.twitch.tv/docs/irc/commands/#clearchat-twitch-commands
+- https://dev.twitch.tv/docs/irc/tags/#clearchat-twitch-tags
 
 **Properties**
 
@@ -698,27 +642,27 @@ Temporary or permanent ban on a channel.
     </tr>  </tbody>
 </table>
 
----
+
+* * *
 
 <a name="Chat+event_CLEARCHAT"></a>
 
 ### "CLEARCHAT"
-
 All chat is cleared (deleted).
 
 **Kind**: event emitted by [<code>Chat</code>](#Chat)  
 **Mixes**: <code>BaseMessage</code>  
 **See**
 
-* https://dev.twitch.tv/docs/irc/commands/#clearchat-twitch-commands
-* https://dev.twitch.tv/docs/irc/tags/#clearchat-twitch-tags
+- https://dev.twitch.tv/docs/irc/commands/#clearchat-twitch-commands
+- https://dev.twitch.tv/docs/irc/tags/#clearchat-twitch-tags
 
----
+
+* * *
 
 <a name="Chat+event_HOSTTARGET"></a>
 
 ### "HOSTTARGET"
-
 Host starts or stops a message.
 
 **Kind**: event emitted by [<code>Chat</code>](#Chat)  
@@ -739,12 +683,12 @@ Host starts or stops a message.
     </tr>  </tbody>
 </table>
 
----
+
+* * *
 
 <a name="Chat+event_ROOMSTATE"></a>
 
 ### "ROOMSTATE"
-
 When a user joins a channel or a room setting is changed.
 
 **Kind**: event emitted by [<code>Chat</code>](#Chat)  
@@ -763,12 +707,12 @@ When a user joins a channel or a room setting is changed.
     </tr>  </tbody>
 </table>
 
----
+
+* * *
 
 <a name="Chat+event_NOTICE/ROOM_MODS"></a>
 
 ### "NOTICE/ROOM_MODS"
-
 NOTICE/ROOM_MODS message
 
 **Kind**: event emitted by [<code>Chat</code>](#Chat)  
@@ -789,16 +733,15 @@ NOTICE/ROOM_MODS message
     </tr>  </tbody>
 </table>
 
----
+
+* * *
 
 <a name="Chat+event_NOTICE"></a>
 
 ### "NOTICE"
-
 **Kind**: event emitted by [<code>Chat</code>](#Chat)  
 **Mixes**: <code>NoticeMessage</code>  
-**See**:
-https://dev.twitch.tv/docs/irc/commands/#msg-id-tags-for-the-notice-commands-capability  
+**See**: https://dev.twitch.tv/docs/irc/commands/#msg-id-tags-for-the-notice-commands-capability  
 **Properties**
 
 <table>
@@ -816,23 +759,22 @@ https://dev.twitch.tv/docs/irc/commands/#msg-id-tags-for-the-notice-commands-cap
     </tr>  </tbody>
 </table>
 
----
+
+* * *
 
 <a name="Chat+event_USERSTATE"></a>
 
 ### "USERSTATE"
-
 When a user joins a channel or sends a PRIVMSG to a channel.
 
 **Kind**: event emitted by [<code>Chat</code>](#Chat)  
-**Mixes**: <code>UserStateMessage</code>
+**Mixes**: <code>UserStateMessage</code>  
 
----
+* * *
 
 <a name="Chat+event_PRIVMSG"></a>
 
 ### "PRIVMSG"
-
 When a user joins a channel or sends a PRIVMSG to a channel.
 
 **Kind**: event emitted by [<code>Chat</code>](#Chat)  
@@ -855,12 +797,12 @@ When a user joins a channel or sends a PRIVMSG to a channel.
     </tr>  </tbody>
 </table>
 
----
+
+* * *
 
 <a name="Chat+event_USERNOTICE/SUBSCRIPTION"></a>
 
 ### "USERNOTICE/SUBSCRIPTION"
-
 On subscription (first month) to a channel.
 
 **Kind**: event emitted by [<code>Chat</code>](#Chat)  
@@ -887,12 +829,12 @@ On subscription (first month) to a channel.
     </tr>  </tbody>
 </table>
 
----
+
+* * *
 
 <a name="Chat+event_USERNOTICE/RESUBSCRIPTION"></a>
 
 ### "USERNOTICE/RESUBSCRIPTION"
-
 On resubscription (subsequent months) to a channel.
 
 **Kind**: event emitted by [<code>Chat</code>](#Chat)  
@@ -911,12 +853,12 @@ On resubscription (subsequent months) to a channel.
     </tr>  </tbody>
 </table>
 
----
+
+* * *
 
 <a name="Chat+event_USERNOTICE/SUBSCRIPTION_GIFT"></a>
 
 ### "USERNOTICE/SUBSCRIPTION_GIFT"
-
 On subscription gift to a channel.
 
 **Kind**: event emitted by [<code>Chat</code>](#Chat)  
@@ -943,12 +885,12 @@ On subscription gift to a channel.
     </tr>  </tbody>
 </table>
 
----
+
+* * *
 
 <a name="Chat+event_USERNOTICE/RAID"></a>
 
 ### "USERNOTICE/RAID"
-
 On channel raid.
 
 **Kind**: event emitted by [<code>Chat</code>](#Chat)  
@@ -975,12 +917,12 @@ On channel raid.
     </tr>  </tbody>
 </table>
 
----
+
+* * *
 
 <a name="Chat+event_USERNOTICE/RITUAL"></a>
 
 ### "USERNOTICE/RITUAL"
-
 On channel ritual.
 
 **Kind**: event emitted by [<code>Chat</code>](#Chat)  
@@ -1003,28 +945,28 @@ On channel ritual.
     </tr>  </tbody>
 </table>
 
----
+
+* * *
 
 <a name="TwitchJs"></a>
 
 ## TwitchJs
-
 TwitchJs client
 
-**Kind**: global class
+**Kind**: global class  
 
 * [TwitchJs](#TwitchJs)
-  * [new TwitchJs(options)](#new_TwitchJs_new)
-  * [.chat](#TwitchJs+chat) : [<code>Chat</code>](#Chat)
-  * [.chatConstants](#TwitchJs+chatConstants) : <code>Object</code>
-  * [.api](#TwitchJs+api) : [<code>Api</code>](#Api)
+    * [new TwitchJs(options)](#new_TwitchJs_new)
+    * [.chat](#TwitchJs+chat) : [<code>Chat</code>](#Chat)
+    * [.chatConstants](#TwitchJs+chatConstants) : <code>Object</code>
+    * [.api](#TwitchJs+api) : [<code>Api</code>](#Api)
 
----
+
+* * *
 
 <a name="new_TwitchJs_new"></a>
 
 ### new TwitchJs(options)
-
 TwitchJs constructor
 
 <table>
@@ -1047,8 +989,7 @@ TwitchJs constructor
     </tr>  </tbody>
 </table>
 
-**Example** _(Instantiating TwitchJS)_
-
+**Example** *(Instantiating TwitchJS)*  
 ```js
 const token = 'cfabdegwdoklmawdzdo98xt2fo512y'
 const username = 'ronni'
@@ -1063,28 +1004,26 @@ twitchJs.api.get('channel').then(response => {
 })
 ```
 
----
+* * *
 
 <a name="TwitchJs+chat"></a>
 
 ### twitchJs.chat : [<code>Chat</code>](#Chat)
+**Kind**: instance property of [<code>TwitchJs</code>](#TwitchJs)  
 
-**Kind**: instance property of [<code>TwitchJs</code>](#TwitchJs)
-
----
+* * *
 
 <a name="TwitchJs+chatConstants"></a>
 
 ### twitchJs.chatConstants : <code>Object</code>
+**Kind**: instance property of [<code>TwitchJs</code>](#TwitchJs)  
 
-**Kind**: instance property of [<code>TwitchJs</code>](#TwitchJs)
-
----
+* * *
 
 <a name="TwitchJs+api"></a>
 
 ### twitchJs.api : [<code>Api</code>](#Api)
+**Kind**: instance property of [<code>TwitchJs</code>](#TwitchJs)  
 
-**Kind**: instance property of [<code>TwitchJs</code>](#TwitchJs)
+* * *
 
----

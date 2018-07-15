@@ -7,7 +7,7 @@
   } else {
     window.RunKit.createNotebook({
       element: document.getElementById('my-embed'),
-      source: `const TwitchJs = require('twitch-js@2.0.0-beta.2').default;
+      source: `const TwitchJs = require('twitch-js@2.0.0-beta.3').default;
 
 const token = TWITCH_TOKEN;
 const username = TWITCH_USERNAME;
