@@ -78,6 +78,14 @@ chat.on(chatConstants.EVENTS.USER_NOTICE, userStateMessage => {
 
 ## Sending messages
 
+All messages sent to Twitch are automatically rate-limited according to
+[Twitch Developer documentation](https://dev.twitch.tv/docs/irc/guide/#command--message-limits).
+Currently, messages are limited **20 per 30 seconds**, with support for
+moderator, known and verified bots
+[planned](https://github.com/twitch-apis/twitch-js/issues/100).
+
+### Speak in channel
+
 ```js
 const channel = '#dallas'
 
@@ -89,17 +97,19 @@ chat
   })
 ```
 
-## Sending commands
+### Send command to channel
 
 All chat commands are currently supported and exposed as camel-case methods. For
 example:
 
 ```js
+const channel = '#dallas'
+
 // Enable followers-only for 1 week
-chat.followersOnly('1w')
+chat.followersOnly(channel, '1w')
 
 // Ban ronni
-chat.ban('ronni')
+chat.ban(channel, 'ronni')
 ```
 
 **Note:** `Promise`-resolves for each commands are
