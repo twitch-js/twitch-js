@@ -136,3 +136,14 @@ Promise.all(channels.map(channel => chat.join(channel))).then(channelStates => {
   })
 })
 ```
+
+### Broadcasting to all channels
+
+```js
+chat
+  .broadcast('Kappa Keepo Kappa')
+  // Optionally ...
+  .then(userStateMessages => {
+    // ... do stuff with userStateMessages on success ...
+  })
+```

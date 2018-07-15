@@ -206,10 +206,10 @@ Chat client
 
 * [Chat](#Chat) ⇐ <code>external:EventEmitter3</code>
     * [new Chat(options)](#new_Chat_new)
-    * [.readyState](#Chat+readyState) : <code>number</code>
     * [.userState](#Chat+userState) : <code>GlobalUserStateTags</code>
     * [.channels](#Chat+channels) : <code>Object.&lt;string, ChannelState&gt;</code>
     * [.options](#Chat+options) : <code>ChatOptions</code>
+    * [.readyState](#Chat+readyState) : <code>enum</code>
     * [.connect()](#Chat+connect) ⇒ <code>Promise.&lt;GlobalUserStateMessage, string&gt;</code>
     * [.send(message)](#Chat+send)
     * [.disconnect()](#Chat+disconnect)
@@ -286,16 +286,6 @@ chat.connect().then(globalUserState => {
 
 * * *
 
-<a name="Chat+readyState"></a>
-
-### chat.readyState : <code>number</code>
-Chat client ready state: **0** not ready; **1** connecting; **2**
-connected **3**; disconnecting, or; **4** disconnected.
-
-**Kind**: instance property of [<code>Chat</code>](#Chat)  
-
-* * *
-
 <a name="Chat+userState"></a>
 
 ### chat.userState : <code>GlobalUserStateTags</code>
@@ -316,6 +306,42 @@ connected **3**; disconnecting, or; **4** disconnected.
 Validated options.
 
 **Kind**: instance property of [<code>Chat</code>](#Chat)  
+
+* * *
+
+<a name="Chat+readyState"></a>
+
+### chat.readyState : <code>enum</code>
+Chat client ready state.
+
+**Kind**: instance enum of [<code>Chat</code>](#Chat)  
+**Properties**
+
+<table>
+  <thead>
+    <tr>
+      <th>Name</th><th>Type</th><th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+<tr>
+    <td>0</td><td><code>number</code></td><td><p>not ready</p>
+</td>
+    </tr><tr>
+    <td>1</td><td><code>number</code></td><td><p>connecting</p>
+</td>
+    </tr><tr>
+    <td>2</td><td><code>number</code></td><td><p>connected</p>
+</td>
+    </tr><tr>
+    <td>3</td><td><code>number</code></td><td><p>disconnecting</p>
+</td>
+    </tr><tr>
+    <td>4</td><td><code>number</code></td><td><p>disconnected</p>
+</td>
+    </tr>  </tbody>
+</table>
+
 
 * * *
 

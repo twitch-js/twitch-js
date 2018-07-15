@@ -68,9 +68,13 @@ import * as validators from './utils/validators'
  */
 class Chat extends EventEmitter {
   /**
-   * Chat client ready state: **0** not ready; **1** connecting; **2**
-   * connected **3**; disconnecting, or; **4** disconnected.
-   * @type {number}
+   * Chat client ready state.
+   * @enum {number}
+   * @property {number} 0 not ready
+   * @property {number} 1 connecting
+   * @property {number} 2 connected
+   * @property {number} 3 disconnecting
+   * @property {number} 4 disconnected
    */
   readyState = 0
 
