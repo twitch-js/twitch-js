@@ -2,7 +2,10 @@
 CODEOWNERS    @marcandrews
 
 # Documentation
-*.md          @marcandrews
+/docs         @marcandrews
 
 # Root files
 /*.*          @marcandrews
+
+# Wesbite
+/website      @marcandrews

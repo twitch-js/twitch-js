@@ -7,11 +7,9 @@ sidebar_label: Functions
 <a name="fetchUtil"></a>
 
 ## fetchUtil(url, [options], [qsOptions]) ⇒ <code>Promise.&lt;Object, Object&gt;</code>
-
 Fetches URL
 
-**Kind**: global function
-
+**Kind**: global function  
 <table>
   <thead>
     <tr>
@@ -28,4 +26,6 @@ Fetches URL
     </tr>  </tbody>
 </table>
 
----
+
+* * *
+

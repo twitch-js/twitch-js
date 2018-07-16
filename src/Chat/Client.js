@@ -101,14 +101,13 @@ function handleMessage(messageEvent) {
       message: error,
     }
 
-    this.emit(constants.EVENTS.PARSE_ERROR_ENCOUNTERED, message)
+    this.emit(constants.EVENTS.ALL, message)
 
     throw new Error(error)
   } finally {
     const message = {
       _raw: rawMessage,
       timestamp: new Date(),
-      event: constants.EVENTS.RAW,
     }
 
     this.emit(constants.EVENTS.RAW, message)
