@@ -8,7 +8,7 @@ import * as typeParsers from './types'
 import * as tagParsers from './tags'
 
 const base = rawMessages => {
-  const rawMessagesV = rawMessages.replace(/\r\n$/, '').split(/\n/g)
+  const rawMessagesV = rawMessages.replace(/[\r\n]+$/g, '').split(/\n/g)
 
   return rawMessagesV.map(rawMessage => {
     const { raw, tags, command, params: [channel, message] } = parse(rawMessage)

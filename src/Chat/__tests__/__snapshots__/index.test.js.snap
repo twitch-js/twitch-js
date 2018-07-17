@@ -834,6 +834,25 @@ Object {
 }
 `;
 
+exports[`Chat should handle deviations CLEARCHAT deviation 1 1`] = `
+Object {
+  "_raw": "@ban-duration=600;room-id=19571641;target-user-id=200817980;tmi-sent-ts=1531857100477 :tmi.twitch.tv CLEARCHAT #ninja :aiibopz",
+  "channel": "#ninja",
+  "command": "CLEARCHAT",
+  "event": "USER_BANNED",
+  "isSelf": false,
+  "tags": Object {
+    "banDuration": 600,
+    "banReason": "",
+    "roomId": "19571641",
+    "targetUserId": "200817980",
+    "tmiSentTs": "1531857100477",
+  },
+  "timestamp": 2018-01-01T00:00:00.000Z,
+  "username": "aiibopz",
+}
+`;
+
 exports[`Chat should join channel 1`] = `
 Object {
   "roomState": Object {
