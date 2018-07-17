@@ -34,6 +34,7 @@ import * as validators from './utils/validators'
  * @emits Chat#NOTICE/ROOM_MODS
  * @emits Chat#PART
  * @emits Chat#PRIVMSG
+ * @emits Chat#PRIVMSG/CHEER
  * @emits Chat#ROOMSTATE
  * @emits Chat#USERNOTICE/RAID
  * @emits Chat#USERNOTICE/RESUBSCRIPTION
@@ -413,7 +414,10 @@ function handleMessage(baseMessage) {
     }
     case constants.EVENTS.PRIVATE_MESSAGE: {
       const message = parsers.privateMessage(preMessage)
-      this.emit(`${message.command}/${channel}`, message)
+      const eventName = message.event
+        ? `${message.command}/${message.event}/${channel}`
+        : `${message.command}/${channel}`
+      this.emit(eventName, message)
       break
     }
 

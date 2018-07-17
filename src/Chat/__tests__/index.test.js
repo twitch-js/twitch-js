@@ -202,6 +202,19 @@ describe('Chat', () => {
     chat.say('#dallas', 'Kappa Keepo Kappa')
   })
 
+  describe('should handle deviations', () => {
+    test('CLEARCHAT deviation 1', done => {
+      expect.assertions(1)
+
+      chat.on('CLEARCHAT', actual => {
+        expect(actual).toMatchSnapshot()
+        done()
+      })
+
+      server.send(commands.CLEARCHAT.DEVIATION_1)
+    })
+  })
+
   describe('should handle multiple channels', () => {
     // test('should join multiple channels', () => {})
     // test('should broadcast message to all channels', () => {})
