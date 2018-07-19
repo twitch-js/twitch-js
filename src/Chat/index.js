@@ -325,7 +325,7 @@ function handleMessage(baseMessage) {
     [channel, 'userState', 'displayName'],
     '',
   )
-  const messageDisplayName = get(baseMessage, 'state.displayName')
+  const messageDisplayName = get(baseMessage, 'tags.displayName')
   const isSelf = displayName === messageDisplayName
 
   const preMessage = { ...baseMessage, isSelf }
@@ -338,7 +338,6 @@ function handleMessage(baseMessage) {
     }
     case constants.EVENTS.PART: {
       const message = parsers.joinOrPartMessage(preMessage)
-      this.channels[message.channel] = undefined
       this.emit(`${message.command}/${channel}`, message)
       break
     }
