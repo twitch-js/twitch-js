@@ -182,20 +182,6 @@ class Chat extends EventEmitter {
     ])
   }
 
-  send(client, message) {
-    console.log(client)
-    client.send(message)
-  }
-
-  disconnect(client) {
-    this.readyState = 3
-
-    this.userState = {}
-    this.channels = {}
-
-    this.readyState = 4
-  }
-
   /**
    * Join a channel.
    * @param {string} channel
