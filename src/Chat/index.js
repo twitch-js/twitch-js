@@ -123,6 +123,8 @@ class Chat extends EventEmitter {
         // Create client and connect.
         const client = new Client(this.options)
 
+        client.removeAllListeners()
+
         // Once the client is connected ...
         client.once(constants.EVENTS.CONNECTED, globalUserStateMessage => {
           this.readyState = 2
@@ -130,8 +132,32 @@ class Chat extends EventEmitter {
           // Create commands.
           Object.assign(this, commandsFactory.call(this))
 
-          this.send = this.send.bind(this, client)
-          this.disconnect = this.disconnect.bind(this, client)
+          /**
+           * Sends a raw message to Twitch.
+           * @param {string} message - Message to send.
+           */
+          this.send = message => client.send(message)
+
+          /**
+           * Disconnected from Twitch.
+           */
+          this.disconnect = () => {
+            this.readyState = 4
+            this.userState = {}
+            this.channels = {}
+          }
+
+          /**
+           * Reconnect to Twitch.
+           */
+          this.reconnect = () => {
+            const channels = Object.keys(this.channels)
+            client.disconnect()
+
+            return this.connect().then(() =>
+              Promise.all(channels.map(channel => this.join(channel))),
+            )
+          }
 
           // Bind events.
           client.on(constants.EVENTS.ALL, handleMessage, this)
@@ -156,21 +182,13 @@ class Chat extends EventEmitter {
     ])
   }
 
-  /**
-   * Sends a raw message to Twitch.
-   * @param {string} message - Message to send.
-   */
   send(client, message) {
+    console.log(client)
     client.send(message)
   }
 
-  /**
-   * Disconnect from Twitch.
-   */
   disconnect(client) {
     this.readyState = 3
-
-    client.removeAllListeners()
 
     this.userState = {}
     this.channels = {}
