@@ -153,7 +153,7 @@ class Chat extends EventEmitter {
            */
           this.reconnect = () => {
             const channels = Object.keys(this.channels)
-            client.disconnect()
+            this.disconnect()
 
             return this.connect().then(() =>
               Promise.all(channels.map(channel => this.join(channel))),
@@ -166,6 +166,10 @@ class Chat extends EventEmitter {
           // Listen for disconnect.
           client.once(constants.EVENTS.DISCONNECTED, this.disconnect)
 
+          // Listen for reconnects.
+          client.once(constants.EVENTS.RECONNECT, this.reconnect)
+
+          // Process GLOBALUSERSTATE message.
           handleMessage.call(this, globalUserStateMessage)
 
           // ... resolve.
@@ -303,7 +307,7 @@ class Chat extends EventEmitter {
   }
 
   /** @private */
-  emit(eventName, message) {
+  emit(eventName = '', message) {
     eventName.split('/').reduce((parents, current) => {
       const eventPartial = [...parents, current]
       super.emit(eventPartial.join('/'), message)

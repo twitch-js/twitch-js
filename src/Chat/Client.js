@@ -89,6 +89,14 @@ function handleMessage(messageEvent) {
         })
       }
 
+      // Handle RECONNECT.
+      if (message.command === constants.COMMANDS.RECONNECT) {
+        this.emit(constants.EVENTS.RECONNECT, {
+          ...message,
+          command: constants.EVENTS.RECONNECT,
+        })
+      }
+
       // Emit all messages.
       this.emit(constants.EVENTS.ALL, message)
     })
@@ -97,6 +105,7 @@ function handleMessage(messageEvent) {
       _raw: rawMessage,
       timestamp: new Date(),
       event: constants.EVENTS.PARSE_ERROR_ENCOUNTERED,
+      command: constants.EVENTS.PARSE_ERROR_ENCOUNTERED,
       message: error,
     }
 

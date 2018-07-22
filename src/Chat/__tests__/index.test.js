@@ -27,13 +27,14 @@ describe('Chat', () => {
     realDate = global.Date
     const DATE_TO_USE = new Date('2018')
     global.Date = jest.fn(() => DATE_TO_USE)
+  })
 
+  beforeEach(() => {
     chat = new Chat(options)
-    return Promise.all([chat.connect()])
+    return chat.connect()
   })
 
   afterEach(() => {
-    // server.removeAllListeners()
     chat.removeAllListeners()
   })
 
@@ -56,6 +57,47 @@ describe('Chat', () => {
     })
 
     chat.say('#dallas', 'Kappa Keepo Kappa')
+  })
+
+  test('should part a channel', done => {
+    expect.assertions(1)
+
+    server.once('message', message => {
+      expect(message).toEqual('PART #dallas')
+      done()
+    })
+
+    chat.part('#dallas')
+  })
+
+  test('should disconnect', done => {
+    server.once('close', () => done())
+
+    chat.disconnect()
+  })
+
+  test('should reconnect and rejoin channels', async () => {
+    await chat.join('#dallas')
+
+    const listener = jest.fn()
+    server.on('close', () => listener('close'))
+    server.on('open', () => listener('open'))
+    server.on('message', listener)
+    chat.on('*', listener)
+
+    await chat.reconnect()
+
+    expect(listener.mock.calls).toMatchSnapshot()
+
+    server.removeListener('close')
+    server.removeListener('open')
+    server.removeListener('message')
+  })
+
+  test('should reconnect on RECONNECT event', done => {
+    chat.once('CONNECTED', () => done())
+
+    server.sendMessageToClient('RECONNECT')
   })
 
   describe('should handle messages', () => {
@@ -205,17 +247,6 @@ describe('Chat', () => {
         server.sendMessageToClient(commands.CLEARCHAT.DEVIATION_1)
       })
     })
-  })
-
-  test('should part a channel', done => {
-    expect.assertions(1)
-
-    server.once('message', message => {
-      expect(message).toEqual('PART #dallas')
-      done()
-    })
-
-    chat.part('#dallas')
   })
 
   describe('should handle multiple channels', () => {
