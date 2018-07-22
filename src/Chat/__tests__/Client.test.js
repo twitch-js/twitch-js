@@ -61,6 +61,6 @@ describe('Chat/Client', () => {
       done()
     })
 
-    server.emitHelper(membership.PING)
+    server.sendMessageToClient(membership.PING)
   })
 })

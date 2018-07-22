@@ -65,7 +65,7 @@ describe('Chat', () => {
         done()
       })
 
-      server.emitHelper(membership.JOIN)
+      server.sendMessageToClient(membership.JOIN)
     })
 
     test('PART', done => {
@@ -74,7 +74,7 @@ describe('Chat', () => {
         done()
       })
 
-      server.emitHelper(membership.PART)
+      server.sendMessageToClient(membership.PART)
     })
 
     test('NAMES', async () => {
@@ -84,7 +84,7 @@ describe('Chat', () => {
         onceResolve(chat, constants.COMMANDS.NAMES_END),
       ])
 
-      server.emitHelper(membership.NAMES)
+      server.sendMessageToClient(membership.NAMES)
 
       return emissions.then(actual => expect(actual).toMatchSnapshot())
     })
@@ -95,7 +95,7 @@ describe('Chat', () => {
         done()
       })
 
-      server.emitHelper(membership.MODE.OPERATOR_PLUS)
+      server.sendMessageToClient(membership.MODE.OPERATOR_PLUS)
     })
 
     test('MODE -o', done => {
@@ -104,7 +104,7 @@ describe('Chat', () => {
         done()
       })
 
-      server.emitHelper(membership.MODE.OPERATOR_MINUS)
+      server.sendMessageToClient(membership.MODE.OPERATOR_MINUS)
     })
 
     test('CLEARCHAT', done => {
@@ -113,7 +113,7 @@ describe('Chat', () => {
         done()
       })
 
-      server.emitHelper(commands.CLEARCHAT.CHANNEL)
+      server.sendMessageToClient(commands.CLEARCHAT.CHANNEL)
     })
 
     test('CLEARCHAT user with reason', done => {
@@ -122,7 +122,7 @@ describe('Chat', () => {
         done()
       })
 
-      server.emitHelper(commands.CLEARCHAT.USER_WITH_REASON)
+      server.sendMessageToClient(commands.CLEARCHAT.USER_WITH_REASON)
     })
 
     test('HOSTTARGET start', done => {
@@ -131,7 +131,7 @@ describe('Chat', () => {
         done()
       })
 
-      server.emitHelper(commands.HOSTTARGET.START)
+      server.sendMessageToClient(commands.HOSTTARGET.START)
     })
 
     test('HOSTTARGET stop', done => {
@@ -140,7 +140,7 @@ describe('Chat', () => {
         done()
       })
 
-      server.emitHelper(commands.HOSTTARGET.STOP)
+      server.sendMessageToClient(commands.HOSTTARGET.STOP)
     })
 
     describe('NOTICE', () => {
@@ -152,7 +152,7 @@ describe('Chat', () => {
             done()
           })
 
-          server.emitHelper(raw)
+          server.sendMessageToClient(raw)
         },
         5000,
       )
@@ -165,7 +165,7 @@ describe('Chat', () => {
           done()
         })
 
-        server.emitHelper(raw)
+        server.sendMessageToClient(raw)
       })
     })
 
@@ -178,7 +178,7 @@ describe('Chat', () => {
           done()
         })
 
-        server.emitHelper(tags.PRIVMSG.NON_BITS)
+        server.sendMessageToClient(tags.PRIVMSG.NON_BITS)
       })
 
       test('CHEER', done => {
@@ -189,7 +189,7 @@ describe('Chat', () => {
           done()
         })
 
-        server.emitHelper(tags.PRIVMSG.BITS)
+        server.sendMessageToClient(tags.PRIVMSG.BITS)
       })
     })
 
@@ -202,7 +202,7 @@ describe('Chat', () => {
           done()
         })
 
-        server.emitHelper(commands.CLEARCHAT.DEVIATION_1)
+        server.sendMessageToClient(commands.CLEARCHAT.DEVIATION_1)
       })
     })
   })
