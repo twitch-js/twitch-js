@@ -142,6 +142,7 @@ class Chat extends EventEmitter {
            * Disconnected from Twitch.
            */
           this.disconnect = () => {
+            client.disconnect()
             this.readyState = 4
             this.userState = {}
             this.channels = {}

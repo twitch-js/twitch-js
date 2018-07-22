@@ -70,7 +70,6 @@ function handleOpen(options) {
 }
 
 function handleMessage(messageEvent) {
-  // console.log(messageEvent.data)
   const rawMessage = messageEvent.data
 
   try {
