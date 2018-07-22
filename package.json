@@ -43,7 +43,7 @@
     "lint": "eslint \"{__mocks__,examples,shims,src}/**/*.js\"",
     "test": "jest",
     "pretest:coverage": "rimraf coverage",
-    "test:coverage": "jest --runInBand --collectCoverage",
+    "test:coverage": "jest --collectCoverage",
     "test:coverage:report": "npm run test:coverage && codecov",
     "precommit": "lint-staged",
     "prettier": "prettier --write \"**/*.{js,md}\"",

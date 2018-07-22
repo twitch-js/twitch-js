@@ -1,4 +1,5 @@
 {
+  "CAP": "CAP REQ :twitch.tv/tags twitch.tv/commands twitch.tv/membership",
   "JOIN": ":ronni!ronni@ronni.tmi.twitch.tv JOIN #dallas",
   "MODE": {
     "OPERATOR_PLUS": ":jtv MODE #dallas +o ronni",
