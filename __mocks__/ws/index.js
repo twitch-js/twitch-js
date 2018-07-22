@@ -1,38 +1,71 @@
-import WebSocket from 'ws'
+import { EventEmitter } from 'eventemitter3'
 
 import tags from './__fixtures__/tags'
 import membership from './__fixtures__/membership'
 
-class Server extends WebSocket.Server {
-  constructor(options) {
-    super(options)
+const server = new EventEmitter()
+server.emitHelper = data => server.emit('emit', { data })
 
-    this.on('connection', ws => {
-      ws.on('message', message => {
-        const [
-          ,
-          command,
-          // argv = '',
-        ] = /^(\w+) (.+)/.exec(message)
-        // const args = argv.split(' ')
+class WebSocket extends EventEmitter {
+  constructor() {
+    super()
 
-        switch (command) {
-          case 'NICK':
-            ws.send(tags.GLOBALUSERSTATE)
-            break
-          case 'JOIN':
-            ws.send(membership.JOIN)
-            ws.send(tags.ROOMSTATE.JOIN)
-            ws.send(tags.USERSTATE.JOIN)
-            break
-          default:
-          // No default.
-        }
-      })
+    setTimeout(() => {
+      this.emit('open')
     })
+
+    this.readyState = 2
+  }
+
+  emit(eventName, data) {
+    super.emit(eventName, { data })
+  }
+
+  send(message) {
+    server.emit('message', message)
+
+    const [
+      ,
+      command,
+      // argv = '',
+    ] = /^(\w+) (.+)/.exec(message)
+    // const args = argv.split(' ')
+
+    switch (command) {
+      case 'NICK':
+        this.emit('message', tags.GLOBALUSERSTATE)
+        break
+      case 'JOIN':
+        this.emit('message', membership.JOIN)
+        this.emit('message', tags.ROOMSTATE.JOIN)
+        this.emit('message', tags.USERSTATE.JOIN)
+        break
+      default:
+      // No default.
+    }
+  }
+
+  set onopen(listener) {
+    this.addListener('open', listener)
+  }
+
+  set onmessage(listener) {
+    this.addListener('message', listener)
+    server.on('emit', listener)
+  }
+
+  set onerror(listener) {
+    this.addListener('error', listener)
+  }
+
+  set onclose(listener) {
+    this.addListener('close', listener)
+  }
+
+  close() {
+    server.emit('close')
   }
 }
 
-WebSocket.Server = Server
-
+export { server }
 export default WebSocket

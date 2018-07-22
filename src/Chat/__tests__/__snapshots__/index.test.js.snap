@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Chat should handle CLEARCHAT 1`] = `
+exports[`Chat should handle messages CLEARCHAT 1`] = `
 Object {
   "_raw": ":tmi.twitch.tv CLEARCHAT #dallas",
   "channel": "#dallas",
@@ -10,7 +10,7 @@ Object {
 }
 `;
 
-exports[`Chat should handle CLEARCHAT user with reason 1`] = `
+exports[`Chat should handle messages CLEARCHAT user with reason 1`] = `
 Object {
   "_raw": "@ban-reason=Follow\\\\sthe\\\\srules :tmi.twitch.tv CLEARCHAT #dallas :ronni",
   "channel": "#dallas",
@@ -26,7 +26,7 @@ Object {
 }
 `;
 
-exports[`Chat should handle HOSTTARGET start 1`] = `
+exports[`Chat should handle messages HOSTTARGET start 1`] = `
 Object {
   "_raw": ":tmi.twitch.tv HOSTTARGET #ronni :dallas 123",
   "channel": "#ronni",
@@ -41,7 +41,7 @@ Object {
 }
 `;
 
-exports[`Chat should handle HOSTTARGET stop 1`] = `
+exports[`Chat should handle messages HOSTTARGET stop 1`] = `
 Object {
   "_raw": ":tmi.twitch.tv HOSTTARGET #ronni :- 456",
   "channel": "#ronni",
@@ -56,7 +56,7 @@ Object {
 }
 `;
 
-exports[`Chat should handle JOIN 1`] = `
+exports[`Chat should handle messages JOIN 1`] = `
 Object {
   "_raw": ":ronni!ronni@ronni.tmi.twitch.tv JOIN #dallas",
   "channel": "#dallas",
@@ -69,7 +69,7 @@ Object {
 }
 `;
 
-exports[`Chat should handle MODE +o 1`] = `
+exports[`Chat should handle messages MODE +o 1`] = `
 Object {
   "_raw": ":jtv MODE #dallas +o ronni",
   "channel": "#dallas",
@@ -84,7 +84,7 @@ Object {
 }
 `;
 
-exports[`Chat should handle MODE -o 1`] = `
+exports[`Chat should handle messages MODE -o 1`] = `
 Object {
   "_raw": ":jtv MODE #dallas -o ronni",
   "channel": "#dallas",
@@ -99,7 +99,7 @@ Object {
 }
 `;
 
-exports[`Chat should handle NAMES 1`] = `
+exports[`Chat should handle messages NAMES 1`] = `
 Array [
   Object {
     "_raw": ":ronni.tmi.twitch.tv 353 ronni = #dallas :ronni fred wilma",
@@ -147,7 +147,7 @@ Array [
 ]
 `;
 
-exports[`Chat should handle NOTICE ALREADY_BANNED 1`] = `
+exports[`Chat should handle messages NOTICE ALREADY_BANNED 1`] = `
 Object {
   "_raw": "@msg-id=already_banned :tmi.twitch.tv NOTICE #dallas :<user> is already banned in this channel.",
   "channel": "#dallas",
@@ -162,7 +162,7 @@ Object {
 }
 `;
 
-exports[`Chat should handle NOTICE ALREADY_EMOTE_ONLY_OFF 1`] = `
+exports[`Chat should handle messages NOTICE ALREADY_EMOTE_ONLY_OFF 1`] = `
 Object {
   "_raw": "@msg-id=already_emote_only_off :tmi.twitch.tv NOTICE #dallas :This room is not in emote-only mode.",
   "channel": "#dallas",
@@ -177,7 +177,7 @@ Object {
 }
 `;
 
-exports[`Chat should handle NOTICE ALREADY_EMOTE_ONLY_ON 1`] = `
+exports[`Chat should handle messages NOTICE ALREADY_EMOTE_ONLY_ON 1`] = `
 Object {
   "_raw": "@msg-id=already_emote_only_on :tmi.twitch.tv NOTICE #dallas :This room is already in emote-only mode.",
   "channel": "#dallas",
@@ -192,7 +192,7 @@ Object {
 }
 `;
 
-exports[`Chat should handle NOTICE ALREADY_R9K_OFF 1`] = `
+exports[`Chat should handle messages NOTICE ALREADY_R9K_OFF 1`] = `
 Object {
   "_raw": "@msg-id=already_r9k_off :tmi.twitch.tv NOTICE #dallas :This room is not in r9k mode.",
   "channel": "#dallas",
@@ -207,7 +207,7 @@ Object {
 }
 `;
 
-exports[`Chat should handle NOTICE ALREADY_R9K_ON 1`] = `
+exports[`Chat should handle messages NOTICE ALREADY_R9K_ON 1`] = `
 Object {
   "_raw": "@msg-id=already_r9k_on :tmi.twitch.tv NOTICE #dallas :This room is already in r9k mode.",
   "channel": "#dallas",
@@ -222,7 +222,7 @@ Object {
 }
 `;
 
-exports[`Chat should handle NOTICE ALREADY_SUBS_OFF 1`] = `
+exports[`Chat should handle messages NOTICE ALREADY_SUBS_OFF 1`] = `
 Object {
   "_raw": "@msg-id=already_subs_off :tmi.twitch.tv NOTICE #dallas :This room is not in subscribers-only mode.",
   "channel": "#dallas",
@@ -237,7 +237,7 @@ Object {
 }
 `;
 
-exports[`Chat should handle NOTICE ALREADY_SUBS_ON 1`] = `
+exports[`Chat should handle messages NOTICE ALREADY_SUBS_ON 1`] = `
 Object {
   "_raw": "@msg-id=already_subs_on :tmi.twitch.tv NOTICE #dallas :This room is already in subscribers-only mode.",
   "channel": "#dallas",
@@ -252,7 +252,7 @@ Object {
 }
 `;
 
-exports[`Chat should handle NOTICE BAD_HOST_HOSTING 1`] = `
+exports[`Chat should handle messages NOTICE BAD_HOST_HOSTING 1`] = `
 Object {
   "_raw": "@msg-id=bad_host_hosting :tmi.twitch.tv NOTICE #dallas :This channel is hosting <channel>.",
   "channel": "#dallas",
@@ -267,7 +267,7 @@ Object {
 }
 `;
 
-exports[`Chat should handle NOTICE BAD_UNBAN_NO_BAN 1`] = `
+exports[`Chat should handle messages NOTICE BAD_UNBAN_NO_BAN 1`] = `
 Object {
   "_raw": "@msg-id=bad_unban_no_ban :tmi.twitch.tv NOTICE #dallas :<user> is not banned from this channel.",
   "channel": "#dallas",
@@ -282,7 +282,7 @@ Object {
 }
 `;
 
-exports[`Chat should handle NOTICE BAN_SUCCESS 1`] = `
+exports[`Chat should handle messages NOTICE BAN_SUCCESS 1`] = `
 Object {
   "_raw": "@msg-id=ban_success :tmi.twitch.tv NOTICE #dallas :<user> is now banned from this channel.",
   "channel": "#dallas",
@@ -297,7 +297,7 @@ Object {
 }
 `;
 
-exports[`Chat should handle NOTICE EMOTE_ONLY_OFF 1`] = `
+exports[`Chat should handle messages NOTICE EMOTE_ONLY_OFF 1`] = `
 Object {
   "_raw": "@msg-id=emote_only_off :tmi.twitch.tv NOTICE #dallas :This room is no longer in emote-only mode.",
   "channel": "#dallas",
@@ -312,7 +312,7 @@ Object {
 }
 `;
 
-exports[`Chat should handle NOTICE EMOTE_ONLY_ON 1`] = `
+exports[`Chat should handle messages NOTICE EMOTE_ONLY_ON 1`] = `
 Object {
   "_raw": "@msg-id=emote_only_on :tmi.twitch.tv NOTICE #dallas :This room is now in emote-only mode.",
   "channel": "#dallas",
@@ -327,7 +327,7 @@ Object {
 }
 `;
 
-exports[`Chat should handle NOTICE HOST_OFF 1`] = `
+exports[`Chat should handle messages NOTICE HOST_OFF 1`] = `
 Object {
   "_raw": "@msg-id=host_off :tmi.twitch.tv NOTICE #dallas :Exited host mode.",
   "channel": "#dallas",
@@ -342,7 +342,7 @@ Object {
 }
 `;
 
-exports[`Chat should handle NOTICE HOST_ON 1`] = `
+exports[`Chat should handle messages NOTICE HOST_ON 1`] = `
 Object {
   "_raw": "@msg-id=host_on :tmi.twitch.tv NOTICE #dallas :Now hosting <channel>.",
   "channel": "#dallas",
@@ -357,7 +357,7 @@ Object {
 }
 `;
 
-exports[`Chat should handle NOTICE HOSTS_REMAINING 1`] = `
+exports[`Chat should handle messages NOTICE HOSTS_REMAINING 1`] = `
 Object {
   "_raw": "@msg-id=hosts_remaining :tmi.twitch.tv NOTICE #dallas :There are <number> host commands remaining this half hour.",
   "channel": "#dallas",
@@ -372,7 +372,7 @@ Object {
 }
 `;
 
-exports[`Chat should handle NOTICE MSG_CHANNEL_SUSPENDED 1`] = `
+exports[`Chat should handle messages NOTICE MSG_CHANNEL_SUSPENDED 1`] = `
 Object {
   "_raw": "@msg-id=msg_channel_suspended :tmi.twitch.tv NOTICE #dallas :This channel is suspended.",
   "channel": "#dallas",
@@ -387,7 +387,7 @@ Object {
 }
 `;
 
-exports[`Chat should handle NOTICE R9K_OFF 1`] = `
+exports[`Chat should handle messages NOTICE R9K_OFF 1`] = `
 Object {
   "_raw": "@msg-id=r9k_off :tmi.twitch.tv NOTICE #dallas :This room is no longer in r9k mode.",
   "channel": "#dallas",
@@ -402,7 +402,7 @@ Object {
 }
 `;
 
-exports[`Chat should handle NOTICE R9K_ON 1`] = `
+exports[`Chat should handle messages NOTICE R9K_ON 1`] = `
 Object {
   "_raw": "@msg-id=r9k_on :tmi.twitch.tv NOTICE #dallas :This room is now in r9k mode.",
   "channel": "#dallas",
@@ -417,7 +417,7 @@ Object {
 }
 `;
 
-exports[`Chat should handle NOTICE SLOW_OFF 1`] = `
+exports[`Chat should handle messages NOTICE SLOW_OFF 1`] = `
 Object {
   "_raw": "@msg-id=slow_off :tmi.twitch.tv NOTICE #dallas :This room is no longer in slow mode.",
   "channel": "#dallas",
@@ -432,7 +432,7 @@ Object {
 }
 `;
 
-exports[`Chat should handle NOTICE SLOW_ON 1`] = `
+exports[`Chat should handle messages NOTICE SLOW_ON 1`] = `
 Object {
   "_raw": "@msg-id=slow_on :tmi.twitch.tv NOTICE #dallas :This room is now in slow mode. You may send messages every <slow seconds> seconds.",
   "channel": "#dallas",
@@ -447,7 +447,7 @@ Object {
 }
 `;
 
-exports[`Chat should handle NOTICE SUBS_OFF 1`] = `
+exports[`Chat should handle messages NOTICE SUBS_OFF 1`] = `
 Object {
   "_raw": "@msg-id=subs_off :tmi.twitch.tv NOTICE #dallas :This room is no longer in subscribers-only mode.",
   "channel": "#dallas",
@@ -462,7 +462,7 @@ Object {
 }
 `;
 
-exports[`Chat should handle NOTICE SUBS_ON 1`] = `
+exports[`Chat should handle messages NOTICE SUBS_ON 1`] = `
 Object {
   "_raw": "@msg-id=subs_on :tmi.twitch.tv NOTICE #dallas :This room is now in subscribers-only mode.",
   "channel": "#dallas",
@@ -477,7 +477,7 @@ Object {
 }
 `;
 
-exports[`Chat should handle NOTICE TIMEOUT_SUCCESS 1`] = `
+exports[`Chat should handle messages NOTICE TIMEOUT_SUCCESS 1`] = `
 Object {
   "_raw": "@msg-id=timeout_success :tmi.twitch.tv NOTICE #dallas :<user> has been timed out for <duration> seconds.",
   "channel": "#dallas",
@@ -492,7 +492,7 @@ Object {
 }
 `;
 
-exports[`Chat should handle NOTICE UNBAN_SUCCESS 1`] = `
+exports[`Chat should handle messages NOTICE UNBAN_SUCCESS 1`] = `
 Object {
   "_raw": "@msg-id=unban_success :tmi.twitch.tv NOTICE #dallas :<user> is no longer banned from this channel.",
   "channel": "#dallas",
@@ -507,7 +507,7 @@ Object {
 }
 `;
 
-exports[`Chat should handle NOTICE UNRECOGNIZED_CMD 1`] = `
+exports[`Chat should handle messages NOTICE UNRECOGNIZED_CMD 1`] = `
 Object {
   "_raw": "@msg-id=unrecognized_cmd :tmi.twitch.tv NOTICE #dallas :Unrecognized command: <command>",
   "channel": "#dallas",
@@ -522,7 +522,7 @@ Object {
 }
 `;
 
-exports[`Chat should handle PART 1`] = `
+exports[`Chat should handle messages PART 1`] = `
 Object {
   "_raw": ":ronni!ronni@ronni.tmi.twitch.tv PART #dallas",
   "channel": "#dallas",
@@ -535,7 +535,42 @@ Object {
 }
 `;
 
-exports[`Chat should handle PRIVMSG should emit PRIVMSG 1`] = `
+exports[`Chat should handle messages PRIVMSG CHEER 1`] = `
+Object {
+  "_raw": "@badges=staff/1,bits/1000;bits=100;color=;display-name=dallas;emotes=;id=b34ccfc7-4977-403a-8a94-33c6bac34fb8;mod=0;room-id=1337;subscriber=0;tmi-sent-ts=1507246572675;turbo=1;user-id=1337;user-type=staff :ronni!ronni@ronni.tmi.twitch.tv PRIVMSG #dallas :cheer100",
+  "bits": 100,
+  "channel": "#dallas",
+  "command": "PRIVMSG",
+  "event": "CHEER",
+  "isSelf": false,
+  "message": "cheer100",
+  "tags": Object {
+    "badges": Object {
+      "bits": 1000,
+      "staff": 1,
+    },
+    "bits": 100,
+    "color": true,
+    "displayName": "dallas",
+    "emoteSets": undefined,
+    "emotes": Object {},
+    "id": "b34ccfc7-4977-403a-8a94-33c6bac34fb8",
+    "isModerator": false,
+    "isSubscriber": false,
+    "isTurboSubscriber": true,
+    "mod": "0",
+    "roomId": "1337",
+    "subscriber": "0",
+    "tmiSentTs": "1507246572675",
+    "turbo": "1",
+    "userId": "1337",
+    "userType": "staff",
+  },
+  "timestamp": 2018-01-01T00:00:00.000Z,
+}
+`;
+
+exports[`Chat should handle messages PRIVMSG PRIVMSG 1`] = `
 Object {
   "_raw": "@badges=global_mod/1,turbo/1;color=#0D4200;display-name=dallas;emotes=25:0-4,12-16/1902:6-10;id=b34ccfc7-4977-403a-8a94-33c6bac34fb8;mod=0;room-id=1337;subscriber=0;tmi-sent-ts=1507246572675;turbo=1;user-id=1337;user-type=global_mod :ronni!ronni@ronni.tmi.twitch.tv PRIVMSG #dallas :Kappa Keepo Kappa",
   "channel": "#dallas",
@@ -577,42 +612,7 @@ Object {
 }
 `;
 
-exports[`Chat should handle PRIVMSG should emit PRIVMSG with bits 1`] = `
-Object {
-  "_raw": "@badges=staff/1,bits/1000;bits=100;color=;display-name=dallas;emotes=;id=b34ccfc7-4977-403a-8a94-33c6bac34fb8;mod=0;room-id=1337;subscriber=0;tmi-sent-ts=1507246572675;turbo=1;user-id=1337;user-type=staff :ronni!ronni@ronni.tmi.twitch.tv PRIVMSG #dallas :cheer100",
-  "bits": 100,
-  "channel": "#dallas",
-  "command": "PRIVMSG",
-  "event": "CHEER",
-  "isSelf": false,
-  "message": "cheer100",
-  "tags": Object {
-    "badges": Object {
-      "bits": 1000,
-      "staff": 1,
-    },
-    "bits": 100,
-    "color": true,
-    "displayName": "dallas",
-    "emoteSets": undefined,
-    "emotes": Object {},
-    "id": "b34ccfc7-4977-403a-8a94-33c6bac34fb8",
-    "isModerator": false,
-    "isSubscriber": false,
-    "isTurboSubscriber": true,
-    "mod": "0",
-    "roomId": "1337",
-    "subscriber": "0",
-    "tmiSentTs": "1507246572675",
-    "turbo": "1",
-    "userId": "1337",
-    "userType": "staff",
-  },
-  "timestamp": 2018-01-01T00:00:00.000Z,
-}
-`;
-
-exports[`Chat should handle USERNOTICE RAID 1`] = `
+exports[`Chat should handle messages USERNOTICE RAID 1`] = `
 Object {
   "_raw": "@badges=turbo/1;color=#9ACD32;display-name=TestChannel;emotes=;id=3d830f12-795c-447d-af3c-ea05e40fbddb;login=testchannel;mod=0;msg-id=raid;msg-param-displayName=TestChannel;msg-param-login=testchannel;msg-param-viewerCount=15;room-id=56379257;subscriber=0;system-msg=15\\\\sraiders\\\\sfrom\\\\sTestChannel\\\\shave\\\\sjoined\\\\n!;tmi-sent-ts=1507246572675;tmi-sent-ts=1507246572675;turbo=1;user-id=123456;user-type= :tmi.twitch.tv USERNOTICE #othertestchannel",
   "channel": "#othertestchannel",
@@ -655,7 +655,7 @@ Object {
 }
 `;
 
-exports[`Chat should handle USERNOTICE RESUBSCRIPTION 1`] = `
+exports[`Chat should handle messages USERNOTICE RESUBSCRIPTION 1`] = `
 Object {
   "_raw": "@badges=staff/1,broadcaster/1,turbo/1;color=#008000;display-name=ronni;emotes=;id=db25007f-7a18-43eb-9379-80131e44d633;login=ronni;mod=0;msg-id=resub;msg-param-months=6;msg-param-sub-plan=Prime;msg-param-sub-plan-name=Prime;room-id=1337;subscriber=1;system-msg=ronni\\\\shas\\\\ssubscribed\\\\sfor\\\\s6\\\\smonths!;tmi-sent-ts=1507246572675;turbo=1;user-id=1337;user-type=staff :tmi.twitch.tv USERNOTICE #dallas :Great stream -- keep it up!",
   "channel": "#dallas",
@@ -700,7 +700,7 @@ Object {
 }
 `;
 
-exports[`Chat should handle USERNOTICE RITUAL 1`] = `
+exports[`Chat should handle messages USERNOTICE RITUAL 1`] = `
 Object {
   "_raw": "@badges=;color=;display-name=SevenTest1;emotes=30259:0-6;id=37feed0f-b9c7-4c3a-b475-21c6c6d21c3d;login=seventest1;mod=0;msg-id=ritual;msg-param-ritual-name=new_chatter;room-id=6316121;subscriber=0;system-msg=Seventoes\\\\sis\\\\snew\\\\shere!;tmi-sent-ts=1508363903826;turbo=0;user-id=131260580;user-type= :tmi.twitch.tv USERNOTICE #seventoes :HeyGuys",
   "channel": "#seventoes",
@@ -742,7 +742,7 @@ Object {
 }
 `;
 
-exports[`Chat should handle USERNOTICE SUBSCRIPTION 1`] = `
+exports[`Chat should handle messages USERNOTICE SUBSCRIPTION 1`] = `
 Object {
   "_raw": "@badges=staff/1,broadcaster/1,turbo/1;color=#008000;display-name=ronni;emotes=;id=db25007f-7a18-43eb-9379-80131e44d633;login=ronni;mod=0;msg-id=sub;msg-param-months=1;msg-param-sub-plan=Prime;msg-param-sub-plan-name=Prime;room-id=1337;subscriber=1;system-msg=ronni\\\\sjust\\\\ssubscribed\\\\swith\\\\sTwitch\\\\sPrime!;tmi-sent-ts=1507246572675;turbo=1;user-id=1337;user-type=staff :tmi.twitch.tv USERNOTICE #dallas :Great stream -- keep it up!",
   "channel": "#dallas",
@@ -787,7 +787,7 @@ Object {
 }
 `;
 
-exports[`Chat should handle USERNOTICE SUBSCRIPTION_GIFT 1`] = `
+exports[`Chat should handle messages USERNOTICE SUBSCRIPTION_GIFT 1`] = `
 Object {
   "_raw": "@badges=staff/1,premium/1;color=#0000FF;display-name=TWW2;emotes=;id=e9176cd8-5e22-4684-ad40-ce53c2561c5e;login=tww2;mod=0;msg-id=subgift;msg-param-months=1;msg-param-recipient-display-name=Mr_Woodchuck;msg-param-recipient-id=89614178;msg-param-recipient-name=mr_woodchuck;msg-param-sub-plan-name=House\\\\sof\\\\sNyoro~n;msg-param-sub-plan=1000;room-id=19571752;subscriber=0;system-msg=TWW2\\\\sgifted\\\\sa\\\\sTier\\\\s1\\\\ssub\\\\sto\\\\sMr_Woodchuck!;tmi-sent-ts=1521159445153;turbo=0;user-id=13405587;user-type=staff :tmi.twitch.tv USERNOTICE #forstycup",
   "channel": "#forstycup",
@@ -834,7 +834,7 @@ Object {
 }
 `;
 
-exports[`Chat should handle deviations CLEARCHAT deviation 1 1`] = `
+exports[`Chat should handle messages deviations CLEARCHAT deviation 1 1`] = `
 Object {
   "_raw": "@ban-duration=600;room-id=19571641;target-user-id=200817980;tmi-sent-ts=1531857100477 :tmi.twitch.tv CLEARCHAT #ninja :aiibopz",
   "channel": "#ninja",

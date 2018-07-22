@@ -1,16 +1,14 @@
-import WebSocket from 'ws'
+import { server } from 'ws'
 
 import membership from '../../../__mocks__/ws/__fixtures__/membership'
 
 import Client from '../Client'
 import * as constants from '../constants'
 
+jest.mock('uws', () => require('ws'))
+
 describe('Chat/Client', () => {
   let realDate
-
-  let wss
-  let server
-  let client
 
   const options = {
     server: 'localhost',
@@ -24,42 +22,45 @@ describe('Chat/Client', () => {
     realDate = Date
     const DATE_TO_USE = new Date('2018')
     global.Date = jest.fn(() => DATE_TO_USE)
-
-    // Create WebSocket Server.
-    wss = new WebSocket.Server({ port: options.port })
-    wss.on('connection', ws => {
-      server = ws
-    })
   })
 
-  afterEach(() => {
-    client.disconnect()
-  })
-
-  afterAll(done => {
+  afterAll(() => {
     // eslint-disable-next-line no-global-assign
     Date = realDate
-    wss.close(done)
   })
 
-  test('should connect', done => {
-    client = new Client(options)
+  test('should receive CONNECTED event', done => {
+    const client = new Client(options)
+
     client.once(constants.EVENTS.CONNECTED, () => done())
   })
 
-  describe('when connected', () => {
-    beforeAll(done => {
-      client = new Client(options)
-      client.once(constants.EVENTS.CONNECTED, () => done())
+  test('should send CAP, PASS and NICK', done => {
+    const listener = jest.fn()
+    server.on('message', listener)
+
+    const client = new Client(options)
+
+    client.once(constants.EVENTS.CONNECTED, () => {
+      expect(listener.mock.calls).toContainEqual([membership.CAP])
+      expect(listener.mock.calls).toContainEqual([
+        `PASS oauth:${options.token}`,
+      ])
+      expect(listener.mock.calls).toContainEqual([`NICK ${options.username}`])
+      server.removeListener('message')
+      done()
+    })
+  })
+
+  test('should handle PING/PONG', done => {
+    new Client(options)
+
+    server.once('message', message => {
+      // console.log(message)
+      expect(message).toEqual(membership.PONG)
+      done()
     })
 
-    test('should handle PING/PONG', done => {
-      server.on('message', message => {
-        expect(message).toEqual(membership.PONG)
-        done()
-      })
-
-      server.send(membership.PING)
-    })
+    server.emitHelper(membership.PING)
   })
 })
