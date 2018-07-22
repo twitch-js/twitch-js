@@ -13,7 +13,10 @@ class WebSocket extends EventEmitter {
     super()
 
     // Emit `open` event on next event loop.
-    setTimeout(() => this.emit('open'))
+    setTimeout(() => {
+      server.emit('open')
+      this.emit('open')
+    })
 
     this.readyState = 2
   }
