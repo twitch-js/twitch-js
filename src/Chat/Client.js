@@ -13,6 +13,9 @@ const priority = constants.CLIENT_PRIORITY
 class Client extends EventEmitter {
   readyState
 
+  pingTimer = null
+  reconnectTimer = null
+
   constructor(maybeOptions = {}) {
     super()
 
@@ -54,6 +57,7 @@ class Client extends EventEmitter {
   }
 
   disconnect() {
+    handleKeepAliveReset.call(this)
     this.ws.close()
   }
 }
@@ -73,6 +77,8 @@ function handleMessage(messageEvent) {
   const rawMessage = messageEvent.data
 
   try {
+    handleKeepAlive.call(this)
+
     const messages = baseParser(rawMessage)
 
     messages.forEach(message => {
@@ -140,6 +146,27 @@ function handleClose() {
   }
 
   this.emit(constants.EVENTS.DISCONNECTED, message)
+}
+
+function handleKeepAlive() {
+  handleKeepAliveReset.call(this)
+
+  this.pingTimer = setTimeout(
+    () => this.send(constants.COMMANDS.PING, { priority }),
+    constants.KEEP_ALIVE_PING_TIMEOUT,
+  )
+
+  this.reconnectTimer = setTimeout(
+    () => this.emit(constants.EVENTS.RECONNECT, {}),
+    constants.KEEP_ALIVE_RECONNECT_TIMEOUT,
+  )
+}
+
+function handleKeepAliveReset() {
+  clearTimeout(this.pingTimer)
+  clearTimeout(this.reconnectTimer)
+  this.pingTimer = null
+  this.reconnectTimer = null
 }
 
 export default Client

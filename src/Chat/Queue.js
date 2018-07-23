@@ -25,7 +25,7 @@ class Queue extends BetterQueue {
 
     // Start rate-limiter burn down.
     this.rateLimiterIntervalId = setInterval(
-      this.burnDownRateLimiter,
+      this.burnDownRateLimiter.bind(this),
       constants.QUEUE_TICK_RATE,
     )
   }

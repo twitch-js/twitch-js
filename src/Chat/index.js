@@ -306,13 +306,14 @@ class Chat extends EventEmitter {
     )
   }
 
-  /** @private */
-  emit(eventName = '', message) {
-    eventName.split('/').reduce((parents, current) => {
-      const eventPartial = [...parents, current]
-      super.emit(eventPartial.join('/'), message)
-      return eventPartial
-    }, [])
+  emit(eventName, message) {
+    if (eventName) {
+      eventName.split('/').reduce((parents, current) => {
+        const eventPartial = [...parents, current]
+        super.emit(eventPartial.join('/'), message)
+        return eventPartial
+      }, [])
+    }
 
     /**
      * All events are also emitted with this event name.
