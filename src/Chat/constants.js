@@ -8,6 +8,8 @@ export const CHAT_SERVER_SSL_PORT = 443
  * @default 5000
  */
 export const CONNECTION_TIMEOUT = 5000
+export const KEEP_ALIVE_PING_TIMEOUT = 55000
+export const KEEP_ALIVE_RECONNECT_TIMEOUT = 60000
 /**
  * @constant
  * @type {number}

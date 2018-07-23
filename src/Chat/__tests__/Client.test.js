@@ -56,11 +56,47 @@ describe('Chat/Client', () => {
     new Client(options)
 
     server.once('message', message => {
-      // console.log(message)
       expect(message).toEqual(membership.PONG)
       done()
     })
 
     server.sendMessageToClient(membership.PING)
+  })
+
+  describe('keep alive', () => {
+    afterAll(() => {
+      jest.useRealTimers()
+    })
+
+    test('should send PING after keep alive delay', done => {
+      jest.useFakeTimers()
+
+      server.on('message', message => {
+        if (message === constants.COMMANDS.PING) {
+          done()
+          server.off('message')
+        }
+      })
+
+      const client = new Client(options)
+      jest.advanceTimersByTime(1000)
+
+      client.on(constants.EVENTS.CONNECTED, () =>
+        jest.advanceTimersByTime(constants.KEEP_ALIVE_PING_TIMEOUT),
+      )
+    })
+
+    test('should emit RECONNECT after keep alive expires', done => {
+      jest.useFakeTimers()
+
+      const client = new Client(options)
+      jest.advanceTimersByTime(1000)
+
+      client.on(constants.EVENTS.RECONNECT, () => done())
+
+      client.on(constants.EVENTS.CONNECTED, () =>
+        jest.advanceTimersByTime(constants.KEEP_ALIVE_RECONNECT_TIMEOUT),
+      )
+    })
   })
 })

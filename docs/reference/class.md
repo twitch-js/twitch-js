@@ -213,6 +213,7 @@ Chat client
     * [.connect()](#Chat+connect) ⇒ <code>Promise.&lt;GlobalUserStateMessage, string&gt;</code>
     * [.send(message)](#Chat+send)
     * [.disconnect()](#Chat+disconnect)
+    * [.reconnect()](#Chat+reconnect)
     * [.join(channel)](#Chat+join) ⇒ <code>Promise.&lt;ChannelState, string&gt;</code>
     * [.part(channel)](#Chat+part)
     * [.say(channel, message)](#Chat+say) ⇒ <code>Promise.&lt;UserStateMessage, string&gt;</code>
@@ -380,7 +381,16 @@ Sends a raw message to Twitch.
 <a name="Chat+disconnect"></a>
 
 ### chat.disconnect()
-Disconnect from Twitch.
+Disconnected from Twitch.
+
+**Kind**: instance method of [<code>Chat</code>](#Chat)  
+
+* * *
+
+<a name="Chat+reconnect"></a>
+
+### chat.reconnect()
+Reconnect to Twitch.
 
 **Kind**: instance method of [<code>Chat</code>](#Chat)  
 

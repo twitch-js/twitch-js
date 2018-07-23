@@ -1,6 +1,10 @@
 import { gt, isFinite, replace } from 'lodash'
 
-const generalString = maybeMessage => replace(maybeMessage, /\\s/g, ' ')
+const generalString = maybeMessage => {
+  return typeof maybeMessage === 'string'
+    ? replace(maybeMessage, /\\s/g, ' ')
+    : undefined
+}
 
 const generalNumber = maybeNumber => {
   const number = parseInt(maybeNumber, 10)

@@ -13,6 +13,9 @@ const priority = constants.CLIENT_PRIORITY
 class Client extends EventEmitter {
   readyState
 
+  pingTimer = null
+  reconnectTimer = null
+
   constructor(maybeOptions = {}) {
     super()
 
@@ -54,6 +57,7 @@ class Client extends EventEmitter {
   }
 
   disconnect() {
+    handleKeepAliveReset.call(this)
     this.ws.close()
   }
 }
@@ -70,10 +74,11 @@ function handleOpen(options) {
 }
 
 function handleMessage(messageEvent) {
-  // console.log(messageEvent.data)
   const rawMessage = messageEvent.data
 
   try {
+    handleKeepAlive.call(this)
+
     const messages = baseParser(rawMessage)
 
     messages.forEach(message => {
@@ -90,6 +95,14 @@ function handleMessage(messageEvent) {
         })
       }
 
+      // Handle RECONNECT.
+      if (message.command === constants.COMMANDS.RECONNECT) {
+        this.emit(constants.EVENTS.RECONNECT, {
+          ...message,
+          command: constants.EVENTS.RECONNECT,
+        })
+      }
+
       // Emit all messages.
       this.emit(constants.EVENTS.ALL, message)
     })
@@ -98,6 +111,7 @@ function handleMessage(messageEvent) {
       _raw: rawMessage,
       timestamp: new Date(),
       event: constants.EVENTS.PARSE_ERROR_ENCOUNTERED,
+      command: constants.EVENTS.PARSE_ERROR_ENCOUNTERED,
       message: error,
     }
 
@@ -132,6 +146,27 @@ function handleClose() {
   }
 
   this.emit(constants.EVENTS.DISCONNECTED, message)
+}
+
+function handleKeepAlive() {
+  handleKeepAliveReset.call(this)
+
+  this.pingTimer = setTimeout(
+    () => this.send(constants.COMMANDS.PING, { priority }),
+    constants.KEEP_ALIVE_PING_TIMEOUT,
+  )
+
+  this.reconnectTimer = setTimeout(
+    () => this.emit(constants.EVENTS.RECONNECT, {}),
+    constants.KEEP_ALIVE_RECONNECT_TIMEOUT,
+  )
+}
+
+function handleKeepAliveReset() {
+  clearTimeout(this.pingTimer)
+  clearTimeout(this.reconnectTimer)
+  this.pingTimer = null
+  this.reconnectTimer = null
 }
 
 export default Client
