@@ -72,7 +72,7 @@ describe('Chat/Client', () => {
       jest.useFakeTimers()
 
       server.on('message', message => {
-        if (message === 'PING') {
+        if (message === constants.COMMANDS.PING) {
           done()
           server.off('message')
         }
@@ -81,7 +81,9 @@ describe('Chat/Client', () => {
       const client = new Client(options)
       jest.advanceTimersByTime(1000)
 
-      client.on('CONNECTED', () => jest.advanceTimersByTime(55000))
+      client.on(constants.EVENTS.CONNECTED, () =>
+        jest.advanceTimersByTime(constants.KEEP_ALIVE_PING_TIMEOUT),
+      )
     })
 
     test('should emit RECONNECT after keep alive expires', done => {
@@ -90,9 +92,11 @@ describe('Chat/Client', () => {
       const client = new Client(options)
       jest.advanceTimersByTime(1000)
 
-      client.on('RECONNECT', () => done())
+      client.on(constants.EVENTS.RECONNECT, () => done())
 
-      client.on('CONNECTED', () => jest.advanceTimersByTime(60000))
+      client.on(constants.EVENTS.CONNECTED, () =>
+        jest.advanceTimersByTime(constants.KEEP_ALIVE_RECONNECT_TIMEOUT),
+      )
     })
   })
 })
