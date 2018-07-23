@@ -21,7 +21,7 @@ accordingly to avoid regressions.
 
 * Aligns with official
   [Twitch IRC documentation](https://dev.twitch.tv/docs/irc/)
-* Forward-compatible, minimally-assertive architecture
+* Forward-compatible, low-level, minimally-assertive architecture
 * Supports Node environments
 * Supports Browsers
 * Connect to multiple channels
