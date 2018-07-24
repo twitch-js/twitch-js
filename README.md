@@ -5,7 +5,7 @@
 [![npm](https://img.shields.io/npm/dw/twitch-js.svg)](https://www.npmjs.com/package/twitch-js)
 [![GitHub issues](https://img.shields.io/github/issues/twitch-apis/twitch-js.svg)](https://github.com/twitch-apis/twitch-js/issues)
 [![Coverage Status](https://coveralls.io/repos/github/twitch-apis/twitch-js/badge.svg)](https://coveralls.io/github/twitch-apis/twitch-js)
-[![Gitter](https://img.shields.io/gitter/room/nwjs/nw.js.svg)](https://gitter.im/twitch-apis/twitch-js?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
+[![Gitter](https://img.shields.io/gitter/room/nwjs/nw.js.svg)](https://gitter.im/twitch-apis/twitch-js?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge) [![Greenkeeper badge](https://badges.greenkeeper.io/twitch-apis/twitch-js.svg)](https://greenkeeper.io/)
 
 A community-centric, community-supported version of [`tmi.js`](https://github.com/tmijs/tmi.js).
 
