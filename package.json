@@ -66,12 +66,11 @@
     "form-data": "^2.3.2",
     "invariant": "^2.2.4",
     "irc-message": "^3.0.2",
-    "lodash": "^4.17.4",
-    "node-fetch": "^1.7.3",
+    "lodash": "^4.17.10",
+    "node-fetch": "^2.2.0",
     "qs": "^6.5.2",
-    "validator": "^9.2.0",
     "whatwg-fetch": "^2.0.3",
-    "ws": "^5.2.0"
+    "ws": "^6.0.0"
   },
   "devDependencies": {
     "babel-cli": "^6.24.1",
