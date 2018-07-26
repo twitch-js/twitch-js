@@ -8,6 +8,7 @@ Each and every option listed below is optional. Running TwitchJS without options
 
 * `clientId`: _String_ - Used to identify your [application](https://dev.twitch.tv/dashboard/apps) to the API (Default: `null`)
 * `debug`: _Boolean_ - Show debug messages in console (Default: `false`)
+* `commandTimeout`: _Integer_ - Number of ms before command will timeout if no response from server (Default: `600`)
 
 `connection`: (_Optional_)
 
