@@ -17,6 +17,10 @@ class Queue extends BetterQueue {
       {
         store: new MemoryStore(),
         priority: ({ priority = 1 }, cb) => cb(null, priority),
+        setImmediate:
+          typeof setImmediate !== 'undefined'
+            ? setImmediate
+            : cb => setTimeout(cb, 0),
         // Process queue only when rate-limiter is less than 1.
         precondition: cb => cb(null, this.rateLimiter < 1),
         preconditionRetryTimeout: constants.QUEUE_TICK_RATE,
