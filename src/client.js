@@ -1482,13 +1482,10 @@ client.prototype._onClose = function _onClose() {
   this.ws = null;
 };
 
-// Minimum of 600ms for command promises, if current latency exceeds, add 100ms
-// to it to make sure it doesn't get timed out..
+// Promise delay for commands will fluctuate with the current server latency to
+// make sure it doesn't time out prematurely
 client.prototype._getPromiseDelay = function _getPromiseDelay() {
-  if (this.currentLatency <= 600) {
-    return 600;
-  }
-  return this.currentLatency + 100;
+  return this.currentLatency + _.get(this.opts.options.commandTimeout, 600);
 };
 
 // Send command to server or channel..
