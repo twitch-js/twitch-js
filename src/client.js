@@ -132,7 +132,7 @@ client.prototype.handleMessage = function handleMessage(message) {
         case 'PONG': {
           const currDate = new Date();
           this.currentLatency =
-            (currDate.getTime() - this.latency.getTime()) / 1000;
+            currDate.getTime() - this.latency.getTime();
           this.emits(
             ['pong', '_promisePing'],
             [[this.currentLatency], [this.currentLatency]],
