@@ -6,6 +6,7 @@ import baseParser from './utils/parsers'
 import * as validators from './utils/validators'
 import * as utils from './utils'
 
+import * as errors from './Errors'
 import Queue from './Queue'
 
 const priority = constants.CLIENT_PRIORITY
@@ -103,21 +104,20 @@ function handleMessage(messageEvent) {
         })
       }
 
+      // Handle authentication failure
+      if (utils.isAuthenticationFailedMessage(message)) {
+        throw new errors.AuthenticationError(message)
+      }
+
       // Emit all messages.
       this.emit(constants.EVENTS.ALL, message)
     })
   } catch (error) {
-    const message = {
-      _raw: rawMessage,
-      timestamp: new Date(),
-      event: constants.EVENTS.PARSE_ERROR_ENCOUNTERED,
-      command: constants.EVENTS.PARSE_ERROR_ENCOUNTERED,
-      message: error,
-    }
+    const message = parseMessageError(error, rawMessage)
 
+    this.emit(message.command, message)
     this.emit(constants.EVENTS.ALL, message)
-
-    throw new Error(error)
+    throw message
   } finally {
     const message = {
       _raw: rawMessage,
@@ -126,6 +126,14 @@ function handleMessage(messageEvent) {
 
     this.emit(constants.EVENTS.RAW, message)
   }
+}
+
+function parseMessageError(error, raw) {
+  if (error instanceof errors.AuthenticationError) {
+    return error
+  }
+
+  return new errors.ParseError(error, raw)
 }
 
 function handleError(error) {
@@ -151,10 +159,12 @@ function handleClose() {
 function handleKeepAlive() {
   handleKeepAliveReset.call(this)
 
-  this.pingTimer = setTimeout(
-    () => this.send(constants.COMMANDS.PING, { priority }),
-    constants.KEEP_ALIVE_PING_TIMEOUT,
-  )
+  if (this.readyState === 2) {
+    this.pingTimer = setTimeout(
+      () => this.send(constants.COMMANDS.PING, { priority }),
+      constants.KEEP_ALIVE_PING_TIMEOUT,
+    )
+  }
 
   this.reconnectTimer = setTimeout(
     () => this.emit(constants.EVENTS.RECONNECT, {}),

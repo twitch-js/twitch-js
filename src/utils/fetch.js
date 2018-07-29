@@ -44,7 +44,6 @@ const fetchUtil = (url, options = {}, qsOptions = {}) => {
   }).then(parseResponse)
 }
 
-/** @ignore */
 const parseResponse = response =>
   response
     .json()

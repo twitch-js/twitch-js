@@ -113,6 +113,6 @@ describe('commands', () => {
   })
 
   describe('commandFactor', () => {
-    // console.dir(commandsFactory({ say, onFn }))
+    // TODO
   })
 })

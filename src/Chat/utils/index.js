@@ -15,4 +15,9 @@ const getMessageQueueWeight = ({
   return constants.RATE_LIMIT_USER
 }
 
-export { getMessageQueueWeight }
+const isAuthenticationFailedMessage = (message = {}) =>
+  message.command === constants.EVENTS.NOTICE &&
+  message.channel === '*' &&
+  message.message === 'Login authentication failed'
+
+export { getMessageQueueWeight, isAuthenticationFailedMessage }

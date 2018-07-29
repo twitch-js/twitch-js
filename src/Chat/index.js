@@ -96,7 +96,15 @@ class Chat extends EventEmitter {
      * Validated options.
      * @type {ChatOptions}
      */
-    this.options = validators.chatOptions(maybeOptions)
+    this.options = maybeOptions
+  }
+
+  get options() {
+    return this._options
+  }
+
+  set options(maybeOptions) {
+    this._options = validators.chatOptions(maybeOptions)
   }
 
   /**
@@ -104,7 +112,7 @@ class Chat extends EventEmitter {
    * @return {Promise<GlobalUserStateMessage, string>} Global user state message
    */
   connect() {
-    const connect = new Promise(resolve => {
+    const connect = new Promise((resolve, reject) => {
       if (this.readyState === 1) {
         // Already trying to connect, so resolve when connected.
         this.once(
@@ -124,6 +132,11 @@ class Chat extends EventEmitter {
         const client = new Client(this.options)
 
         client.removeAllListeners()
+
+        // Bind events.
+        client.on(constants.EVENTS.ALL, handleMessage, this)
+
+        client.once(constants.EVENTS.AUTHENTICATION_FAILED, reject)
 
         // Once the client is connected ...
         client.once(constants.EVENTS.CONNECTED, globalUserStateMessage => {
@@ -151,7 +164,11 @@ class Chat extends EventEmitter {
           /**
            * Reconnect to Twitch.
            */
-          this.reconnect = () => {
+          this.reconnect = newOptions => {
+            if (newOptions) {
+              this.options = newOptions
+            }
+
             const channels = Object.keys(this.channels)
             this.disconnect()
 
@@ -159,9 +176,6 @@ class Chat extends EventEmitter {
               Promise.all(channels.map(channel => this.join(channel))),
             )
           }
-
-          // Bind events.
-          client.on(constants.EVENTS.ALL, handleMessage, this)
 
           // Listen for disconnect.
           client.once(constants.EVENTS.DISCONNECTED, this.disconnect)
