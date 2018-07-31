@@ -15,12 +15,4 @@ const getMessageQueueWeight = ({
   return constants.RATE_LIMIT_USER
 }
 
-const defer = cb => {
-  if (typeof self.setImmediate !== 'undefined') {
-    return self.setImmediate(cb)
-  }
-
-  return self.setTimeout(cb, 0)
-}
-
-export { getMessageQueueWeight, defer }
+export { getMessageQueueWeight }

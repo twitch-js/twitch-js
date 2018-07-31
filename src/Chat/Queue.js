@@ -1,8 +1,8 @@
 import BetterQueue from 'better-queue'
 import MemoryStore from 'better-queue-memory'
+import setImmediate from 'core-js/library/fn/set-immediate'
 
 import * as constants from './constants'
-import { defer } from './utils'
 
 class Queue extends BetterQueue {
   rateLimiter = 0
@@ -18,7 +18,7 @@ class Queue extends BetterQueue {
       {
         store: new MemoryStore(),
         priority: ({ priority = 1 }, cb) => cb(null, priority),
-        setImmediate: defer,
+        setImmediate,
         // Process queue only when rate-limiter is less than 1.
         precondition: cb => cb(null, this.rateLimiter < 1),
         preconditionRetryTimeout: constants.QUEUE_TICK_RATE,

@@ -61,6 +61,7 @@
     "better-queue": "^3.8.7",
     "better-queue-memory": "^1.0.2",
     "camelcase-keys": "^4.2.0",
+    "core-js": "^2.5.7",
     "date-fns": "^1.29.0",
     "eventemitter3": "^3.1.0",
     "form-data": "^2.3.2",
