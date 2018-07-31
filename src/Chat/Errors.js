@@ -1,7 +1,13 @@
 import BaseError from '../utils/BaseError'
 import * as constants from './constants'
 
-class AuthenticationError extends BaseError {
+class ApiError extends BaseError {
+  constructor(message, ...other) {
+    super(`${message} [Api]`, ...other)
+  }
+}
+
+class AuthenticationError extends ApiError {
   constructor(message, ...other) {
     super('Authentication error encountered', ...other)
 
@@ -10,7 +16,7 @@ class AuthenticationError extends BaseError {
   }
 }
 
-class ParseError extends BaseError {
+class ParseError extends ApiError {
   constructor(error, rawMessage, ...other) {
     super('Parse error encountered', ...other)
 
@@ -20,4 +26,16 @@ class ParseError extends BaseError {
   }
 }
 
-export { AuthenticationError, ParseError }
+class JoinError extends ApiError {
+  constructor(message, ...other) {
+    super('Join error encountered', ...other)
+  }
+}
+
+class TimeoutError extends ApiError {
+  constructor(message, ...other) {
+    super('Timeout error encountered', ...other)
+  }
+}
+
+export { AuthenticationError, ParseError, JoinError, TimeoutError }

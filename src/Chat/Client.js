@@ -6,7 +6,7 @@ import baseParser from './utils/parsers'
 import * as validators from './utils/validators'
 import * as utils from './utils'
 
-import * as errors from './Errors'
+import * as Errors from './Errors'
 import Queue from './Queue'
 
 const priority = constants.CLIENT_PRIORITY
@@ -106,7 +106,7 @@ function handleMessage(messageEvent) {
 
       // Handle authentication failure
       if (utils.isAuthenticationFailedMessage(message)) {
-        throw new errors.AuthenticationError(message)
+        throw new Errors.AuthenticationError(message)
       }
 
       // Emit all messages.
@@ -129,11 +129,11 @@ function handleMessage(messageEvent) {
 }
 
 function parseMessageError(error, raw) {
-  if (error instanceof errors.AuthenticationError) {
+  if (error instanceof Errors.AuthenticationError) {
     return error
   }
 
-  return new errors.ParseError(error, raw)
+  return new Errors.ParseError(error, raw)
 }
 
 function handleError(error) {

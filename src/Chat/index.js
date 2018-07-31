@@ -10,6 +10,7 @@ import { get } from 'lodash'
 import * as utils from '../utils'
 
 import Client from './Client'
+import * as Errors from './Errors'
 
 import * as constants from './constants'
 import { commandsFactory } from './utils/commands'
@@ -181,7 +182,7 @@ class Chat extends EventEmitter {
           client.once(constants.EVENTS.DISCONNECTED, this.disconnect)
 
           // Listen for reconnects.
-          client.once(constants.EVENTS.RECONNECT, this.reconnect)
+          client.once(constants.EVENTS.RECONNECT, () => this.reconnect)
 
           // Process GLOBALUSERSTATE message.
           handleMessage.call(this, globalUserStateMessage)
@@ -195,7 +196,7 @@ class Chat extends EventEmitter {
     return Promise.race([
       utils.delayReject(
         this.options.connectionTimeout,
-        constants.ERROR_CONNECT_TIMED_OUT,
+        new Errors.TimeoutError(constants.ERROR_CONNECT_TIMED_OUT),
       ),
       connect,
     ])
