@@ -2,6 +2,8 @@ import fetch from 'node-fetch'
 import FormData from 'form-data'
 import { stringify } from 'qs'
 
+import parser from './parser'
+
 /**
  * Fetch options
  * @typedef {Object} FetchOptions
@@ -41,27 +43,7 @@ const fetchUtil = (url, options = {}, qsOptions = {}) => {
     search: undefined,
     headers,
     body,
-  }).then(parseResponse)
+  }).then(parser)
 }
 
-const parseResponse = response =>
-  response
-    .json()
-    .then(json => {
-      if (!response.ok) {
-        const error = new Error(`${response.url} ${response.statusText}`)
-        error.response = json
-        throw error
-      }
-      return json
-    })
-    .catch(error => {
-      error.ok = false
-      error.status = response.status
-      error.statusText = response.statusText
-      error.url = response.url
-      throw error
-    })
-
-export { parseResponse }
 export default fetchUtil

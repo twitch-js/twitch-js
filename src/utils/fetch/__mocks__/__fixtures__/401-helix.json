@@ -1,0 +1,5 @@
+{
+  "error": "Unauthorized",
+  "message": "Token invalid or missing required scope",
+  "status": 401
+}
