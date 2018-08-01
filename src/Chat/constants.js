@@ -36,6 +36,21 @@ export const ERROR_COMMAND_TIMED_OUT = 'ERROR: command timed out'
 export const ERROR_COMMAND_UNRECOGNIZED = 'ERROR: command unrecognized'
 export const ERROR_PART_TIMED_OUT = 'ERROR: part timed out'
 
+export const READY_STATES = {
+  0: 'NOT_READY',
+  1: 'CONNECTING',
+  2: 'RECONNECTING',
+  3: 'CONNECTED',
+  4: 'DISCONNECTING',
+  5: 'DISCONNECTED',
+}
+
+export const CAPABILITIES = [
+  'twitch.tv/tags',
+  'twitch.tv/commands',
+  'twitch.tv/membership',
+]
+
 // See https://dev.twitch.tv/docs/irc/membership/.
 export const MEMBERSHIP_COMMANDS = {
   JOIN: 'JOIN',

@@ -12,8 +12,6 @@ import Queue from './Queue'
 const priority = constants.CLIENT_PRIORITY
 
 class Client extends EventEmitter {
-  readyState
-
   pingTimer = null
   reconnectTimer = null
 
@@ -27,6 +25,8 @@ class Client extends EventEmitter {
     const protocol = options.ssl ? 'wss' : 'ws'
     const ws = new WebSocket(`${protocol}://${options.server}:${options.port}`)
 
+    this.isReady = () => ws.readyState === 1
+
     ws.onopen = handleOpen.bind(this, options)
     ws.onmessage = handleMessage.bind(this)
     ws.onerror = handleError.bind(this)
@@ -35,9 +35,10 @@ class Client extends EventEmitter {
     // Instantiate Queue.
     const queue = new Queue()
 
-    this.readyState = ws.readyState
-    this.send = this.send.bind({ ws, queue })
-    this.disconnect = this.disconnect.bind({ ws })
+    const elevatedContext = { self: this, ws, queue }
+
+    this.send = this.send.bind(elevatedContext)
+    this.disconnect = this.disconnect.bind(elevatedContext)
   }
 
   /**
@@ -58,16 +59,14 @@ class Client extends EventEmitter {
   }
 
   disconnect() {
-    handleKeepAliveReset.call(this)
+    handleKeepAliveReset.call(this.self)
     this.ws.close()
   }
 }
 
 function handleOpen(options) {
   // Register for Twitch-specific capabilities.
-  this.send('CAP REQ :twitch.tv/tags twitch.tv/commands twitch.tv/membership', {
-    priority,
-  })
+  this.send(`CAP REQ :${constants.CAPABILITIES.join(' ')}`, { priority })
 
   // Authenticate.
   this.send(`PASS ${options.oauth}`, { priority })
@@ -136,30 +135,30 @@ function parseMessageError(error, raw) {
   return new Errors.ParseError(error, raw)
 }
 
-function handleError(error) {
+function handleError(messageEvent) {
   const message = {
     timestamp: new Date(),
     event: constants.EVENTS.ERROR_ENCOUNTERED,
-    message: error,
+    messageEvent,
   }
 
   this.emit(constants.EVENTS.ALL, message)
-  this.emit(constants.EVENTS.ERROR_ENCOUNTERED, message)
 }
 
-function handleClose() {
+function handleClose(messageEvent) {
   const message = {
     timestamp: new Date(),
     event: constants.EVENTS.DISCONNECTED,
+    messageEvent,
   }
 
-  this.emit(constants.EVENTS.DISCONNECTED, message)
+  this.emit(constants.EVENTS.ALL, message)
 }
 
 function handleKeepAlive() {
   handleKeepAliveReset.call(this)
 
-  if (this.readyState === 2) {
+  if (this.isReady()) {
     this.pingTimer = setTimeout(
       () => this.send(constants.COMMANDS.PING, { priority }),
       constants.KEEP_ALIVE_PING_TIMEOUT,

@@ -8,6 +8,7 @@ import { EventEmitter } from 'eventemitter3'
 import { get } from 'lodash'
 
 import * as utils from '../utils'
+import * as chatUtils from './utils'
 
 import Client from './Client'
 import * as Errors from './Errors'
@@ -70,23 +71,6 @@ import * as validators from './utils/validators'
  */
 class Chat extends EventEmitter {
   /**
-   * Chat client ready state.
-   * @enum {number}
-   * @property {number} 0 not ready
-   * @property {number} 1 connecting
-   * @property {number} 2 connected
-   * @property {number} 3 disconnecting
-   * @property {number} 4 disconnected
-   */
-  readyState = 0
-
-  /** @type {GlobalUserStateTags} */
-  userState = {}
-
-  /** @type {Object.<string, ChannelState>} */
-  channels = {}
-
-  /**
    * Chat constructor.
    * @param {ChatOptions} options
    */
@@ -98,6 +82,12 @@ class Chat extends EventEmitter {
      * @type {ChatOptions}
      */
     this.options = maybeOptions
+
+    /** @type {GlobalUserStateTags} */
+    this._userState = {}
+
+    /** @type {Object.<string, ChannelState>} */
+    this._channelState = {}
   }
 
   get options() {
@@ -108,21 +98,67 @@ class Chat extends EventEmitter {
     this._options = validators.chatOptions(maybeOptions)
   }
 
+  get readyState() {
+    return this._readyState
+  }
+
+  set readyState(readyState) {
+    this._readyState = constants.READY_STATES[readyState] ? readyState : 0
+  }
+
+  get client() {
+    return this._client
+  }
+
+  set client(client) {
+    if (!(client instanceof Client)) {
+      throw new Error('Error setting client')
+    }
+
+    this._client = client
+  }
+
+  get userState() {
+    return this._userState
+  }
+
+  set userState(userState) {
+    this._userState = userState
+  }
+
+  getChannels() {
+    return Object.keys(this._channelState)
+  }
+
+  getChannelState(channel) {
+    return this._channelState[channel]
+  }
+
+  setChannelState(channel, state) {
+    this._channelState[channel] = state
+  }
+
+  removeChannelState(channel) {
+    this._channelState[channel] = undefined
+  }
+
+  clearChannelState() {
+    this._channelState = {}
+  }
+
   /**
    * Connect to Twitch.
    * @return {Promise<GlobalUserStateMessage, string>} Global user state message
    */
   connect() {
+    console.log('connecting', this.readyState)
     const connect = new Promise((resolve, reject) => {
       if (this.readyState === 1) {
         // Already trying to connect, so resolve when connected.
-        this.once(
-          constants.EVENTS.GLOBAL_USER_STATE,
-          globalUserStateMessage => {
-            resolve(globalUserStateMessage)
-          },
+        this.once(constants.EVENTS.GLOBAL_USER_STATE, globalUserStateMessage =>
+          resolve(globalUserStateMessage),
         )
-      } else if (this.readyState === 2) {
+      } else if (this.readyState === 3) {
         // Already connected.
         resolve(this.userState)
       } else {
@@ -130,59 +166,31 @@ class Chat extends EventEmitter {
         this.readyState = 1
 
         // Create client and connect.
-        const client = new Client(this.options)
+        this.client = new Client(this.options)
 
-        client.removeAllListeners()
+        this.client.removeAllListeners()
 
         // Bind events.
-        client.on(constants.EVENTS.ALL, handleMessage, this)
+        this.client.on(constants.EVENTS.ALL, handleMessage, this)
 
-        client.once(constants.EVENTS.AUTHENTICATION_FAILED, reject)
+        // Listen for authentication failures.
+        this.client.once(constants.EVENTS.AUTHENTICATION_FAILED, () => {
+          this.readyState = 5
+          reject()
+        })
+
+        // Listen for disconnect.
+        this.client.on(constants.EVENTS.DISCONNECTED, this.disconnect, this)
+
+        // Listen for reconnects.
+        this.client.once(constants.EVENTS.RECONNECT, () => this.reconnect)
+
+        // Create commands.
+        Object.assign(this, commandsFactory.call(this))
 
         // Once the client is connected ...
-        client.once(constants.EVENTS.CONNECTED, globalUserStateMessage => {
-          this.readyState = 2
-
-          // Create commands.
-          Object.assign(this, commandsFactory.call(this))
-
-          /**
-           * Sends a raw message to Twitch.
-           * @param {string} message - Message to send.
-           */
-          this.send = message => client.send(message)
-
-          /**
-           * Disconnected from Twitch.
-           */
-          this.disconnect = () => {
-            client.disconnect()
-            this.readyState = 4
-            this.userState = {}
-            this.channels = {}
-          }
-
-          /**
-           * Reconnect to Twitch.
-           */
-          this.reconnect = newOptions => {
-            if (newOptions) {
-              this.options = newOptions
-            }
-
-            const channels = Object.keys(this.channels)
-            this.disconnect()
-
-            return this.connect().then(() =>
-              Promise.all(channels.map(channel => this.join(channel))),
-            )
-          }
-
-          // Listen for disconnect.
-          client.once(constants.EVENTS.DISCONNECTED, this.disconnect)
-
-          // Listen for reconnects.
-          client.once(constants.EVENTS.RECONNECT, () => this.reconnect)
+        this.client.once(constants.EVENTS.CONNECTED, globalUserStateMessage => {
+          this.readyState = 3
 
           // Process GLOBALUSERSTATE message.
           handleMessage.call(this, globalUserStateMessage)
@@ -200,6 +208,57 @@ class Chat extends EventEmitter {
       ),
       connect,
     ])
+      .then(globalUserState => {
+        this.readyState = 3
+
+        console.log('connected', globalUserState)
+
+        return globalUserState
+      })
+      .catch(error => {
+        this.readyState = 2
+        console.error('caught', error)
+
+        return this.connect()
+
+        // throw error
+      })
+  }
+
+  /**
+   * Sends a raw message to Twitch.
+   * @param {string} message - Message to send.
+   */
+  send(message) {
+    this.client.send(message)
+  }
+
+  /**
+   * Disconnected from Twitch.
+   */
+  disconnect() {
+    this.client.disconnect()
+    this.readyState = 4
+    this.userState = {}
+    this.clearChannelState()
+  }
+
+  /**
+   * Reconnect to Twitch.
+   * @param {ChatOptions} [options]
+   * @return {Promise<[ChannelState], string>} Channel states
+   */
+  reconnect(newOptions) {
+    if (newOptions) {
+      this.options = newOptions
+    }
+
+    const channels = this.getChannels()
+    this.disconnect()
+
+    return this.connect().then(() =>
+      Promise.all(channels.map(channel => this.join(channel))),
+    )
   }
 
   /**
@@ -256,7 +315,7 @@ class Chat extends EventEmitter {
          * @property {UserStateTags} userState
          */
         const response = { roomState, userState }
-        this.channels[channel] = response
+        this.setChannelState(channel)
         return response
       },
     )
@@ -279,7 +338,7 @@ class Chat extends EventEmitter {
   part(maybeChannel) {
     const channel = sanitizers.channel(maybeChannel)
 
-    this.channels[channel] = undefined
+    this.removeChannelState(channel)
     this.send(`${constants.COMMANDS.PART} ${channel}`)
   }
 
@@ -317,7 +376,7 @@ class Chat extends EventEmitter {
    */
   broadcast(message) {
     return Promise.all(
-      Object.keys(this.channels).map(channel => this.say(channel, message)),
+      this.getChannels().map(channel => this.say(channel, message)),
     )
   }
 
@@ -342,8 +401,8 @@ function handleMessage(baseMessage) {
   const channel = sanitizers.channel(baseMessage.channel)
 
   const displayName = get(
-    this.channels,
-    [channel, 'userState', 'displayName'],
+    this.getChannelState(channel),
+    'userState.displayName',
     '',
   )
   const messageDisplayName = get(baseMessage, 'tags.displayName')
@@ -389,8 +448,13 @@ function handleMessage(baseMessage) {
     case constants.EVENTS.MODE: {
       const message = parsers.modeMessage(preMessage)
       if (message.username === this.userState.username) {
-        this.channels[message.channel].userState.isModerator =
-          message.isModerator
+        this.setChannelState(channel, {
+          ...this.getChannelState(channel),
+          userState: {
+            ...this.getChannelState(channel).userState,
+            isModerator: message.isModerator,
+          },
+        })
       }
       this.emit(`${message.command}/${channel}`, message)
       break
@@ -404,25 +468,19 @@ function handleMessage(baseMessage) {
     }
     case constants.EVENTS.USER_STATE: {
       const message = parsers.userStateMessage(preMessage)
-      this.channels = {
-        ...this.channels,
-        [channel]: {
-          ...this.channels[channel],
-          userState: message.userState,
-        },
-      }
+      this.setChannelState(channel, {
+        ...this.getChannelState(channel),
+        userState: message.userState,
+      })
       this.emit(`${message.command}/${channel}`, message)
       break
     }
     case constants.EVENTS.ROOM_STATE: {
       const message = parsers.roomStateMessage(preMessage)
-      this.channels = {
-        ...this.channels,
-        [channel]: {
-          ...this.channels[channel],
-          roomState: message.roomState,
-        },
-      }
+      this.setChannelState(channel, {
+        ...this.getChannelState(channel),
+        roomState: message.roomState,
+      })
       this.emit(`${message.command}/${channel}`, message)
       break
     }
@@ -446,10 +504,8 @@ function handleMessage(baseMessage) {
     }
 
     default: {
-      const eventName =
-        channel === '#'
-          ? preMessage.command
-          : `${preMessage.command}/${channel}`
+      const command = chatUtils.getEventNameFromMessage(preMessage)
+      const eventName = channel === '#' ? command : `${command}/${channel}`
       this.emit(eventName, preMessage)
     }
   }

@@ -20,4 +20,11 @@ const isAuthenticationFailedMessage = (message = {}) =>
   message.channel === '*' &&
   message.message === 'Login authentication failed'
 
-export { getMessageQueueWeight, isAuthenticationFailedMessage }
+const getEventNameFromMessage = (message = {}) =>
+  message.command || message.event || constants.EVENTS.ALL
+
+export {
+  getMessageQueueWeight,
+  isAuthenticationFailedMessage,
+  getEventNameFromMessage,
+}
