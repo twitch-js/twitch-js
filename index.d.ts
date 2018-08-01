@@ -22,6 +22,12 @@ export type Listener = (...args: any[]) => void;
 
 export class EventEmitter {
   static defaultMaxListeners: number;
+
+  /**
+   * A class method that returns the number of listeners for the given eventName
+   * registered on the given emitter.
+   * @deprecated Use emitter.listenerCount() instead.
+   */
   static listenerCount(emitter: EventEmitter, eventName: string | symbol): number;
 
   /**
