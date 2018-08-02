@@ -40,7 +40,7 @@
   "runkitExampleFilename": "examples/runkit.js",
   "scripts": {
     "clean": "rimraf lib dist",
-    "lint": "eslint \"{__mocks__,examples,shims,src}/**/*.js\"",
+    "lint": "eslint \"{__e2e__,__mocks__,examples,shims,src}/**/*.js\"",
     "test": "jest",
     "pretest:coverage": "rimraf coverage",
     "test:coverage": "jest --maxWorkers=4 --collectCoverage",
