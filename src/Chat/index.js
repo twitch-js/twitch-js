@@ -209,16 +209,11 @@ class Chat extends EventEmitter {
     ])
       .then(globalUserState => {
         this.readyState = 3
-
         return globalUserState
       })
-      .catch(error => {
+      .catch(() => {
         this.readyState = 2
-        console.error('caught', error)
-
         return this.connect()
-
-        // throw error
       })
   }
 
