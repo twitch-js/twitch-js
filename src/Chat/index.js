@@ -314,9 +314,9 @@ class Chat extends EventEmitter {
          * @property {RoomStateTags} roomState
          * @property {UserStateTags} userState
          */
-        const response = { roomState, userState }
-        this.setChannelState(channel)
-        return response
+        const channelState = { roomState, userState }
+        this.setChannelState(channel, channelState)
+        return channelState
       },
     )
 
@@ -447,6 +447,7 @@ function handleMessage(baseMessage) {
     }
     case constants.EVENTS.MODE: {
       const message = parsers.modeMessage(preMessage)
+      console.log('before', this.getChannelState(channel))
       if (message.username === this.userState.username) {
         this.setChannelState(channel, {
           ...this.getChannelState(channel),
@@ -456,6 +457,8 @@ function handleMessage(baseMessage) {
           },
         })
       }
+      console.log('after', this.getChannelState(channel))
+
       this.emit(`${message.command}/${channel}`, message)
       break
     }
