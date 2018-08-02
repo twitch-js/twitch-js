@@ -4,8 +4,7 @@ const BUILD_PATH = path.join(__dirname, '../../dist/twitch-js.js')
 
 describe('Browser E2E', () => {
   console.log('TEST', {
-    token: process.env.TWITCH_TOKEN,
-    username: process.env.TWITCH_USERNAME,
+    tsev: process.env.TRAVIS_SECURE_ENV_VARS,
   })
   const token = process.env.TWITCH_TOKEN
   const username = process.env.TWITCH_USERNAME
