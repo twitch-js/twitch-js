@@ -6,6 +6,7 @@ cache:
     - "node_modules"
 
 script:
+  - yarn check
   - yarn lint
   - yarn test:coverage:report
 
