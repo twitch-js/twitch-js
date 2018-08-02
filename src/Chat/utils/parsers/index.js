@@ -4,6 +4,7 @@ import camelcaseKeys from 'camelcase-keys'
 import { isEmpty, isFinite, toNumber, toUpper } from 'lodash'
 
 import * as constants from '../../constants'
+import * as utils from '../'
 import * as typeParsers from './types'
 import * as tagParsers from './tags'
 
@@ -264,7 +265,11 @@ const roomStateMessage = baseMessage => {
 }
 
 const noticeMessage = baseMessage => {
-  const { tags, ...other } = baseMessage
+  const { tags: baseTags, ...other } = baseMessage
+
+  const tags = utils.isAuthenticationFailedMessage(baseMessage)
+    ? { ...baseTags, msgId: constants.EVENTS.AUTHENTICATION_FAILED }
+    : baseTags
 
   const event = toUpper(tags.msgId)
 

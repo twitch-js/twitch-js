@@ -69,7 +69,7 @@ Object {
 }
 `;
 
-exports[`Chat should handle messages MODE +o 1`] = `
+exports[`Chat should handle messages MODE another user +o 1`] = `
 Object {
   "_raw": ":jtv MODE #dallas +o ronni",
   "channel": "#dallas",
@@ -84,7 +84,7 @@ Object {
 }
 `;
 
-exports[`Chat should handle messages MODE -o 1`] = `
+exports[`Chat should handle messages MODE another user -o 1`] = `
 Object {
   "_raw": ":jtv MODE #dallas -o ronni",
   "channel": "#dallas",
@@ -96,6 +96,36 @@ Object {
   "tags": undefined,
   "timestamp": 2018-01-01T00:00:00.000Z,
   "username": "ronni",
+}
+`;
+
+exports[`Chat should handle messages MODE current user +o 1`] = `
+Object {
+  "_raw": ":jtv MODE #dallas +o dallas",
+  "channel": "#dallas",
+  "command": "MODE",
+  "event": "MOD_GAINED",
+  "isModerator": true,
+  "isSelf": false,
+  "message": undefined,
+  "tags": undefined,
+  "timestamp": 2018-01-01T00:00:00.000Z,
+  "username": "dallas",
+}
+`;
+
+exports[`Chat should handle messages MODE current user -o 1`] = `
+Object {
+  "_raw": ":jtv MODE #dallas -o dallas",
+  "channel": "#dallas",
+  "command": "MODE",
+  "event": "MOD_LOST",
+  "isModerator": false,
+  "isSelf": false,
+  "message": undefined,
+  "tags": undefined,
+  "timestamp": 2018-01-01T00:00:00.000Z,
+  "username": "dallas",
 }
 `;
 
@@ -247,6 +277,21 @@ Object {
   "message": "This room is already in subscribers-only mode.",
   "tags": Object {
     "msgId": "already_subs_on",
+  },
+  "timestamp": 2018-01-01T00:00:00.000Z,
+}
+`;
+
+exports[`Chat should handle messages NOTICE AUTHENTICATION_FAILED 1`] = `
+Object {
+  "_raw": ":tmi.twitch.tv NOTICE * :Login authentication failed",
+  "channel": "*",
+  "command": "NOTICE",
+  "event": "AUTHENTICATION_FAILED",
+  "isSelf": false,
+  "message": "Login authentication failed",
+  "tags": Object {
+    "msgId": "AUTHENTICATION_FAILED",
   },
   "timestamp": 2018-01-01T00:00:00.000Z,
 }

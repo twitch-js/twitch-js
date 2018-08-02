@@ -18,7 +18,7 @@ class WebSocket extends EventEmitter {
       this.emit('open')
     })
 
-    this.readyState = 2
+    this.readyState = 1
   }
 
   set onopen(listener) {

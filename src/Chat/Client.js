@@ -103,16 +103,11 @@ function handleMessage(messageEvent) {
         })
       }
 
-      // Handle authentication failure
-      if (utils.isAuthenticationFailedMessage(message)) {
-        throw new Errors.AuthenticationError(message)
-      }
-
       // Emit all messages.
       this.emit(constants.EVENTS.ALL, message)
     })
   } catch (error) {
-    const message = parseMessageError(error, rawMessage)
+    const message = new Errors.ParseError(error, rawMessage)
 
     this.emit(message.command, message)
     this.emit(constants.EVENTS.ALL, message)
@@ -125,14 +120,6 @@ function handleMessage(messageEvent) {
 
     this.emit(constants.EVENTS.RAW, message)
   }
-}
-
-function parseMessageError(error, raw) {
-  if (error instanceof Errors.AuthenticationError) {
-    return error
-  }
-
-  return new Errors.ParseError(error, raw)
 }
 
 function handleError(messageEvent) {

@@ -45,7 +45,7 @@ describe('Chat', () => {
   test('should join channel', async () => {
     const actual = await chat.join('#dallas')
     expect(actual).toMatchSnapshot()
-    expect(chat.channels).toEqual({ '#dallas': actual })
+    expect(chat.getChannelState('#dallas')).toEqual(actual)
   })
 
   test('should send message to channel', done => {
@@ -131,22 +131,79 @@ describe('Chat', () => {
       return emissions.then(actual => expect(actual).toMatchSnapshot())
     })
 
-    test('MODE +o', done => {
-      chat.once(constants.EVENTS.MODE, message => {
-        expect(message).toMatchSnapshot()
-        done()
+    describe('MODE', () => {
+      describe('current user', () => {
+        test('+o', async done => {
+          await chat.join('#dallas')
+          chat._channelState['#dallas'].userState.isModerator = false
+
+          // console.log({
+          //   userState: chat._userState,
+          //   channelState: chat._channelState['#dallas'],
+          // })
+
+          chat.once(constants.EVENTS.MODE, message => {
+            expect(message).toMatchSnapshot()
+
+            const actual = chat._channelState['#dallas'].userState.isModerator
+            const expected = true
+            expect(actual).toEqual(expected)
+            done()
+          })
+
+          server.sendMessageToClient(membership.MODE.OPERATOR_PLUS_DALLAS)
+        })
+
+        test('-o', async done => {
+          await chat.join('#dallas')
+          chat._channelState['#dallas'].userState.isModerator = true
+
+          chat.once(constants.EVENTS.MODE, message => {
+            expect(message).toMatchSnapshot()
+
+            const actual = chat._channelState['#dallas'].userState.isModerator
+            const expected = false
+            expect(actual).toEqual(expected)
+            done()
+          })
+
+          await chat.join('#dallas')
+
+          server.sendMessageToClient(membership.MODE.OPERATOR_MINUS_DALLAS)
+        })
       })
 
-      server.sendMessageToClient(membership.MODE.OPERATOR_PLUS)
-    })
+      describe('another user', () => {
+        test('+o', async done => {
+          await chat.join('#dallas')
+          const before = chat._channelState['#dallas'].userState.isModerator
 
-    test('MODE -o', done => {
-      chat.once(constants.EVENTS.MODE, message => {
-        expect(message).toMatchSnapshot()
-        done()
+          chat.once(constants.EVENTS.MODE, message => {
+            expect(message).toMatchSnapshot()
+
+            const after = chat._channelState['#dallas'].userState.isModerator
+            expect(before).toEqual(after)
+            done()
+          })
+
+          server.sendMessageToClient(membership.MODE.OPERATOR_PLUS_RONNI)
+        })
+
+        test('-o', async done => {
+          await chat.join('#dallas')
+          const before = chat._channelState['#dallas'].userState.isModerator
+
+          chat.once(constants.EVENTS.MODE, message => {
+            expect(message).toMatchSnapshot()
+
+            const after = chat._channelState['#dallas'].userState.isModerator
+            expect(before).toEqual(after)
+            done()
+          })
+
+          server.sendMessageToClient(membership.MODE.OPERATOR_MINUS_RONNI)
+        })
       })
-
-      server.sendMessageToClient(membership.MODE.OPERATOR_MINUS)
     })
 
     test('CLEARCHAT', done => {

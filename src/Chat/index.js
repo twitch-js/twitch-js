@@ -151,7 +151,6 @@ class Chat extends EventEmitter {
    * @return {Promise<GlobalUserStateMessage, string>} Global user state message
    */
   connect() {
-    console.log('connecting', this.readyState)
     const connect = new Promise((resolve, reject) => {
       if (this.readyState === 1) {
         // Already trying to connect, so resolve when connected.
@@ -183,7 +182,7 @@ class Chat extends EventEmitter {
         this.client.on(constants.EVENTS.DISCONNECTED, this.disconnect, this)
 
         // Listen for reconnects.
-        this.client.once(constants.EVENTS.RECONNECT, () => this.reconnect)
+        this.client.once(constants.EVENTS.RECONNECT, () => this.reconnect())
 
         // Create commands.
         Object.assign(this, commandsFactory.call(this))
@@ -210,8 +209,6 @@ class Chat extends EventEmitter {
     ])
       .then(globalUserState => {
         this.readyState = 3
-
-        console.log('connected', globalUserState)
 
         return globalUserState
       })
@@ -447,17 +444,18 @@ function handleMessage(baseMessage) {
     }
     case constants.EVENTS.MODE: {
       const message = parsers.modeMessage(preMessage)
-      console.log('before', this.getChannelState(channel))
+
       if (message.username === this.userState.username) {
+        const channelState = this.getChannelState(channel) || {}
+
         this.setChannelState(channel, {
-          ...this.getChannelState(channel),
+          ...channelState,
           userState: {
-            ...this.getChannelState(channel).userState,
+            ...channelState.userState,
             isModerator: message.isModerator,
           },
         })
       }
-      console.log('after', this.getChannelState(channel))
 
       this.emit(`${message.command}/${channel}`, message)
       break

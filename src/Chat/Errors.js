@@ -7,15 +7,6 @@ class ChatError extends BaseError {
   }
 }
 
-class AuthenticationError extends ChatError {
-  constructor(message, ...other) {
-    super('Authentication error encountered', ...other)
-
-    this._raw = message._raw
-    this.command = constants.EVENTS.AUTHENTICATION_FAILED
-  }
-}
-
 class ParseError extends ChatError {
   constructor(error, rawMessage, ...other) {
     super('Parse error encountered', ...other)
@@ -38,4 +29,4 @@ class TimeoutError extends ChatError {
   }
 }
 
-export { AuthenticationError, ParseError, JoinError, TimeoutError }
+export { ParseError, JoinError, TimeoutError }

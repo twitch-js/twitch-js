@@ -30,6 +30,6 @@ describe('parser', () => {
     const actual = parser(mockResponseError)
 
     expect(actual).rejects.toBeInstanceOf(Error)
-    expect(actual).rejects.toMatchObject({ response: mockJsonResponseError })
+    expect(actual).rejects.toMatchObject({ body: mockJsonResponseError })
   })
 })

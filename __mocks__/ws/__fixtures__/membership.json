@@ -2,8 +2,10 @@
   "CAP": "CAP REQ :twitch.tv/tags twitch.tv/commands twitch.tv/membership",
   "JOIN": ":ronni!ronni@ronni.tmi.twitch.tv JOIN #dallas",
   "MODE": {
-    "OPERATOR_PLUS": ":jtv MODE #dallas +o ronni",
-    "OPERATOR_MINUS": ":jtv MODE #dallas -o ronni"
+    "OPERATOR_PLUS_RONNI": ":jtv MODE #dallas +o ronni",
+    "OPERATOR_MINUS_RONNI": ":jtv MODE #dallas -o ronni",
+    "OPERATOR_PLUS_DALLAS": ":jtv MODE #dallas +o dallas",
+    "OPERATOR_MINUS_DALLAS": ":jtv MODE #dallas -o dallas"
   },
   "NAMES": ":ronni.tmi.twitch.tv 353 ronni = #dallas :ronni fred wilma\n:ronni.tmi.twitch.tv 353 ronni = #dallas :barney betty\n:ronni.tmi.twitch.tv 366 ronni #dallas :End of /NAMES list",
   "PART": ":ronni!ronni@ronni.tmi.twitch.tv PART #dallas",
