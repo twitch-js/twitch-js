@@ -7,13 +7,17 @@ import tags from '../../../__mocks__/ws/__fixtures__/tags'
 import { onceResolve } from '../../utils'
 
 import Chat, { constants } from '../index'
+import parser from '../utils/parsers'
 
 jest.mock('uws', () => require('ws'))
 
+const emitHelper = (emitter, rawMessages) =>
+  parser(rawMessages).forEach(message =>
+    emitter.emit(constants.EVENTS.ALL, message),
+  )
+
 describe('Chat', () => {
   let realDate
-
-  let chat
 
   const options = {
     server: 'localhost',
@@ -29,26 +33,23 @@ describe('Chat', () => {
     global.Date = jest.fn(() => DATE_TO_USE)
   })
 
-  beforeEach(() => {
-    chat = new Chat(options)
-    return chat.connect()
-  })
-
-  afterEach(() => {
-    chat.removeAllListeners()
-  })
-
   afterAll(() => {
     global.Date = realDate
   })
 
   test('should join channel', async () => {
+    const chat = new Chat(options)
+    await chat.connect()
+
     const actual = await chat.join('#dallas')
     expect(actual).toMatchSnapshot()
     expect(chat.getChannelState('#dallas')).toEqual(actual)
   })
 
-  test('should send message to channel', done => {
+  test('should send message to channel', async done => {
+    const chat = new Chat(options)
+    await chat.connect()
+
     expect.assertions(1)
 
     server.once('message', message => {
@@ -59,7 +60,10 @@ describe('Chat', () => {
     chat.say('#dallas', 'Kappa Keepo Kappa')
   })
 
-  test('should part a channel', done => {
+  test('should part a channel', async done => {
+    const chat = new Chat(options)
+    await chat.connect()
+
     expect.assertions(1)
 
     server.once('message', message => {
@@ -70,13 +74,18 @@ describe('Chat', () => {
     chat.part('#dallas')
   })
 
-  test('should disconnect', done => {
+  test('should disconnect', async done => {
+    const chat = new Chat(options)
+    await chat.connect()
+
     server.once('close', () => done())
 
     chat.disconnect()
   })
 
   test('should reconnect and rejoin channels', async () => {
+    const chat = new Chat(options)
+    await chat.connect()
     await chat.join('#dallas')
 
     const listener = jest.fn()
@@ -94,39 +103,51 @@ describe('Chat', () => {
     server.removeListener('message')
   })
 
-  test('should reconnect on RECONNECT event', done => {
+  test('should reconnect on RECONNECT event', async done => {
+    const chat = new Chat(options)
+    await chat.connect()
+
     chat.once('CONNECTED', () => done())
 
-    server.sendMessageToClient('RECONNECT')
+    chat._client.emit('RECONNECT')
   })
 
   describe('should handle messages', () => {
-    test('JOIN', done => {
+    test('JOIN', async done => {
+      const chat = new Chat(options)
+      await chat.connect()
+
       chat.once(constants.EVENTS.JOIN, message => {
         expect(message).toMatchSnapshot()
         done()
       })
 
-      server.sendMessageToClient(membership.JOIN)
+      emitHelper(chat._client, membership.JOIN)
     })
 
-    test('PART', done => {
+    test('PART', async done => {
+      const chat = new Chat(options)
+      await chat.connect()
+
       chat.once(constants.EVENTS.PART, message => {
         expect(message).toMatchSnapshot()
         done()
       })
 
-      server.sendMessageToClient(membership.PART)
+      emitHelper(chat._client, membership.PART)
     })
 
     test('NAMES', async () => {
+      const chat = new Chat(options)
+      await chat.connect()
+
       const emissions = Promise.all([
         onceResolve(chat, constants.COMMANDS.NAMES),
         onceResolve(chat, constants.COMMANDS.NAMES),
         onceResolve(chat, constants.COMMANDS.NAMES_END),
       ])
 
-      server.sendMessageToClient(membership.NAMES)
+      emitHelper(chat._client, membership.NAMES)
 
       return emissions.then(actual => expect(actual).toMatchSnapshot())
     })
@@ -134,13 +155,11 @@ describe('Chat', () => {
     describe('MODE', () => {
       describe('current user', () => {
         test('+o', async done => {
+          const chat = new Chat(options)
+          await chat.connect()
           await chat.join('#dallas')
-          chat._channelState['#dallas'].userState.isModerator = false
 
-          // console.log({
-          //   userState: chat._userState,
-          //   channelState: chat._channelState['#dallas'],
-          // })
+          chat._channelState['#dallas'].userState.isModerator = false
 
           chat.once(constants.EVENTS.MODE, message => {
             expect(message).toMatchSnapshot()
@@ -151,11 +170,14 @@ describe('Chat', () => {
             done()
           })
 
-          server.sendMessageToClient(membership.MODE.OPERATOR_PLUS_DALLAS)
+          emitHelper(chat.client, membership.MODE.OPERATOR_PLUS_DALLAS)
         })
 
         test('-o', async done => {
+          const chat = new Chat(options)
+          await chat.connect()
           await chat.join('#dallas')
+
           chat._channelState['#dallas'].userState.isModerator = true
 
           chat.once(constants.EVENTS.MODE, message => {
@@ -169,13 +191,16 @@ describe('Chat', () => {
 
           await chat.join('#dallas')
 
-          server.sendMessageToClient(membership.MODE.OPERATOR_MINUS_DALLAS)
+          emitHelper(chat._client, membership.MODE.OPERATOR_MINUS_DALLAS)
         })
       })
 
       describe('another user', () => {
         test('+o', async done => {
+          const chat = new Chat(options)
+          await chat.connect()
           await chat.join('#dallas')
+
           const before = chat._channelState['#dallas'].userState.isModerator
 
           chat.once(constants.EVENTS.MODE, message => {
@@ -186,11 +211,14 @@ describe('Chat', () => {
             done()
           })
 
-          server.sendMessageToClient(membership.MODE.OPERATOR_PLUS_RONNI)
+          emitHelper(chat._client, membership.MODE.OPERATOR_PLUS_RONNI)
         })
 
         test('-o', async done => {
+          const chat = new Chat(options)
+          await chat.connect()
           await chat.join('#dallas')
+
           const before = chat._channelState['#dallas'].userState.isModerator
 
           chat.once(constants.EVENTS.MODE, message => {
@@ -201,99 +229,129 @@ describe('Chat', () => {
             done()
           })
 
-          server.sendMessageToClient(membership.MODE.OPERATOR_MINUS_RONNI)
+          emitHelper(chat._client, membership.MODE.OPERATOR_MINUS_RONNI)
         })
       })
     })
 
-    test('CLEARCHAT', done => {
+    test('CLEARCHAT', async done => {
+      const chat = new Chat(options)
+      await chat.connect()
+
       chat.once(constants.EVENTS.CLEAR_CHAT, message => {
         expect(message).toMatchSnapshot()
         done()
       })
 
-      server.sendMessageToClient(commands.CLEARCHAT.CHANNEL)
+      emitHelper(chat._client, commands.CLEARCHAT.CHANNEL)
     })
 
-    test('CLEARCHAT user with reason', done => {
+    test('CLEARCHAT user with reason', async done => {
+      const chat = new Chat(options)
+      await chat.connect()
+
       chat.once(constants.EVENTS.CLEAR_CHAT, message => {
         expect(message).toMatchSnapshot()
         done()
       })
 
-      server.sendMessageToClient(commands.CLEARCHAT.USER_WITH_REASON)
+      emitHelper(chat._client, commands.CLEARCHAT.USER_WITH_REASON)
     })
 
-    test('HOSTTARGET start', done => {
+    test('HOSTTARGET start', async done => {
+      const chat = new Chat(options)
+      await chat.connect()
+
       chat.once(constants.EVENTS.HOST_TARGET, message => {
         expect(message).toMatchSnapshot()
         done()
       })
 
-      server.sendMessageToClient(commands.HOSTTARGET.START)
+      emitHelper(chat._client, commands.HOSTTARGET.START)
     })
 
-    test('HOSTTARGET stop', done => {
+    test('HOSTTARGET stop', async done => {
+      const chat = new Chat(options)
+      await chat.connect()
+
       chat.once(constants.EVENTS.HOST_TARGET, message => {
         expect(message).toMatchSnapshot()
         done()
       })
 
-      server.sendMessageToClient(commands.HOSTTARGET.STOP)
+      emitHelper(chat._client, commands.HOSTTARGET.STOP)
     })
 
     describe('NOTICE', () => {
       test.each(Object.entries(commands.NOTICE))(
         '%s',
-        (name, raw, done) => {
+        async (name, raw, done) => {
+          const chat = new Chat(options)
+          await chat.connect()
+
           chat.once(constants.EVENTS.NOTICE, message => {
             expect(message).toMatchSnapshot()
             done()
           })
 
-          server.sendMessageToClient(raw)
+          emitHelper(chat._client, raw)
         },
         5000,
       )
     })
 
     describe('USERNOTICE', () => {
-      test.each(Object.entries(tags.USERNOTICE))('%s', (name, raw, done) => {
-        chat.once(constants.COMMANDS.USER_NOTICE, message => {
-          expect(message).toMatchSnapshot()
-          done()
-        })
+      test.each(Object.entries(tags.USERNOTICE))(
+        '%s',
+        async (name, raw, done) => {
+          const chat = new Chat(options)
+          await chat.connect()
 
-        server.sendMessageToClient(raw)
-      })
+          chat.once(constants.COMMANDS.USER_NOTICE, message => {
+            expect(message).toMatchSnapshot()
+            done()
+          })
+
+          emitHelper(chat._client, raw)
+        },
+      )
     })
 
     describe('PRIVMSG', () => {
-      test('PRIVMSG', done => {
+      test('PRIVMSG', async done => {
+        const chat = new Chat(options)
+        await chat.connect()
+
         expect.assertions(1)
 
-        chat.on('PRIVMSG', actual => {
+        chat.once('PRIVMSG', actual => {
           expect(actual).toMatchSnapshot()
           done()
         })
 
-        server.sendMessageToClient(tags.PRIVMSG.NON_BITS)
+        emitHelper(chat._client, tags.PRIVMSG.NON_BITS)
       })
 
-      test('CHEER', done => {
+      test('CHEER', async done => {
+        const chat = new Chat(options)
+        await chat.connect()
+
         expect.assertions(1)
 
-        chat.on('PRIVMSG', actual => {
+        chat.once('PRIVMSG', actual => {
           expect(actual).toMatchSnapshot()
           done()
         })
 
-        server.sendMessageToClient(tags.PRIVMSG.BITS)
+        emitHelper(chat._client, tags.PRIVMSG.BITS)
       })
     })
 
     describe('deviations', () => {
-      test('CLEARCHAT deviation 1', done => {
+      test('CLEARCHAT deviation 1', async done => {
+        const chat = new Chat(options)
+        await chat.connect()
+
         expect.assertions(1)
 
         chat.on('CLEARCHAT', actual => {
@@ -301,7 +359,7 @@ describe('Chat', () => {
           done()
         })
 
-        server.sendMessageToClient(commands.CLEARCHAT.DEVIATION_1)
+        emitHelper(chat._client, commands.CLEARCHAT.DEVIATION_1)
       })
     })
   })

@@ -441,7 +441,7 @@ function handleMessage(baseMessage) {
       const message = parsers.modeMessage(preMessage)
 
       if (message.username === this.userState.username) {
-        const channelState = this.getChannelState(channel) || {}
+        const channelState = this.getChannelState(channel)
 
         this.setChannelState(channel, {
           ...channelState,
