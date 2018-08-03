@@ -28,6 +28,7 @@
     "MSG_CHANNEL_SUSPENDED": "@msg-id=msg_channel_suspended :tmi.twitch.tv NOTICE #dallas :This channel is suspended.",
     "R9K_OFF": "@msg-id=r9k_off :tmi.twitch.tv NOTICE #dallas :This room is no longer in r9k mode.",
     "R9K_ON": "@msg-id=r9k_on :tmi.twitch.tv NOTICE #dallas :This room is now in r9k mode.",
+    "ROOM_MODS": "@msg-id=room_mods :tmi.twitch.tv NOTICE #dallas :The moderators of this room are: dallas, ronni",
     "SLOW_OFF": "@msg-id=slow_off :tmi.twitch.tv NOTICE #dallas :This room is no longer in slow mode.",
     "SLOW_ON": "@msg-id=slow_on :tmi.twitch.tv NOTICE #dallas :This room is now in slow mode. You may send messages every <slow seconds> seconds.",
     "SUBS_OFF": "@msg-id=subs_off :tmi.twitch.tv NOTICE #dallas :This room is no longer in subscribers-only mode.",

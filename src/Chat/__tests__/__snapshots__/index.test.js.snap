@@ -462,6 +462,25 @@ Object {
 }
 `;
 
+exports[`Chat should handle messages NOTICE ROOM_MODS 1`] = `
+Object {
+  "_raw": "@msg-id=room_mods :tmi.twitch.tv NOTICE #dallas :The moderators of this room are: dallas, ronni",
+  "channel": "#dallas",
+  "command": "NOTICE",
+  "event": "ROOM_MODS",
+  "isSelf": false,
+  "message": "The moderators of this room are: dallas, ronni",
+  "mods": Array [
+    "dallas",
+    "ronni",
+  ],
+  "tags": Object {
+    "msgId": "room_mods",
+  },
+  "timestamp": 2018-01-01T00:00:00.000Z,
+}
+`;
+
 exports[`Chat should handle messages NOTICE SLOW_OFF 1`] = `
 Object {
   "_raw": "@msg-id=slow_off :tmi.twitch.tv NOTICE #dallas :This room is no longer in slow mode.",
