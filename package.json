@@ -30,6 +30,7 @@
     "yarn": "^1.9.2"
   },
   "main": "lib/index.js",
+  "types": "types",
   "files": [
     "dist",
     "examples",
@@ -57,9 +58,11 @@
     "build:dist:prod": "webpack --env.production",
     "build": "run-p build:**",
     "jsdoc2md:watch": "nodemon --exec npm run jsdoc2md",
-    "jsdoc2md": "node scripts/jsdoc2md/generateDocs.js"
+    "jsdoc2md": "node scripts/jsdoc2md/generateDocs.js",
+    "dtslint": "dtslint types"
   },
   "dependencies": {
+    "@types/form-data": "^2.2.1",
     "babel-runtime": "^6.26.0",
     "better-queue": "^3.8.7",
     "better-queue-memory": "^1.0.2",
@@ -94,6 +97,7 @@
     "compression-webpack-plugin": "^1.1.3",
     "cross-env": "^5.2.0",
     "docusaurus-init": "^1.0.2",
+    "dtslint": "^0.3.0",
     "eslint": "^4.19.1",
     "eslint-config-prettier": "^2.9.0",
     "eslint-plugin-import": "2.8.0",
