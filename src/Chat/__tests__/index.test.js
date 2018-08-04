@@ -88,15 +88,17 @@ describe('Chat', () => {
     await chat.connect()
     await chat.join('#dallas')
 
-    const listener = jest.fn()
-    server.on('close', () => listener('close'))
-    server.on('open', () => listener('open'))
-    server.on('message', listener)
-    chat.on('*', listener)
+    const serverListener = jest.fn()
+    const chatListener = jest.fn()
+    server.on('close', () => serverListener('close'))
+    server.on('open', () => serverListener('open'))
+    server.on('message', serverListener)
+    chat.on('*', chatListener)
 
     await chat.reconnect()
 
-    expect(listener.mock.calls).toMatchSnapshot()
+    expect(serverListener.mock.calls).toMatchSnapshot()
+    expect(chatListener.mock.calls).toMatchSnapshot()
 
     server.removeListener('close')
     server.removeListener('open')
@@ -170,7 +172,7 @@ describe('Chat', () => {
             done()
           })
 
-          emitHelper(chat.client, membership.MODE.OPERATOR_PLUS_DALLAS)
+          emitHelper(chat._client, membership.MODE.OPERATOR_PLUS_DALLAS)
         })
 
         test('-o', async done => {

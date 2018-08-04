@@ -234,6 +234,8 @@ class Chat extends EventEmitter {
       this.options = newOptions
     }
 
+    this.readyState = 2
+
     const channels = this.getChannels()
     this.disconnect()
 

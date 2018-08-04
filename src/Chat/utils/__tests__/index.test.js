@@ -32,7 +32,7 @@ describe('Chat/utils', () => {
     test('should return true for authentication failed messages', () => {
       const message = {
         command: constants.EVENTS.NOTICE,
-        channel: '*',
+        channel: '',
         message: 'Login authentication failed',
       }
 
