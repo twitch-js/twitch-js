@@ -36,6 +36,17 @@ export const ERROR_COMMAND_TIMED_OUT = 'ERROR: command timed out'
 export const ERROR_COMMAND_UNRECOGNIZED = 'ERROR: command unrecognized'
 export const ERROR_PART_TIMED_OUT = 'ERROR: part timed out'
 
+/**
+ * Chat client ready state
+ * @readonly
+ * @enum {number}
+ * @property {string} 0 not ready
+ * @property {string} 1 connecting
+ * @property {string} 2 reconnecting
+ * @property {string} 3 connecting
+ * @property {string} 4 disconnecting
+ * @property {string} 5 disconnected
+ */
 export const READY_STATES = {
   0: 'NOT_READY',
   1: 'CONNECTING',

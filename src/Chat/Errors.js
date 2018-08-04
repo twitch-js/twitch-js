@@ -7,6 +7,14 @@ class ChatError extends BaseError {
   }
 }
 
+class AuthenticationError extends ChatError {
+  constructor(error, ...other) {
+    super('Authentication error encountered', ...other)
+
+    Object.assign(this, error)
+  }
+}
+
 class ParseError extends ChatError {
   constructor(error, rawMessage, ...other) {
     super('Parse error encountered', ...other)
@@ -30,4 +38,5 @@ class TimeoutError extends ChatError {
   }
 }
 
-export { ParseError, JoinError, TimeoutError }
+export { AuthenticationError, ParseError, JoinError, TimeoutError }
+export default ChatError

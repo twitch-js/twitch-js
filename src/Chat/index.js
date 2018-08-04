@@ -79,15 +79,31 @@ class Chat extends EventEmitter {
 
     /**
      * Validated options.
+     * @private
      * @type {ChatOptions}
      */
     this.options = maybeOptions
 
-    /** @type {GlobalUserStateTags} */
+    /**
+     * @private
+     * @type {number}
+     */
+    this._connectionAttempts = 0
+
+    /**
+     * @private
+     * @type {GlobalUserStateTags}
+     */
     this._userState = {}
 
-    /** @type {Object.<string, ChannelState>} */
+    /**
+     * @private
+     * @type {Object.<string, ChannelState>}
+     */
     this._channelState = {}
+
+    // Create commands.
+    Object.assign(this, commandsFactory.call(this))
   }
 
   get options() {
@@ -106,24 +122,16 @@ class Chat extends EventEmitter {
     this._readyState = constants.READY_STATES[readyState] ? readyState : 0
   }
 
-  get client() {
-    return this._client
-  }
-
-  set client(client) {
-    if (!(client instanceof Client)) {
-      throw new Error('Error setting client')
-    }
-
-    this._client = client
-  }
-
   get userState() {
     return this._userState
   }
 
   set userState(userState) {
     this._userState = userState
+  }
+
+  updateToken(token) {
+    this.options = { ...this.options, token }
   }
 
   getChannels() {
@@ -164,39 +172,29 @@ class Chat extends EventEmitter {
         // Connect ...
         this.readyState = 1
 
+        // Increment connection attempts.
+        this._connectionAttempts++
+
         // Create client and connect.
-        this.client = new Client(this.options)
+        this._client = new Client(this.options)
 
-        this.client.removeAllListeners()
+        // Remove all listeners, just in case.
+        this._client.removeAllListeners()
 
-        // Bind events.
-        this.client.on(constants.EVENTS.ALL, handleMessage, this)
+        // Handle messages.
+        this._client.on(constants.EVENTS.ALL, handleMessage, this)
 
-        // Listen for authentication failures.
-        this.client.once(constants.EVENTS.AUTHENTICATION_FAILED, () => {
-          this.readyState = 5
-          reject()
-        })
-
-        // Listen for disconnect.
-        this.client.on(constants.EVENTS.DISCONNECTED, this.disconnect, this)
+        // Handle disconnects.
+        this._client.on(constants.EVENTS.DISCONNECTED, handleDisconnect, this)
 
         // Listen for reconnects.
-        this.client.once(constants.EVENTS.RECONNECT, () => this.reconnect())
+        this._client.once(constants.EVENTS.RECONNECT, () => this.reconnect())
 
-        // Create commands.
-        Object.assign(this, commandsFactory.call(this))
+        // Listen for authentication failures.
+        this._client.once(constants.EVENTS.AUTHENTICATION_FAILED, reject)
 
-        // Once the client is connected ...
-        this.client.once(constants.EVENTS.CONNECTED, globalUserStateMessage => {
-          this.readyState = 3
-
-          // Process GLOBALUSERSTATE message.
-          handleMessage.call(this, globalUserStateMessage)
-
-          // ... resolve.
-          resolve(globalUserStateMessage)
-        })
+        // Once the client is connected, resolve ...
+        this._client.once(constants.EVENTS.CONNECTED, resolve)
       }
     })
 
@@ -207,14 +205,8 @@ class Chat extends EventEmitter {
       ),
       connect,
     ])
-      .then(globalUserState => {
-        this.readyState = 3
-        return globalUserState
-      })
-      .catch(() => {
-        this.readyState = 2
-        return this.connect()
-      })
+      .then(handleConnectSuccess.bind(this))
+      .catch(handleConnectRetry.bind(this))
   }
 
   /**
@@ -222,17 +214,14 @@ class Chat extends EventEmitter {
    * @param {string} message - Message to send.
    */
   send(message) {
-    this.client.send(message)
+    this._client.send(message)
   }
 
   /**
    * Disconnected from Twitch.
    */
   disconnect() {
-    this.client.disconnect()
-    this.readyState = 4
-    this.userState = {}
-    this.clearChannelState()
+    this._client.disconnect()
   }
 
   /**
@@ -317,7 +306,7 @@ class Chat extends EventEmitter {
     return Promise.race([
       utils.delayReject(
         this.options.joinTimeout,
-        constants.ERROR_JOIN_TIMED_OUT,
+        new Errors.TimeoutError(constants.ERROR_JOIN_TIMED_OUT),
       ),
       join,
     ])
@@ -374,11 +363,14 @@ class Chat extends EventEmitter {
 
   emit(eventName, message) {
     if (eventName) {
-      eventName.split('/').reduce((parents, current) => {
-        const eventPartial = [...parents, current]
-        super.emit(eventPartial.join('/'), message)
-        return eventPartial
-      }, [])
+      eventName
+        .split('/')
+        .filter(part => part !== '#')
+        .reduce((parents, part) => {
+          const eventParts = [...parents, part]
+          super.emit(eventParts.join('/'), message)
+          return eventParts
+        }, [])
     }
 
     /**
@@ -387,6 +379,33 @@ class Chat extends EventEmitter {
      */
     super.emit(constants.EVENTS.ALL, message)
   }
+}
+
+function handleConnectSuccess(globalUserState) {
+  this.readyState = 3
+  this._connectionAttempts = 0
+
+  // Process GLOBALUSERSTATE message.
+  handleMessage.call(this, globalUserState)
+
+  return globalUserState
+}
+
+function handleConnectRetry(error) {
+  this.readyState = 2
+
+  if (error.event === constants.EVENTS.AUTHENTICATION_FAILED) {
+    return this.options
+      .onAuthenticationFailure()
+      .then(token => this.updateToken(token))
+      .then(() => utils.delay(this.options.connectionTimeout))
+      .then(() => this.connect())
+      .catch(() => {
+        throw new Errors.AuthenticationError(error)
+      })
+  }
+
+  return this.connect()
 }
 
 function handleMessage(baseMessage) {
@@ -505,6 +524,10 @@ function handleMessage(baseMessage) {
       this.emit(eventName, preMessage)
     }
   }
+}
+
+function handleDisconnect() {
+  this.readyState = 4
 }
 
 export { constants }

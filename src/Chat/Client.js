@@ -95,6 +95,15 @@ function handleMessage(messageEvent) {
         })
       }
 
+      // Handle authentication failure.
+      if (utils.isAuthenticationFailedMessage(message)) {
+        this.emit(constants.EVENTS.AUTHENTICATION_FAILED, {
+          ...message,
+          event: constants.EVENTS.AUTHENTICATION_FAILED,
+        })
+        this.disconnect()
+      }
+
       // Handle RECONNECT.
       if (message.command === constants.COMMANDS.RECONNECT) {
         this.emit(constants.EVENTS.RECONNECT, {

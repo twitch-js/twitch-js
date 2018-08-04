@@ -22,17 +22,18 @@ class TwitchJs {
    * @param {Object} options
    * @param {string} options.token
    * @param {string} options.username
+   * @param {function} [options.onAuthenticationFailure]
    * @param {ChatOptions} [options.chat]
    * @param {ApiOptions} [options.api]
    */
-  constructor({ token, username, chat, api }) {
+  constructor({ token, username, onAuthenticationFailure, chat, api }) {
     /** @type {Chat} */
-    this.chat = new Chat({ ...chat, token, username })
+    this.chat = new Chat({ ...chat, token, username, onAuthenticationFailure })
     /** @type {Object} */
     this.chatConstants = ChatConstants
 
     /** @type {Api} */
-    this.api = new Api({ ...api, token, username })
+    this.api = new Api({ ...api, token, username, onAuthenticationFailure })
   }
 }
 

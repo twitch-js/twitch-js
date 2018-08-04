@@ -34,8 +34,8 @@ const base = rawMessages => {
         parseInt(tags['tmi-sent-ts'], 10),
       ),
       command,
-      channel,
-      tags: isEmpty(tags) ? undefined : camelcaseKeys(tags),
+      channel: channel !== '*' ? channel : '',
+      tags: isEmpty(tags) ? {} : camelcaseKeys(tags),
       message,
     }
   })

@@ -17,7 +17,7 @@ const getMessageQueueWeight = ({
 
 const isAuthenticationFailedMessage = (message = {}) =>
   message.command === constants.EVENTS.NOTICE &&
-  message.channel === '*' &&
+  message.channel === '' &&
   message.message === 'Login authentication failed'
 
 const getEventNameFromMessage = (message = {}) =>
