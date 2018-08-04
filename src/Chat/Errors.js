@@ -14,6 +14,7 @@ class ParseError extends ChatError {
     this._raw = rawMessage
     this.command = constants.EVENTS.PARSE_ERROR_ENCOUNTERED
     this.message = error
+    this.stack = error.stack
   }
 }
 
