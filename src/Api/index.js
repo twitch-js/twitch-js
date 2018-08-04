@@ -2,6 +2,7 @@ import camelcaseKeys from 'camelcase-keys'
 import { get, includes, replace } from 'lodash'
 
 import fetchUtil from '../utils/fetch'
+import * as Errors from '../utils/fetch/Errors'
 import * as validators from './utils/validators'
 
 /**
@@ -47,14 +48,27 @@ class Api {
    * @param {ApiOptions} options
    */
   constructor(maybeOptions = {}) {
-    const options = validators.apiOptions(maybeOptions)
+    this.options = maybeOptions
+  }
 
-    this.options = options
+  set options(maybeOptions) {
+    this._options = validators.apiOptions(maybeOptions)
+  }
 
-    this.headers = {
+  get options() {
+    return this._options
+  }
+
+  updateToken(token) {
+    this.options = { ...this.options, token }
+  }
+
+  getHeaders() {
+    const { clientId, token } = this.options
+    return {
       Accept: 'application/vnd.twitchtv.v5+json',
-      'Client-ID': options.clientId ? options.clientId : undefined,
-      Authorization: options.token ? `OAuth ${options.token}` : undefined,
+      'Client-ID': clientId ? clientId : undefined,
+      Authorization: token ? `OAuth ${token}` : undefined,
     }
   }
 
@@ -106,7 +120,7 @@ class Api {
    *   })
    */
   get(endpoint, options = {}) {
-    return fetch.call(this, endpoint, options)
+    return handleFetch.call(this, endpoint, options)
   }
 
   /**
@@ -115,7 +129,7 @@ class Api {
    * @param {FetchOptions} [options={method:'post'}]
    */
   post(endpoint, options = {}) {
-    return fetch.call(this, endpoint, { ...options, method: 'post' })
+    return handleFetch.call(this, endpoint, { ...options, method: 'post' })
   }
 
   /**
@@ -124,20 +138,32 @@ class Api {
    * @param {FetchOptions} [options={method:'put'}]
    */
   put(endpoint, options = {}) {
-    return fetch.call(this, endpoint, { ...options, method: 'put' })
+    return handleFetch.call(this, endpoint, { ...options, method: 'put' })
   }
 }
 
-function fetch(maybeUrl = '', options = {}) {
+function handleFetch(maybeUrl = '', options = {}) {
   const url = replace(maybeUrl, /^\//g, '')
 
-  return fetchUtil(`${this.options.urlRoot}/${url}`, {
-    ...options,
-    headers: {
-      ...options.headers,
-      ...this.headers,
-    },
-  }).then(res => camelcaseKeys(res, { deep: true }))
+  const request = () =>
+    fetchUtil(`${this.options.urlRoot}/${url}`, {
+      ...options,
+      headers: {
+        ...options.headers,
+        ...this.getHeaders(),
+      },
+    }).then(res => camelcaseKeys(res, { deep: true }))
+
+  return request().catch(error => {
+    if (error instanceof Errors.AuthenticationError) {
+      return this.options
+        .onAuthenticationFailure()
+        .then(token => this.updateToken(token))
+        .then(() => request())
+    }
+
+    throw error
+  })
 }
 
 export default Api
