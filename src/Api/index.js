@@ -29,7 +29,7 @@ class Api {
 
     /**
      * API ready state
-     * @readonly
+     * @private
      * @type {ApiReadyState}
      */
     this._readyState = 1
@@ -49,6 +49,7 @@ class Api {
      */
     /**
      * API status.
+     * @private
      * @type {ApiStatusState}
      */
     this._status = {}
@@ -74,6 +75,10 @@ class Api {
     return this._status
   }
 
+  /**
+   * Update client options.
+   * @param {ApiOptions} options New client options. To update `token` or `clientId`, use [**api.initialize()**]{@link Api#initialize}.
+   */
   updateOptions(options) {
     const { clientId, token } = this.options
     this.options = { ...options, clientId, token }
@@ -90,7 +95,7 @@ class Api {
 
   /**
    * Initialize API client and retrieve status.
-   * @param {ApiOptions} options
+   * @param {ApiOptions} [options] Provide new options to client.
    * @returns {Promise<ApiStatusState, Object>}
    * @see https://dev.twitch.tv/docs/v5/#root-url
    */

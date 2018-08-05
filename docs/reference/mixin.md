@@ -46,7 +46,7 @@ Base message parsed from Twitch
     <td>command</td><td><code>string</code></td><td><p>Command</p>
 </td>
     </tr><tr>
-    <td>tags</td><td><code>ClearChatTags</code> | <code>GlobalUserStateTags</code> | <code>PrivateMessageTags</code> | <code>RoomStateTags</code> | <code>UserNoticeTags</code> | <code>UserStateTags</code></td><td><p>Twitch tags</p>
+    <td>tags</td><td><code><a href="typedef#ClearChatTags">ClearChatTags</a></code> | <code><a href="typedef#GlobalUserStateTags">GlobalUserStateTags</a></code> | <code><a href="typedef#PrivateMessageTags">PrivateMessageTags</a></code> | <code><a href="typedef#RoomStateTags">RoomStateTags</a></code> | <code><a href="typedef#UserNoticeTags">UserNoticeTags</a></code> | <code><a href="typedef#UserStateTags">UserStateTags</a></code></td><td><p>Twitch tags</p>
 </td>
     </tr><tr>
     <td>[channel]</td><td><code>string</code></td><td><p>Channel</p>
@@ -69,7 +69,7 @@ Base message parsed from Twitch
 GLOBALUSERSTATE message
 
 **Kind**: global mixin  
-**Mixes**: [<code>BaseMessage</code>](#BaseMessage)  
+**Mixes**: [<code>BaseMessage</code>](mixin#BaseMessage)  
 **Properties**
 
 <table>
@@ -80,7 +80,7 @@ GLOBALUSERSTATE message
   </thead>
   <tbody>
 <tr>
-    <td>tags</td><td><code>GlobalUserStateTags</code></td>
+    <td>tags</td><td><code><a href="typedef#GlobalUserStateTags">GlobalUserStateTags</a></code></td>
     </tr>  </tbody>
 </table>
 
@@ -119,7 +119,7 @@ NOTICE message
 USERSTATE message
 
 **Kind**: global mixin  
-**Mixes**: [<code>BaseMessage</code>](#BaseMessage)  
+**Mixes**: [<code>BaseMessage</code>](mixin#BaseMessage)  
 **Properties**
 
 <table>
@@ -130,7 +130,7 @@ USERSTATE message
   </thead>
   <tbody>
 <tr>
-    <td>tags</td><td><code>UserStateTags</code></td>
+    <td>tags</td><td><code><a href="typedef#UserStateTags">UserStateTags</a></code></td>
     </tr>  </tbody>
 </table>
 

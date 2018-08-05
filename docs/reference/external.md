@@ -4,6 +4,14 @@ title: External
 sidebar_label: External
 ---
 
+## Overview
+
+<dl>
+<dt><a href="#external_EventEmitter3">EventEmitter3</a></dt>
+  <dd><p>EventEmitter3 is a high performance EventEmitter</p>
+</dd>
+  </dl>
+
 <a name="external_EventEmitter3"></a>
 
 ## EventEmitter3

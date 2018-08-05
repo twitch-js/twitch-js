@@ -16,10 +16,10 @@ If you are using a module bundler, such [Webpack](https://webpack.js.org/),
 2. Import TwitchJS
 
    ```js
-   // ES2015 syntax
+   // ES6 syntax
    import TwitchJs from 'twitch-js'
 
-   // OR ES5 syntax
+   // ... or ES5 syntax
    var TwitchJs = require('twitch-js').default
    ```
 
