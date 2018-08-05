@@ -1,5 +1,23 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`Chat connect should connect 1`] = `
+Object {
+  "_raw": "@color=#0D4200;display-name=dallas;emote-sets=0,33,50,237,793,2126,3517,4578,5569,9400,10337,12239;turbo=0;user-id=1337;user-type=admin :tmi.twitch.tv GLOBALUSERSTATE",
+  "channel": undefined,
+  "command": "CONNECTED",
+  "message": undefined,
+  "tags": Object {
+    "color": "#0D4200",
+    "displayName": "dallas",
+    "emoteSets": "0,33,50,237,793,2126,3517,4578,5569,9400,10337,12239",
+    "turbo": "0",
+    "userId": "1337",
+    "userType": "admin",
+  },
+  "timestamp": 2018-01-01T00:00:00.000Z,
+}
+`;
+
 exports[`Chat should handle messages CLEARCHAT 1`] = `
 Object {
   "_raw": ":tmi.twitch.tv CLEARCHAT #dallas",
@@ -893,6 +911,44 @@ Object {
     "turbo": "0",
     "userId": "13405587",
     "userType": "staff",
+  },
+  "timestamp": 2018-01-01T00:00:00.000Z,
+}
+`;
+
+exports[`Chat should handle messages USERNOTICE UNKNOWN 1`] = `
+Object {
+  "_raw": "@badges=;color=;display-name=SevenTest1;emotes=30259:0-6;id=37feed0f-b9c7-4c3a-b475-21c6c6d21c3d;login=seventest1;mod=0;msg-id=unknown;room-id=6316121;subscriber=0;system-msg=Seventoes\\\\sis\\\\snew\\\\shere!;tmi-sent-ts=1508363903826;turbo=0;user-id=131260580;user-type= :tmi.twitch.tv USERNOTICE #seventoes :Unknown USERNOTICE",
+  "channel": "#seventoes",
+  "command": "USERNOTICE",
+  "isSelf": false,
+  "message": "Unknown USERNOTICE",
+  "tags": Object {
+    "badges": Object {},
+    "bits": undefined,
+    "color": true,
+    "displayName": "SevenTest1",
+    "emoteSets": undefined,
+    "emotes": Object {
+      "30259": Object {
+        "end": 6,
+        "start": 0,
+      },
+    },
+    "id": "37feed0f-b9c7-4c3a-b475-21c6c6d21c3d",
+    "isModerator": false,
+    "isSubscriber": false,
+    "isTurboSubscriber": false,
+    "login": "seventest1",
+    "mod": "0",
+    "msgId": "unknown",
+    "roomId": "6316121",
+    "subscriber": "0",
+    "systemMsg": "Seventoes\\\\sis\\\\snew\\\\shere!",
+    "tmiSentTs": "1508363903826",
+    "turbo": "0",
+    "userId": "131260580",
+    "userType": undefined,
   },
   "timestamp": 2018-01-01T00:00:00.000Z,
 }

@@ -37,6 +37,46 @@ describe('Chat', () => {
     global.Date = realDate
   })
 
+  describe('connect', () => {
+    test('should connect', async () => {
+      const chat = new Chat(options)
+      const actual = await chat.connect()
+      expect(actual).toMatchSnapshot()
+    })
+
+    test('should call onAuthenticationFailure', done => {
+      const onAuthenticationFailure = jest.fn(() => Promise.reject())
+
+      const chat = new Chat({
+        ...options,
+        token: 'INVALID_TOKEN',
+        onAuthenticationFailure,
+      })
+
+      chat.connect().catch(() => {
+        expect(onAuthenticationFailure).toHaveBeenCalled()
+        done()
+      })
+    })
+
+    test('should update token and successfully connect', done => {
+      const onAuthenticationFailure = jest.fn(() => Promise.resolve('TOKEN'))
+
+      const chat = new Chat({
+        ...options,
+        token: 'INVALID_TOKEN',
+        connectionTimeout: 100,
+        onAuthenticationFailure,
+      })
+
+      chat.connect().then(() => {
+        expect(onAuthenticationFailure).toHaveBeenCalled()
+        expect(chat.options.token).toEqual('TOKEN')
+        done()
+      })
+    })
+  })
+
   test('should join channel', async () => {
     const chat = new Chat(options)
     await chat.connect()

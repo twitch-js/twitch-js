@@ -19,3 +19,5 @@ Object {
   },
 }
 `;
+
+exports[`Api methods should throw on failure 1`] = `[Error: undefined undefined [TwitchJS]]`;

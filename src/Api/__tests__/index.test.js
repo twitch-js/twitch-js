@@ -1,5 +1,6 @@
 import Api from '../index'
 import fetchUtil from '../../utils/fetch'
+import * as Errors from '../../utils/fetch/Errors'
 
 jest.mock('../../utils/fetch')
 
@@ -104,6 +105,46 @@ describe('Api', () => {
       const [, actualOpts] = fetchUtil.mock.calls[0]
 
       expect(actualOpts).toMatchObject({ method: 'put' })
+    })
+
+    test('should throw on failure', done => {
+      const api = new Api(options)
+      api.get('404').catch(error => {
+        expect(error).toBeInstanceOf(Errors.FetchError)
+        expect(error).toMatchSnapshot()
+        done()
+      })
+    })
+  })
+
+  describe('onAuthenticationFailure', () => {
+    test('should call onAuthenticationFailure', done => {
+      const onAuthenticationFailure = jest.fn(() => Promise.reject())
+      const api = new Api({
+        ...options,
+        token: 'INVALID_TOKEN',
+        onAuthenticationFailure,
+      })
+
+      api.get('401').catch(() => {
+        expect(onAuthenticationFailure).toHaveBeenCalled()
+        done()
+      })
+    })
+
+    test('should update token', done => {
+      const onAuthenticationFailure = jest.fn(() => Promise.resolve('TOKEN'))
+      const api = new Api({
+        ...options,
+        token: 'INVALID_TOKEN',
+        onAuthenticationFailure,
+      })
+
+      api.get('401').catch(() => {
+        expect(onAuthenticationFailure).toHaveBeenCalled()
+        expect(api._options.token).toEqual('TOKEN')
+        done()
+      })
     })
   })
 })

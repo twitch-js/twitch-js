@@ -1,13 +1,15 @@
 import { EventEmitter } from 'eventemitter3'
 
-import tags from './__fixtures__/tags'
+import commands from './__fixtures__/commands'
 import membership from './__fixtures__/membership'
+import tags from './__fixtures__/tags'
 
 const server = new EventEmitter()
 server.sendMessageToClient = data => server.emit('emit', { data })
 
 class WebSocket extends EventEmitter {
   readyState = 0
+  isTokenValid = true
 
   constructor() {
     super()
@@ -45,22 +47,28 @@ class WebSocket extends EventEmitter {
   send(message) {
     server.emit('message', message)
 
-    const [
-      ,
-      command,
-      // argv = '',
-    ] = /^(\w+) (.+)/.exec(message)
+    const [, command, argv = ''] = /^(\w+) (.+)/.exec(message)
 
-    // const args = argv.split(' ')
+    const args = argv.split(' ')
     // In the future, `args` can be used to mock more complex client-server
     // interaction.
 
     // Mock client-server interactions.
     switch (command) {
-      case 'NICK':
-        // Mock successful connections.
-        this.emit('message', tags.GLOBALUSERSTATE)
+      case 'PASS': {
+        this.isTokenValid = args[0] !== 'oauth:INVALID_TOKEN'
+        if (!this.isTokenValid) {
+          this.emit('message', commands.NOTICE.AUTHENTICATION_FAILED)
+        }
         break
+      }
+      case 'NICK': {
+        // Mock successful connections.
+        if (this.isTokenValid) {
+          this.emit('message', tags.GLOBALUSERSTATE)
+        }
+        break
+      }
       case 'JOIN':
         // Mock channel JOINs.
         this.emit('message', membership.JOIN)
