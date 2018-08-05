@@ -42,7 +42,7 @@ class TwitchJs {
    * @param {ChatOptions} [options.chat]
    * @param {ApiOptions} [options.api]
    */
-  updateOptions({ chat = {}, api = {} }) {
+  updateOptions({ chat, api }) {
     this.chat.updateOptions(chat)
     this.api.updateOptions(api)
   }
