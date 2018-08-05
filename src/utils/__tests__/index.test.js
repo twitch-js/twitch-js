@@ -1,6 +1,13 @@
 import * as utils from '../'
 
 describe('utils', () => {
+  describe('delay', () => {
+    test('should resolve after specified time', done => {
+      jest.useFakeTimers()
+      utils.delay(100).then(() => done())
+      jest.runOnlyPendingTimers()
+    })
+  })
   describe('delayReject', () => {
     beforeEach(() => {
       jest.useFakeTimers()

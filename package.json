@@ -32,7 +32,6 @@
   "main": "lib/index.js",
   "files": [
     "dist",
-    "examples",
     "lib",
     "shims",
     "src"

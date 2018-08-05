@@ -1,6 +1,13 @@
 import invariant from 'invariant'
 
-import { conformsTo, defaultsDeep, isString, isFinite, isBoolean } from 'lodash'
+import {
+  conformsTo,
+  defaultsDeep,
+  isString,
+  isFinite,
+  isFunction,
+  isBoolean,
+} from 'lodash'
 
 import * as constants from '../constants'
 import * as sanitizers from './sanitizers'
@@ -14,6 +21,7 @@ const chatOptions = maybeOptions => {
    * @property {number} [connectionTimeout={@link CONNECTION_TIMEOUT}]
    * @property {number} [joinTimeout={@link JOIN_TIMEOUT}]
    * @property {boolean} [debug=false]
+   * @property {function} [onAuthenticationFailure]
    */
   const shape = {
     username: isString,
@@ -21,6 +29,7 @@ const chatOptions = maybeOptions => {
     connectionTimeout: isFinite,
     joinTimeout: isFinite,
     debug: isBoolean,
+    onAuthenticationFailure: isFunction,
   }
 
   const options = defaultsDeep(
@@ -30,6 +39,7 @@ const chatOptions = maybeOptions => {
       connectionTimeout: constants.CONNECTION_TIMEOUT,
       joinTimeout: constants.JOIN_TIMEOUT,
       debug: false,
+      onAuthenticationFailure: () => Promise.reject(),
     },
   )
 

@@ -36,6 +36,32 @@ export const ERROR_COMMAND_TIMED_OUT = 'ERROR: command timed out'
 export const ERROR_COMMAND_UNRECOGNIZED = 'ERROR: command unrecognized'
 export const ERROR_PART_TIMED_OUT = 'ERROR: part timed out'
 
+/**
+ * Chat client ready state
+ * @readonly
+ * @enum {number}
+ * @property {string} 0 not ready
+ * @property {string} 1 connecting
+ * @property {string} 2 reconnecting
+ * @property {string} 3 connecting
+ * @property {string} 4 disconnecting
+ * @property {string} 5 disconnected
+ */
+export const READY_STATES = {
+  0: 'NOT_READY',
+  1: 'CONNECTING',
+  2: 'RECONNECTING',
+  3: 'CONNECTED',
+  4: 'DISCONNECTING',
+  5: 'DISCONNECTED',
+}
+
+export const CAPABILITIES = [
+  'twitch.tv/tags',
+  'twitch.tv/commands',
+  'twitch.tv/membership',
+]
+
 // See https://dev.twitch.tv/docs/irc/membership/.
 export const MEMBERSHIP_COMMANDS = {
   JOIN: 'JOIN',
@@ -133,6 +159,7 @@ export const EVENTS = {
   ALL: '*',
   CONNECTED: 'CONNECTED',
   DISCONNECTED: 'DISCONNECTED',
+  AUTHENTICATION_FAILED: 'AUTHENTICATION_FAILED',
   ERROR_ENCOUNTERED: 'ERROR_ENCOUNTERED',
   PARSE_ERROR_ENCOUNTERED: 'PARSE_ERROR_ENCOUNTERED',
 

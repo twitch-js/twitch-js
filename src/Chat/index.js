@@ -8,8 +8,10 @@ import { EventEmitter } from 'eventemitter3'
 import { get } from 'lodash'
 
 import * as utils from '../utils'
+import * as chatUtils from './utils'
 
 import Client from './Client'
+import * as Errors from './Errors'
 
 import * as constants from './constants'
 import { commandsFactory } from './utils/commands'
@@ -69,23 +71,6 @@ import * as validators from './utils/validators'
  */
 class Chat extends EventEmitter {
   /**
-   * Chat client ready state.
-   * @enum {number}
-   * @property {number} 0 not ready
-   * @property {number} 1 connecting
-   * @property {number} 2 connected
-   * @property {number} 3 disconnecting
-   * @property {number} 4 disconnected
-   */
-  readyState = 0
-
-  /** @type {GlobalUserStateTags} */
-  userState = {}
-
-  /** @type {Object.<string, ChannelState>} */
-  channels = {}
-
-  /**
    * Chat constructor.
    * @param {ChatOptions} options
    */
@@ -94,9 +79,79 @@ class Chat extends EventEmitter {
 
     /**
      * Validated options.
+     * @private
      * @type {ChatOptions}
      */
-    this.options = validators.chatOptions(maybeOptions)
+    this.options = maybeOptions
+
+    /**
+     * @private
+     * @type {number}
+     */
+    this._connectionAttempts = 0
+
+    /**
+     * @private
+     * @type {GlobalUserStateTags}
+     */
+    this._userState = {}
+
+    /**
+     * @private
+     * @type {Object.<string, ChannelState>}
+     */
+    this._channelState = {}
+
+    // Create commands.
+    Object.assign(this, commandsFactory.call(this))
+  }
+
+  get options() {
+    return this._options
+  }
+
+  set options(maybeOptions) {
+    this._options = validators.chatOptions(maybeOptions)
+  }
+
+  get readyState() {
+    return this._readyState
+  }
+
+  set readyState(readyState) {
+    this._readyState = constants.READY_STATES[readyState] ? readyState : 0
+  }
+
+  get userState() {
+    return this._userState
+  }
+
+  set userState(userState) {
+    this._userState = userState
+  }
+
+  updateToken(token) {
+    this.options = { ...this.options, token }
+  }
+
+  getChannels() {
+    return Object.keys(this._channelState)
+  }
+
+  getChannelState(channel) {
+    return this._channelState[channel]
+  }
+
+  setChannelState(channel, state) {
+    this._channelState[channel] = state
+  }
+
+  removeChannelState(channel) {
+    this._channelState[channel] = undefined
+  }
+
+  clearChannelState() {
+    this._channelState = {}
   }
 
   /**
@@ -104,87 +159,89 @@ class Chat extends EventEmitter {
    * @return {Promise<GlobalUserStateMessage, string>} Global user state message
    */
   connect() {
-    const connect = new Promise(resolve => {
+    const connect = new Promise((resolve, reject) => {
       if (this.readyState === 1) {
         // Already trying to connect, so resolve when connected.
-        this.once(
-          constants.EVENTS.GLOBAL_USER_STATE,
-          globalUserStateMessage => {
-            resolve(globalUserStateMessage)
-          },
+        this.once(constants.EVENTS.GLOBAL_USER_STATE, globalUserStateMessage =>
+          resolve(globalUserStateMessage),
         )
-      } else if (this.readyState === 2) {
+      } else if (this.readyState === 3) {
         // Already connected.
         resolve(this.userState)
       } else {
         // Connect ...
         this.readyState = 1
 
+        // Increment connection attempts.
+        this._connectionAttempts++
+
         // Create client and connect.
-        const client = new Client(this.options)
+        this._client = new Client(this.options)
 
-        client.removeAllListeners()
+        // Remove all listeners, just in case.
+        this._client.removeAllListeners()
 
-        // Once the client is connected ...
-        client.once(constants.EVENTS.CONNECTED, globalUserStateMessage => {
-          this.readyState = 2
+        // Handle messages.
+        this._client.on(constants.EVENTS.ALL, handleMessage, this)
 
-          // Create commands.
-          Object.assign(this, commandsFactory.call(this))
+        // Handle disconnects.
+        this._client.on(constants.EVENTS.DISCONNECTED, handleDisconnect, this)
 
-          /**
-           * Sends a raw message to Twitch.
-           * @param {string} message - Message to send.
-           */
-          this.send = message => client.send(message)
+        // Listen for reconnects.
+        this._client.once(constants.EVENTS.RECONNECT, () => this.reconnect())
 
-          /**
-           * Disconnected from Twitch.
-           */
-          this.disconnect = () => {
-            client.disconnect()
-            this.readyState = 4
-            this.userState = {}
-            this.channels = {}
-          }
+        // Listen for authentication failures.
+        this._client.once(constants.EVENTS.AUTHENTICATION_FAILED, reject)
 
-          /**
-           * Reconnect to Twitch.
-           */
-          this.reconnect = () => {
-            const channels = Object.keys(this.channels)
-            this.disconnect()
-
-            return this.connect().then(() =>
-              Promise.all(channels.map(channel => this.join(channel))),
-            )
-          }
-
-          // Bind events.
-          client.on(constants.EVENTS.ALL, handleMessage, this)
-
-          // Listen for disconnect.
-          client.once(constants.EVENTS.DISCONNECTED, this.disconnect)
-
-          // Listen for reconnects.
-          client.once(constants.EVENTS.RECONNECT, this.reconnect)
-
-          // Process GLOBALUSERSTATE message.
-          handleMessage.call(this, globalUserStateMessage)
-
-          // ... resolve.
-          resolve(globalUserStateMessage)
-        })
+        // Once the client is connected, resolve ...
+        this._client.once(constants.EVENTS.CONNECTED, resolve)
       }
     })
 
     return Promise.race([
       utils.delayReject(
         this.options.connectionTimeout,
-        constants.ERROR_CONNECT_TIMED_OUT,
+        new Errors.TimeoutError(constants.ERROR_CONNECT_TIMED_OUT),
       ),
       connect,
     ])
+      .then(handleConnectSuccess.bind(this))
+      .catch(handleConnectRetry.bind(this))
+  }
+
+  /**
+   * Sends a raw message to Twitch.
+   * @param {string} message - Message to send.
+   */
+  send(message) {
+    this._client.send(message)
+  }
+
+  /**
+   * Disconnected from Twitch.
+   */
+  disconnect() {
+    this._client.disconnect()
+  }
+
+  /**
+   * Reconnect to Twitch.
+   * @param {ChatOptions} [options]
+   * @return {Promise<[ChannelState], string>} Channel states
+   */
+  reconnect(newOptions) {
+    if (newOptions) {
+      this.options = newOptions
+    }
+
+    this.readyState = 2
+
+    const channels = this.getChannels()
+    this.disconnect()
+
+    return this.connect().then(() =>
+      Promise.all(channels.map(channel => this.join(channel))),
+    )
   }
 
   /**
@@ -240,9 +297,9 @@ class Chat extends EventEmitter {
          * @property {RoomStateTags} roomState
          * @property {UserStateTags} userState
          */
-        const response = { roomState, userState }
-        this.channels[channel] = response
-        return response
+        const channelState = { roomState, userState }
+        this.setChannelState(channel, channelState)
+        return channelState
       },
     )
 
@@ -251,7 +308,7 @@ class Chat extends EventEmitter {
     return Promise.race([
       utils.delayReject(
         this.options.joinTimeout,
-        constants.ERROR_JOIN_TIMED_OUT,
+        new Errors.TimeoutError(constants.ERROR_JOIN_TIMED_OUT),
       ),
       join,
     ])
@@ -264,7 +321,7 @@ class Chat extends EventEmitter {
   part(maybeChannel) {
     const channel = sanitizers.channel(maybeChannel)
 
-    this.channels[channel] = undefined
+    this.removeChannelState(channel)
     this.send(`${constants.COMMANDS.PART} ${channel}`)
   }
 
@@ -302,17 +359,20 @@ class Chat extends EventEmitter {
    */
   broadcast(message) {
     return Promise.all(
-      Object.keys(this.channels).map(channel => this.say(channel, message)),
+      this.getChannels().map(channel => this.say(channel, message)),
     )
   }
 
   emit(eventName, message) {
     if (eventName) {
-      eventName.split('/').reduce((parents, current) => {
-        const eventPartial = [...parents, current]
-        super.emit(eventPartial.join('/'), message)
-        return eventPartial
-      }, [])
+      eventName
+        .split('/')
+        .filter(part => part !== '#')
+        .reduce((parents, part) => {
+          const eventParts = [...parents, part]
+          super.emit(eventParts.join('/'), message)
+          return eventParts
+        }, [])
     }
 
     /**
@@ -323,12 +383,39 @@ class Chat extends EventEmitter {
   }
 }
 
+function handleConnectSuccess(globalUserState) {
+  this.readyState = 3
+  this._connectionAttempts = 0
+
+  // Process GLOBALUSERSTATE message.
+  handleMessage.call(this, globalUserState)
+
+  return globalUserState
+}
+
+function handleConnectRetry(error) {
+  this.readyState = 2
+
+  if (error.event === constants.EVENTS.AUTHENTICATION_FAILED) {
+    return this.options
+      .onAuthenticationFailure()
+      .then(token => this.updateToken(token))
+      .then(() => utils.delay(this.options.connectionTimeout))
+      .then(() => this.connect())
+      .catch(() => {
+        throw new Errors.AuthenticationError(error)
+      })
+  }
+
+  return this.connect()
+}
+
 function handleMessage(baseMessage) {
   const channel = sanitizers.channel(baseMessage.channel)
 
   const displayName = get(
-    this.channels,
-    [channel, 'userState', 'displayName'],
+    this.getChannelState(channel),
+    'userState.displayName',
     '',
   )
   const messageDisplayName = get(baseMessage, 'tags.displayName')
@@ -373,10 +460,19 @@ function handleMessage(baseMessage) {
     }
     case constants.EVENTS.MODE: {
       const message = parsers.modeMessage(preMessage)
+
       if (message.username === this.userState.username) {
-        this.channels[message.channel].userState.isModerator =
-          message.isModerator
+        const channelState = this.getChannelState(channel)
+
+        this.setChannelState(channel, {
+          ...channelState,
+          userState: {
+            ...channelState.userState,
+            isModerator: message.isModerator,
+          },
+        })
       }
+
       this.emit(`${message.command}/${channel}`, message)
       break
     }
@@ -389,25 +485,19 @@ function handleMessage(baseMessage) {
     }
     case constants.EVENTS.USER_STATE: {
       const message = parsers.userStateMessage(preMessage)
-      this.channels = {
-        ...this.channels,
-        [channel]: {
-          ...this.channels[channel],
-          userState: message.userState,
-        },
-      }
+      this.setChannelState(channel, {
+        ...this.getChannelState(channel),
+        userState: message.userState,
+      })
       this.emit(`${message.command}/${channel}`, message)
       break
     }
     case constants.EVENTS.ROOM_STATE: {
       const message = parsers.roomStateMessage(preMessage)
-      this.channels = {
-        ...this.channels,
-        [channel]: {
-          ...this.channels[channel],
-          roomState: message.roomState,
-        },
-      }
+      this.setChannelState(channel, {
+        ...this.getChannelState(channel),
+        roomState: message.roomState,
+      })
       this.emit(`${message.command}/${channel}`, message)
       break
     }
@@ -431,13 +521,15 @@ function handleMessage(baseMessage) {
     }
 
     default: {
-      const eventName =
-        channel === '#'
-          ? preMessage.command
-          : `${preMessage.command}/${channel}`
+      const command = chatUtils.getEventNameFromMessage(preMessage)
+      const eventName = channel === '#' ? command : `${command}/${channel}`
       this.emit(eventName, preMessage)
     }
   }
+}
+
+function handleDisconnect() {
+  this.readyState = 4
 }
 
 export { constants }

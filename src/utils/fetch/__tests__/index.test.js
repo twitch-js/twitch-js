@@ -1,29 +1,11 @@
 import fetch from 'node-fetch'
 import FormData from 'form-data'
 
-import fetchUtil, { parseResponse } from '../fetch'
+import fetchUtil from '../'
 
 jest.mock('node-fetch')
 
 const mockUrl = 'http://example.com'
-
-const mockJsonResponse = { data1: 'DATA_1' }
-const mockResponse = {
-  status: 200,
-  ok: true,
-  url: 'URL',
-  statusText: 'OK',
-  json: () => Promise.resolve(mockJsonResponse),
-}
-
-const mockJsonResponseError = { error: true }
-const mockResponseError = {
-  status: 404,
-  ok: false,
-  url: 'URL',
-  statusText: 'NOT OK',
-  json: () => Promise.resolve(mockJsonResponseError),
-}
 
 describe('utils/fetch', () => {
   afterEach(() => {
@@ -74,22 +56,6 @@ describe('utils/fetch', () => {
       const actual = fetch.mock.calls[0]
       expect(actual[1].body).toEqual(JSON.stringify(options.body))
       expect(actual[1].headers['Content-Type']).toEqual('application/json')
-    })
-  })
-
-  describe('parseResponse', () => {
-    test('should return response on successful response', () => {
-      const actual = parseResponse(mockResponse)
-      const expected = mockJsonResponse
-
-      expect(actual).resolves.toEqual(expected)
-    })
-
-    test('should throw on unsuccessful response', () => {
-      const actual = parseResponse(mockResponseError)
-
-      expect(actual).rejects.toBeInstanceOf(Error)
-      expect(actual).rejects.toMatchObject({ response: mockJsonResponseError })
     })
   })
 })

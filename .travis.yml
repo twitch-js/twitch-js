@@ -11,6 +11,7 @@ before_install:
   - export PATH="$HOME/.yarn/bin:$PATH"
 
 script:
+  - yarn check
   - yarn lint
   - yarn test:coverage:report
   - if [ "$TRAVIS_PULL_REQUEST" = "false" ]; then yarn test:e2e; fi

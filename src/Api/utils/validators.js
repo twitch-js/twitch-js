@@ -1,5 +1,11 @@
 import invariant from 'invariant'
-import { conformsTo, defaultsDeep, isBoolean, isString } from 'lodash'
+import {
+  conformsTo,
+  defaultsDeep,
+  isBoolean,
+  isFunction,
+  isString,
+} from 'lodash'
 
 import * as constants from '../constants'
 
@@ -11,9 +17,12 @@ const apiOptions = maybeOptions => {
    * @property {string} [token] Optional if clientId is defined.
    * @property {string} [urlRoot]
    * @property {boolean} [debug=false]
+   * @property {function} [onAuthenticationFailure]
+   *
    */
   const shape = {
     debug: isBoolean,
+    onAuthenticationFailure: isFunction,
   }
 
   const shapeWithClientId = {
@@ -32,6 +41,7 @@ const apiOptions = maybeOptions => {
     {
       urlRoot: constants.KRAKEN_URL_ROOT,
       debug: false,
+      onAuthenticationFailure: () => Promise.reject(),
     },
   )
 
