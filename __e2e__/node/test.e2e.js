@@ -8,6 +8,8 @@ describe('Node E2E', () => {
     ? `Travis CI E2E Build #${process.env.TRAVIS_BUILD_NUMBER}`
     : `Local E2E ${new Date()}`
 
+  afterAll(() => setTimeout(() => process.exit(), 1000))
+
   describe('Chat', () => {
     test('should connect and send message', async () => {
       const { chat } = new TwitchJs({ token, username })
