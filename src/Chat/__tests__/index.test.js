@@ -77,6 +77,15 @@ describe('Chat', () => {
     })
   })
 
+  test('should allow options to be updated', () => {
+    const chat = new Chat(options)
+    expect(chat._options.debug).toBe(false)
+    chat.updateOptions({ token: 'NEW_TOKEN', debug: true })
+
+    expect(chat._options.token).toBe(options.token)
+    expect(chat._options.debug).toBe(true)
+  })
+
   test('should join channel', async () => {
     const chat = new Chat(options)
     await chat.connect()
@@ -123,35 +132,47 @@ describe('Chat', () => {
     chat.disconnect()
   })
 
-  test('should reconnect and rejoin channels', async () => {
-    const chat = new Chat(options)
-    await chat.connect()
-    await chat.join('#dallas')
+  describe('reconnect', () => {
+    test('should reconnect and rejoin channels', async () => {
+      const chat = new Chat(options)
+      await chat.connect()
+      await chat.join('#dallas')
 
-    const serverListener = jest.fn()
-    const chatListener = jest.fn()
-    server.on('close', () => serverListener('close'))
-    server.on('open', () => serverListener('open'))
-    server.on('message', serverListener)
-    chat.on('*', chatListener)
+      const serverListener = jest.fn()
+      const chatListener = jest.fn()
+      server.on('close', () => serverListener('close'))
+      server.on('open', () => serverListener('open'))
+      server.on('message', serverListener)
+      chat.on('*', chatListener)
 
-    await chat.reconnect()
+      await chat.reconnect()
 
-    expect(serverListener.mock.calls).toMatchSnapshot()
-    expect(chatListener.mock.calls).toMatchSnapshot()
+      expect(serverListener.mock.calls).toMatchSnapshot()
+      expect(chatListener.mock.calls).toMatchSnapshot()
 
-    server.removeListener('close')
-    server.removeListener('open')
-    server.removeListener('message')
-  })
+      server.removeListener('close')
+      server.removeListener('open')
+      server.removeListener('message')
+    })
 
-  test('should reconnect on RECONNECT event', async done => {
-    const chat = new Chat(options)
-    await chat.connect()
+    test('should reconnect on RECONNECT event', async done => {
+      const chat = new Chat(options)
+      await chat.connect()
 
-    chat.once('CONNECTED', () => done())
+      chat.once('CONNECTED', () => done())
 
-    chat._client.emit('RECONNECT')
+      chat._client.emit('RECONNECT')
+    })
+
+    test('should update client options', async () => {
+      const chat = new Chat(options)
+      await chat.connect()
+
+      await chat.reconnect({ token: 'NEW_TOKEN', debug: true })
+
+      expect(chat._options.token).toBe('NEW_TOKEN')
+      expect(chat._options.debug).toBe(true)
+    })
   })
 
   describe('should handle messages', () => {

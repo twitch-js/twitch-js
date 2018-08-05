@@ -18,4 +18,15 @@ describe('TwitchJs', () => {
 
     expect(twitchJs.api).toBeInstanceOf(Api)
   })
+
+  test('should allow client options to be updated', () => {
+    const twitchJs = new TwitchJs({ token, username })
+    const chatSpy = jest.spyOn(twitchJs.chat, 'updateOptions')
+    const apiSpy = jest.spyOn(twitchJs.api, 'updateOptions')
+
+    twitchJs.updateOptions({ chat: {}, api: {} })
+
+    expect(chatSpy).toHaveBeenCalled()
+    expect(apiSpy).toHaveBeenCalled()
+  })
 })
