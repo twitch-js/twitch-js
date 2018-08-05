@@ -36,10 +36,11 @@ export const ERROR_COMMAND_TIMED_OUT = 'ERROR: command timed out'
 export const ERROR_COMMAND_UNRECOGNIZED = 'ERROR: command unrecognized'
 export const ERROR_PART_TIMED_OUT = 'ERROR: part timed out'
 
+/** @typedef {string} ClientReadyState */
 /**
  * Chat client ready state
  * @readonly
- * @enum {number}
+ * @enum {ClientReadyState}
  * @property {string} 0 not ready
  * @property {string} 1 connecting
  * @property {string} 2 reconnecting

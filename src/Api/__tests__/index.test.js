@@ -28,6 +28,14 @@ describe('Api', () => {
     })
   })
 
+  test('should allow options to be updated', () => {
+    const api = new Api(options)
+    api.updateOptions({ token: 'NEW_TOKEN', debug: true })
+
+    expect(api._options.token).toBe(options.token)
+    expect(api._options.debug).toBe(true)
+  })
+
   describe('initialize', () => {
     test('should set readyState and status', async () => {
       const api = new Api(options)
@@ -43,6 +51,14 @@ describe('Api', () => {
       const actual = await api.initialize()
 
       expect(actual).toMatchSnapshot()
+    })
+
+    test('should update client options', async () => {
+      const api = new Api(options)
+      expect(api._options.debug).toBe(false)
+      await api.initialize({ debug: true })
+
+      expect(api._options.debug).toBe(true)
     })
   })
 

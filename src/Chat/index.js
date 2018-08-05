@@ -130,8 +130,9 @@ class Chat extends EventEmitter {
     this._userState = userState
   }
 
-  updateToken(token) {
-    this.options = { ...this.options, token }
+  updateOptions(options) {
+    const { token, username } = this.options
+    this.options = { ...options, token, username }
   }
 
   getChannels() {
@@ -231,7 +232,7 @@ class Chat extends EventEmitter {
    */
   reconnect(newOptions) {
     if (newOptions) {
-      this.options = newOptions
+      this.options = { ...this.options, ...newOptions }
     }
 
     this.readyState = 2
@@ -399,7 +400,7 @@ function handleConnectRetry(error) {
   if (error.event === constants.EVENTS.AUTHENTICATION_FAILED) {
     return this.options
       .onAuthenticationFailure()
-      .then(token => this.updateToken(token))
+      .then(token => (this.options = { ...this.options, token }))
       .then(() => utils.delay(this.options.connectionTimeout))
       .then(() => this.connect())
       .catch(() => {

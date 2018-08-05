@@ -5,6 +5,8 @@ import fetchUtil from '../utils/fetch'
 import * as Errors from '../utils/fetch/Errors'
 import * as validators from './utils/validators'
 
+import * as constants from './constants'
+
 /**
  * API client
  *
@@ -19,36 +21,37 @@ import * as validators from './utils/validators'
  */
 class Api {
   /**
-   * API client ready state : **1** ready; **2** initialized.
-   * @type {number}
-   */
-  readyState = 1
-
-  /**
-   * API status state.
-   * @typedef {Object} ApiStatusState
-   * @property {Object} token
-   * @property {Object} token.authorization
-   * @property {Array<string>} token.authorization.scopes
-   * @property {string} token.authorization.createdAt
-   * @property {string} token.authorization.updatedAt
-   * @property {string} token.clientId
-   * @property {string} token.userId
-   * @property {string} token.userName
-   * @property {boolean} token.valid
-   */
-  /**
-   * API status.
-   * @type {ApiStatusState}
-   */
-  status = {}
-
-  /**
    * API constructor.
    * @param {ApiOptions} options
    */
   constructor(maybeOptions = {}) {
     this.options = maybeOptions
+
+    /**
+     * API ready state
+     * @readonly
+     * @type {ApiReadyState}
+     */
+    this._readyState = 1
+
+    /**
+     * API status state.
+     * @typedef {Object} ApiStatusState
+     * @property {Object} token
+     * @property {Object} token.authorization
+     * @property {Array<string>} token.authorization.scopes
+     * @property {string} token.authorization.createdAt
+     * @property {string} token.authorization.updatedAt
+     * @property {string} token.clientId
+     * @property {string} token.userId
+     * @property {string} token.userName
+     * @property {boolean} token.valid
+     */
+    /**
+     * API status.
+     * @type {ApiStatusState}
+     */
+    this._status = {}
   }
 
   set options(maybeOptions) {
@@ -59,8 +62,21 @@ class Api {
     return this._options
   }
 
-  updateToken(token) {
-    this.options = { ...this.options, token }
+  set readyState(readyState) {
+    this._readyState = constants.READY_STATES[readyState] ? readyState : 0
+  }
+
+  get readyState() {
+    return this._readyState
+  }
+
+  get status() {
+    return this._status
+  }
+
+  updateOptions(options) {
+    const { clientId, token } = this.options
+    this.options = { ...options, clientId, token }
   }
 
   getHeaders() {
@@ -74,17 +90,22 @@ class Api {
 
   /**
    * Initialize API client and retrieve status.
+   * @param {ApiOptions} options
    * @returns {Promise<ApiStatusState, Object>}
    * @see https://dev.twitch.tv/docs/v5/#root-url
    */
-  initialize() {
-    if (this.readyState === 2) {
+  initialize(newOptions) {
+    if (newOptions) {
+      this.options = { ...this.options, ...newOptions }
+    }
+
+    if (!newOptions && this.readyState === 2) {
       return Promise.resolve()
     }
 
     return this.get().then(statusResponse => {
-      this.readyState = 2
-      this.status = statusResponse
+      this._readyState = 2
+      this._status = statusResponse
 
       return statusResponse
     })
@@ -158,7 +179,7 @@ function handleFetch(maybeUrl = '', options = {}) {
     if (error instanceof Errors.AuthenticationError) {
       return this.options
         .onAuthenticationFailure()
-        .then(token => this.updateToken(token))
+        .then(token => (this.options = { ...this.options, token }))
         .then(() => request())
     }
 

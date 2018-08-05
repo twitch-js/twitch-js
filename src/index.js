@@ -35,6 +35,17 @@ class TwitchJs {
     /** @type {Api} */
     this.api = new Api({ ...api, token, username, onAuthenticationFailure })
   }
+
+  /**
+   * Update TwitchJs client options.
+   * @param {Object} options
+   * @param {ChatOptions} [options.chat]
+   * @param {ApiOptions} [options.api]
+   */
+  updateOptions({ chat = {}, api = {} }) {
+    this.chat.updateOptions(chat)
+    this.api.updateOptions(api)
+  }
 }
 
 export { Chat, ChatConstants }
