@@ -18,8 +18,8 @@ const chatOptions = maybeOptions => {
    * @typedef {Object} ChatOptions
    * @property {string} username
    * @property {string} token OAuth token (use {@link https://twitchapps.com/tmi/} to generate one)
-   * @property {number} [connectionTimeout={@link CONNECTION_TIMEOUT}]
-   * @property {number} [joinTimeout={@link JOIN_TIMEOUT}]
+   * @property {number} [connectionTimeout=CONNECTION_TIMEOUT]
+   * @property {number} [joinTimeout=JOIN_TIMEOUT]
    * @property {boolean} [debug=false]
    * @property {function} [onAuthenticationFailure]
    */

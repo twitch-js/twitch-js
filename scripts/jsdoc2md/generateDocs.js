@@ -29,8 +29,11 @@ title: ${title}
 sidebar_label: ${sidebarLabel}
 ---
 
-{{>main-index~}}
-{{>all-docs~}}
+{{>global-index-kinds kind="${kind}" ~}}
+
+{{#identifiers kind="${kind}" scope="global"}}
+{{>docs~}}
+{{/identifiers}}
 `
 
 // Get template data.
@@ -42,7 +45,7 @@ const templateData = jsdoc2md.getTemplateDataSync({
 const templateDataByKind = groupBy(templateData, 'kind')
 
 // Create a documentation file for each kind.
-Object.entries(templateDataByKind).forEach(([kind, kindTemplateData]) => {
+Object.keys(templateDataByKind).forEach(kind => {
   const template = createTemplate({
     kind,
     title: titleMap[kind],
@@ -50,15 +53,13 @@ Object.entries(templateDataByKind).forEach(([kind, kindTemplateData]) => {
   })
   console.log(`Rendering ${kind}`)
 
-  const names = kindTemplateData.map(data => data.name)
-  const members = templateData.filter(data => names.includes(data.memberof))
-
   const output = jsdoc2md.renderSync({
-    data: [...kindTemplateData, ...members],
+    data: templateData,
     template: template,
     'no-gfm': true,
     separators: true,
     partial: partials.map(partial => `${__dirname}/partials/${partial}`),
+    helper: `${__dirname}/helpers.js`,
   })
   fs.writeFileSync(path.resolve(outputDir, `${kind}.md`), output)
 })

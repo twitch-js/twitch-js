@@ -7,12 +7,16 @@ sidebar_label: Type Definitions
 ## Overview
 
 <dl>
-<dt><a href="#ApiStatusState">ApiStatusState</a> : <code>Object</code></dt>
+<dt><a href="#ApiReadyState">ApiReadyState</a> : <code>string</code></dt>
+  <dd></dd>
+  <dt><a href="#ApiStatusState">ApiStatusState</a> : <code>Object</code></dt>
   <dd><p>API status state.</p>
 </dd>
   <dt><a href="#ApiOptions">ApiOptions</a> : <code>Object</code></dt>
   <dd><p>API options</p>
 </dd>
+  <dt><a href="#ClientReadyState">ClientReadyState</a> : <code>string</code></dt>
+  <dd></dd>
   <dt><a href="#ChannelState">ChannelState</a> : <code>Object</code></dt>
   <dd><p>Channel state information</p>
 </dd>
@@ -22,13 +26,13 @@ sidebar_label: Type Definitions
   <dt><a href="#GlobalUserStateTags">GlobalUserStateTags</a> : <code>Object</code></dt>
   <dd><p>GLOBALUSERSTATE tags</p>
 </dd>
-  <dt><a href="#PrivateMessageTags">PrivateMessageTags</a> : <code><a href="#UserStateTags">UserStateTags</a></code></dt>
+  <dt><a href="#PrivateMessageTags">PrivateMessageTags</a> : <code><a href="typedef#UserStateTags">UserStateTags</a></code></dt>
   <dd><p>PRIVMSG tags</p>
 </dd>
   <dt><a href="#RoomStateTags">RoomStateTags</a> : <code>Object</code></dt>
   <dd><p>ROOMSTATE Tag</p>
 </dd>
-  <dt><a href="#UserNoticeTags">UserNoticeTags</a> : <code><a href="#UserStateTags">UserStateTags</a></code></dt>
+  <dt><a href="#UserNoticeTags">UserNoticeTags</a> : <code><a href="typedef#UserStateTags">UserStateTags</a></code></dt>
   <dd><p>USERNOTICE tags</p>
 </dd>
   <dt><a href="#UserStateTags">UserStateTags</a> : <code>Object</code></dt>
@@ -47,6 +51,13 @@ sidebar_label: Type Definitions
   <dd><p>Fetch options</p>
 </dd>
   </dl>
+
+<a name="ApiReadyState"></a>
+
+## ApiReadyState : <code>string</code>
+**Kind**: global typedef  
+
+* * *
 
 <a name="ApiStatusState"></a>
 
@@ -112,9 +123,18 @@ API options
     <td>[urlRoot]</td><td><code>string</code></td><td></td><td></td>
     </tr><tr>
     <td>[debug]</td><td><code>boolean</code></td><td><code>false</code></td><td></td>
+    </tr><tr>
+    <td>[onAuthenticationFailure]</td><td><code>function</code></td><td></td><td></td>
     </tr>  </tbody>
 </table>
 
+
+* * *
+
+<a name="ClientReadyState"></a>
+
+## ClientReadyState : <code>string</code>
+**Kind**: global typedef  
 
 * * *
 
@@ -134,9 +154,9 @@ Channel state information
   </thead>
   <tbody>
 <tr>
-    <td>roomState</td><td><code><a href="#RoomStateTags">RoomStateTags</a></code></td>
+    <td>roomState</td><td><code><a href="typedef#RoomStateTags">RoomStateTags</a></code></td>
     </tr><tr>
-    <td>userState</td><td><code><a href="#UserStateTags">UserStateTags</a></code></td>
+    <td>userState</td><td><code><a href="typedef#UserStateTags">UserStateTags</a></code></td>
     </tr>  </tbody>
 </table>
 
@@ -201,7 +221,7 @@ GLOBALUSERSTATE tags
 
 <a name="PrivateMessageTags"></a>
 
-## PrivateMessageTags : [<code>UserStateTags</code>](#UserStateTags)
+## PrivateMessageTags : [<code>UserStateTags</code>](typedef#UserStateTags)
 PRIVMSG tags
 
 **Kind**: global typedef  
@@ -245,7 +265,7 @@ ROOMSTATE Tag
 
 <a name="UserNoticeTags"></a>
 
-## UserNoticeTags : [<code>UserStateTags</code>](#UserStateTags)
+## UserNoticeTags : [<code>UserStateTags</code>](typedef#UserStateTags)
 USERNOTICE tags
 
 **Kind**: global typedef  
@@ -270,7 +290,7 @@ USERSTATE tags
   </thead>
   <tbody>
 <tr>
-    <td>badges</td><td><code><a href="#BadgesTag">BadgesTag</a></code></td>
+    <td>badges</td><td><code><a href="typedef#BadgesTag">BadgesTag</a></code></td>
     </tr><tr>
     <td>[bits]</td><td><code>number</code></td>
     </tr><tr>
@@ -374,11 +394,13 @@ Chat options
     <td>token</td><td><code>string</code></td><td></td><td><p>OAuth token (use <a href="https://twitchapps.com/tmi/">https://twitchapps.com/tmi/</a> to generate one)</p>
 </td>
     </tr><tr>
-    <td>[connectionTimeout]</td><td><code>number</code></td><td><code>{@link CONNECTION_TIMEOUT}</code></td><td></td>
+    <td>[connectionTimeout]</td><td><code>number</code></td><td><code>CONNECTION_TIMEOUT</code></td><td></td>
     </tr><tr>
-    <td>[joinTimeout]</td><td><code>number</code></td><td><code>{@link JOIN_TIMEOUT}</code></td><td></td>
+    <td>[joinTimeout]</td><td><code>number</code></td><td><code>JOIN_TIMEOUT</code></td><td></td>
     </tr><tr>
     <td>[debug]</td><td><code>boolean</code></td><td><code>false</code></td><td></td>
+    </tr><tr>
+    <td>[onAuthenticationFailure]</td><td><code>function</code></td><td></td><td></td>
     </tr>  </tbody>
 </table>
 

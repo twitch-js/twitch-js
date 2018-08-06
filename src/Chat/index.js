@@ -130,6 +130,10 @@ class Chat extends EventEmitter {
     this._userState = userState
   }
 
+  /**
+   * Update client options.
+   * @param {ApiOptions} options New client options. To update `token` or `username`, use [**api.reconnect()**]{@link Chat#reconnect}.
+   */
   updateOptions(options) {
     const { token, username } = this.options
     this.options = { ...options, token, username }
@@ -227,8 +231,8 @@ class Chat extends EventEmitter {
 
   /**
    * Reconnect to Twitch.
-   * @param {ChatOptions} [options]
-   * @return {Promise<[ChannelState], string>} Channel states
+   * @param {ChatOptions} [options] Provide new options to client.
+   * @return {Promise<ChannelState[], string>} Channel states
    */
   reconnect(newOptions) {
     if (newOptions) {

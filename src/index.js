@@ -22,25 +22,33 @@ class TwitchJs {
    * @param {Object} options
    * @param {string} options.token
    * @param {string} options.username
+   * @param {string} options.clientId
    * @param {function} [options.onAuthenticationFailure]
    * @param {ChatOptions} [options.chat]
    * @param {ApiOptions} [options.api]
    */
-  constructor({ token, username, onAuthenticationFailure, chat, api }) {
+  constructor({
+    token,
+    username,
+    clientId,
+    onAuthenticationFailure,
+    chat,
+    api,
+  }) {
     /** @type {Chat} */
     this.chat = new Chat({ ...chat, token, username, onAuthenticationFailure })
     /** @type {Object} */
     this.chatConstants = ChatConstants
 
     /** @type {Api} */
-    this.api = new Api({ ...api, token, username, onAuthenticationFailure })
+    this.api = new Api({ ...api, token, clientId, onAuthenticationFailure })
   }
 
   /**
-   * Update TwitchJs client options.
+   * Update client options.
    * @param {Object} options
-   * @param {ChatOptions} [options.chat]
-   * @param {ApiOptions} [options.api]
+   * @param {ChatOptions} [options.chat] New chat client options.
+   * @param {ApiOptions} [options.api] New API client options.
    */
   updateOptions({ chat, api }) {
     this.chat.updateOptions(chat)
