@@ -351,11 +351,9 @@ const userNoticeMessage = baseMessage => {
       return {
         ...baseMessage,
         tags,
-        event: constants.EVENTS.SUBSCRIPTION,
+        ...tagParsers.userNoticeMessageParameters(tags),
+        event: tagParsers.userNoticeEvent(tags),
         systemMessage: typeParsers.generalString(tags.systemMsg),
-        months: tags.msgParamMonths,
-        subPlan: tags.msgParamSubPlan,
-        subPlanName: typeParsers.generalString(tags.msgParamSubPlanName),
       }
     case constants.USER_NOTICE_MESSAGE_IDS.RESUBSCRIPTION:
       /**
@@ -367,11 +365,9 @@ const userNoticeMessage = baseMessage => {
       return {
         ...baseMessage,
         tags,
-        event: constants.EVENTS.RESUBSCRIPTION,
+        ...tagParsers.userNoticeMessageParameters(tags),
+        event: tagParsers.userNoticeEvent(tags),
         systemMessage: typeParsers.generalString(tags.systemMsg),
-        months: tags.msgParamMonths,
-        subPlan: tags.msgParamSubPlan,
-        subPlanName: typeParsers.generalString(tags.msgParamSubPlanName),
       }
     case constants.USER_NOTICE_MESSAGE_IDS.SUBSCRIPTION_GIFT:
       /**
@@ -387,11 +383,9 @@ const userNoticeMessage = baseMessage => {
       return {
         ...baseMessage,
         tags,
-        event: constants.EVENTS.SUBSCRIPTION_GIFT,
+        ...tagParsers.userNoticeMessageParameters(tags),
+        event: tagParsers.userNoticeEvent(tags),
         systemMessage: typeParsers.generalString(tags.systemMsg),
-        recipientDisplayName: tags.msgParamRecipientDisplayName,
-        recipientId: tags.msgParamRecipientId,
-        recipientUserName: tags.msgParamRecipientName,
       }
     case constants.USER_NOTICE_MESSAGE_IDS.RAID:
       /**
@@ -407,11 +401,9 @@ const userNoticeMessage = baseMessage => {
       return {
         ...baseMessage,
         tags,
-        event: constants.EVENTS.RAID,
+        ...tagParsers.userNoticeMessageParameters(tags),
+        event: tagParsers.userNoticeEvent(tags),
         systemMessage: typeParsers.generalString(tags.systemMsg),
-        raiderDisplayName: tags.msgParamDisplayName,
-        raiderUserName: tags.msgParamLogin,
-        raiderViewerCount: tags.msgParamViewerCount,
       }
     case constants.USER_NOTICE_MESSAGE_IDS.RITUAL:
       /**
@@ -425,12 +417,18 @@ const userNoticeMessage = baseMessage => {
       return {
         ...baseMessage,
         tags,
-        event: constants.EVENTS.RITUAL,
+        event: tagParsers.userNoticeEvent(tags),
+        ...tagParsers.userNoticeMessageParameters(tags),
         systemMessage: typeParsers.generalString(tags.systemMsg),
-        ritualName: tags.msgParamRitualName,
       }
     default:
-      return { ...baseMessage, tags }
+      return {
+        ...baseMessage,
+        tags,
+        ...tagParsers.userNoticeMessageParameters(tags),
+        event: tagParsers.userNoticeEvent(tags),
+        systemMessage: typeParsers.generalString(tags.systemMsg),
+      }
   }
 }
 

@@ -1,5 +1,6 @@
-import { toLower } from 'lodash'
+import { camelCase, replace, startsWith, toLower, toUpper } from 'lodash'
 
+import * as constants from '../../constants'
 import * as types from './types'
 
 /**
@@ -65,6 +66,50 @@ const roomState = tags => ({
  */
 const userNotice = (...args) => userState(...args)
 
+const userNoticeMessageParameters = tags =>
+  Object.entries(tags).reduce((parameters, [key, value]) => {
+    if (startsWith(key, 'msgParam')) {
+      const parsedKey = camelCase(replace(key, /^msgParam/, ''))
+
+      switch (key) {
+        case 'msgParamMonths':
+        case 'msgParamMassGiftCount':
+        case 'msgParamSenderCount':
+        case 'msgParamViewerCount':
+          return {
+            ...parameters,
+            [parsedKey]: types.generalNumber(value),
+          }
+        default:
+          return {
+            ...parameters,
+            [parsedKey]: types.generalString(value),
+          }
+      }
+    }
+    return parameters
+  }, {})
+
+const userNoticeEvent = tags => {
+  switch (tags.msgId) {
+    case constants.USER_NOTICE_MESSAGE_IDS.RESUBSCRIPTION:
+      return constants.EVENTS.RESUBSCRIPTION
+
+    case constants.USER_NOTICE_MESSAGE_IDS.RAID:
+      return constants.EVENTS.RAID
+    case constants.USER_NOTICE_MESSAGE_IDS.RITUAL:
+      return constants.EVENTS.RITUAL
+    case constants.USER_NOTICE_MESSAGE_IDS.SUBSCRIPTION:
+      return constants.EVENTS.SUBSCRIPTION
+    case constants.USER_NOTICE_MESSAGE_IDS.SUBSCRIPTION_GIFT:
+      return constants.EVENTS.SUBSCRIPTION_GIFT
+    case constants.USER_NOTICE_MESSAGE_IDS.SUBSCRIPTION_GIFT_COMMUNITY:
+      return constants.EVENTS.SUBSCRIPTION_GIFT_COMMUNITY
+    default:
+      return toUpper(tags.msgId)
+  }
+}
+
 /**
  * USERSTATE tags
  * @typedef {Object} UserStateTags
@@ -95,5 +140,7 @@ export {
   privateMessage,
   roomState,
   userNotice,
+  userNoticeMessageParameters,
+  userNoticeEvent,
   userState,
 }
