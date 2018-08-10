@@ -131,6 +131,7 @@ const userState = tags => ({
   userType: types.userType(tags.userType),
   isModerator: types.generalBoolean(tags.mod),
   isSubscriber: types.generalBoolean(tags.subscriber),
+  isSubGifter: /sub-gifter\/\d/.test(tags.badges),
   isTurboSubscriber: types.generalBoolean(tags.turbo),
 })
 
