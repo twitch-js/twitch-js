@@ -4,6 +4,7 @@
   "description": "Javascript library for the Twitch Messaging Interface.",
   "license": "MIT",
   "author": "Marc Andrews",
+  "homepage": "https://twitch-apis.github.io/twitch-js/",
   "keywords": [
     "bot",
     "broadcast",
