@@ -328,16 +328,14 @@ const userStateMessage = baseMessage => {
  * @event Chat#PRIVMSG
  * @mixes UserStateMessage PrivateMessage
  * @property {'CHEER'} [event]
- * @property {string} [event]
  * @property {number} [bits]
  */
 const privateMessage = userStateMessage
 
 /**
- * On any of the following events: subscription, resubsription, subscription
- * gift, community subcription gift, raid, or ritual.
- * @event Chat#USERNOTICE
- * @mixes UserStateMessage UserNoticeSubscriptionMessage
+ * USERNOTICE message
+ * @mixin UserNoticeMessage
+ * @mixes BaseMessage
  * @property {string} event
  * @property {Object} parameters
  * @property {string} systemMessage
@@ -345,13 +343,81 @@ const privateMessage = userStateMessage
 const userNoticeMessage = baseMessage => {
   const tags = tagParsers.userNotice(baseMessage.tags)
 
+  /* eslint-disable no-fallthrough */
   switch (tags.msgId) {
+    /**
+     * On channel raid.
+     * @event Chat#USERNOTICE/RAID
+     * @mixes UserStateMessage
+     * @property {'RAID'} event
+     * @property {Object} parameters
+     * @property {string} parameters.displayName
+     * @property {string} parameters.login
+     * @property {number} parameters.viewerCount
+     */
     case constants.USER_NOTICE_MESSAGE_IDS.RAID:
+
+    /**
+     * On resubscription (subsequent months) to a channel.
+     * @event Chat#USERNOTICE/RESUBSCRIPTION
+     * @mixes UserStateMessage
+     * @property {'RESUBSCRIPTION'} event
+     * @property {Object} parameters
+     * @property {number} parameters.months
+     * @property {string} parameters.subPlan
+     * @property {string} parameters.subPlanName
+     */
     case constants.USER_NOTICE_MESSAGE_IDS.RESUBSCRIPTION:
+
+    /**
+     * On channel ritual.
+     * @event Chat#USERNOTICE/RITUAL
+     * @mixes UserStateMessage
+     * @property {'RITUAL'} event
+     * @property {Object} parameters
+     * @property {string} parameters.ritualName
+     */
     case constants.USER_NOTICE_MESSAGE_IDS.RITUAL:
+
+    /**
+     * On subscription gift to a channel community.
+     * @event Chat#USERNOTICE/SUBSCRIPTION_GIFT_COMMUNITY
+     * @mixes UserStateMessage
+     * @property {'SUBSCRIPTION_GIFT_COMMUNITY'} event
+     * @property {Object} parameters
+     * @property {number} parameters.massGiftCount
+     * @property {number} parameters.senderCount
+     * @property {string} parameters.subPlan
+     */
     case constants.USER_NOTICE_MESSAGE_IDS.SUBSCRIPTION_GIFT_COMMUNITY:
+
+    /**
+     * On subscription gift to a channel.
+     * @event Chat#USERNOTICE/SUBSCRIPTION_GIFT
+     * @mixes UserStateMessage
+     * @property {'SUBSCRIPTION_GIFT'} event
+     * @property {Object} parameters
+     * @property {number} parameters.months
+     * @property {string} parameters.subPlan
+     * @property {string} parameters.subPlanName
+     * @property {string} parameters.recipientDisplayName
+     * @property {string} parameters.recipientId
+     * @property {string} parameters.recipientName
+     */
     case constants.USER_NOTICE_MESSAGE_IDS.SUBSCRIPTION_GIFT:
+
+    /**
+     * On subscription (first month) to a channel.
+     * @event Chat#USERNOTICE/SUBSCRIPTION
+     * @mixes UserStateMessage
+     * @property {'SUBSCRIPTION'} event
+     * @property {Object} parameters
+     * @property {1} parameters.months
+     * @property {string} parameters.subPlan
+     * @property {string} parameters.subPlanName
+     */
     case constants.USER_NOTICE_MESSAGE_IDS.SUBSCRIPTION:
+
     default:
       return {
         ...baseMessage,
@@ -361,6 +427,7 @@ const userNoticeMessage = baseMessage => {
         systemMessage: typeParsers.generalString(tags.systemMsg),
       }
   }
+  /* eslint-enable no-fallthrough */
 }
 
 export {

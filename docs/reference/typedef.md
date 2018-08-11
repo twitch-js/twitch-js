@@ -292,8 +292,6 @@ USERSTATE tags
 <tr>
     <td>badges</td><td><code><a href="typedef#BadgesTag">BadgesTag</a></code></td>
     </tr><tr>
-    <td>[bits]</td><td><code>number</code></td>
-    </tr><tr>
     <td>emotes</td><td><code>Object.&lt;number, EmoteTag&gt;</code></td>
     </tr><tr>
     <td>emoteSets</td><td><code>Array.&lt;string&gt;</code></td>
@@ -302,7 +300,11 @@ USERSTATE tags
     </tr><tr>
     <td>isSubscriber</td><td><code>boolean</code></td>
     </tr><tr>
+    <td>isSubGifter</td><td><code>boolean</code></td>
+    </tr><tr>
     <td>isTurboSubscriber</td><td><code>boolean</code></td>
+    </tr><tr>
+    <td>[bits]</td><td><code>number</code></td>
     </tr>  </tbody>
 </table>
 

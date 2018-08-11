@@ -55,8 +55,11 @@
     "build:dist:dev": "webpack",
     "build:dist:prod": "webpack --env.production",
     "build": "run-p build:**",
-    "jsdoc2md:watch": "nodemon --exec npm run jsdoc2md",
-    "jsdoc2md": "node scripts/jsdoc2md/generateDocs.js"
+    "docs:build:watch": "nodemon --exec npm run docs:build",
+    "docs:build": "node scripts/jsdoc2md/generateDocs.js",
+    "website": "cd website && yarn start",
+    "website:build": "cd website && yarn build",
+    "webiste:publish": "cd website && yarn publish-gh-pages"
   },
   "dependencies": {
     "babel-runtime": "^6.26.0",

@@ -19,6 +19,9 @@ sidebar_label: Mixins
   <dt><a href="#UserStateMessage">UserStateMessage</a></dt>
   <dd><p>USERSTATE message</p>
 </dd>
+  <dt><a href="#UserNoticeMessage">UserNoticeMessage</a></dt>
+  <dd><p>USERNOTICE message</p>
+</dd>
   </dl>
 
 <a name="BaseMessage"></a>
@@ -131,6 +134,34 @@ USERSTATE message
   <tbody>
 <tr>
     <td>tags</td><td><code><a href="typedef#UserStateTags">UserStateTags</a></code></td>
+    </tr>  </tbody>
+</table>
+
+
+* * *
+
+<a name="UserNoticeMessage"></a>
+
+## UserNoticeMessage
+USERNOTICE message
+
+**Kind**: global mixin  
+**Mixes**: [<code>BaseMessage</code>](mixin#BaseMessage)  
+**Properties**
+
+<table>
+  <thead>
+    <tr>
+      <th>Name</th><th>Type</th>
+    </tr>
+  </thead>
+  <tbody>
+<tr>
+    <td>event</td><td><code>string</code></td>
+    </tr><tr>
+    <td>parameters</td><td><code>Object</code></td>
+    </tr><tr>
+    <td>systemMessage</td><td><code>string</code></td>
     </tr>  </tbody>
 </table>
 
