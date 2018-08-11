@@ -246,11 +246,12 @@ Chat client
     * ["NOTICE"](#Chat+event_NOTICE)
     * ["USERSTATE"](#Chat+event_USERSTATE)
     * ["PRIVMSG"](#Chat+event_PRIVMSG)
-    * ["USERNOTICE/SUBSCRIPTION"](#Chat+event_USERNOTICE/SUBSCRIPTION)
-    * ["USERNOTICE/RESUBSCRIPTION"](#Chat+event_USERNOTICE/RESUBSCRIPTION)
-    * ["USERNOTICE/SUBSCRIPTION_GIFT"](#Chat+event_USERNOTICE/SUBSCRIPTION_GIFT)
     * ["USERNOTICE/RAID"](#Chat+event_USERNOTICE/RAID)
+    * ["USERNOTICE/RESUBSCRIPTION"](#Chat+event_USERNOTICE/RESUBSCRIPTION)
     * ["USERNOTICE/RITUAL"](#Chat+event_USERNOTICE/RITUAL)
+    * ["USERNOTICE/SUBSCRIPTION_GIFT_COMMUNITY"](#Chat+event_USERNOTICE/SUBSCRIPTION_GIFT_COMMUNITY)
+    * ["USERNOTICE/SUBSCRIPTION_GIFT"](#Chat+event_USERNOTICE/SUBSCRIPTION_GIFT)
+    * ["USERNOTICE/SUBSCRIPTION"](#Chat+event_USERNOTICE/SUBSCRIPTION)
 
 
 * * *
@@ -817,97 +818,7 @@ When a user joins a channel or sends a PRIVMSG to a channel.
 <tr>
     <td>[event]</td><td><code>&#x27;CHEER&#x27;</code></td>
     </tr><tr>
-    <td>[event]</td><td><code>string</code></td>
-    </tr><tr>
     <td>[bits]</td><td><code>number</code></td>
-    </tr>  </tbody>
-</table>
-
-
-* * *
-
-<a name="Chat+event_USERNOTICE/SUBSCRIPTION"></a>
-
-### "USERNOTICE/SUBSCRIPTION"
-On subscription (first month) to a channel.
-
-**Kind**: event emitted by [<code>Chat</code>](class#Chat)  
-**Mixes**: [<code>UserStateMessage</code>](mixin#UserStateMessage)  
-**Properties**
-
-<table>
-  <thead>
-    <tr>
-      <th>Name</th><th>Type</th>
-    </tr>
-  </thead>
-  <tbody>
-<tr>
-    <td>event</td><td><code>&#x27;SUBSCRIPTION&#x27;</code></td>
-    </tr><tr>
-    <td>systemMessage</td><td><code>string</code></td>
-    </tr><tr>
-    <td>months</td><td><code>string</code></td>
-    </tr><tr>
-    <td>subPlan</td><td><code>string</code></td>
-    </tr><tr>
-    <td>subPlanName</td><td><code>string</code></td>
-    </tr>  </tbody>
-</table>
-
-
-* * *
-
-<a name="Chat+event_USERNOTICE/RESUBSCRIPTION"></a>
-
-### "USERNOTICE/RESUBSCRIPTION"
-On resubscription (subsequent months) to a channel.
-
-**Kind**: event emitted by [<code>Chat</code>](class#Chat)  
-**Mixes**: <code>UserNoticeSubscriptionMessage</code>  
-**Properties**
-
-<table>
-  <thead>
-    <tr>
-      <th>Name</th><th>Type</th>
-    </tr>
-  </thead>
-  <tbody>
-<tr>
-    <td>event</td><td><code>&#x27;RESUBSCRIPTION&#x27;</code></td>
-    </tr>  </tbody>
-</table>
-
-
-* * *
-
-<a name="Chat+event_USERNOTICE/SUBSCRIPTION_GIFT"></a>
-
-### "USERNOTICE/SUBSCRIPTION_GIFT"
-On subscription gift to a channel.
-
-**Kind**: event emitted by [<code>Chat</code>](class#Chat)  
-**Mixes**: [<code>UserStateMessage</code>](mixin#UserStateMessage)  
-**Properties**
-
-<table>
-  <thead>
-    <tr>
-      <th>Name</th><th>Type</th>
-    </tr>
-  </thead>
-  <tbody>
-<tr>
-    <td>event</td><td><code>&#x27;SUBSCRIPTION_GIFT&#x27;</code></td>
-    </tr><tr>
-    <td>systemMessage</td><td><code>string</code></td>
-    </tr><tr>
-    <td>recipientDisplayName</td><td><code>string</code></td>
-    </tr><tr>
-    <td>recipientId</td><td><code>string</code></td>
-    </tr><tr>
-    <td>recipientUserName</td><td><code>string</code></td>
     </tr>  </tbody>
 </table>
 
@@ -933,13 +844,45 @@ On channel raid.
 <tr>
     <td>event</td><td><code>&#x27;RAID&#x27;</code></td>
     </tr><tr>
-    <td>systemMessage</td><td><code>string</code></td>
+    <td>parameters</td><td><code>Object</code></td>
     </tr><tr>
-    <td>raiderDisplayName</td><td><code>string</code></td>
+    <td>parameters.displayName</td><td><code>string</code></td>
     </tr><tr>
-    <td>raiderUserName</td><td><code>string</code></td>
+    <td>parameters.login</td><td><code>string</code></td>
     </tr><tr>
-    <td>raiderViewerCount</td><td><code>string</code></td>
+    <td>parameters.viewerCount</td><td><code>number</code></td>
+    </tr>  </tbody>
+</table>
+
+
+* * *
+
+<a name="Chat+event_USERNOTICE/RESUBSCRIPTION"></a>
+
+### "USERNOTICE/RESUBSCRIPTION"
+On resubscription (subsequent months) to a channel.
+
+**Kind**: event emitted by [<code>Chat</code>](class#Chat)  
+**Mixes**: [<code>UserStateMessage</code>](mixin#UserStateMessage)  
+**Properties**
+
+<table>
+  <thead>
+    <tr>
+      <th>Name</th><th>Type</th>
+    </tr>
+  </thead>
+  <tbody>
+<tr>
+    <td>event</td><td><code>&#x27;RESUBSCRIPTION&#x27;</code></td>
+    </tr><tr>
+    <td>parameters</td><td><code>Object</code></td>
+    </tr><tr>
+    <td>parameters.months</td><td><code>number</code></td>
+    </tr><tr>
+    <td>parameters.subPlan</td><td><code>string</code></td>
+    </tr><tr>
+    <td>parameters.subPlanName</td><td><code>string</code></td>
     </tr>  </tbody>
 </table>
 
@@ -965,9 +908,111 @@ On channel ritual.
 <tr>
     <td>event</td><td><code>&#x27;RITUAL&#x27;</code></td>
     </tr><tr>
-    <td>systemMessage</td><td><code>string</code></td>
+    <td>parameters</td><td><code>Object</code></td>
     </tr><tr>
-    <td>ritualName</td><td><code>string</code></td>
+    <td>parameters.ritualName</td><td><code>string</code></td>
+    </tr>  </tbody>
+</table>
+
+
+* * *
+
+<a name="Chat+event_USERNOTICE/SUBSCRIPTION_GIFT_COMMUNITY"></a>
+
+### "USERNOTICE/SUBSCRIPTION_GIFT_COMMUNITY"
+On subscription gift to a channel community.
+
+**Kind**: event emitted by [<code>Chat</code>](class#Chat)  
+**Mixes**: [<code>UserStateMessage</code>](mixin#UserStateMessage)  
+**Properties**
+
+<table>
+  <thead>
+    <tr>
+      <th>Name</th><th>Type</th>
+    </tr>
+  </thead>
+  <tbody>
+<tr>
+    <td>event</td><td><code>&#x27;SUBSCRIPTION_GIFT_COMMUNITY&#x27;</code></td>
+    </tr><tr>
+    <td>parameters</td><td><code>Object</code></td>
+    </tr><tr>
+    <td>parameters.massGiftCount</td><td><code>number</code></td>
+    </tr><tr>
+    <td>parameters.senderCount</td><td><code>number</code></td>
+    </tr><tr>
+    <td>parameters.subPlan</td><td><code>string</code></td>
+    </tr>  </tbody>
+</table>
+
+
+* * *
+
+<a name="Chat+event_USERNOTICE/SUBSCRIPTION_GIFT"></a>
+
+### "USERNOTICE/SUBSCRIPTION_GIFT"
+On subscription gift to a channel.
+
+**Kind**: event emitted by [<code>Chat</code>](class#Chat)  
+**Mixes**: [<code>UserStateMessage</code>](mixin#UserStateMessage)  
+**Properties**
+
+<table>
+  <thead>
+    <tr>
+      <th>Name</th><th>Type</th>
+    </tr>
+  </thead>
+  <tbody>
+<tr>
+    <td>event</td><td><code>&#x27;SUBSCRIPTION_GIFT&#x27;</code></td>
+    </tr><tr>
+    <td>parameters</td><td><code>Object</code></td>
+    </tr><tr>
+    <td>parameters.months</td><td><code>number</code></td>
+    </tr><tr>
+    <td>parameters.subPlan</td><td><code>string</code></td>
+    </tr><tr>
+    <td>parameters.subPlanName</td><td><code>string</code></td>
+    </tr><tr>
+    <td>parameters.recipientDisplayName</td><td><code>string</code></td>
+    </tr><tr>
+    <td>parameters.recipientId</td><td><code>string</code></td>
+    </tr><tr>
+    <td>parameters.recipientName</td><td><code>string</code></td>
+    </tr>  </tbody>
+</table>
+
+
+* * *
+
+<a name="Chat+event_USERNOTICE/SUBSCRIPTION"></a>
+
+### "USERNOTICE/SUBSCRIPTION"
+On subscription (first month) to a channel.
+
+**Kind**: event emitted by [<code>Chat</code>](class#Chat)  
+**Mixes**: [<code>UserStateMessage</code>](mixin#UserStateMessage)  
+**Properties**
+
+<table>
+  <thead>
+    <tr>
+      <th>Name</th><th>Type</th>
+    </tr>
+  </thead>
+  <tbody>
+<tr>
+    <td>event</td><td><code>&#x27;SUBSCRIPTION&#x27;</code></td>
+    </tr><tr>
+    <td>parameters</td><td><code>Object</code></td>
+    </tr><tr>
+    <td>parameters.months</td><td><code>1</code></td>
+    </tr><tr>
+    <td>parameters.subPlan</td><td><code>string</code></td>
+    </tr><tr>
+    <td>parameters.subPlanName</td><td><code>string</code></td>
     </tr>  </tbody>
 </table>
 

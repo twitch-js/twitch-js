@@ -1,5 +1,6 @@
-import { toLower } from 'lodash'
+import { camelCase, toLower, toUpper } from 'lodash'
 
+import * as constants from '../../constants'
 import * as types from './types'
 
 /**
@@ -65,16 +66,56 @@ const roomState = tags => ({
  */
 const userNotice = (...args) => userState(...args)
 
+const userNoticeMessageParameters = tags =>
+  Object.entries(tags).reduce((parameters, [tag, value]) => {
+    const [, param] = constants.MESSAGE_PARAMETER_PREFIX_RE.exec(tag) || []
+
+    switch (param) {
+      // Numbers.
+      case 'Months':
+      case 'MassGiftCount':
+      case 'SenderCount':
+      case 'ViewerCount':
+        return { ...parameters, [camelCase(param)]: types.generalNumber(value) }
+      // Not a msgParam.
+      case undefined:
+        return parameters
+      // Strings
+      default:
+        return { ...parameters, [camelCase(param)]: types.generalString(value) }
+    }
+  }, {})
+
+const userNoticeEvent = tags => {
+  switch (tags.msgId) {
+    case constants.USER_NOTICE_MESSAGE_IDS.RESUBSCRIPTION:
+      return constants.EVENTS.RESUBSCRIPTION
+    case constants.USER_NOTICE_MESSAGE_IDS.RAID:
+      return constants.EVENTS.RAID
+    case constants.USER_NOTICE_MESSAGE_IDS.RITUAL:
+      return constants.EVENTS.RITUAL
+    case constants.USER_NOTICE_MESSAGE_IDS.SUBSCRIPTION:
+      return constants.EVENTS.SUBSCRIPTION
+    case constants.USER_NOTICE_MESSAGE_IDS.SUBSCRIPTION_GIFT:
+      return constants.EVENTS.SUBSCRIPTION_GIFT
+    case constants.USER_NOTICE_MESSAGE_IDS.SUBSCRIPTION_GIFT_COMMUNITY:
+      return constants.EVENTS.SUBSCRIPTION_GIFT_COMMUNITY
+    default:
+      return toUpper(tags.msgId)
+  }
+}
+
 /**
  * USERSTATE tags
  * @typedef {Object} UserStateTags
  * @property {BadgesTag} badges
- * @property {number} [bits]
  * @property {Object<number, EmoteTag>} emotes
  * @property {Array<string>} emoteSets
  * @property {boolean} isModerator
  * @property {boolean} isSubscriber
+ * @property {boolean} isSubGifter
  * @property {boolean} isTurboSubscriber
+ * @property {number} [bits]
  * @see https://dev.twitch.tv/docs/irc/tags#userstate-twitch-tags
  */
 const userState = tags => ({
@@ -86,6 +127,7 @@ const userState = tags => ({
   userType: types.userType(tags.userType),
   isModerator: types.generalBoolean(tags.mod),
   isSubscriber: types.generalBoolean(tags.subscriber),
+  isSubGifter: /sub-gifter\/\d/.test(tags.badges),
   isTurboSubscriber: types.generalBoolean(tags.turbo),
 })
 
@@ -95,5 +137,7 @@ export {
   privateMessage,
   roomState,
   userNotice,
+  userNoticeMessageParameters,
+  userNoticeEvent,
   userState,
 }

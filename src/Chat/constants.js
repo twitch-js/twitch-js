@@ -36,6 +36,11 @@ export const ERROR_COMMAND_TIMED_OUT = 'ERROR: command timed out'
 export const ERROR_COMMAND_UNRECOGNIZED = 'ERROR: command unrecognized'
 export const ERROR_PART_TIMED_OUT = 'ERROR: part timed out'
 
+export const MESSAGE_PARAMETER_PREFIX = 'msgParam'
+export const MESSAGE_PARAMETER_PREFIX_RE = new RegExp(
+  `^${MESSAGE_PARAMETER_PREFIX}(\\w+)`,
+)
+
 /** @typedef {string} ClientReadyState */
 /**
  * Chat client ready state
@@ -137,8 +142,9 @@ export const USER_NOTICE_MESSAGE_IDS = {
   RAID: 'raid',
   RESUBSCRIPTION: 'resub',
   RITUAL: 'ritual',
-  SUBSCRIPTION_GIFT: 'subgift',
   SUBSCRIPTION: 'sub',
+  SUBSCRIPTION_GIFT: 'subgift',
+  SUBSCRIPTION_GIFT_COMMUNITY: 'submysterygift',
 }
 
 export const MESSAGE_IDS = {
@@ -167,8 +173,9 @@ export const EVENTS = {
   RAID: 'RAID',
   RESUBSCRIPTION: 'RESUBSCRIPTION',
   RITUAL: 'RITUAL',
-  SUBSCRIPTION_GIFT: 'SUBSCRIPTION_GIFT',
   SUBSCRIPTION: 'SUBSCRIPTION',
+  SUBSCRIPTION_GIFT: 'SUBSCRIPTION_GIFT',
+  SUBSCRIPTION_GIFT_COMMUNITY: 'SUBSCRIPTION_GIFT_COMMUNITY',
 
   ROOM_MODS: 'ROOM_MODS',
   MOD_GAINED: 'MOD_GAINED',

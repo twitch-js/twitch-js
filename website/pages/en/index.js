@@ -103,7 +103,7 @@ const FeatureCallout = props => (
         Aligns with official{' '}
         <a href="https://dev.twitch.tv/docs/irc/">Twitch IRC documentation</a>
       </li>
-      <li>Forward-compatible, minimally-assertive architecure </li>
+      <li>Forward-compatible, minimally-assertive architecture </li>
       <li>Supports Node environments </li>
       <li>Supports Browsers </li>
       <li>Connect to multiple channels </li>

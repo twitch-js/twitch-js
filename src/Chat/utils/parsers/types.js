@@ -2,7 +2,7 @@ import { gt, isFinite, replace } from 'lodash'
 
 const generalString = maybeMessage => {
   return typeof maybeMessage === 'string'
-    ? replace(maybeMessage, /\\s/g, ' ')
+    ? replace(maybeMessage, /\\[sn]/g, ' ')
     : undefined
 }
 

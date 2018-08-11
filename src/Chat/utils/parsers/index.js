@@ -328,110 +328,106 @@ const userStateMessage = baseMessage => {
  * @event Chat#PRIVMSG
  * @mixes UserStateMessage PrivateMessage
  * @property {'CHEER'} [event]
- * @property {string} [event]
  * @property {number} [bits]
  */
 const privateMessage = userStateMessage
 
+/**
+ * USERNOTICE message
+ * @mixin UserNoticeMessage
+ * @mixes BaseMessage
+ * @property {string} event
+ * @property {Object} parameters
+ * @property {string} systemMessage
+ */
 const userNoticeMessage = baseMessage => {
   const tags = tagParsers.userNotice(baseMessage.tags)
 
+  /* eslint-disable no-fallthrough */
   switch (tags.msgId) {
-    case constants.USER_NOTICE_MESSAGE_IDS.SUBSCRIPTION:
-      /**
-       * On subscription (first month) to a channel.
-       * @event Chat#USERNOTICE/SUBSCRIPTION
-       * @mixes UserStateMessage UserNoticeSubscriptionMessage
-       * @property {'SUBSCRIPTION'} event
-       * @property {string} systemMessage
-       * @property {string} months
-       * @property {string} subPlan
-       * @property {string} subPlanName
-       */
-      return {
-        ...baseMessage,
-        tags,
-        event: constants.EVENTS.SUBSCRIPTION,
-        systemMessage: typeParsers.generalString(tags.systemMsg),
-        months: tags.msgParamMonths,
-        subPlan: tags.msgParamSubPlan,
-        subPlanName: typeParsers.generalString(tags.msgParamSubPlanName),
-      }
-    case constants.USER_NOTICE_MESSAGE_IDS.RESUBSCRIPTION:
-      /**
-       * On resubscription (subsequent months) to a channel.
-       * @event Chat#USERNOTICE/RESUBSCRIPTION
-       * @mixes UserNoticeSubscriptionMessage UserNoticeResubscriptionMessage
-       * @property {'RESUBSCRIPTION'} event
-       */
-      return {
-        ...baseMessage,
-        tags,
-        event: constants.EVENTS.RESUBSCRIPTION,
-        systemMessage: typeParsers.generalString(tags.systemMsg),
-        months: tags.msgParamMonths,
-        subPlan: tags.msgParamSubPlan,
-        subPlanName: typeParsers.generalString(tags.msgParamSubPlanName),
-      }
-    case constants.USER_NOTICE_MESSAGE_IDS.SUBSCRIPTION_GIFT:
-      /**
-       * On subscription gift to a channel.
-       * @event Chat#USERNOTICE/SUBSCRIPTION_GIFT
-       * @mixes UserStateMessage UserNoticeSubscriptionGiftMessage
-       * @property {'SUBSCRIPTION_GIFT'} event
-       * @property {string} systemMessage
-       * @property {string} recipientDisplayName
-       * @property {string} recipientId
-       * @property {string} recipientUserName
-       */
-      return {
-        ...baseMessage,
-        tags,
-        event: constants.EVENTS.SUBSCRIPTION_GIFT,
-        systemMessage: typeParsers.generalString(tags.systemMsg),
-        recipientDisplayName: tags.msgParamRecipientDisplayName,
-        recipientId: tags.msgParamRecipientId,
-        recipientUserName: tags.msgParamRecipientName,
-      }
+    /**
+     * On channel raid.
+     * @event Chat#USERNOTICE/RAID
+     * @mixes UserStateMessage
+     * @property {'RAID'} event
+     * @property {Object} parameters
+     * @property {string} parameters.displayName
+     * @property {string} parameters.login
+     * @property {number} parameters.viewerCount
+     */
     case constants.USER_NOTICE_MESSAGE_IDS.RAID:
-      /**
-       * On channel raid.
-       * @event Chat#USERNOTICE/RAID
-       * @mixes UserStateMessage UserNoticeRaidMessage
-       * @property {'RAID'} event
-       * @property {string} systemMessage
-       * @property {string} raiderDisplayName
-       * @property {string} raiderUserName
-       * @property {string} raiderViewerCount
-       */
-      return {
-        ...baseMessage,
-        tags,
-        event: constants.EVENTS.RAID,
-        systemMessage: typeParsers.generalString(tags.systemMsg),
-        raiderDisplayName: tags.msgParamDisplayName,
-        raiderUserName: tags.msgParamLogin,
-        raiderViewerCount: tags.msgParamViewerCount,
-      }
+
+    /**
+     * On resubscription (subsequent months) to a channel.
+     * @event Chat#USERNOTICE/RESUBSCRIPTION
+     * @mixes UserStateMessage
+     * @property {'RESUBSCRIPTION'} event
+     * @property {Object} parameters
+     * @property {number} parameters.months
+     * @property {string} parameters.subPlan
+     * @property {string} parameters.subPlanName
+     */
+    case constants.USER_NOTICE_MESSAGE_IDS.RESUBSCRIPTION:
+
+    /**
+     * On channel ritual.
+     * @event Chat#USERNOTICE/RITUAL
+     * @mixes UserStateMessage
+     * @property {'RITUAL'} event
+     * @property {Object} parameters
+     * @property {string} parameters.ritualName
+     */
     case constants.USER_NOTICE_MESSAGE_IDS.RITUAL:
-      /**
-       * On channel ritual.
-       * @event Chat#USERNOTICE/RITUAL
-       * @mixes UserStateMessage UserNoticeRitualMessage
-       * @property {'RITUAL'} event
-       * @property {string} systemMessage
-       * @property {string} ritualName
-       */
+
+    /**
+     * On subscription gift to a channel community.
+     * @event Chat#USERNOTICE/SUBSCRIPTION_GIFT_COMMUNITY
+     * @mixes UserStateMessage
+     * @property {'SUBSCRIPTION_GIFT_COMMUNITY'} event
+     * @property {Object} parameters
+     * @property {number} parameters.massGiftCount
+     * @property {number} parameters.senderCount
+     * @property {string} parameters.subPlan
+     */
+    case constants.USER_NOTICE_MESSAGE_IDS.SUBSCRIPTION_GIFT_COMMUNITY:
+
+    /**
+     * On subscription gift to a channel.
+     * @event Chat#USERNOTICE/SUBSCRIPTION_GIFT
+     * @mixes UserStateMessage
+     * @property {'SUBSCRIPTION_GIFT'} event
+     * @property {Object} parameters
+     * @property {number} parameters.months
+     * @property {string} parameters.subPlan
+     * @property {string} parameters.subPlanName
+     * @property {string} parameters.recipientDisplayName
+     * @property {string} parameters.recipientId
+     * @property {string} parameters.recipientName
+     */
+    case constants.USER_NOTICE_MESSAGE_IDS.SUBSCRIPTION_GIFT:
+
+    /**
+     * On subscription (first month) to a channel.
+     * @event Chat#USERNOTICE/SUBSCRIPTION
+     * @mixes UserStateMessage
+     * @property {'SUBSCRIPTION'} event
+     * @property {Object} parameters
+     * @property {1} parameters.months
+     * @property {string} parameters.subPlan
+     * @property {string} parameters.subPlanName
+     */
+    case constants.USER_NOTICE_MESSAGE_IDS.SUBSCRIPTION:
+
+    default:
       return {
         ...baseMessage,
-        tags,
-        event: constants.EVENTS.RITUAL,
+        tags: { ...tags, systemMsg: typeParsers.generalString(tags.systemMsg) },
+        parameters: tagParsers.userNoticeMessageParameters(tags),
+        event: tagParsers.userNoticeEvent(tags),
         systemMessage: typeParsers.generalString(tags.systemMsg),
-        ritualName: tags.msgParamRitualName,
       }
-    default:
-      return { ...baseMessage, tags }
   }
+  /* eslint-enable no-fallthrough */
 }
 
 export {
