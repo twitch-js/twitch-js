@@ -853,11 +853,14 @@ Object {
   "_raw": "@badges=turbo/1;color=#9ACD32;display-name=TestChannel;emotes=;id=3d830f12-795c-447d-af3c-ea05e40fbddb;login=testchannel;mod=0;msg-id=raid;msg-param-displayName=TestChannel;msg-param-login=testchannel;msg-param-viewerCount=15;room-id=56379257;subscriber=0;system-msg=15\\\\sraiders\\\\sfrom\\\\sTestChannel\\\\shave\\\\sjoined\\\\n!;tmi-sent-ts=1507246572675;tmi-sent-ts=1507246572675;turbo=1;user-id=123456;user-type= :tmi.twitch.tv USERNOTICE #othertestchannel",
   "channel": "#othertestchannel",
   "command": "USERNOTICE",
-  "displayName": "TestChannel",
   "event": "RAID",
   "isSelf": false,
-  "login": "testchannel",
   "message": undefined,
+  "parameters": Object {
+    "displayName": "TestChannel",
+    "login": "testchannel",
+    "viewerCount": 15,
+  },
   "systemMessage": "15 raiders from TestChannel have joined\\\\n!",
   "tags": Object {
     "badges": Object {
@@ -888,7 +891,6 @@ Object {
     "userType": undefined,
   },
   "timestamp": 2018-01-01T00:00:00.000Z,
-  "viewerCount": 15,
 }
 `;
 
@@ -900,9 +902,11 @@ Object {
   "event": "RESUBSCRIPTION",
   "isSelf": false,
   "message": "Great stream -- keep it up!",
-  "months": 6,
-  "subPlan": "Prime",
-  "subPlanName": "Prime",
+  "parameters": Object {
+    "months": 6,
+    "subPlan": "Prime",
+    "subPlanName": "Prime",
+  },
   "systemMessage": "ronni has subscribed for 6 months!",
   "tags": Object {
     "badges": Object {
@@ -946,7 +950,9 @@ Object {
   "event": "RITUAL",
   "isSelf": false,
   "message": "HeyGuys",
-  "ritualName": "new_chatter",
+  "parameters": Object {
+    "ritualName": "new_chatter",
+  },
   "systemMessage": "Seventoes is new here!",
   "tags": Object {
     "badges": Object {},
@@ -988,10 +994,12 @@ Object {
   "command": "USERNOTICE",
   "event": "SUBSCRIPTION_GIFT_COMMUNITY",
   "isSelf": false,
-  "massGiftCount": 5,
   "message": undefined,
-  "senderCount": 37,
-  "subPlan": "1000",
+  "parameters": Object {
+    "massGiftCount": 5,
+    "senderCount": 37,
+    "subPlan": "1000",
+  },
   "systemMessage": "Nefarious_Ned is gifting 5 Tier 1 Subs to Kate's community! They've gifted a total of 37 in the channel!",
   "tags": Object {
     "badges": Object {
@@ -1035,9 +1043,11 @@ Object {
   "event": "SUBSCRIPTION",
   "isSelf": false,
   "message": "Great stream -- keep it up!",
-  "months": 1,
-  "subPlan": "Prime",
-  "subPlanName": "Prime",
+  "parameters": Object {
+    "months": 1,
+    "subPlan": "Prime",
+    "subPlanName": "Prime",
+  },
   "systemMessage": "ronni just subscribed with Twitch Prime!",
   "tags": Object {
     "badges": Object {
@@ -1081,12 +1091,14 @@ Object {
   "event": "SUBSCRIPTION_GIFT",
   "isSelf": false,
   "message": undefined,
-  "months": 1,
-  "recipientDisplayName": "Mr_Woodchuck",
-  "recipientId": "89614178",
-  "recipientName": "mr_woodchuck",
-  "subPlan": "1000",
-  "subPlanName": "House of Nyoro~n",
+  "parameters": Object {
+    "months": 1,
+    "recipientDisplayName": "Mr_Woodchuck",
+    "recipientId": "89614178",
+    "recipientName": "mr_woodchuck",
+    "subPlan": "1000",
+    "subPlanName": "House of Nyoro~n",
+  },
   "systemMessage": "TWW2 gifted a Tier 1 sub to Mr_Woodchuck!",
   "tags": Object {
     "badges": Object {
@@ -1126,13 +1138,16 @@ Object {
 
 exports[`Chat should handle messages USERNOTICE UNKNOWN 1`] = `
 Object {
-  "_raw": "@badges=;color=;display-name=SevenTest1;emotes=30259:0-6;id=37feed0f-b9c7-4c3a-b475-21c6c6d21c3d;login=seventest1;mod=0;msg-id=unknown;room-id=6316121;subscriber=0;system-msg=Seventoes\\\\sis\\\\snew\\\\shere!;tmi-sent-ts=1508363903826;turbo=0;user-id=131260580;user-type= :tmi.twitch.tv USERNOTICE #seventoes :Unknown USERNOTICE",
+  "_raw": "@badges=;color=;display-name=SevenTest1;emotes=30259:0-6;id=37feed0f-b9c7-4c3a-b475-21c6c6d21c3d;login=seventest1;mod=0;msg-id=unknown;msg-param-unknown=value;room-id=6316121;subscriber=0;system-msg=Unknown\\\\ssystem\\\\smessage;tmi-sent-ts=1508363903826;turbo=0;user-id=131260580;user-type= :tmi.twitch.tv USERNOTICE #seventoes :Unknown USERNOTICE",
   "channel": "#seventoes",
   "command": "USERNOTICE",
   "event": "UNKNOWN",
   "isSelf": false,
   "message": "Unknown USERNOTICE",
-  "systemMessage": "Seventoes is new here!",
+  "parameters": Object {
+    "unknown": "value",
+  },
+  "systemMessage": "Unknown system message",
   "tags": Object {
     "badges": Object {},
     "bits": undefined,
@@ -1153,9 +1168,10 @@ Object {
     "login": "seventest1",
     "mod": "0",
     "msgId": "unknown",
+    "msgParamUnknown": "value",
     "roomId": "6316121",
     "subscriber": "0",
-    "systemMsg": "Seventoes\\\\sis\\\\snew\\\\shere!",
+    "systemMsg": "Unknown\\\\ssystem\\\\smessage",
     "tmiSentTs": "1508363903826",
     "turbo": "0",
     "userId": "131260580",

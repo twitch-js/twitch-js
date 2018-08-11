@@ -333,99 +333,30 @@ const userStateMessage = baseMessage => {
  */
 const privateMessage = userStateMessage
 
+/**
+ * On any of the following events: subscription, resubsription, subscription
+ * gift, community subcription gift, raid, or ritual.
+ * @event Chat#USERNOTICE
+ * @mixes UserStateMessage UserNoticeSubscriptionMessage
+ * @property {string} event
+ * @property {Object} parameters
+ * @property {string} systemMessage
+ */
 const userNoticeMessage = baseMessage => {
   const tags = tagParsers.userNotice(baseMessage.tags)
 
   switch (tags.msgId) {
-    case constants.USER_NOTICE_MESSAGE_IDS.SUBSCRIPTION:
-      /**
-       * On subscription (first month) to a channel.
-       * @event Chat#USERNOTICE/SUBSCRIPTION
-       * @mixes UserStateMessage UserNoticeSubscriptionMessage
-       * @property {'SUBSCRIPTION'} event
-       * @property {string} systemMessage
-       * @property {string} months
-       * @property {string} subPlan
-       * @property {string} subPlanName
-       */
-      return {
-        ...baseMessage,
-        tags,
-        ...tagParsers.userNoticeMessageParameters(tags),
-        event: tagParsers.userNoticeEvent(tags),
-        systemMessage: typeParsers.generalString(tags.systemMsg),
-      }
-    case constants.USER_NOTICE_MESSAGE_IDS.RESUBSCRIPTION:
-      /**
-       * On resubscription (subsequent months) to a channel.
-       * @event Chat#USERNOTICE/RESUBSCRIPTION
-       * @mixes UserNoticeSubscriptionMessage UserNoticeResubscriptionMessage
-       * @property {'RESUBSCRIPTION'} event
-       */
-      return {
-        ...baseMessage,
-        tags,
-        ...tagParsers.userNoticeMessageParameters(tags),
-        event: tagParsers.userNoticeEvent(tags),
-        systemMessage: typeParsers.generalString(tags.systemMsg),
-      }
-    case constants.USER_NOTICE_MESSAGE_IDS.SUBSCRIPTION_GIFT:
-      /**
-       * On subscription gift to a channel.
-       * @event Chat#USERNOTICE/SUBSCRIPTION_GIFT
-       * @mixes UserStateMessage UserNoticeSubscriptionGiftMessage
-       * @property {'SUBSCRIPTION_GIFT'} event
-       * @property {string} systemMessage
-       * @property {string} recipientDisplayName
-       * @property {string} recipientId
-       * @property {string} recipientUserName
-       */
-      return {
-        ...baseMessage,
-        tags,
-        ...tagParsers.userNoticeMessageParameters(tags),
-        event: tagParsers.userNoticeEvent(tags),
-        systemMessage: typeParsers.generalString(tags.systemMsg),
-      }
     case constants.USER_NOTICE_MESSAGE_IDS.RAID:
-      /**
-       * On channel raid.
-       * @event Chat#USERNOTICE/RAID
-       * @mixes UserStateMessage UserNoticeRaidMessage
-       * @property {'RAID'} event
-       * @property {string} systemMessage
-       * @property {string} raiderDisplayName
-       * @property {string} raiderUserName
-       * @property {string} raiderViewerCount
-       */
-      return {
-        ...baseMessage,
-        tags,
-        ...tagParsers.userNoticeMessageParameters(tags),
-        event: tagParsers.userNoticeEvent(tags),
-        systemMessage: typeParsers.generalString(tags.systemMsg),
-      }
+    case constants.USER_NOTICE_MESSAGE_IDS.RESUBSCRIPTION:
     case constants.USER_NOTICE_MESSAGE_IDS.RITUAL:
-      /**
-       * On channel ritual.
-       * @event Chat#USERNOTICE/RITUAL
-       * @mixes UserStateMessage UserNoticeRitualMessage
-       * @property {'RITUAL'} event
-       * @property {string} systemMessage
-       * @property {string} ritualName
-       */
-      return {
-        ...baseMessage,
-        tags,
-        event: tagParsers.userNoticeEvent(tags),
-        ...tagParsers.userNoticeMessageParameters(tags),
-        systemMessage: typeParsers.generalString(tags.systemMsg),
-      }
+    case constants.USER_NOTICE_MESSAGE_IDS.SUBSCRIPTION_GIFT_COMMUNITY:
+    case constants.USER_NOTICE_MESSAGE_IDS.SUBSCRIPTION_GIFT:
+    case constants.USER_NOTICE_MESSAGE_IDS.SUBSCRIPTION:
     default:
       return {
         ...baseMessage,
         tags,
-        ...tagParsers.userNoticeMessageParameters(tags),
+        parameters: tagParsers.userNoticeMessageParameters(tags),
         event: tagParsers.userNoticeEvent(tags),
         systemMessage: typeParsers.generalString(tags.systemMsg),
       }

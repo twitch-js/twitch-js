@@ -1,4 +1,4 @@
-import { camelCase, replace, startsWith, toLower, toUpper } from 'lodash'
+import { camelCase, toLower, toUpper } from 'lodash'
 
 import * as constants from '../../constants'
 import * as types from './types'
@@ -67,34 +67,29 @@ const roomState = tags => ({
 const userNotice = (...args) => userState(...args)
 
 const userNoticeMessageParameters = tags =>
-  Object.entries(tags).reduce((parameters, [key, value]) => {
-    if (startsWith(key, 'msgParam')) {
-      const parsedKey = camelCase(replace(key, /^msgParam/, ''))
+  Object.entries(tags).reduce((parameters, [tag, value]) => {
+    const [, param] = constants.MESSAGE_PARAMETER_PREFIX_RE.exec(tag) || []
 
-      switch (key) {
-        case 'msgParamMonths':
-        case 'msgParamMassGiftCount':
-        case 'msgParamSenderCount':
-        case 'msgParamViewerCount':
-          return {
-            ...parameters,
-            [parsedKey]: types.generalNumber(value),
-          }
-        default:
-          return {
-            ...parameters,
-            [parsedKey]: types.generalString(value),
-          }
-      }
+    switch (param) {
+      // Numbers.
+      case 'Months':
+      case 'MassGiftCount':
+      case 'SenderCount':
+      case 'ViewerCount':
+        return { ...parameters, [camelCase(param)]: types.generalNumber(value) }
+      // Not a msgParam.
+      case undefined:
+        return parameters
+      // Strings
+      default:
+        return { ...parameters, [camelCase(param)]: types.generalString(value) }
     }
-    return parameters
   }, {})
 
 const userNoticeEvent = tags => {
   switch (tags.msgId) {
     case constants.USER_NOTICE_MESSAGE_IDS.RESUBSCRIPTION:
       return constants.EVENTS.RESUBSCRIPTION
-
     case constants.USER_NOTICE_MESSAGE_IDS.RAID:
       return constants.EVENTS.RAID
     case constants.USER_NOTICE_MESSAGE_IDS.RITUAL:

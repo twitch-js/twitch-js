@@ -36,6 +36,11 @@ export const ERROR_COMMAND_TIMED_OUT = 'ERROR: command timed out'
 export const ERROR_COMMAND_UNRECOGNIZED = 'ERROR: command unrecognized'
 export const ERROR_PART_TIMED_OUT = 'ERROR: part timed out'
 
+export const MESSAGE_PARAMETER_PREFIX = 'msgParam'
+export const MESSAGE_PARAMETER_PREFIX_RE = new RegExp(
+  `^${MESSAGE_PARAMETER_PREFIX}(\\w+)`,
+)
+
 /** @typedef {string} ClientReadyState */
 /**
  * Chat client ready state
