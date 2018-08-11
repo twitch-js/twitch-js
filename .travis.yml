@@ -68,3 +68,4 @@ deploy:
 
 after_deploy:
   - git push --follow-tags https://$GITHUB_TOKEN@github.com/$TRAVIS_REPO_SLUG HEAD:$TRAVIS_BRANCH
+  - yarn test:coverage:report
