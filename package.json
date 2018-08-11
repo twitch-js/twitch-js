@@ -4,6 +4,7 @@
   "description": "Javascript library for the Twitch Messaging Interface.",
   "license": "MIT",
   "author": "Marc Andrews",
+  "homepage": "https://twitch-apis.github.io/twitch-js/",
   "keywords": [
     "bot",
     "broadcast",
@@ -59,7 +60,7 @@
     "docs:build": "node scripts/jsdoc2md/generateDocs.js",
     "website": "cd website && yarn start",
     "website:build": "cd website && yarn build",
-    "webiste:publish": "cd website && yarn publish-gh-pages"
+    "website:publish": "cd website && yarn publish-gh-pages"
   },
   "dependencies": {
     "babel-runtime": "^6.26.0",
