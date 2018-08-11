@@ -355,7 +355,7 @@ const userNoticeMessage = baseMessage => {
     default:
       return {
         ...baseMessage,
-        tags,
+        tags: { ...tags, systemMsg: typeParsers.generalString(tags.systemMsg) },
         parameters: tagParsers.userNoticeMessageParameters(tags),
         event: tagParsers.userNoticeEvent(tags),
         systemMessage: typeParsers.generalString(tags.systemMsg),
