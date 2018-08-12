@@ -184,6 +184,7 @@ export const EVENTS = {
 
   USER_BANNED: 'USER_BANNED',
 
+  CHEER: 'CHEER',
   HOSTED: 'HOSTED',
 }
 

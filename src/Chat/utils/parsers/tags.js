@@ -41,7 +41,7 @@ const privateMessage = (...args) => userState(...args)
 
 const privateMessageCheerEvent = tags => {
   return gt(tags.bits, 0)
-    ? { event: 'CHEER', bits: parseInt(tags.bits, 10) }
+    ? { event: constants.EVENTS.CHEER, bits: parseInt(tags.bits, 10) }
     : {}
 }
 
