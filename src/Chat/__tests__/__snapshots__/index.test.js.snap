@@ -769,23 +769,6 @@ Object {
 }
 `;
 
-exports[`Chat should handle messages PRIVMSG AUTO_HOSTED 1`] = `
-Object {
-  "_raw": ":jtv!jtv@jtv.tmi.twitch.tv PRIVMSG #annemunition :TheGameCase is now auto hosting you for up to 4 viewers.",
-  "channel": "#annemunition",
-  "command": "PRIVMSG",
-  "event": "HOSTED/AUTO",
-  "isAuto": true,
-  "isSelf": false,
-  "message": "TheGameCase is now auto hosting you for up to 4 viewers.",
-  "numberOfViewers": 4,
-  "tags": Object {
-    "displayName": "TheGameCase",
-  },
-  "timestamp": 2018-01-01T00:00:00.000Z,
-}
-`;
-
 exports[`Chat should handle messages PRIVMSG BITS 1`] = `
 Object {
   "_raw": "@badges=staff/1,bits/1000;bits=100;color=;display-name=dallas;emotes=;id=b34ccfc7-4977-403a-8a94-33c6bac34fb8;mod=0;room-id=1337;subscriber=0;tmi-sent-ts=1507246572675;turbo=1;user-id=1337;user-type=staff :ronni!ronni@ronni.tmi.twitch.tv PRIVMSG #dallas :cheer100",
@@ -824,16 +807,14 @@ Object {
 
 exports[`Chat should handle messages PRIVMSG HOSTED 1`] = `
 Object {
-  "_raw": ":jtv!~jtv@jtv.tmi.twitch.tv PRIVMSG #schmoopiie :Username is now hosting you for 11 viewers.",
-  "channel": "#schmoopiie",
+  "_raw": ":jtv!jtv@jtv.tmi.twitch.tv PRIVMSG dallas :ronni is now hosting you.",
+  "channel": "#dallas",
   "command": "PRIVMSG",
-  "event": "HOSTED/MANUAL",
-  "isAuto": false,
+  "event": "HOSTED",
   "isSelf": false,
-  "message": "Username is now hosting you for 11 viewers.",
-  "numberOfViewers": 11,
+  "message": "ronni is now hosting you.",
   "tags": Object {
-    "displayName": "Username",
+    "displayName": "ronni",
   },
   "timestamp": 2018-01-01T00:00:00.000Z,
 }

@@ -344,7 +344,7 @@ const privateMessage = baseMessage => {
     }
   }
 
-  const [isHostingPrivateMessage, channel, displayName, auto, numberOfViewers] =
+  const [isHostingPrivateMessage, channel, displayName] =
     constants.PRIVATE_MESSAGE_HOSTED_RE.exec(_raw) || []
 
   if (isHostingPrivateMessage) {
@@ -352,21 +352,16 @@ const privateMessage = baseMessage => {
      * When a user hosts your channel while connected as broadcaster.
      * @event Chat#PRIVMSG/HOSTED
      * @mixes UserStateMessage PrivateMessage
-     * @property {'HOSTED/MANUAL'|'HOSTED/AUTO'} event
+     * @property {'HOSTED'} event
      * @property {Object} tags
      * @property {string} tags.displayName
-     * @property {number} numberOfViewers
-     * @property {boolean} isAuto
      */
 
-    const isAuto = auto === 'auto'
     return {
       ...baseMessage,
       tags: { displayName },
-      channel,
-      event: `HOSTED/${isAuto ? 'AUTO' : 'MANUAL'}`,
-      isAuto,
-      numberOfViewers: typeParsers.generalNumber(numberOfViewers),
+      channel: `#${channel}`,
+      event: constants.EVENTS.HOSTED,
     }
   }
 

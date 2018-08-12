@@ -7,8 +7,7 @@
   "PRIVMSG": {
     "NON_BITS": "@badges=global_mod/1,turbo/1;color=#0D4200;display-name=dallas;emotes=25:0-4,12-16/1902:6-10;id=b34ccfc7-4977-403a-8a94-33c6bac34fb8;mod=0;room-id=1337;subscriber=0;tmi-sent-ts=1507246572675;turbo=1;user-id=1337;user-type=global_mod :ronni!ronni@ronni.tmi.twitch.tv PRIVMSG #dallas :Kappa Keepo Kappa",
     "BITS": "@badges=staff/1,bits/1000;bits=100;color=;display-name=dallas;emotes=;id=b34ccfc7-4977-403a-8a94-33c6bac34fb8;mod=0;room-id=1337;subscriber=0;tmi-sent-ts=1507246572675;turbo=1;user-id=1337;user-type=staff :ronni!ronni@ronni.tmi.twitch.tv PRIVMSG #dallas :cheer100",
-    "HOSTED": ":jtv!~jtv@jtv.tmi.twitch.tv PRIVMSG #schmoopiie :Username is now hosting you for 11 viewers.",
-    "AUTO_HOSTED": ":jtv!jtv@jtv.tmi.twitch.tv PRIVMSG #annemunition :TheGameCase is now auto hosting you for up to 4 viewers."
+    "HOSTED": ":jtv!jtv@jtv.tmi.twitch.tv PRIVMSG dallas :ronni is now hosting you."
   },
   "ROOMSTATE": {
     "JOIN": "@broadcaster-lang=en;r9k=0;slow=0;subs-only=0 :tmi.twitch.tv ROOMSTATE #dallas",
