@@ -349,7 +349,7 @@ const privateMessage = baseMessage => {
 
   if (isHostingPrivateMessage) {
     /**
-     * When a user hosts a channel.
+     * When a user hosts your channel while connected as broadcaster.
      * @event Chat#PRIVMSG/HOSTED
      * @mixes UserStateMessage PrivateMessage
      * @property {'HOSTED/MANUAL'|'HOSTED/AUTO'} event

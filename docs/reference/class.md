@@ -840,7 +840,7 @@ When a user cheers a channel.
 <a name="Chat+event_PRIVMSG/HOSTED"></a>
 
 ### "PRIVMSG/HOSTED"
-When a user hosts a channel.
+When a user hosts your channel while connected as broadcaster.
 
 **Kind**: event emitted by [<code>Chat</code>](class#Chat)  
 **Mixes**: [<code>UserStateMessage</code>](mixin#UserStateMessage)  
