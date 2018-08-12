@@ -381,32 +381,16 @@ describe('Chat', () => {
     })
 
     describe('PRIVMSG', () => {
-      test('PRIVMSG', async done => {
+      test.each(Object.entries(tags.PRIVMSG))('%s', async (name, raw, done) => {
         const chat = new Chat(options)
         await chat.connect()
 
-        expect.assertions(1)
-
-        chat.once('PRIVMSG', actual => {
-          expect(actual).toMatchSnapshot()
+        chat.once('PRIVMSG', message => {
+          expect(message).toMatchSnapshot()
           done()
         })
 
-        emitHelper(chat._client, tags.PRIVMSG.NON_BITS)
-      })
-
-      test('CHEER', async done => {
-        const chat = new Chat(options)
-        await chat.connect()
-
-        expect.assertions(1)
-
-        chat.once('PRIVMSG', actual => {
-          expect(actual).toMatchSnapshot()
-          done()
-        })
-
-        emitHelper(chat._client, tags.PRIVMSG.BITS)
+        emitHelper(chat._client, raw)
       })
     })
 

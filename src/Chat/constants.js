@@ -40,6 +40,7 @@ export const MESSAGE_PARAMETER_PREFIX = 'msgParam'
 export const MESSAGE_PARAMETER_PREFIX_RE = new RegExp(
   `^${MESSAGE_PARAMETER_PREFIX}(\\w+)`,
 )
+export const PRIVATE_MESSAGE_HOSTED_RE = /^:jtv.+?\.tmi\.twitch\.tv PRIVMSG (#\w+) :(\w+).+?(auto)? hosting.+?(\d+)/
 
 /** @typedef {string} ClientReadyState */
 /**

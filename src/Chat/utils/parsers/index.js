@@ -1,7 +1,7 @@
 import { parse } from 'irc-message'
 import camelcaseKeys from 'camelcase-keys'
 
-import { isEmpty, isFinite, toNumber, toUpper } from 'lodash'
+import { has, isEmpty, isFinite, toNumber, toUpper } from 'lodash'
 
 import * as constants from '../../constants'
 import * as utils from '../'
@@ -319,7 +319,6 @@ const userStateMessage = baseMessage => {
   return {
     tags: tagParsers.userState(tags),
     ...other,
-    ...typeParsers.cheerEvent(tags.bits),
   }
 }
 
@@ -327,10 +326,52 @@ const userStateMessage = baseMessage => {
  * When a user joins a channel or sends a PRIVMSG to a channel.
  * @event Chat#PRIVMSG
  * @mixes UserStateMessage PrivateMessage
- * @property {'CHEER'} [event]
- * @property {number} [bits]
  */
-const privateMessage = userStateMessage
+const privateMessage = baseMessage => {
+  const { _raw, tags } = baseMessage
+
+  if (has(baseMessage, 'tags.bits')) {
+    /**
+     * When a user cheers a channel.
+     * @event Chat#PRIVMSG/CHEER
+     * @mixes UserStateMessage PrivateMessage
+     * @property {'CHEER'} event
+     * @property {number} bits
+     */
+    return {
+      ...userStateMessage(baseMessage),
+      ...tagParsers.privateMessageCheerEvent(tags),
+    }
+  }
+
+  const [isHostingPrivateMessage, channel, displayName, auto, numberOfViewers] =
+    constants.PRIVATE_MESSAGE_HOSTED_RE.exec(_raw) || []
+
+  if (isHostingPrivateMessage) {
+    /**
+     * When a user hosts a channel.
+     * @event Chat#PRIVMSG/HOSTED
+     * @mixes UserStateMessage PrivateMessage
+     * @property {'HOSTED/MANUAL'|'HOSTED/AUTO'} event
+     * @property {Object} tags
+     * @property {string} tags.displayName
+     * @property {number} numberOfViewers
+     * @property {boolean} isAuto
+     */
+
+    const isAuto = auto === 'auto'
+    return {
+      ...baseMessage,
+      tags: { displayName },
+      channel,
+      event: `HOSTED/${isAuto ? 'AUTO' : 'MANUAL'}`,
+      isAuto,
+      numberOfViewers: typeParsers.generalNumber(numberOfViewers),
+    }
+  }
+
+  return userStateMessage(baseMessage)
+}
 
 /**
  * USERNOTICE message

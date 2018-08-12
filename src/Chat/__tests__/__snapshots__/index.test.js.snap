@@ -769,7 +769,24 @@ Object {
 }
 `;
 
-exports[`Chat should handle messages PRIVMSG CHEER 1`] = `
+exports[`Chat should handle messages PRIVMSG AUTO_HOSTED 1`] = `
+Object {
+  "_raw": ":jtv!jtv@jtv.tmi.twitch.tv PRIVMSG #annemunition :TheGameCase is now auto hosting you for up to 4 viewers.",
+  "channel": "#annemunition",
+  "command": "PRIVMSG",
+  "event": "HOSTED/AUTO",
+  "isAuto": true,
+  "isSelf": false,
+  "message": "TheGameCase is now auto hosting you for up to 4 viewers.",
+  "numberOfViewers": 4,
+  "tags": Object {
+    "displayName": "TheGameCase",
+  },
+  "timestamp": 2018-01-01T00:00:00.000Z,
+}
+`;
+
+exports[`Chat should handle messages PRIVMSG BITS 1`] = `
 Object {
   "_raw": "@badges=staff/1,bits/1000;bits=100;color=;display-name=dallas;emotes=;id=b34ccfc7-4977-403a-8a94-33c6bac34fb8;mod=0;room-id=1337;subscriber=0;tmi-sent-ts=1507246572675;turbo=1;user-id=1337;user-type=staff :ronni!ronni@ronni.tmi.twitch.tv PRIVMSG #dallas :cheer100",
   "bits": 100,
@@ -805,7 +822,24 @@ Object {
 }
 `;
 
-exports[`Chat should handle messages PRIVMSG PRIVMSG 1`] = `
+exports[`Chat should handle messages PRIVMSG HOSTED 1`] = `
+Object {
+  "_raw": ":jtv!~jtv@jtv.tmi.twitch.tv PRIVMSG #schmoopiie :Username is now hosting you for 11 viewers.",
+  "channel": "#schmoopiie",
+  "command": "PRIVMSG",
+  "event": "HOSTED/MANUAL",
+  "isAuto": false,
+  "isSelf": false,
+  "message": "Username is now hosting you for 11 viewers.",
+  "numberOfViewers": 11,
+  "tags": Object {
+    "displayName": "Username",
+  },
+  "timestamp": 2018-01-01T00:00:00.000Z,
+}
+`;
+
+exports[`Chat should handle messages PRIVMSG NON_BITS 1`] = `
 Object {
   "_raw": "@badges=global_mod/1,turbo/1;color=#0D4200;display-name=dallas;emotes=25:0-4,12-16/1902:6-10;id=b34ccfc7-4977-403a-8a94-33c6bac34fb8;mod=0;room-id=1337;subscriber=0;tmi-sent-ts=1507246572675;turbo=1;user-id=1337;user-type=global_mod :ronni!ronni@ronni.tmi.twitch.tv PRIVMSG #dallas :Kappa Keepo Kappa",
   "channel": "#dallas",
