@@ -152,7 +152,14 @@ class Chat extends EventEmitter {
   }
 
   removeChannelState(channel) {
-    this._channelState[channel] = undefined
+    this._channelState = Object.entries(this._channelState).reduce(
+      (channelStates, [name, state]) => {
+        return name === channel
+          ? channelStates
+          : { ...channelStates, [name]: state }
+      },
+      {},
+    )
   }
 
   clearChannelState() {

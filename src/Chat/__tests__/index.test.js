@@ -112,11 +112,15 @@ describe('Chat', () => {
   test('should part a channel', async done => {
     const chat = new Chat(options)
     await chat.connect()
+    await chat.join('#dallas')
 
-    expect.assertions(1)
+    expect.assertions(3)
+
+    expect(chat._channelState['#dallas']).toBeDefined()
 
     server.once('message', message => {
       expect(message).toEqual('PART #dallas')
+      expect(chat._channelState['#dallas']).not.toBeDefined()
       done()
     })
 
