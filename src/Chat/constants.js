@@ -91,6 +91,7 @@ export const TAG_COMMANDS = {
 export const OTHER_COMMANDS = {
   PING: 'PING',
   PONG: 'PONG',
+  WHISPER: 'PRIVMSG #jtv',
 }
 
 // See https://dev.twitch.tv/docs/irc/commands/.
@@ -215,5 +216,5 @@ export const CHAT_COMMANDS = {
   UNBAN: 'unban',
   UNHOST: 'unhost',
   UNMOD: 'unmod',
-  WHISPER: 'whisper',
+  // WHISPER: 'w',
 }

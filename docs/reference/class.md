@@ -230,6 +230,7 @@ Chat client
     * [.join(channel)](#Chat+join) ⇒ <code>Promise.&lt;ChannelState, string&gt;</code>
     * [.part(channel)](#Chat+part)
     * [.say(channel, message)](#Chat+say) ⇒ <code>Promise.&lt;UserStateMessage, string&gt;</code>
+    * [.whisper(user, message)](#Chat+whisper) ⇒ <code>Promise.&lt;undefined&gt;</code>
     * [.broadcast(message)](#Chat+broadcast) ⇒ <code>Promise.&lt;Array.&lt;UserStateMessage&gt;&gt;</code>
     * ["*"](#Chat+event_*)
     * ["JOIN"](#Chat+event_JOIN)
@@ -475,6 +476,29 @@ Send a message to a channel.
   <tbody>
 <tr>
     <td>channel</td><td><code>string</code></td>
+    </tr><tr>
+    <td>message</td><td><code>string</code></td>
+    </tr>  </tbody>
+</table>
+
+
+* * *
+
+<a name="Chat+whisper"></a>
+
+### chat.whisper(user, message) ⇒ <code>Promise.&lt;undefined&gt;</code>
+Whisper to another user.
+
+**Kind**: instance method of [<code>Chat</code>](class#Chat)  
+<table>
+  <thead>
+    <tr>
+      <th>Param</th><th>Type</th>
+    </tr>
+  </thead>
+  <tbody>
+<tr>
+    <td>user</td><td><code>string</code></td>
     </tr><tr>
     <td>message</td><td><code>string</code></td>
     </tr>  </tbody>
