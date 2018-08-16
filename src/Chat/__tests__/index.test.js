@@ -396,6 +396,18 @@ describe('Chat', () => {
 
         emitHelper(chat._client, raw)
       })
+
+      test('whisper', async done => {
+        const chat = new Chat(options)
+        await chat.connect()
+
+        server.once('message', message => {
+          expect(message).toEqual('PRIVMSG #jtv :/w dallas Kappa Keepo Kappa')
+          done()
+        })
+
+        chat.whisper('dallas', 'Kappa Keepo Kappa')
+      })
     })
 
     describe('deviations', () => {

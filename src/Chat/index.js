@@ -365,6 +365,18 @@ class Chat extends EventEmitter {
   }
 
   /**
+   * Whisper to another user.
+   * @param {string} user
+   * @param {string} message
+   * @return {Promise<undefined>}
+   */
+  whisper(user, message) {
+    this.send(`${constants.COMMANDS.WHISPER} :/w ${user} ${message}`)
+
+    return Promise.resolve()
+  }
+
+  /**
    * Broadcast message to all connected channels.
    * @param {string} message
    * @return {Promise<Array<UserStateMessage>>}
