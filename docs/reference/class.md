@@ -218,7 +218,7 @@ Chat client
 
 **Kind**: global class  
 **Extends**: [<code>EventEmitter3</code>](external#external_EventEmitter3)  
-**Emits**: [<code>\*</code>](#Chat+event_*), [<code>CLEARCHAT</code>](#Chat+event_CLEARCHAT), [<code>CLEARCHAT/USER_BANNED</code>](#Chat+event_CLEARCHAT/USER_BANNED), [<code>GLOBALUSERSTATE</code>](#Chat+event_GLOBALUSERSTATE), [<code>HOSTTARGET</code>](#Chat+event_HOSTTARGET), [<code>JOIN</code>](#Chat+event_JOIN), [<code>MODE</code>](#Chat+event_MODE), [<code>NAMES</code>](#Chat+event_NAMES), [<code>NAMES_END</code>](#Chat+event_NAMES_END), [<code>NOTICE</code>](#Chat+event_NOTICE), [<code>NOTICE/ROOM_MODS</code>](#Chat+event_NOTICE/ROOM_MODS), [<code>PART</code>](#Chat+event_PART), [<code>PRIVMSG</code>](#Chat+event_PRIVMSG), <code>Chat#event:PRIVMSG/CHEER</code>, [<code>ROOMSTATE</code>](#Chat+event_ROOMSTATE), [<code>USERNOTICE/RAID</code>](#Chat+event_USERNOTICE/RAID), [<code>USERNOTICE/RESUBSCRIPTION</code>](#Chat+event_USERNOTICE/RESUBSCRIPTION), [<code>USERNOTICE/RITUAL</code>](#Chat+event_USERNOTICE/RITUAL), [<code>USERNOTICE/SUBSCRIPTION</code>](#Chat+event_USERNOTICE/SUBSCRIPTION), [<code>USERNOTICE/SUBSCRIPTION_GIFT</code>](#Chat+event_USERNOTICE/SUBSCRIPTION_GIFT), [<code>USERSTATE</code>](#Chat+event_USERSTATE)  
+**Emits**: [<code>\*</code>](#Chat+event_*), [<code>CLEARCHAT</code>](#Chat+event_CLEARCHAT), [<code>CLEARCHAT/USER_BANNED</code>](#Chat+event_CLEARCHAT/USER_BANNED), [<code>GLOBALUSERSTATE</code>](#Chat+event_GLOBALUSERSTATE), [<code>HOSTTARGET</code>](#Chat+event_HOSTTARGET), [<code>JOIN</code>](#Chat+event_JOIN), [<code>MODE</code>](#Chat+event_MODE), [<code>NAMES</code>](#Chat+event_NAMES), [<code>NAMES_END</code>](#Chat+event_NAMES_END), [<code>NOTICE</code>](#Chat+event_NOTICE), [<code>NOTICE/ROOM_MODS</code>](#Chat+event_NOTICE/ROOM_MODS), [<code>PART</code>](#Chat+event_PART), [<code>PRIVMSG</code>](#Chat+event_PRIVMSG), [<code>PRIVMSG/CHEER</code>](#Chat+event_PRIVMSG/CHEER), [<code>ROOMSTATE</code>](#Chat+event_ROOMSTATE), [<code>USERNOTICE/RAID</code>](#Chat+event_USERNOTICE/RAID), [<code>USERNOTICE/RESUBSCRIPTION</code>](#Chat+event_USERNOTICE/RESUBSCRIPTION), [<code>USERNOTICE/RITUAL</code>](#Chat+event_USERNOTICE/RITUAL), [<code>USERNOTICE/SUBSCRIPTION</code>](#Chat+event_USERNOTICE/SUBSCRIPTION), [<code>USERNOTICE/SUBSCRIPTION_GIFT</code>](#Chat+event_USERNOTICE/SUBSCRIPTION_GIFT), [<code>USERSTATE</code>](#Chat+event_USERSTATE)  
 
 * [Chat](#Chat) ⇐ [<code>EventEmitter3</code>](external#external_EventEmitter3)
     * [new Chat(options)](#new_Chat_new)
@@ -246,6 +246,8 @@ Chat client
     * ["NOTICE"](#Chat+event_NOTICE)
     * ["USERSTATE"](#Chat+event_USERSTATE)
     * ["PRIVMSG"](#Chat+event_PRIVMSG)
+    * ["PRIVMSG/CHEER"](#Chat+event_PRIVMSG/CHEER)
+    * ["PRIVMSG/HOSTED"](#Chat+event_PRIVMSG/HOSTED)
     * ["USERNOTICE/RAID"](#Chat+event_USERNOTICE/RAID)
     * ["USERNOTICE/RESUBSCRIPTION"](#Chat+event_USERNOTICE/RESUBSCRIPTION)
     * ["USERNOTICE/RITUAL"](#Chat+event_USERNOTICE/RITUAL)
@@ -806,6 +808,16 @@ When a user joins a channel or sends a PRIVMSG to a channel.
 
 **Kind**: event emitted by [<code>Chat</code>](class#Chat)  
 **Mixes**: [<code>UserStateMessage</code>](mixin#UserStateMessage)  
+
+* * *
+
+<a name="Chat+event_PRIVMSG/CHEER"></a>
+
+### "PRIVMSG/CHEER"
+When a user cheers a channel.
+
+**Kind**: event emitted by [<code>Chat</code>](class#Chat)  
+**Mixes**: [<code>UserStateMessage</code>](mixin#UserStateMessage)  
 **Properties**
 
 <table>
@@ -816,9 +828,39 @@ When a user joins a channel or sends a PRIVMSG to a channel.
   </thead>
   <tbody>
 <tr>
-    <td>[event]</td><td><code>&#x27;CHEER&#x27;</code></td>
+    <td>event</td><td><code>&#x27;CHEER&#x27;</code></td>
     </tr><tr>
-    <td>[bits]</td><td><code>number</code></td>
+    <td>bits</td><td><code>number</code></td>
+    </tr>  </tbody>
+</table>
+
+
+* * *
+
+<a name="Chat+event_PRIVMSG/HOSTED"></a>
+
+### "PRIVMSG/HOSTED"
+When a user hosts your channel while connected as broadcaster.
+
+**Kind**: event emitted by [<code>Chat</code>](class#Chat)  
+**Mixes**: [<code>UserStateMessage</code>](mixin#UserStateMessage)  
+**Properties**
+
+<table>
+  <thead>
+    <tr>
+      <th>Name</th><th>Type</th>
+    </tr>
+  </thead>
+  <tbody>
+<tr>
+    <td>event</td><td><code>&#x27;HOSTED/WITH_VIEWERS&#x27;</code> | <code>&#x27;HOSTED/WITHOUT_VIEWERS&#x27;</code></td>
+    </tr><tr>
+    <td>tags</td><td><code>Object</code></td>
+    </tr><tr>
+    <td>tags.displayName</td><td><code>string</code></td>
+    </tr><tr>
+    <td>[numberOfViewers]</td><td><code>number</code></td>
     </tr>  </tbody>
 </table>
 

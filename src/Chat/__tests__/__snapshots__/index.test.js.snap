@@ -769,7 +769,7 @@ Object {
 }
 `;
 
-exports[`Chat should handle messages PRIVMSG CHEER 1`] = `
+exports[`Chat should handle messages PRIVMSG BITS 1`] = `
 Object {
   "_raw": "@badges=staff/1,bits/1000;bits=100;color=;display-name=dallas;emotes=;id=b34ccfc7-4977-403a-8a94-33c6bac34fb8;mod=0;room-id=1337;subscriber=0;tmi-sent-ts=1507246572675;turbo=1;user-id=1337;user-type=staff :ronni!ronni@ronni.tmi.twitch.tv PRIVMSG #dallas :cheer100",
   "bits": 100,
@@ -805,7 +805,39 @@ Object {
 }
 `;
 
-exports[`Chat should handle messages PRIVMSG PRIVMSG 1`] = `
+exports[`Chat should handle messages PRIVMSG HOSTED_WITH_VIEWERS 1`] = `
+Object {
+  "_raw": ":jtv!~jtv@jtv.tmi.twitch.tv PRIVMSG #dallas :ronnie is now hosting you for 123 viewers.",
+  "channel": "#dallas",
+  "command": "PRIVMSG",
+  "event": "HOSTED/WITH_VIEWERS",
+  "isSelf": false,
+  "message": "ronnie is now hosting you for 123 viewers.",
+  "numberOfViewers": 123,
+  "tags": Object {
+    "displayName": "ronnie",
+  },
+  "timestamp": 2018-01-01T00:00:00.000Z,
+}
+`;
+
+exports[`Chat should handle messages PRIVMSG HOSTED_WITHOUT_VIEWERS 1`] = `
+Object {
+  "_raw": ":jtv!jtv@jtv.tmi.twitch.tv PRIVMSG dallas :ronni is now hosting you.",
+  "channel": "#dallas",
+  "command": "PRIVMSG",
+  "event": "HOSTED/WITHOUT_VIEWERS",
+  "isSelf": false,
+  "message": "ronni is now hosting you.",
+  "numberOfViewers": undefined,
+  "tags": Object {
+    "displayName": "ronni",
+  },
+  "timestamp": 2018-01-01T00:00:00.000Z,
+}
+`;
+
+exports[`Chat should handle messages PRIVMSG NON_BITS 1`] = `
 Object {
   "_raw": "@badges=global_mod/1,turbo/1;color=#0D4200;display-name=dallas;emotes=25:0-4,12-16/1902:6-10;id=b34ccfc7-4977-403a-8a94-33c6bac34fb8;mod=0;room-id=1337;subscriber=0;tmi-sent-ts=1507246572675;turbo=1;user-id=1337;user-type=global_mod :ronni!ronni@ronni.tmi.twitch.tv PRIVMSG #dallas :Kappa Keepo Kappa",
   "channel": "#dallas",

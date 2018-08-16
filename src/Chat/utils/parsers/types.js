@@ -1,4 +1,4 @@
-import { gt, isFinite, replace } from 'lodash'
+import { isFinite, replace } from 'lodash'
 
 const generalString = maybeMessage => {
   return typeof maybeMessage === 'string'
@@ -74,12 +74,6 @@ const emoteSets = maybeEmoteSets => {
     : undefined
 }
 
-const cheerEvent = maybeBits => {
-  return gt(maybeBits, 0)
-    ? { event: 'CHEER', bits: parseInt(maybeBits, 10) }
-    : {}
-}
-
 const mods = message => {
   const [, modList] = message.split(': ')
   return modList.split(', ')
@@ -95,6 +89,5 @@ export {
   badges,
   emotes,
   emoteSets,
-  cheerEvent,
   mods,
 }

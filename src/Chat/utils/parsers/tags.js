@@ -1,4 +1,4 @@
-import { camelCase, toLower, toUpper } from 'lodash'
+import { camelCase, gt, toLower, toUpper } from 'lodash'
 
 import * as constants from '../../constants'
 import * as types from './types'
@@ -38,6 +38,12 @@ const globalUserState = tags => ({
  * @see https://dev.twitch.tv/docs/irc/tags#privmsg-twitch-tags
  */
 const privateMessage = (...args) => userState(...args)
+
+const privateMessageCheerEvent = tags => {
+  return gt(tags.bits, 0)
+    ? { event: constants.EVENTS.CHEER, bits: parseInt(tags.bits, 10) }
+    : {}
+}
 
 /**
  * ROOMSTATE Tag
@@ -135,6 +141,7 @@ export {
   clearChat,
   globalUserState,
   privateMessage,
+  privateMessageCheerEvent,
   roomState,
   userNotice,
   userNoticeMessageParameters,

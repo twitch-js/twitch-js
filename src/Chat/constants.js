@@ -40,6 +40,7 @@ export const MESSAGE_PARAMETER_PREFIX = 'msgParam'
 export const MESSAGE_PARAMETER_PREFIX_RE = new RegExp(
   `^${MESSAGE_PARAMETER_PREFIX}(\\w+)`,
 )
+export const PRIVATE_MESSAGE_HOSTED_RE = /:.+@jtv\.tmi\.twitch\.tv PRIVMSG #?(\w+) :(\w+)[[A-z\s]+(\d+)?/
 
 /** @typedef {string} ClientReadyState */
 /**
@@ -183,8 +184,10 @@ export const EVENTS = {
 
   USER_BANNED: 'USER_BANNED',
 
-  CHANNEL_HOSTED: 'CHANNEL_HOSTED',
-  CHANNEL_HOSTED_STOPPED: 'CHANNEL_HOSTED_STOPPED',
+  CHEER: 'CHEER',
+  HOSTED: 'HOSTED',
+  HOSTED_WITHOUT_VIEWERS: 'HOSTED/WITHOUT_VIEWERS',
+  HOSTED_WITH_VIEWERS: 'HOSTED/WITH_VIEWERS',
 }
 
 // See https://help.twitch.tv/customer/en/portal/articles/659095-chat-moderation-commands.
