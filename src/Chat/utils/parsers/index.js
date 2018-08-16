@@ -344,7 +344,7 @@ const privateMessage = baseMessage => {
     }
   }
 
-  const [isHostingPrivateMessage, channel, displayName] =
+  const [isHostingPrivateMessage, channel, displayName, numberOfViewers] =
     constants.PRIVATE_MESSAGE_HOSTED_RE.exec(_raw) || []
 
   if (isHostingPrivateMessage) {
@@ -361,7 +361,10 @@ const privateMessage = baseMessage => {
       ...baseMessage,
       tags: { displayName },
       channel: `#${channel}`,
-      event: constants.EVENTS.HOSTED,
+      event: numberOfViewers
+        ? constants.EVENTS.HOSTED_WITH_VIEWERS
+        : constants.EVENTS.HOSTED_WITHOUT_VIEWERS,
+      numberOfViewers: typeParsers.generalNumber(numberOfViewers),
     }
   }
 

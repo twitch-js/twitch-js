@@ -805,14 +805,31 @@ Object {
 }
 `;
 
-exports[`Chat should handle messages PRIVMSG HOSTED 1`] = `
+exports[`Chat should handle messages PRIVMSG HOSTED_WITH_VIEWERS 1`] = `
+Object {
+  "_raw": ":jtv!~jtv@jtv.tmi.twitch.tv PRIVMSG #dallas :ronnie is now hosting you for 123 viewers.",
+  "channel": "#dallas",
+  "command": "PRIVMSG",
+  "event": "HOSTED/WITH_VIEWERS",
+  "isSelf": false,
+  "message": "ronnie is now hosting you for 123 viewers.",
+  "numberOfViewers": 123,
+  "tags": Object {
+    "displayName": "ronnie",
+  },
+  "timestamp": 2018-01-01T00:00:00.000Z,
+}
+`;
+
+exports[`Chat should handle messages PRIVMSG HOSTED_WITHOUT_VIEWERS 1`] = `
 Object {
   "_raw": ":jtv!jtv@jtv.tmi.twitch.tv PRIVMSG dallas :ronni is now hosting you.",
   "channel": "#dallas",
   "command": "PRIVMSG",
-  "event": "HOSTED",
+  "event": "HOSTED/WITHOUT_VIEWERS",
   "isSelf": false,
   "message": "ronni is now hosting you.",
+  "numberOfViewers": undefined,
   "tags": Object {
     "displayName": "ronni",
   },
