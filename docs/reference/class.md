@@ -854,11 +854,13 @@ When a user hosts your channel while connected as broadcaster.
   </thead>
   <tbody>
 <tr>
-    <td>event</td><td><code>&#x27;HOSTED&#x27;</code></td>
+    <td>event</td><td><code>&#x27;HOSTED/WITH_VIEWERS&#x27;</code> | <code>&#x27;HOSTED/WITHOUT_VIEWERS&#x27;</code></td>
     </tr><tr>
     <td>tags</td><td><code>Object</code></td>
     </tr><tr>
     <td>tags.displayName</td><td><code>string</code></td>
+    </tr><tr>
+    <td>[numberOfViewers]</td><td><code>number</code></td>
     </tr>  </tbody>
 </table>
 
