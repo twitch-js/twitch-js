@@ -805,6 +805,22 @@ Object {
 }
 `;
 
+exports[`Chat should handle messages PRIVMSG HOSTED_AUTO 1`] = `
+Object {
+  "_raw": ":jtv!jtv@jtv.tmi.twitch.tv PRIVMSG #channel :Username is now auto hosting you for up to 22 viewers.",
+  "channel": "#channel",
+  "command": "PRIVMSG",
+  "event": "HOSTED/AUTO",
+  "isSelf": false,
+  "message": "Username is now auto hosting you for up to 22 viewers.",
+  "numberOfViewers": 22,
+  "tags": Object {
+    "displayName": "Username",
+  },
+  "timestamp": 2018-01-01T00:00:00.000Z,
+}
+`;
+
 exports[`Chat should handle messages PRIVMSG HOSTED_WITH_VIEWERS 1`] = `
 Object {
   "_raw": ":jtv!~jtv@jtv.tmi.twitch.tv PRIVMSG #dallas :ronnie is now hosting you for 123 viewers.",
