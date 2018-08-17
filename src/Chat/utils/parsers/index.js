@@ -358,7 +358,7 @@ const privateMessage = baseMessage => {
      * When a user hosts your channel while connected as broadcaster.
      * @event Chat#PRIVMSG/HOSTED
      * @mixes UserStateMessage PrivateMessage
-     * @property {'HOSTED/WITH_VIEWERS'|'HOSTED/WITHOUT_VIEWERS'} event
+     * @property {'HOSTED/WITH_VIEWERS'|'HOSTED/WITHOUT_VIEWERS'|'HOSTED/AUTO'} event
      * @property {Object} tags
      * @property {string} tags.displayName
      * @property {number} [numberOfViewers]

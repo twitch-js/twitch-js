@@ -1,8 +1,12 @@
+require('any-observable/register')('symbol-observable')
+
 const fs = require('fs')
 const path = require('path')
 
 const jsdoc2md = require('jsdoc-to-markdown')
 const groupBy = require('lodash/groupBy')
+
+const Listr = require('listr')
 
 // Paths and files.
 const inputFile = 'src/**/*.js'
@@ -11,6 +15,7 @@ const partials = fs.readdirSync(`${__dirname}/partials`)
 
 const titleMap = {
   class: 'Classes',
+  constructor: 'Constructors',
   mixin: 'Mixins',
   member: 'Members',
   namespace: 'Objects',
@@ -44,22 +49,33 @@ const templateData = jsdoc2md.getTemplateDataSync({
 // Group template data by kind.
 const templateDataByKind = groupBy(templateData, 'kind')
 
-// Create a documentation file for each kind.
-Object.keys(templateDataByKind).forEach(kind => {
-  const template = createTemplate({
-    kind,
-    title: titleMap[kind],
-    sidebarLabel: titleMap[kind],
-  })
-  console.log(`Rendering ${kind}`)
+const tasks = new Listr(
+  // Create a documentation file for each kind.
+  Object.keys(templateDataByKind).map(kind => {
+    const title = titleMap[kind]
 
-  const output = jsdoc2md.renderSync({
-    data: templateData,
-    template: template,
-    'no-gfm': true,
-    separators: true,
-    partial: partials.map(partial => `${__dirname}/partials/${partial}`),
-    helper: `${__dirname}/helpers.js`,
-  })
-  fs.writeFileSync(path.resolve(outputDir, `${kind}.md`), output)
-})
+    const template = createTemplate({
+      kind,
+      title,
+      sidebarLabel: titleMap[kind],
+    })
+
+    return {
+      title: `Generating docs for ${title.toLowerCase()}`,
+      task: (ctx, task) => {
+        const output = jsdoc2md.renderSync({
+          data: templateData,
+          template: template,
+          'no-gfm': true,
+          separators: true,
+          partial: partials.map(partial => `${__dirname}/partials/${partial}`),
+          helper: `${__dirname}/helpers.js`,
+        })
+        fs.writeFileSync(path.resolve(outputDir, `${kind}.md`), output)
+        task.title = `Generated docs for ${title.toLowerCase()}`
+      },
+    }
+  }),
+)
+
+tasks.run()
