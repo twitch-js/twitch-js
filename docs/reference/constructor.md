@@ -1,6 +1,6 @@
 ---
 id: constructor
-title: function Object() { [native code] }
-sidebar_label: function Object() { [native code] }
+title: Constructors
+sidebar_label: Constructors
 ---
 

@@ -805,17 +805,33 @@ Object {
 }
 `;
 
+exports[`Chat should handle messages PRIVMSG HOSTED_AUTO 1`] = `
+Object {
+  "_raw": ":jtv!jtv@jtv.tmi.twitch.tv PRIVMSG #dallas :ronni is now auto hosting you for up to 456 viewers.",
+  "channel": "#dallas",
+  "command": "PRIVMSG",
+  "event": "HOSTED/AUTO",
+  "isSelf": false,
+  "message": "ronni is now auto hosting you for up to 456 viewers.",
+  "numberOfViewers": 456,
+  "tags": Object {
+    "displayName": "ronni",
+  },
+  "timestamp": 2018-01-01T00:00:00.000Z,
+}
+`;
+
 exports[`Chat should handle messages PRIVMSG HOSTED_WITH_VIEWERS 1`] = `
 Object {
-  "_raw": ":jtv!~jtv@jtv.tmi.twitch.tv PRIVMSG #dallas :ronnie is now hosting you for 123 viewers.",
+  "_raw": ":jtv!~jtv@jtv.tmi.twitch.tv PRIVMSG #dallas :ronni is now hosting you for 123 viewers.",
   "channel": "#dallas",
   "command": "PRIVMSG",
   "event": "HOSTED/WITH_VIEWERS",
   "isSelf": false,
-  "message": "ronnie is now hosting you for 123 viewers.",
+  "message": "ronni is now hosting you for 123 viewers.",
   "numberOfViewers": 123,
   "tags": Object {
-    "displayName": "ronnie",
+    "displayName": "ronni",
   },
   "timestamp": 2018-01-01T00:00:00.000Z,
 }

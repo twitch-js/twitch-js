@@ -344,7 +344,13 @@ const privateMessage = baseMessage => {
     }
   }
 
-  const [isHostingPrivateMessage, channel, displayName, numberOfViewers] =
+  const [
+    isHostingPrivateMessage,
+    channel,
+    displayName,
+    isAuto,
+    numberOfViewers,
+  ] =
     constants.PRIVATE_MESSAGE_HOSTED_RE.exec(_raw) || []
 
   if (isHostingPrivateMessage) {
@@ -352,7 +358,7 @@ const privateMessage = baseMessage => {
      * When a user hosts your channel while connected as broadcaster.
      * @event Chat#PRIVMSG/HOSTED
      * @mixes UserStateMessage PrivateMessage
-     * @property {'HOSTED/WITH_VIEWERS'|'HOSTED/WITHOUT_VIEWERS'} event
+     * @property {'HOSTED/WITH_VIEWERS'|'HOSTED/WITHOUT_VIEWERS'|'HOSTED/AUTO'} event
      * @property {Object} tags
      * @property {string} tags.displayName
      * @property {number} [numberOfViewers]
@@ -362,9 +368,11 @@ const privateMessage = baseMessage => {
       ...baseMessage,
       tags: { displayName },
       channel: `#${channel}`,
-      event: numberOfViewers
-        ? constants.EVENTS.HOSTED_WITH_VIEWERS
-        : constants.EVENTS.HOSTED_WITHOUT_VIEWERS,
+      event: isAuto
+        ? constants.EVENTS.HOSTED_AUTO
+        : numberOfViewers
+          ? constants.EVENTS.HOSTED_WITH_VIEWERS
+          : constants.EVENTS.HOSTED_WITHOUT_VIEWERS,
       numberOfViewers: typeParsers.generalNumber(numberOfViewers),
     }
   }
