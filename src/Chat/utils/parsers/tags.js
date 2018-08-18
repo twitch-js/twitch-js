@@ -115,7 +115,7 @@ const userNoticeEvent = tags => {
  * USERSTATE tags
  * @typedef {Object} UserStateTags
  * @property {BadgesTag} badges
- * @property {Object<number, EmoteTag>} emotes
+ * @property {Array<EmoteTag>} emotes
  * @property {Array<string>} emoteSets
  * @property {boolean} isModerator
  * @property {boolean} isSubscriber

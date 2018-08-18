@@ -49,23 +49,29 @@ const badges = maybeBadges => {
 }
 
 const emotes = maybeEmotes => {
+  if (typeof maybeEmotes !== 'string') {
+    return []
+  }
+
   /**
    * Emote tag
    * @typedef {Object} EmoteTag
-   * @property {number} start
-   * @property {number} end
+   * @property {string} id ID
+   * @property {number} start Starting index
+   * @property {number} end Ending index
    * @see https://dev.twitch.tv/docs/irc/tags/#privmsg-twitch-tags
    */
-  return typeof maybeEmotes === 'string'
-    ? maybeEmotes.split('/').reduce((parsed, emote) => {
-        const [key, value] = emote.split(':')
-        const [start, end] = value.split('-')
-        return {
-          ...parsed,
-          [key]: { start: parseInt(start, 10), end: parseInt(end, 10) },
-        }
-      }, {})
-    : {}
+  return maybeEmotes.split('/').reduce((emoteTag, emoteIndices) => {
+    const [id, indices] = emoteIndices.split(':')
+
+    return [
+      ...emoteTag,
+      ...indices.split(',').map(index => {
+        const [start, end] = index.split('-')
+        return { id, start: parseInt(start, 10), end: parseInt(end, 10) }
+      }),
+    ]
+  }, [])
 }
 
 const emoteSets = maybeEmoteSets => {
