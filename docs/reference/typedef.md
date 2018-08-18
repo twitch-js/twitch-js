@@ -292,7 +292,7 @@ USERSTATE tags
 <tr>
     <td>badges</td><td><code><a href="typedef#BadgesTag">BadgesTag</a></code></td>
     </tr><tr>
-    <td>emotes</td><td><code>Object.&lt;number, EmoteTag&gt;</code></td>
+    <td>emotes</td><td><code><a href="typedef#EmoteTag">Array.&lt;EmoteTag&gt;</a></code></td>
     </tr><tr>
     <td>emoteSets</td><td><code>Array.&lt;string&gt;</code></td>
     </tr><tr>
@@ -361,14 +361,19 @@ Emote tag
 <table>
   <thead>
     <tr>
-      <th>Name</th><th>Type</th>
+      <th>Name</th><th>Type</th><th>Description</th>
     </tr>
   </thead>
   <tbody>
 <tr>
-    <td>start</td><td><code>number</code></td>
+    <td>id</td><td><code>string</code></td><td><p>ID</p>
+</td>
     </tr><tr>
-    <td>end</td><td><code>number</code></td>
+    <td>start</td><td><code>number</code></td><td><p>Starting index</p>
+</td>
+    </tr><tr>
+    <td>end</td><td><code>number</code></td><td><p>Ending index</p>
+</td>
     </tr>  </tbody>
 </table>
 
