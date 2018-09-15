@@ -43,7 +43,7 @@ class Queue extends BetterQueue {
   }
 
   push({ fn, priority, weight }) {
-    super
+    return super
       .push({ fn, priority })
       .on('accepted', this.incrementRateLimiter(weight))
   }
