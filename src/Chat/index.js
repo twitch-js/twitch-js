@@ -38,6 +38,8 @@ import * as validators from './utils/validators'
  * @emits Chat#PRIVMSG
  * @emits Chat#PRIVMSG/CHEER
  * @emits Chat#ROOMSTATE
+ * @emits Chat#USERNOTICE
+ * @emits Chat#USERNOTICE/GIFT_PAID_UPGRADE
  * @emits Chat#USERNOTICE/RAID
  * @emits Chat#USERNOTICE/RESUBSCRIPTION
  * @emits Chat#USERNOTICE/RITUAL

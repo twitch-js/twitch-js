@@ -80,6 +80,7 @@ const userNoticeMessageParameters = tags =>
       // Numbers.
       case 'Months':
       case 'MassGiftCount':
+      case 'PromoGiftTotal':
       case 'SenderCount':
       case 'ViewerCount':
         return { ...parameters, [camelCase(param)]: types.generalNumber(value) }
@@ -94,6 +95,8 @@ const userNoticeMessageParameters = tags =>
 
 const userNoticeEvent = tags => {
   switch (tags.msgId) {
+    case constants.USER_NOTICE_MESSAGE_IDS.GIFT_PAID_UPGRADE:
+      return constants.EVENTS.GIFT_PAID_UPGRADE
     case constants.USER_NOTICE_MESSAGE_IDS.RESUBSCRIPTION:
       return constants.EVENTS.RESUBSCRIPTION
     case constants.USER_NOTICE_MESSAGE_IDS.RAID:
