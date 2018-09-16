@@ -228,7 +228,7 @@ class Chat extends EventEmitter {
    * @param {string} message - Message to send.
    */
   send(message) {
-    this._client.send(message)
+    return this._client.send(message)
   }
 
   /**
@@ -317,15 +317,17 @@ class Chat extends EventEmitter {
       },
     )
 
-    this.send(`${constants.COMMANDS.JOIN} ${channel}`)
+    const send = this.send(`${constants.COMMANDS.JOIN} ${channel}`)
 
-    return Promise.race([
-      utils.delayReject(
-        this.options.joinTimeout,
-        new Errors.TimeoutError(constants.ERROR_JOIN_TIMED_OUT),
-      ),
-      join,
-    ])
+    return send.then(() =>
+      Promise.race([
+        utils.delayReject(
+          this.options.joinTimeout,
+          new Errors.TimeoutError(constants.ERROR_JOIN_TIMED_OUT),
+        ),
+        join,
+      ])
+    )
   }
 
   /**
@@ -355,15 +357,17 @@ class Chat extends EventEmitter {
 
     const say = Promise.all([this.connect, userState])
 
-    this.send(`${constants.COMMANDS.PRIVATE_MESSAGE} ${channel} :${message}`)
+    const send = this.send(`${constants.COMMANDS.PRIVATE_MESSAGE} ${channel} :${message}`)
 
-    return Promise.race([
-      utils.delayReject(
-        this.options.joinTimeout,
-        constants.ERROR_SAY_TIMED_OUT,
-      ),
-      say,
-    ])
+    return send.then(() =>
+      Promise.race([
+        utils.delayReject(
+          this.options.joinTimeout,
+          constants.ERROR_SAY_TIMED_OUT,
+        ),
+        say,
+      ])
+    )
   }
 
   /**
@@ -373,9 +377,7 @@ class Chat extends EventEmitter {
    * @return {Promise<undefined>}
    */
   whisper(user, message) {
-    this.send(`${constants.COMMANDS.WHISPER} :/w ${user} ${message}`)
-
-    return Promise.resolve()
+    return this.send(`${constants.COMMANDS.WHISPER} :/w ${user} ${message}`)
   }
 
   /**
