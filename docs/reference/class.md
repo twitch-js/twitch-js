@@ -218,7 +218,7 @@ Chat client
 
 **Kind**: global class  
 **Extends**: [<code>EventEmitter3</code>](external#external_EventEmitter3)  
-**Emits**: [<code>\*</code>](#Chat+event_*), [<code>CLEARCHAT</code>](#Chat+event_CLEARCHAT), [<code>CLEARCHAT/USER_BANNED</code>](#Chat+event_CLEARCHAT/USER_BANNED), [<code>GLOBALUSERSTATE</code>](#Chat+event_GLOBALUSERSTATE), [<code>HOSTTARGET</code>](#Chat+event_HOSTTARGET), [<code>JOIN</code>](#Chat+event_JOIN), [<code>MODE</code>](#Chat+event_MODE), [<code>NAMES</code>](#Chat+event_NAMES), [<code>NAMES_END</code>](#Chat+event_NAMES_END), [<code>NOTICE</code>](#Chat+event_NOTICE), [<code>NOTICE/ROOM_MODS</code>](#Chat+event_NOTICE/ROOM_MODS), [<code>PART</code>](#Chat+event_PART), [<code>PRIVMSG</code>](#Chat+event_PRIVMSG), [<code>PRIVMSG/CHEER</code>](#Chat+event_PRIVMSG/CHEER), [<code>ROOMSTATE</code>](#Chat+event_ROOMSTATE), [<code>USERNOTICE/RAID</code>](#Chat+event_USERNOTICE/RAID), [<code>USERNOTICE/RESUBSCRIPTION</code>](#Chat+event_USERNOTICE/RESUBSCRIPTION), [<code>USERNOTICE/RITUAL</code>](#Chat+event_USERNOTICE/RITUAL), [<code>USERNOTICE/SUBSCRIPTION</code>](#Chat+event_USERNOTICE/SUBSCRIPTION), [<code>USERNOTICE/SUBSCRIPTION_GIFT</code>](#Chat+event_USERNOTICE/SUBSCRIPTION_GIFT), [<code>USERSTATE</code>](#Chat+event_USERSTATE)  
+**Emits**: [<code>\*</code>](#Chat+event_*), [<code>CLEARCHAT</code>](#Chat+event_CLEARCHAT), [<code>CLEARCHAT/USER_BANNED</code>](#Chat+event_CLEARCHAT/USER_BANNED), [<code>GLOBALUSERSTATE</code>](#Chat+event_GLOBALUSERSTATE), [<code>HOSTTARGET</code>](#Chat+event_HOSTTARGET), [<code>JOIN</code>](#Chat+event_JOIN), [<code>MODE</code>](#Chat+event_MODE), [<code>NAMES</code>](#Chat+event_NAMES), [<code>NAMES_END</code>](#Chat+event_NAMES_END), [<code>NOTICE</code>](#Chat+event_NOTICE), [<code>NOTICE/ROOM_MODS</code>](#Chat+event_NOTICE/ROOM_MODS), [<code>PART</code>](#Chat+event_PART), [<code>PRIVMSG</code>](#Chat+event_PRIVMSG), [<code>PRIVMSG/CHEER</code>](#Chat+event_PRIVMSG/CHEER), [<code>ROOMSTATE</code>](#Chat+event_ROOMSTATE), <code>Chat#event:USERNOTICE</code>, [<code>USERNOTICE/GIFT_PAID_UPGRADE</code>](#Chat+event_USERNOTICE/GIFT_PAID_UPGRADE), [<code>USERNOTICE/RAID</code>](#Chat+event_USERNOTICE/RAID), [<code>USERNOTICE/RESUBSCRIPTION</code>](#Chat+event_USERNOTICE/RESUBSCRIPTION), [<code>USERNOTICE/RITUAL</code>](#Chat+event_USERNOTICE/RITUAL), [<code>USERNOTICE/SUBSCRIPTION</code>](#Chat+event_USERNOTICE/SUBSCRIPTION), [<code>USERNOTICE/SUBSCRIPTION_GIFT</code>](#Chat+event_USERNOTICE/SUBSCRIPTION_GIFT), [<code>USERSTATE</code>](#Chat+event_USERSTATE)  
 
 * [Chat](#Chat) ⇐ [<code>EventEmitter3</code>](external#external_EventEmitter3)
     * [new Chat(options)](#new_Chat_new)
@@ -249,6 +249,7 @@ Chat client
     * ["PRIVMSG"](#Chat+event_PRIVMSG)
     * ["PRIVMSG/CHEER"](#Chat+event_PRIVMSG/CHEER)
     * ["PRIVMSG/HOSTED"](#Chat+event_PRIVMSG/HOSTED)
+    * ["USERNOTICE/GIFT_PAID_UPGRADE"](#Chat+event_USERNOTICE/GIFT_PAID_UPGRADE)
     * ["USERNOTICE/RAID"](#Chat+event_USERNOTICE/RAID)
     * ["USERNOTICE/RESUBSCRIPTION"](#Chat+event_USERNOTICE/RESUBSCRIPTION)
     * ["USERNOTICE/RITUAL"](#Chat+event_USERNOTICE/RITUAL)
@@ -885,6 +886,40 @@ When a user hosts your channel while connected as broadcaster.
     <td>tags.displayName</td><td><code>string</code></td>
     </tr><tr>
     <td>[numberOfViewers]</td><td><code>number</code></td>
+    </tr>  </tbody>
+</table>
+
+
+* * *
+
+<a name="Chat+event_USERNOTICE/GIFT_PAID_UPGRADE"></a>
+
+### "USERNOTICE/GIFT_PAID_UPGRADE"
+On gifted subscription paid upgrade to a channel.
+
+**Kind**: event emitted by [<code>Chat</code>](class#Chat)  
+**Mixes**: [<code>UserStateMessage</code>](mixin#UserStateMessage)  
+**Properties**
+
+<table>
+  <thead>
+    <tr>
+      <th>Name</th><th>Type</th>
+    </tr>
+  </thead>
+  <tbody>
+<tr>
+    <td>event</td><td><code>&#x27;GIFT_PAID_UPGRADE&#x27;</code></td>
+    </tr><tr>
+    <td>parameters</td><td><code>Object</code></td>
+    </tr><tr>
+    <td>parameters.promoGiftTotal</td><td><code>number</code></td>
+    </tr><tr>
+    <td>parameters.promoName</td><td><code>string</code></td>
+    </tr><tr>
+    <td>parameters.senderLogin</td><td><code>string</code></td>
+    </tr><tr>
+    <td>parameters.senderName</td><td><code>string</code></td>
     </tr>  </tbody>
 </table>
 

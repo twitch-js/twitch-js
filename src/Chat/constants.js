@@ -141,6 +141,7 @@ export const NOTICE_MESSAGE_IDS = {
 
 // See https://dev.twitch.tv/docs/irc/tags#usernotice-twitch-tags.
 export const USER_NOTICE_MESSAGE_IDS = {
+  GIFT_PAID_UPGRADE: 'giftpaidupgrade',
   RAID: 'raid',
   RESUBSCRIPTION: 'resub',
   RITUAL: 'ritual',
@@ -172,6 +173,7 @@ export const EVENTS = {
   ERROR_ENCOUNTERED: 'ERROR_ENCOUNTERED',
   PARSE_ERROR_ENCOUNTERED: 'PARSE_ERROR_ENCOUNTERED',
 
+  GIFT_PAID_UPGRADE: 'GIFT_PAID_UPGRADE',
   RAID: 'RAID',
   RESUBSCRIPTION: 'RESUBSCRIPTION',
   RITUAL: 'RITUAL',
