@@ -9,12 +9,14 @@ import * as typeParsers from './types'
 import * as tagParsers from './tags'
 
 const base = rawMessages => {
-  const rawMessagesV = rawMessages
-    .replace(/[\r\n]+/g, '\n')
-    .replace(/\n+$/g, '')
-    .split(/\n/g)
+  const rawMessagesV = rawMessages.split(/\r?\n/g)
+  const messages = []
 
-  return rawMessagesV.map(rawMessage => {
+  rawMessagesV.forEach(rawMessage => {
+    if (!rawMessage.length) {
+      return
+    }
+
     const { raw, tags, command, params: [channel, message] } = parse(rawMessage)
 
     /**
@@ -28,7 +30,7 @@ const base = rawMessages => {
      * @property {string} [message] Message
      * @property {string} [event] Associated event
      */
-    return {
+    messages.push({
       _raw: raw,
       timestamp: typeParsers.generalTimestamp(
         parseInt(tags['tmi-sent-ts'], 10),
@@ -37,8 +39,10 @@ const base = rawMessages => {
       channel: channel !== '*' ? channel : '',
       tags: isEmpty(tags) ? {} : camelcaseKeys(tags),
       message,
-    }
+    })
   })
+
+  return messages
 }
 
 const joinOrPartMessage = baseMessage => {
