@@ -51,10 +51,14 @@ class Client extends EventEmitter {
   send(message, { priority, ...weighProps } = {}) {
     const fn = this.ws.send.bind(this.ws, message)
 
-    this.queue.push({
+    const task = this.queue.push({
       fn,
       priority,
       weight: utils.getMessageQueueWeight(weighProps),
+    })
+
+    return new Promise((resolve, reject) => {
+      task.on('accepted', resolve).on('failed', reject)
     })
   }
 

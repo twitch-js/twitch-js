@@ -903,6 +903,55 @@ Object {
 }
 `;
 
+exports[`Chat should handle messages USERNOTICE GIFT_PAID_UPGRADE 1`] = `
+Object {
+  "_raw": "@badges=subscriber/0,premium/1;color=#8A2BE2;display-name=ElizabethSwann;emotes=;id=5bd3e064-c1e4-451b-9d7e-afe8cf5a44a2;login=elizabethswann;mod=0;msg-id=giftpaidupgrade;msg-param-promo-gift-total=123816;msg-param-promo-name=Subtember;msg-param-sender-login=cannibulcake;msg-param-sender-name=CannibulCake;room-id=7236692;subscriber=1;system-msg=ElizabethSwann\\\\sis\\\\scontinuing\\\\sthe\\\\sGift\\\\sSub\\\\sthey\\\\sgot\\\\sfrom\\\\sCannibulCake!\\\\sThey're\\\\sone\\\\sof\\\\s123816\\\\sgift\\\\ssubs\\\\sto\\\\scontinue\\\\sthis\\\\sSubtember.;tmi-sent-ts=1536880884587;turbo=0;user-id=85946347;user-type= :tmi.twitch.tv USERNOTICE #dansgaming",
+  "channel": "#dansgaming",
+  "command": "USERNOTICE",
+  "event": "GIFT_PAID_UPGRADE",
+  "isSelf": false,
+  "message": undefined,
+  "parameters": Object {
+    "promoGiftTotal": 123816,
+    "promoName": "Subtember",
+    "senderLogin": "cannibulcake",
+    "senderName": "CannibulCake",
+  },
+  "systemMessage": "ElizabethSwann is continuing the Gift Sub they got from CannibulCake! They're one of 123816 gift subs to continue this Subtember.",
+  "tags": Object {
+    "badges": Object {
+      "premium": 1,
+      "subscriber": 0,
+    },
+    "bits": undefined,
+    "color": "#8A2BE2",
+    "displayName": "ElizabethSwann",
+    "emoteSets": undefined,
+    "emotes": Array [],
+    "id": "5bd3e064-c1e4-451b-9d7e-afe8cf5a44a2",
+    "isModerator": false,
+    "isSubGifter": false,
+    "isSubscriber": true,
+    "isTurboSubscriber": false,
+    "login": "elizabethswann",
+    "mod": "0",
+    "msgId": "giftpaidupgrade",
+    "msgParamPromoGiftTotal": "123816",
+    "msgParamPromoName": "Subtember",
+    "msgParamSenderLogin": "cannibulcake",
+    "msgParamSenderName": "CannibulCake",
+    "roomId": "7236692",
+    "subscriber": "1",
+    "systemMsg": "ElizabethSwann is continuing the Gift Sub they got from CannibulCake! They're one of 123816 gift subs to continue this Subtember.",
+    "tmiSentTs": "1536880884587",
+    "turbo": "0",
+    "userId": "85946347",
+    "userType": undefined,
+  },
+  "timestamp": 2018-01-01T00:00:00.000Z,
+}
+`;
+
 exports[`Chat should handle messages USERNOTICE RAID 1`] = `
 Object {
   "_raw": "@badges=turbo/1;color=#9ACD32;display-name=TestChannel;emotes=;id=3d830f12-795c-447d-af3c-ea05e40fbddb;login=testchannel;mod=0;msg-id=raid;msg-param-displayName=TestChannel;msg-param-login=testchannel;msg-param-viewerCount=15;room-id=56379257;subscriber=0;system-msg=15\\\\sraiders\\\\sfrom\\\\sTestChannel\\\\shave\\\\sjoined\\\\n!;tmi-sent-ts=1507246572675;tmi-sent-ts=1507246572675;turbo=1;user-id=123456;user-type= :tmi.twitch.tv USERNOTICE #othertestchannel",
