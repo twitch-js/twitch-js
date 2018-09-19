@@ -328,7 +328,7 @@ class Chat extends EventEmitter {
           new Errors.TimeoutError(constants.ERROR_JOIN_TIMED_OUT),
         ),
         join,
-      ])
+      ]),
     )
   }
 
@@ -359,7 +359,9 @@ class Chat extends EventEmitter {
 
     const say = Promise.all([this.connect, userState])
 
-    const send = this.send(`${constants.COMMANDS.PRIVATE_MESSAGE} ${channel} :${message}`)
+    const send = this.send(
+      `${constants.COMMANDS.PRIVATE_MESSAGE} ${channel} :${message}`,
+    )
 
     return send.then(() =>
       Promise.race([
@@ -368,7 +370,7 @@ class Chat extends EventEmitter {
           constants.ERROR_SAY_TIMED_OUT,
         ),
         say,
-      ])
+      ]),
     )
   }
 
@@ -453,43 +455,55 @@ function handleMessage(baseMessage) {
 
   const preMessage = { ...baseMessage, isSelf }
 
+  let eventName = preMessage.command
+  let message = preMessage
+
   switch (preMessage.command) {
     case constants.EVENTS.JOIN: {
-      const message = parsers.joinOrPartMessage(preMessage)
-      this.emit(`${message.command}/${channel}`, message)
+      message = parsers.joinOrPartMessage(preMessage)
+      message.isSelf = true
+      eventName = `${message.command}/${channel}`
       break
     }
+
     case constants.EVENTS.PART: {
-      const message = parsers.joinOrPartMessage(preMessage)
-      this.emit(`${message.command}/${channel}`, message)
+      message = parsers.joinOrPartMessage(preMessage)
+      message.isSelf = true
+      eventName = `${message.command}/${channel}`
       break
     }
+
     case constants.EVENTS.NAMES: {
-      const message = parsers.namesMessage(preMessage)
-      this.emit(`${message.command}/${channel}`, message)
+      message = parsers.namesMessage(preMessage)
+      message.isSelf = true
+      eventName = `${message.command}/${channel}`
       break
     }
+
     case constants.EVENTS.NAMES_END: {
-      const message = parsers.namesEndMessage(preMessage)
-      this.emit(`${message.command}/${channel}`, message)
+      message = parsers.namesEndMessage(preMessage)
+      message.isSelf = true
+      eventName = `${message.command}/${channel}`
       break
     }
+
     case constants.EVENTS.CLEAR_CHAT: {
-      const message = parsers.clearChatMessage(preMessage)
-      const eventName = message.event
+      message = parsers.clearChatMessage(preMessage)
+      eventName = message.event
         ? `${message.command}/${message.event}/${channel}`
         : `${message.command}/${channel}`
+      break
+    }
 
-      this.emit(eventName, message)
-      break
-    }
     case constants.EVENTS.HOST_TARGET: {
-      const message = parsers.hostTargetMessage(preMessage)
-      this.emit(`${message.command}/${channel}`, message)
+      message = parsers.hostTargetMessage(preMessage)
+      eventName = `${message.command}/${channel}`
       break
     }
+
     case constants.EVENTS.MODE: {
-      const message = parsers.modeMessage(preMessage)
+      message = parsers.modeMessage(preMessage)
+      eventName = `${message.command}/${channel}`
 
       if (message.username === this.userState.username) {
         const channelState = this.getChannelState(channel)
@@ -502,60 +516,64 @@ function handleMessage(baseMessage) {
           },
         })
       }
-
-      this.emit(`${message.command}/${channel}`, message)
       break
     }
 
     case constants.EVENTS.GLOBAL_USER_STATE: {
-      const message = parsers.globalUserStateMessage(preMessage)
+      message = parsers.globalUserStateMessage(preMessage)
       this.userState = message.tags
-      this.emit(message.command, message)
       break
     }
+
     case constants.EVENTS.USER_STATE: {
-      const message = parsers.userStateMessage(preMessage)
+      message = parsers.userStateMessage(preMessage)
+      eventName = `${message.command}/${channel}`
+
       this.setChannelState(channel, {
         ...this.getChannelState(channel),
         userState: message.userState,
       })
-      this.emit(`${message.command}/${channel}`, message)
       break
     }
+
     case constants.EVENTS.ROOM_STATE: {
-      const message = parsers.roomStateMessage(preMessage)
+      message = parsers.roomStateMessage(preMessage)
+      eventName = `${message.command}/${channel}`
+
       this.setChannelState(channel, {
         ...this.getChannelState(channel),
         roomState: message.roomState,
       })
-      this.emit(`${message.command}/${channel}`, message)
       break
     }
+
     case constants.EVENTS.NOTICE: {
-      const message = parsers.noticeMessage(preMessage)
-      this.emit(`${message.command}/${message.event}/${channel}`, message)
+      message = parsers.noticeMessage(preMessage)
+      eventName = `${message.command}/${message.event}/${channel}`
       break
     }
+
     case constants.EVENTS.USER_NOTICE: {
-      const message = parsers.userNoticeMessage(preMessage)
-      this.emit(`${message.command}/${message.event}/${channel}`, message)
+      message = parsers.userNoticeMessage(preMessage)
+      eventName = `${message.command}/${message.event}/${channel}`
       break
     }
+
     case constants.EVENTS.PRIVATE_MESSAGE: {
-      const message = parsers.privateMessage(preMessage)
-      const eventName = message.event
+      message = parsers.privateMessage(preMessage)
+      eventName = message.event
         ? `${message.command}/${message.event}/${channel}`
         : `${message.command}/${channel}`
-      this.emit(eventName, message)
       break
     }
 
     default: {
       const command = chatUtils.getEventNameFromMessage(preMessage)
-      const eventName = channel === '#' ? command : `${command}/${channel}`
-      this.emit(eventName, preMessage)
+      eventName = channel === '#' ? command : `${command}/${channel}`
     }
   }
+
+  this.emit(eventName, message)
 }
 
 function handleDisconnect() {
