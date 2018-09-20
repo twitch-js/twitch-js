@@ -189,11 +189,13 @@ class Chat extends EventEmitter {
         // Increment connection attempts.
         this._connectionAttempts++
 
+        if (this._client) {
+          // Remove all listeners, just in case.
+          this._client.removeAllListeners()
+        }
+
         // Create client and connect.
         this._client = new Client(this.options)
-
-        // Remove all listeners, just in case.
-        this._client.removeAllListeners()
 
         // Handle messages.
         this._client.on(constants.EVENTS.ALL, handleMessage, this)
