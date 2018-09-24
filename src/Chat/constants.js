@@ -43,6 +43,7 @@ export const MESSAGE_PARAMETER_PREFIX_RE = new RegExp(
 export const PRIVATE_MESSAGE_HOSTED_RE = /:.+@jtv\.tmi\.twitch\.tv PRIVMSG #?(\w+) :(\w+) is now (?:(auto) )?hosting[A-z ]+(\d+)?/
 
 export const ANONYMOUS_USERNAME = 'justinfan'
+export const ANONYMOUS_USERNAME_RE = new RegExp(`^${ANONYMOUS_USERNAME}(\\d+)$`)
 
 /** @typedef {string} ClientReadyState */
 /**

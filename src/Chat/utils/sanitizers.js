@@ -9,7 +9,7 @@ function channel(value) {
     return value
   }
 
-  return `#${channel}`
+  return `#${value}`
 }
 
 function password(value) {
@@ -25,8 +25,8 @@ function password(value) {
 }
 
 function username(value) {
-  if (value == null) {
-    return `${ANONYMOUS_USERNAME}{Math.floor(Math.random() * 80000 + 1000)}`
+  if (value == null || value === 'justinfan') {
+    return `${ANONYMOUS_USERNAME}${Math.floor(Math.random() * 80000 + 1000)}`
   }
 
   return value
