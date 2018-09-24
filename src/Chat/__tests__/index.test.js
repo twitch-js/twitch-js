@@ -41,13 +41,17 @@ describe('Chat', () => {
     test('should connect as anonymous', async () => {
       const chat = new Chat({})
       const actual = await chat.connect()
+
       expect(actual).toMatchSnapshot()
+      expect(chat.readyState).toBe('CONNECTED')
     })
 
     test('should connect as authenticated', async () => {
       const chat = new Chat(options)
       const actual = await chat.connect()
+
       expect(actual).toMatchSnapshot()
+      expect(chat.readyState).toBe('CONNECTED')
     })
 
     test('should call onAuthenticationFailure', done => {
@@ -80,6 +84,14 @@ describe('Chat', () => {
         expect(chat.options.token).toEqual('TOKEN')
         done()
       })
+    })
+
+    test('should return the same promise', async () => {
+      const chat = new Chat(options)
+      const actual = chat.connect()
+      const expected = chat.connect()
+
+      expect(actual).toEqual(expected)
     })
   })
 
