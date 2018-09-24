@@ -986,6 +986,8 @@ Object {
 }
 `;
 
+exports[`Chat should handle messages PRIVMSG whisper when anonymous 1`] = `"Not authenticated"`;
+
 exports[`Chat should handle messages USERNOTICE GIFT_PAID_UPGRADE 1`] = `
 Object {
   "_raw": "@badges=subscriber/0,premium/1;color=#8A2BE2;display-name=ElizabethSwann;emotes=;id=5bd3e064-c1e4-451b-9d7e-afe8cf5a44a2;login=elizabethswann;mod=0;msg-id=giftpaidupgrade;msg-param-promo-gift-total=123816;msg-param-promo-name=Subtember;msg-param-sender-login=cannibulcake;msg-param-sender-name=CannibulCake;room-id=7236692;subscriber=1;system-msg=ElizabethSwann\\\\sis\\\\scontinuing\\\\sthe\\\\sGift\\\\sSub\\\\sthey\\\\sgot\\\\sfrom\\\\sCannibulCake!\\\\sThey're\\\\sone\\\\sof\\\\s123816\\\\sgift\\\\ssubs\\\\sto\\\\scontinue\\\\sthis\\\\sSubtember.;tmi-sent-ts=1536880884587;turbo=0;user-id=85946347;user-type= :tmi.twitch.tv USERNOTICE #dansgaming",
@@ -1434,3 +1436,5 @@ Object {
   },
 }
 `;
+
+exports[`Chat should throw when sending a message as anonymous 1`] = `"Not authenticated"`;

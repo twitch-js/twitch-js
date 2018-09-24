@@ -229,7 +229,7 @@ Chat client
     * [.reconnect([options])](#Chat+reconnect) ⇒ <code>Promise.&lt;Array.&lt;ChannelState&gt;, string&gt;</code>
     * [.join(channel)](#Chat+join) ⇒ <code>Promise.&lt;ChannelState, string&gt;</code>
     * [.part(channel)](#Chat+part)
-    * [.say(channel, message)](#Chat+say) ⇒ <code>Promise.&lt;UserStateMessage, string&gt;</code>
+    * [.say(channel, message)](#Chat+say) ⇒ <code>Promise.&lt;?UserStateMessage, string&gt;</code>
     * [.whisper(user, message)](#Chat+whisper) ⇒ <code>Promise.&lt;undefined&gt;</code>
     * [.broadcast(message)](#Chat+broadcast) ⇒ <code>Promise.&lt;Array.&lt;UserStateMessage&gt;&gt;</code>
     * ["*"](#Chat+event_*)
@@ -464,7 +464,7 @@ Depart from a channel.
 
 <a name="Chat+say"></a>
 
-### chat.say(channel, message) ⇒ <code>Promise.&lt;UserStateMessage, string&gt;</code>
+### chat.say(channel, message) ⇒ <code>Promise.&lt;?UserStateMessage, string&gt;</code>
 Send a message to a channel.
 
 **Kind**: instance method of [<code>Chat</code>](class#Chat)  

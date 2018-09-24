@@ -297,30 +297,32 @@ class Chat extends EventEmitter {
    */
   join(maybeChannel) {
     const channel = sanitizers.channel(maybeChannel)
+    const promises = [
+      this.connect,
+      utils.onceResolve(this, `${constants.COMMANDS.ROOM_STATE}/${channel}`),
+    ]
 
-    const roomState = utils.onceResolve(
-      this,
-      `${constants.COMMANDS.ROOM_STATE}/${channel}`,
-    )
+    if (!chatUtils.isAnonymousUsername(this.options.username)) {
+      promises.push(
+        utils.onceResolve(this, `${constants.COMMANDS.USER_STATE}/${channel}`),
+      )
+    }
 
-    const userState = utils.onceResolve(
-      this,
-      `${constants.COMMANDS.USER_STATE}/${channel}`,
-    )
+    const join = Promise.all(promises).then(([, roomState, userState]) => {
+      /**
+       * @typedef {Object} ChannelState
+       * Channel state information
+       * @property {RoomStateTags} roomState
+       * @property {?UserStateTags} userState
+       */
+      const channelState = {
+        roomState: roomState.tags,
+        userState: get(userState, 'tags', null),
+      }
 
-    const join = Promise.all([this.connect, roomState, userState]).then(
-      ([, { channel, tags: roomState }, { tags: userState }]) => {
-        /**
-         * @typedef {Object} ChannelState
-         * Channel state information
-         * @property {RoomStateTags} roomState
-         * @property {UserStateTags} userState
-         */
-        const channelState = { roomState, userState }
-        this.setChannelState(channel, channelState)
-        return channelState
-      },
-    )
+      this.setChannelState(roomState.channel, channelState)
+      return channelState
+    })
 
     const send = this.send(`${constants.COMMANDS.JOIN} ${channel}`)
 
@@ -350,17 +352,23 @@ class Chat extends EventEmitter {
    * Send a message to a channel.
    * @param {string} channel
    * @param {string} message
-   * @return {Promise<UserStateMessage, string>}
+   * @return {Promise<?UserStateMessage, string>}
    */
   say(maybeChannel, message) {
+    if (chatUtils.isAnonymousUsername(this.options.username)) {
+      throw new Error('Not authenticated')
+    }
+
     const channel = sanitizers.channel(maybeChannel)
+    const promises = [this.connect]
 
-    const userState = utils.onceResolve(
-      this,
-      `${constants.COMMANDS.USER_STATE}/${channel}`,
-    )
+    if (chatUtils.isAnonymousUsername(this.options.username)) {
+      promises.push(
+        utils.onceResolve(this, `${constants.COMMANDS.USER_STATE}/${channel}`),
+      )
+    }
 
-    const say = Promise.all([this.connect, userState])
+    const say = Promise.all(promises)
 
     const send = this.send(
       `${constants.COMMANDS.PRIVATE_MESSAGE} ${channel} :${message}`,
@@ -384,6 +392,10 @@ class Chat extends EventEmitter {
    * @return {Promise<undefined>}
    */
   whisper(user, message) {
+    if (chatUtils.isAnonymousUsername(this.options.username)) {
+      throw new Error('Not authenticated')
+    }
+
     return this.send(`${constants.COMMANDS.WHISPER} :/w ${user} ${message}`)
   }
 
@@ -393,6 +405,10 @@ class Chat extends EventEmitter {
    * @return {Promise<Array<UserStateMessage>>}
    */
   broadcast(message) {
+    if (chatUtils.isAnonymousUsername(this.options.username)) {
+      throw new Error('Not authenticated')
+    }
+
     return Promise.all(
       this.getChannels().map(channel => this.say(channel, message)),
     )

@@ -115,6 +115,15 @@ describe('Chat', () => {
     chat.say('#dallas', 'Kappa Keepo Kappa')
   })
 
+  test('should throw when sending a message as anonymous', async () => {
+    const chat = new Chat({})
+    await chat.connect()
+
+    expect(() =>
+      chat.say('#dallas', 'Kappa Keepo Kappa'),
+    ).toThrowErrorMatchingSnapshot()
+  })
+
   test('should part a channel', async done => {
     const chat = new Chat(options)
     await chat.connect()
@@ -413,6 +422,15 @@ describe('Chat', () => {
         })
 
         chat.whisper('dallas', 'Kappa Keepo Kappa')
+      })
+
+      test('whisper when anonymous', async () => {
+        const chat = new Chat({})
+        await chat.connect()
+
+        expect(() =>
+          chat.whisper('dallas', 'Kappa Keepo Kappa'),
+        ).toThrowErrorMatchingSnapshot()
       })
     })
 
