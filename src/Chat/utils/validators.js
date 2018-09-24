@@ -2,7 +2,7 @@ import invariant from 'invariant'
 
 import {
   conformsTo,
-  defaultsDeep,
+  defaults,
   isString,
   isFinite,
   isFunction,
@@ -16,25 +16,28 @@ const chatOptions = maybeOptions => {
   /**
    * Chat options
    * @typedef {Object} ChatOptions
-   * @property {string} username
-   * @property {string} token OAuth token (use {@link https://twitchapps.com/tmi/} to generate one)
+   * @property {string} [username]
+   * @property {string} [token] OAuth token (use {@link https://twitchapps.com/tmi/} to generate one)
    * @property {number} [connectionTimeout=CONNECTION_TIMEOUT]
    * @property {number} [joinTimeout=JOIN_TIMEOUT]
    * @property {boolean} [debug=false]
-   * @property {function} [onAuthenticationFailure]
+   * @property {Function} [onAuthenticationFailure]
    */
   const shape = {
     username: isString,
-    token: isString,
+    password: isString,
     connectionTimeout: isFinite,
     joinTimeout: isFinite,
     debug: isBoolean,
     onAuthenticationFailure: isFunction,
   }
 
-  const options = defaultsDeep(
-    {},
-    { ...maybeOptions, oauth: sanitizers.oauth(maybeOptions.token) },
+  const options = defaults(
+    {
+      ...maybeOptions,
+      username: sanitizers.username(maybeOptions.username),
+      password: sanitizers.password(maybeOptions.token),
+    },
     {
       connectionTimeout: constants.CONNECTION_TIMEOUT,
       joinTimeout: constants.JOIN_TIMEOUT,
@@ -54,15 +57,18 @@ const chatOptions = maybeOptions => {
 const clientOptions = maybeOptions => {
   const shape = {
     username: isString,
-    oauth: isString,
+    password: isString,
     server: isString,
     port: isFinite,
     ssl: isBoolean,
   }
 
-  const options = defaultsDeep(
-    {},
-    { ...maybeOptions, oauth: sanitizers.oauth(maybeOptions.token) },
+  const options = defaults(
+    {
+      ...maybeOptions,
+      username: sanitizers.username(maybeOptions.username),
+      password: sanitizers.password(maybeOptions.token),
+    },
     {
       server: constants.CHAT_SERVER,
       port: constants.CHAT_SERVER_SSL_PORT,

@@ -170,14 +170,17 @@ class Chat extends EventEmitter {
 
   /**
    * Connect to Twitch.
-   * @return {Promise<GlobalUserStateMessage, string>} Global user state message
+   * @return {Promise<?GlobalUserStateMessage, string>} Global user state message
    */
   connect() {
     const connect = new Promise((resolve, reject) => {
       if (this.readyState === 1) {
         // Already trying to connect, so resolve when connected.
-        this.once(constants.EVENTS.GLOBAL_USER_STATE, globalUserStateMessage =>
-          resolve(globalUserStateMessage),
+        this.once(
+          chatUtils.isAnonymousUsername(this.options.username)
+            ? constants.EVENTS.CONNECTED
+            : constants.EVENTS.GLOBAL_USER_STATE,
+          resolve,
         )
       } else if (this.readyState === 3) {
         // Already connected.

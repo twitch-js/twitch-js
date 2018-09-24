@@ -223,7 +223,7 @@ Chat client
 * [Chat](#Chat) ⇐ [<code>EventEmitter3</code>](external#external_EventEmitter3)
     * [new Chat(options)](#new_Chat_new)
     * [.updateOptions(options)](#Chat+updateOptions)
-    * [.connect()](#Chat+connect) ⇒ <code>Promise.&lt;GlobalUserStateMessage, string&gt;</code>
+    * [.connect()](#Chat+connect) ⇒ <code>Promise.&lt;?GlobalUserStateMessage, string&gt;</code>
     * [.send(message)](#Chat+send)
     * [.disconnect()](#Chat+disconnect)
     * [.reconnect([options])](#Chat+reconnect) ⇒ <code>Promise.&lt;Array.&lt;ChannelState&gt;, string&gt;</code>
@@ -329,11 +329,11 @@ Update client options.
 
 <a name="Chat+connect"></a>
 
-### chat.connect() ⇒ <code>Promise.&lt;GlobalUserStateMessage, string&gt;</code>
+### chat.connect() ⇒ <code>Promise.&lt;?GlobalUserStateMessage, string&gt;</code>
 Connect to Twitch.
 
 **Kind**: instance method of [<code>Chat</code>](class#Chat)  
-**Returns**: <code>Promise.&lt;GlobalUserStateMessage, string&gt;</code> - Global user state message  
+**Returns**: <code>Promise.&lt;?GlobalUserStateMessage, string&gt;</code> - Global user state message  
 
 * * *
 

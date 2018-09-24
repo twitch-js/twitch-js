@@ -1,6 +1,12 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Chat connect should connect 1`] = `
+exports[`Chat connect should connect as anonymous 1`] = `
+Object {
+  "command": "CONNECTED",
+}
+`;
+
+exports[`Chat connect should connect as authenticated 1`] = `
 Object {
   "_raw": "@color=#0D4200;display-name=dallas;emote-sets=0,33,50,237,793,2126,3517,4578,5569,9400,10337,12239;turbo=0;user-id=1337;user-type=admin :tmi.twitch.tv GLOBALUSERSTATE",
   "channel": undefined,
@@ -43,6 +49,83 @@ Array [
 
 exports[`Chat reconnect should reconnect and rejoin channels 2`] = `
 Array [
+  Array [
+    Object {
+      "_raw": ":tmi.twitch.tv 001 USERNAME :Welcome, GLHF!",
+      "channel": "USERNAME",
+      "command": "001",
+      "isSelf": false,
+      "message": "Welcome, GLHF!",
+      "tags": Object {},
+      "timestamp": 2018-01-01T00:00:00.000Z,
+    },
+  ],
+  Array [
+    Object {
+      "_raw": ":tmi.twitch.tv 002 USERNAME :Your host is tmi.twitch.tv",
+      "channel": "USERNAME",
+      "command": "002",
+      "isSelf": false,
+      "message": "Your host is tmi.twitch.tv",
+      "tags": Object {},
+      "timestamp": 2018-01-01T00:00:00.000Z,
+    },
+  ],
+  Array [
+    Object {
+      "_raw": ":tmi.twitch.tv 003 USERNAME :This server is rather new",
+      "channel": "USERNAME",
+      "command": "003",
+      "isSelf": false,
+      "message": "This server is rather new",
+      "tags": Object {},
+      "timestamp": 2018-01-01T00:00:00.000Z,
+    },
+  ],
+  Array [
+    Object {
+      "_raw": ":tmi.twitch.tv 004 USERNAME :-",
+      "channel": "USERNAME",
+      "command": "004",
+      "isSelf": false,
+      "message": "-",
+      "tags": Object {},
+      "timestamp": 2018-01-01T00:00:00.000Z,
+    },
+  ],
+  Array [
+    Object {
+      "_raw": ":tmi.twitch.tv 375 USERNAME :-",
+      "channel": "USERNAME",
+      "command": "375",
+      "isSelf": false,
+      "message": "-",
+      "tags": Object {},
+      "timestamp": 2018-01-01T00:00:00.000Z,
+    },
+  ],
+  Array [
+    Object {
+      "_raw": ":tmi.twitch.tv 372 USERNAME :You are in a maze of twisty passages.",
+      "channel": "USERNAME",
+      "command": "372",
+      "isSelf": false,
+      "message": "You are in a maze of twisty passages.",
+      "tags": Object {},
+      "timestamp": 2018-01-01T00:00:00.000Z,
+    },
+  ],
+  Array [
+    Object {
+      "_raw": ":tmi.twitch.tv 376 USERNAME :>",
+      "channel": "USERNAME",
+      "command": "376",
+      "isSelf": false,
+      "message": ">",
+      "tags": Object {},
+      "timestamp": 2018-01-01T00:00:00.000Z,
+    },
+  ],
   Array [
     Object {
       "_raw": "@color=#0D4200;display-name=dallas;emote-sets=0,33,50,237,793,2126,3517,4578,5569,9400,10337,12239;turbo=0;user-id=1337;user-type=admin :tmi.twitch.tv GLOBALUSERSTATE",

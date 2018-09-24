@@ -65,7 +65,11 @@ class WebSocket extends EventEmitter {
       case 'NICK': {
         // Mock successful connections.
         if (this.isTokenValid) {
-          this.emit('message', tags.GLOBALUSERSTATE)
+          this.emit('message', commands.WELCOME.replace(/<user>/g, args[0]))
+
+          if (!args[0].startsWith('justinfan')) {
+            this.emit('message', tags.GLOBALUSERSTATE)
+          }
         }
         break
       }

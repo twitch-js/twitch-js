@@ -38,7 +38,13 @@ describe('Chat', () => {
   })
 
   describe('connect', () => {
-    test('should connect', async () => {
+    test('should connect as anonymous', async () => {
+      const chat = new Chat({})
+      const actual = await chat.connect()
+      expect(actual).toMatchSnapshot()
+    })
+
+    test('should connect as authenticated', async () => {
       const chat = new Chat(options)
       const actual = await chat.connect()
       expect(actual).toMatchSnapshot()

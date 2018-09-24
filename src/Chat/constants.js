@@ -42,6 +42,8 @@ export const MESSAGE_PARAMETER_PREFIX_RE = new RegExp(
 )
 export const PRIVATE_MESSAGE_HOSTED_RE = /:.+@jtv\.tmi\.twitch\.tv PRIVMSG #?(\w+) :(\w+) is now (?:(auto) )?hosting[A-z ]+(\d+)?/
 
+export const ANONYMOUS_USERNAME = 'justinfan'
+
 /** @typedef {string} ClientReadyState */
 /**
  * Chat client ready state
@@ -89,6 +91,7 @@ export const TAG_COMMANDS = {
 }
 
 export const OTHER_COMMANDS = {
+  WELCOME: '001',
   PING: 'PING',
   PONG: 'PONG',
   WHISPER: 'PRIVMSG #jtv',

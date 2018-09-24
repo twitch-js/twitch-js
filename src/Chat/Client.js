@@ -28,7 +28,7 @@ class Client extends EventEmitter {
     this.isReady = () => ws.readyState === 1
 
     ws.onopen = handleOpen.bind(this, options)
-    ws.onmessage = handleMessage.bind(this)
+    ws.onmessage = handleMessage.bind(this, options)
     ws.onerror = handleError.bind(this)
     ws.onclose = handleClose.bind(this)
 
@@ -73,11 +73,11 @@ function handleOpen(options) {
   this.send(`CAP REQ :${constants.CAPABILITIES.join(' ')}`, { priority })
 
   // Authenticate.
-  this.send(`PASS ${options.oauth}`, { priority })
+  this.send(`PASS ${options.password}`, { priority })
   this.send(`NICK ${options.username}`, { priority })
 }
 
-function handleMessage(messageEvent) {
+function handleMessage(options, messageEvent) {
   const rawMessage = messageEvent.data
 
   try {
@@ -86,34 +86,43 @@ function handleMessage(messageEvent) {
     const messages = baseParser(rawMessage)
 
     messages.forEach(message => {
-      // Handle PING/PONG.
-      if (message.command === constants.COMMANDS.PING) {
-        this.send('PONG :tmi.twitch.tv', { priority })
-      }
-
-      // Handle successful connections.
-      if (message.command === constants.COMMANDS.GLOBAL_USER_STATE) {
-        this.emit(constants.EVENTS.CONNECTED, {
-          ...message,
-          command: constants.EVENTS.CONNECTED,
-        })
-      }
-
       // Handle authentication failure.
       if (utils.isAuthenticationFailedMessage(message)) {
         this.emit(constants.EVENTS.AUTHENTICATION_FAILED, {
           ...message,
           event: constants.EVENTS.AUTHENTICATION_FAILED,
         })
-        this.disconnect()
-      }
 
-      // Handle RECONNECT.
-      if (message.command === constants.COMMANDS.RECONNECT) {
-        this.emit(constants.EVENTS.RECONNECT, {
-          ...message,
-          command: constants.EVENTS.RECONNECT,
-        })
+        this.disconnect()
+      } else {
+        // Handle PING/PONG.
+        if (message.command === constants.COMMANDS.PING) {
+          this.send('PONG :tmi.twitch.tv', { priority })
+        }
+
+        // Handle successful connections.
+        if (utils.isAnonymousUsername(options.username)) {
+          if (message.command === constants.COMMANDS.WELCOME) {
+            this.emit(constants.EVENTS.CONNECTED, {
+              command: constants.EVENTS.CONNECTED,
+            })
+          }
+        } else {
+          if (message.command === constants.COMMANDS.GLOBAL_USER_STATE) {
+            this.emit(constants.EVENTS.CONNECTED, {
+              ...message,
+              command: constants.EVENTS.CONNECTED,
+            })
+          }
+        }
+
+        // Handle RECONNECT.
+        if (message.command === constants.COMMANDS.RECONNECT) {
+          this.emit(constants.EVENTS.RECONNECT, {
+            ...message,
+            command: constants.EVENTS.RECONNECT,
+          })
+        }
       }
 
       // Emit all messages.

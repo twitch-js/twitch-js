@@ -1,6 +1,35 @@
-import { replace, toLower } from 'lodash'
+import { ANONYMOUS_USERNAME } from '../constants'
 
-const oauth = (oauth = '') => `oauth:${replace(oauth, /oauth:/gi, '')}`
-const channel = (channel = '') => `#${replace(toLower(channel), /^#/g, '')}`
+function channel(value) {
+  if (value == null) {
+    return '#'
+  }
 
-export { oauth, channel }
+  if (value.startsWith('#')) {
+    return value
+  }
+
+  return `#${channel}`
+}
+
+function password(value) {
+  if (value == null || value === 'SCHMOOPIIE') {
+    return 'SCHMOOPIIE'
+  }
+
+  if (value.startsWith('oauth:')) {
+    return value
+  }
+
+  return `oauth:${value}`
+}
+
+function username(value) {
+  if (value == null) {
+    return `${ANONYMOUS_USERNAME}{Math.floor(Math.random() * 80000 + 1000)}`
+  }
+
+  return value
+}
+
+export { channel, password, username }
