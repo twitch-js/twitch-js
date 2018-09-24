@@ -360,15 +360,11 @@ class Chat extends EventEmitter {
     }
 
     const channel = sanitizers.channel(maybeChannel)
-    const promises = [this.connect]
 
-    if (chatUtils.isAnonymousUsername(this.options.username)) {
-      promises.push(
-        utils.onceResolve(this, `${constants.COMMANDS.USER_STATE}/${channel}`),
-      )
-    }
-
-    const say = Promise.all(promises)
+    const say = Promise.all([
+      this.connect,
+      utils.onceResolve(this, `${constants.COMMANDS.USER_STATE}/${channel}`),
+    ])
 
     const send = this.send(
       `${constants.COMMANDS.PRIVATE_MESSAGE} ${channel} :${message}`,
