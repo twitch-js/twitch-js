@@ -574,7 +574,7 @@ function handleMessage(baseMessage) {
 
 function handleDisconnect() {
   this._connectPromise = null
-  this._readyState = 4
+  this._readyState = 5
 }
 
 export { constants }

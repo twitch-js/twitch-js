@@ -158,7 +158,13 @@ describe('Chat', () => {
     const chat = new Chat(options)
     await chat.connect()
 
-    server.once('close', () => done())
+    expect.assertions(2)
+
+    chat.once(constants.EVENTS.DISCONNECTED, () => {
+      expect(chat.readyState).toBe('DISCONNECTED')
+      expect(chat._connectPromise).toBe(null)
+      done()
+    })
 
     chat.disconnect()
   })

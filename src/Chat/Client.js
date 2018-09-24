@@ -151,6 +151,7 @@ function handleError(messageEvent) {
     messageEvent,
   }
 
+  this.emit(constants.EVENTS.ERROR_ENCOUNTERED, message)
   this.emit(constants.EVENTS.ALL, message)
 }
 
@@ -161,6 +162,7 @@ function handleClose(messageEvent) {
     messageEvent,
   }
 
+  this.emit(constants.EVENTS.DISCONNECTED, message)
   this.emit(constants.EVENTS.ALL, message)
 }
 

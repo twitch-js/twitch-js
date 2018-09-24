@@ -85,8 +85,10 @@ class WebSocket extends EventEmitter {
   }
 
   close() {
-    server.emit('close')
     this.readyState = 4
+
+    server.emit('close')
+    this.emit('close')
   }
 }
 

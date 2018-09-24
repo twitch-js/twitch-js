@@ -51,6 +51,16 @@ exports[`Chat reconnect should reconnect and rejoin channels 2`] = `
 Array [
   Array [
     Object {
+      "event": "DISCONNECTED",
+      "isSelf": false,
+      "messageEvent": Object {
+        "data": undefined,
+      },
+      "timestamp": 2018-01-01T00:00:00.000Z,
+    },
+  ],
+  Array [
+    Object {
       "_raw": ":tmi.twitch.tv 001 USERNAME :Welcome, GLHF!",
       "channel": "USERNAME",
       "command": "001",
