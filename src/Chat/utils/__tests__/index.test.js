@@ -69,4 +69,18 @@ describe('Chat/utils', () => {
       expect(actual).toEqual(expected)
     })
   })
+
+  describe('isAnonymousUsername', () => {
+    test('should return true if anonymous', () => {
+      const actual = utils.isAnonymousUsername('justinfan12345')
+      const expected = true
+      expect(actual).toEqual(expected)
+    })
+
+    test('should return false otherwise', () => {
+      const actual = utils.isAnonymousUsername('lorem_ipsum')
+      const expected = false
+      expect(actual).toEqual(expected)
+    })
+  })
 })
