@@ -1391,6 +1391,8 @@ Object {
 }
 `;
 
+exports[`Chat should handle multiple channels should deny message broadcasting when anonymous 1`] = `"Not authenticated"`;
+
 exports[`Chat should join channel 1`] = `
 Object {
   "roomState": Object {

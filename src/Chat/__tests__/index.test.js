@@ -454,5 +454,14 @@ describe('Chat', () => {
   describe('should handle multiple channels', () => {
     // test('should join multiple channels', () => {})
     // test('should broadcast message to all channels', () => {})
+
+    test('should deny message broadcasting when anonymous', async () => {
+      const chat = new Chat({})
+      await chat.connect()
+
+      expect(() =>
+        chat.broadcast('Kappa Keepo Kappa'),
+      ).toThrowErrorMatchingSnapshot()
+    })
   })
 })
