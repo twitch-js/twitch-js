@@ -43,7 +43,7 @@ describe('Chat', () => {
       const actual = await chat.connect()
 
       expect(actual).toMatchSnapshot()
-      expect(chat.readyState).toBe('CONNECTED')
+      expect(chat.readyState).toBe(3)
     })
 
     test('should connect as authenticated', async () => {
@@ -51,7 +51,7 @@ describe('Chat', () => {
       const actual = await chat.connect()
 
       expect(actual).toMatchSnapshot()
-      expect(chat.readyState).toBe('CONNECTED')
+      expect(chat.readyState).toBe(3)
     })
 
     test('should call onAuthenticationFailure', done => {
@@ -161,7 +161,7 @@ describe('Chat', () => {
     expect.assertions(2)
 
     chat.once(constants.EVENTS.DISCONNECTED, () => {
-      expect(chat.readyState).toBe('DISCONNECTED')
+      expect(chat.readyState).toBe(5)
       expect(chat._connectPromise).toBe(null)
       done()
     })

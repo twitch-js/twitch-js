@@ -129,7 +129,7 @@ class Chat extends EventEmitter {
   }
 
   get readyState() {
-    return constants.READY_STATES[this._readyState]
+    return this._readyState
   }
 
   get userState() {
