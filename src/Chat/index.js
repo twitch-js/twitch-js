@@ -501,7 +501,7 @@ function handleMessage(baseMessage) {
       message = parsers.modeMessage(preMessage)
       eventName = `${message.command}/${channel}`
 
-      if (message.username === this.userState.username) {
+      if (this.userState && message.username === this.userState.username) {
         const channelState = this.getChannelState(channel)
 
         this.setChannelState(channel, {
