@@ -1,3 +1,4 @@
+import { random } from 'lodash'
 import { ANONYMOUS_USERNAME } from '../constants'
 
 function channel(value) {
@@ -26,7 +27,7 @@ function password(value) {
 
 function username(value) {
   if (value == null || value === 'justinfan') {
-    return `${ANONYMOUS_USERNAME}${Math.floor(Math.random() * 80000 + 1000)}`
+    return `${ANONYMOUS_USERNAME}${random(80000, 81000)}`
   }
 
   return value
