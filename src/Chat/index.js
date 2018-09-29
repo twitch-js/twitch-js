@@ -184,19 +184,33 @@ class Chat extends EventEmitter {
           new Errors.TimeoutError(constants.ERROR_CONNECT_TIMED_OUT),
         ),
         new Promise((resolve, reject) => {
+          // Connect ...
           this._readyState = 1
+
+          // Increment connection attempts.
           this._connectionAttempts += 1
 
           if (this._client) {
+            // Remove all listeners, just in case.
             this._client.removeAllListeners()
           }
 
+          // Create client and connect.
           this._client = new Client(this.options)
 
+          // Handle messages.
           this._client.on(constants.EVENTS.ALL, handleMessage, this)
+
+          // Handle disconnects.
           this._client.on(constants.EVENTS.DISCONNECTED, handleDisconnect, this)
+
+          // Listen for reconnects.
           this._client.once(constants.EVENTS.RECONNECT, () => this.reconnect())
+
+          // Listen for authentication failures.
           this._client.once(constants.EVENTS.AUTHENTICATION_FAILED, reject)
+
+          // Once the client is connected, resolve ...
           this._client.once(constants.EVENTS.CONNECTED, resolve)
         }),
       ])
