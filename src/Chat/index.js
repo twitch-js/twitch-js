@@ -296,7 +296,7 @@ class Chat extends EventEmitter {
       utils.onceResolve(this, `${constants.COMMANDS.ROOM_STATE}/${channel}`),
     ]
 
-    if (!chatUtils.isAnonymousUsername(this.options.username)) {
+    if (!chatUtils.isUserAnonymous(this.options.username)) {
       promises.push(
         utils.onceResolve(this, `${constants.COMMANDS.USER_STATE}/${channel}`),
       )
@@ -349,7 +349,7 @@ class Chat extends EventEmitter {
    * @return {Promise<?UserStateMessage, string>}
    */
   say(maybeChannel, message) {
-    if (chatUtils.isAnonymousUsername(this.options.username)) {
+    if (chatUtils.isUserAnonymous(this.options.username)) {
       throw new Error('Not authenticated')
     }
 
@@ -382,7 +382,7 @@ class Chat extends EventEmitter {
    * @return {Promise<undefined>}
    */
   whisper(user, message) {
-    if (chatUtils.isAnonymousUsername(this.options.username)) {
+    if (chatUtils.isUserAnonymous(this.options.username)) {
       throw new Error('Not authenticated')
     }
 
@@ -395,7 +395,7 @@ class Chat extends EventEmitter {
    * @return {Promise<Array<UserStateMessage>>}
    */
   broadcast(message) {
-    if (chatUtils.isAnonymousUsername(this.options.username)) {
+    if (chatUtils.isUserAnonymous(this.options.username)) {
       throw new Error('Not authenticated')
     }
 

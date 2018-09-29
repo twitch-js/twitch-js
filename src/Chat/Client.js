@@ -101,7 +101,7 @@ function handleMessage(options, messageEvent) {
         }
 
         // Handle successful connections.
-        if (utils.isAnonymousUsername(options.username)) {
+        if (utils.isUserAnonymous(options.username)) {
           if (message.command === constants.COMMANDS.WELCOME) {
             this.emit(constants.EVENTS.CONNECTED, {
               command: constants.EVENTS.CONNECTED,

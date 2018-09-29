@@ -46,19 +46,19 @@ describe('Chat/utils/sanitizers', () => {
     test('should return the anonymous username', () => {
       const actual = sanitizers.username(null)
       const expected = true
-      expect(utils.isAnonymousUsername(actual)).toBe(expected)
+      expect(utils.isUserAnonymous(actual)).toBe(expected)
     })
 
     test('should return the anonymous username appended with random numbers', () => {
       const actual = sanitizers.username('justinfan')
       const expected = true
-      expect(utils.isAnonymousUsername(actual)).toBe(expected)
+      expect(utils.isUserAnonymous(actual)).toBe(expected)
     })
 
     test('should return the input username', () => {
       const actual = sanitizers.username('lorem')
       const expected = false
-      expect(utils.isAnonymousUsername(actual)).toBe(expected)
+      expect(utils.isUserAnonymous(actual)).toBe(expected)
     })
   })
 })

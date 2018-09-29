@@ -70,15 +70,15 @@ describe('Chat/utils', () => {
     })
   })
 
-  describe('isAnonymousUsername', () => {
+  describe('isUserAnonymous', () => {
     test('should return true if anonymous', () => {
-      const actual = utils.isAnonymousUsername('justinfan12345')
+      const actual = utils.isUserAnonymous('justinfan12345')
       const expected = true
       expect(actual).toEqual(expected)
     })
 
     test('should return false otherwise', () => {
-      const actual = utils.isAnonymousUsername('lorem_ipsum')
+      const actual = utils.isUserAnonymous('lorem_ipsum')
       const expected = false
       expect(actual).toEqual(expected)
     })

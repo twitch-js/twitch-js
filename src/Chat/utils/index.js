@@ -23,11 +23,11 @@ const isAuthenticationFailedMessage = (message = {}) =>
 const getEventNameFromMessage = (message = {}) =>
   message.command || message.event || constants.EVENTS.ALL
 
-const isAnonymousUsername = value => constants.ANONYMOUS_USERNAME_RE.test(value)
+const isUserAnonymous = value => constants.ANONYMOUS_USERNAME_RE.test(value)
 
 export {
   getMessageQueueWeight,
   isAuthenticationFailedMessage,
   getEventNameFromMessage,
-  isAnonymousUsername,
+  isUserAnonymous,
 }
