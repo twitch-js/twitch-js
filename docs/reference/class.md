@@ -232,6 +232,7 @@ Chat client
     * [.say(channel, message)](#Chat+say) ⇒ <code>Promise.&lt;?UserStateMessage, string&gt;</code>
     * [.whisper(user, message)](#Chat+whisper) ⇒ <code>Promise.&lt;undefined&gt;</code>
     * [.broadcast(message)](#Chat+broadcast) ⇒ <code>Promise.&lt;Array.&lt;UserStateMessage&gt;&gt;</code>
+    * [.isUserAuthenticated()](#Chat+isUserAuthenticated) ⇒ <code>Promise</code>
     * ["*"](#Chat+event_*)
     * ["JOIN"](#Chat+event_JOIN)
     * ["PART"](#Chat+event_PART)
@@ -526,6 +527,15 @@ Broadcast message to all connected channels.
     </tr>  </tbody>
 </table>
 
+
+* * *
+
+<a name="Chat+isUserAuthenticated"></a>
+
+### chat.isUserAuthenticated() ⇒ <code>Promise</code>
+Ensure the user is authenticated.
+
+**Kind**: instance method of [<code>Chat</code>](class#Chat)  
 
 * * *
 

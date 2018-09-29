@@ -349,30 +349,28 @@ class Chat extends EventEmitter {
    * @return {Promise<?UserStateMessage, string>}
    */
   say(maybeChannel, message) {
-    if (chatUtils.isUserAnonymous(this.options.username)) {
-      throw new Error('Not authenticated')
-    }
+    return this.isUserAuthenticated().then(() => {
+      const channel = sanitizers.channel(maybeChannel)
 
-    const channel = sanitizers.channel(maybeChannel)
+      const say = Promise.all([
+        this.connect,
+        utils.onceResolve(this, `${constants.COMMANDS.USER_STATE}/${channel}`),
+      ])
 
-    const say = Promise.all([
-      this.connect,
-      utils.onceResolve(this, `${constants.COMMANDS.USER_STATE}/${channel}`),
-    ])
+      const send = this.send(
+        `${constants.COMMANDS.PRIVATE_MESSAGE} ${channel} :${message}`,
+      )
 
-    const send = this.send(
-      `${constants.COMMANDS.PRIVATE_MESSAGE} ${channel} :${message}`,
-    )
-
-    return send.then(() =>
-      Promise.race([
-        utils.delayReject(
-          this.options.joinTimeout,
-          constants.ERROR_SAY_TIMED_OUT,
-        ),
-        say,
-      ]),
-    )
+      return send.then(() =>
+        Promise.race([
+          utils.delayReject(
+            this.options.joinTimeout,
+            constants.ERROR_SAY_TIMED_OUT,
+          ),
+          say,
+        ]),
+      )
+    })
   }
 
   /**
@@ -382,11 +380,9 @@ class Chat extends EventEmitter {
    * @return {Promise<undefined>}
    */
   whisper(user, message) {
-    if (chatUtils.isUserAnonymous(this.options.username)) {
-      throw new Error('Not authenticated')
-    }
-
-    return this.send(`${constants.COMMANDS.WHISPER} :/w ${user} ${message}`)
+    return this.isUserAuthenticated().then(() => {
+      return this.send(`${constants.COMMANDS.WHISPER} :/w ${user} ${message}`)
+    })
   }
 
   /**
@@ -395,13 +391,11 @@ class Chat extends EventEmitter {
    * @return {Promise<Array<UserStateMessage>>}
    */
   broadcast(message) {
-    if (chatUtils.isUserAnonymous(this.options.username)) {
-      throw new Error('Not authenticated')
-    }
-
-    return Promise.all(
-      this.getChannels().map(channel => this.say(channel, message)),
-    )
+    return this.isUserAuthenticated().then(() => {
+      return Promise.all(
+        this.getChannels().map(channel => this.say(channel, message)),
+      )
+    })
   }
 
   emit(eventName, message) {
@@ -421,6 +415,20 @@ class Chat extends EventEmitter {
      * @event Chat#*
      */
     super.emit(constants.EVENTS.ALL, message)
+  }
+
+  /**
+   * Ensure the user is authenticated.
+   * @return {Promise}
+   */
+  isUserAuthenticated() {
+    return new Promise((resolve, reject) => {
+      if (chatUtils.isUserAnonymous(this.options.username)) {
+        reject(new Error('Not authenticated'))
+      } else {
+        resolve()
+      }
+    })
   }
 }
 
