@@ -131,9 +131,9 @@ describe('Chat', () => {
     const chat = new Chat({})
     await chat.connect()
 
-    expect(() =>
+    await expect(
       chat.say('#dallas', 'Kappa Keepo Kappa'),
-    ).toThrowErrorMatchingSnapshot()
+    ).rejects.toMatchSnapshot()
   })
 
   test('should part a channel', async done => {
@@ -446,9 +446,9 @@ describe('Chat', () => {
         const chat = new Chat({})
         await chat.connect()
 
-        expect(() =>
+        await expect(
           chat.whisper('dallas', 'Kappa Keepo Kappa'),
-        ).toThrowErrorMatchingSnapshot()
+        ).rejects.toMatchSnapshot()
       })
     })
 
@@ -477,9 +477,9 @@ describe('Chat', () => {
       const chat = new Chat({})
       await chat.connect()
 
-      expect(() =>
+      await expect(
         chat.broadcast('Kappa Keepo Kappa'),
-      ).toThrowErrorMatchingSnapshot()
+      ).rejects.toMatchSnapshot()
     })
   })
 })
