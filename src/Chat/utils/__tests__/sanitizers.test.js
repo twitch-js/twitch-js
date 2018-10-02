@@ -23,9 +23,9 @@ describe('Chat/utils/sanitizers', () => {
   })
 
   describe('password', () => {
-    test('should return "SCHMOOPIIE"', () => {
+    test('should return "TWITCHJS"', () => {
       const actual = sanitizers.password(null)
-      const expected = 'SCHMOOPIIE'
+      const expected = 'TWITCHJS'
       expect(actual).toEqual(expected)
     })
 

@@ -14,8 +14,8 @@ function channel(value) {
 }
 
 function password(value) {
-  if (value == null || value === 'SCHMOOPIIE') {
-    return 'SCHMOOPIIE'
+  if (value == null) {
+    return 'TWITCHJS'
   }
 
   if (value.startsWith('oauth:')) {
