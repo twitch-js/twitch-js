@@ -36,7 +36,6 @@ const chatOptions = maybeOptions => {
     {
       ...maybeOptions,
       username: sanitizers.username(maybeOptions.username),
-      password: sanitizers.password(maybeOptions.token),
     },
     {
       connectionTimeout: constants.CONNECTION_TIMEOUT,
