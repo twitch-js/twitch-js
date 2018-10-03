@@ -7,6 +7,7 @@ import {
   isFinite,
   isFunction,
   isBoolean,
+  isNil,
 } from 'lodash'
 
 import * as constants from '../constants'
@@ -25,7 +26,7 @@ const chatOptions = maybeOptions => {
    */
   const shape = {
     username: isString,
-    password: isString,
+    token: value => isNil(value) || isString(value),
     connectionTimeout: isFinite,
     joinTimeout: isFinite,
     debug: isBoolean,
