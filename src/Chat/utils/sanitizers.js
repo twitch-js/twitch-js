@@ -13,7 +13,7 @@ function channel(value) {
   return `#${value}`
 }
 
-function password(value) {
+function oauth(value) {
   if (value == null) {
     return 'TWITCHJS'
   }
@@ -33,4 +33,4 @@ function username(value) {
   return value
 }
 
-export { channel, password, username }
+export { channel, oauth, username }

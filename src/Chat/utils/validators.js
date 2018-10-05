@@ -37,8 +37,10 @@ const chatOptions = maybeOptions => {
     {
       ...maybeOptions,
       username: sanitizers.username(maybeOptions.username),
+      oauth: sanitizers.oauth(maybeOptions.token),
     },
     {
+      token: null,
       connectionTimeout: constants.CONNECTION_TIMEOUT,
       joinTimeout: constants.JOIN_TIMEOUT,
       debug: false,
@@ -57,7 +59,7 @@ const chatOptions = maybeOptions => {
 const clientOptions = maybeOptions => {
   const shape = {
     username: isString,
-    password: isString,
+    oauth: isString,
     server: isString,
     port: isFinite,
     ssl: isBoolean,
@@ -67,7 +69,7 @@ const clientOptions = maybeOptions => {
     {
       ...maybeOptions,
       username: sanitizers.username(maybeOptions.username),
-      password: sanitizers.password(maybeOptions.token),
+      oauth: sanitizers.oauth(maybeOptions.token),
     },
     {
       server: constants.CHAT_SERVER,

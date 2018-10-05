@@ -73,7 +73,7 @@ function handleOpen(options) {
   this.send(`CAP REQ :${constants.CAPABILITIES.join(' ')}`, { priority })
 
   // Authenticate.
-  this.send(`PASS ${options.password}`, { priority })
+  this.send(`PASS ${options.oauth}`, { priority })
   this.send(`NICK ${options.username}`, { priority })
 }
 
