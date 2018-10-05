@@ -38,10 +38,20 @@ describe('Chat', () => {
   })
 
   describe('connect', () => {
-    test('should connect', async () => {
+    test('should connect as anonymous', async () => {
+      const chat = new Chat({})
+      const actual = await chat.connect()
+
+      expect(actual).toMatchSnapshot()
+      expect(chat.readyState).toBe(3)
+    })
+
+    test('should connect as authenticated', async () => {
       const chat = new Chat(options)
       const actual = await chat.connect()
+
       expect(actual).toMatchSnapshot()
+      expect(chat.readyState).toBe(3)
     })
 
     test('should call onAuthenticationFailure', done => {
@@ -74,6 +84,14 @@ describe('Chat', () => {
         expect(chat.options.token).toEqual('TOKEN')
         done()
       })
+    })
+
+    test('should return the same promise', async () => {
+      const chat = new Chat(options)
+      const actual = chat.connect()
+      const expected = chat.connect()
+
+      expect(actual).toEqual(expected)
     })
   })
 
@@ -109,6 +127,15 @@ describe('Chat', () => {
     chat.say('#dallas', 'Kappa Keepo Kappa')
   })
 
+  test('should throw when sending a message as anonymous', async () => {
+    const chat = new Chat({})
+    await chat.connect()
+
+    await expect(
+      chat.say('#dallas', 'Kappa Keepo Kappa'),
+    ).rejects.toMatchSnapshot()
+  })
+
   test('should part a channel', async done => {
     const chat = new Chat(options)
     await chat.connect()
@@ -131,7 +158,13 @@ describe('Chat', () => {
     const chat = new Chat(options)
     await chat.connect()
 
-    server.once('close', () => done())
+    expect.assertions(2)
+
+    chat.once(constants.EVENTS.DISCONNECTED, () => {
+      expect(chat.readyState).toBe(5)
+      expect(chat._connectPromise).toBe(null)
+      done()
+    })
 
     chat.disconnect()
   })
@@ -408,6 +441,15 @@ describe('Chat', () => {
 
         chat.whisper('dallas', 'Kappa Keepo Kappa')
       })
+
+      test('whisper when anonymous', async () => {
+        const chat = new Chat({})
+        await chat.connect()
+
+        await expect(
+          chat.whisper('dallas', 'Kappa Keepo Kappa'),
+        ).rejects.toMatchSnapshot()
+      })
     })
 
     describe('deviations', () => {
@@ -430,5 +472,14 @@ describe('Chat', () => {
   describe('should handle multiple channels', () => {
     // test('should join multiple channels', () => {})
     // test('should broadcast message to all channels', () => {})
+
+    test('should deny message broadcasting when anonymous', async () => {
+      const chat = new Chat({})
+      await chat.connect()
+
+      await expect(
+        chat.broadcast('Kappa Keepo Kappa'),
+      ).rejects.toMatchSnapshot()
+    })
   })
 })

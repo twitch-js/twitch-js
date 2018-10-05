@@ -223,15 +223,16 @@ Chat client
 * [Chat](#Chat) ⇐ [<code>EventEmitter3</code>](external#external_EventEmitter3)
     * [new Chat(options)](#new_Chat_new)
     * [.updateOptions(options)](#Chat+updateOptions)
-    * [.connect()](#Chat+connect) ⇒ <code>Promise.&lt;GlobalUserStateMessage, string&gt;</code>
+    * [.connect()](#Chat+connect) ⇒ <code>Promise.&lt;?GlobalUserStateMessage, string&gt;</code>
     * [.send(message)](#Chat+send)
     * [.disconnect()](#Chat+disconnect)
     * [.reconnect([options])](#Chat+reconnect) ⇒ <code>Promise.&lt;Array.&lt;ChannelState&gt;, string&gt;</code>
     * [.join(channel)](#Chat+join) ⇒ <code>Promise.&lt;ChannelState, string&gt;</code>
     * [.part(channel)](#Chat+part)
-    * [.say(channel, message)](#Chat+say) ⇒ <code>Promise.&lt;UserStateMessage, string&gt;</code>
+    * [.say(channel, message)](#Chat+say) ⇒ <code>Promise.&lt;?UserStateMessage, string&gt;</code>
     * [.whisper(user, message)](#Chat+whisper) ⇒ <code>Promise.&lt;undefined&gt;</code>
     * [.broadcast(message)](#Chat+broadcast) ⇒ <code>Promise.&lt;Array.&lt;UserStateMessage&gt;&gt;</code>
+    * [.isUserAuthenticated()](#Chat+isUserAuthenticated) ⇒ <code>Promise</code>
     * ["*"](#Chat+event_*)
     * ["JOIN"](#Chat+event_JOIN)
     * ["PART"](#Chat+event_PART)
@@ -329,11 +330,11 @@ Update client options.
 
 <a name="Chat+connect"></a>
 
-### chat.connect() ⇒ <code>Promise.&lt;GlobalUserStateMessage, string&gt;</code>
+### chat.connect() ⇒ <code>Promise.&lt;?GlobalUserStateMessage, string&gt;</code>
 Connect to Twitch.
 
 **Kind**: instance method of [<code>Chat</code>](class#Chat)  
-**Returns**: <code>Promise.&lt;GlobalUserStateMessage, string&gt;</code> - Global user state message  
+**Returns**: <code>Promise.&lt;?GlobalUserStateMessage, string&gt;</code> - Global user state message  
 
 * * *
 
@@ -464,7 +465,7 @@ Depart from a channel.
 
 <a name="Chat+say"></a>
 
-### chat.say(channel, message) ⇒ <code>Promise.&lt;UserStateMessage, string&gt;</code>
+### chat.say(channel, message) ⇒ <code>Promise.&lt;?UserStateMessage, string&gt;</code>
 Send a message to a channel.
 
 **Kind**: instance method of [<code>Chat</code>](class#Chat)  
@@ -526,6 +527,15 @@ Broadcast message to all connected channels.
     </tr>  </tbody>
 </table>
 
+
+* * *
+
+<a name="Chat+isUserAuthenticated"></a>
+
+### chat.isUserAuthenticated() ⇒ <code>Promise</code>
+Ensure the user is authenticated.
+
+**Kind**: instance method of [<code>Chat</code>](class#Chat)  
 
 * * *
 
