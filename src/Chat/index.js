@@ -90,19 +90,31 @@ class Chat extends EventEmitter {
      * @private
      * @type {number}
      */
+    this._readyState = 0
+
+    /**
+     * @private
+     * @type {number}
+     */
     this._connectionAttempts = 0
 
     /**
      * @private
-     * @type {GlobalUserStateTags}
+     * @type {?GlobalUserStateTags}
      */
-    this._userState = {}
+    this._userState = null
 
     /**
      * @private
      * @type {Object.<string, ChannelState>}
      */
     this._channelState = {}
+
+    /**
+     * @private
+     * @type {?Promise}
+     */
+    this._connectPromise = null
 
     // Create commands.
     Object.assign(this, commandsFactory.call(this))
@@ -120,16 +132,8 @@ class Chat extends EventEmitter {
     return this._readyState
   }
 
-  set readyState(readyState) {
-    this._readyState = constants.READY_STATES[readyState] ? readyState : 0
-  }
-
   get userState() {
     return this._userState
-  }
-
-  set userState(userState) {
-    this._userState = userState
   }
 
   /**
@@ -170,59 +174,51 @@ class Chat extends EventEmitter {
 
   /**
    * Connect to Twitch.
-   * @return {Promise<GlobalUserStateMessage, string>} Global user state message
+   * @return {Promise<?GlobalUserStateMessage, string>} Global user state message
    */
   connect() {
-    const connect = new Promise((resolve, reject) => {
-      if (this.readyState === 1) {
-        // Already trying to connect, so resolve when connected.
-        this.once(constants.EVENTS.GLOBAL_USER_STATE, globalUserStateMessage =>
-          resolve(globalUserStateMessage),
-        )
-      } else if (this.readyState === 3) {
-        // Already connected.
-        resolve(this.userState)
-      } else {
-        // Connect ...
-        this.readyState = 1
+    if (!this._connectPromise) {
+      this._connectPromise = Promise.race([
+        utils.delayReject(
+          this.options.connectionTimeout,
+          new Errors.TimeoutError(constants.ERROR_CONNECT_TIMED_OUT),
+        ),
+        new Promise((resolve, reject) => {
+          // Connect ...
+          this._readyState = 1
 
-        // Increment connection attempts.
-        this._connectionAttempts++
+          // Increment connection attempts.
+          this._connectionAttempts += 1
 
-        if (this._client) {
-          // Remove all listeners, just in case.
-          this._client.removeAllListeners()
-        }
+          if (this._client) {
+            // Remove all listeners, just in case.
+            this._client.removeAllListeners()
+          }
 
-        // Create client and connect.
-        this._client = new Client(this.options)
+          // Create client and connect.
+          this._client = new Client(this.options)
 
-        // Handle messages.
-        this._client.on(constants.EVENTS.ALL, handleMessage, this)
+          // Handle messages.
+          this._client.on(constants.EVENTS.ALL, handleMessage, this)
 
-        // Handle disconnects.
-        this._client.on(constants.EVENTS.DISCONNECTED, handleDisconnect, this)
+          // Handle disconnects.
+          this._client.on(constants.EVENTS.DISCONNECTED, handleDisconnect, this)
 
-        // Listen for reconnects.
-        this._client.once(constants.EVENTS.RECONNECT, () => this.reconnect())
+          // Listen for reconnects.
+          this._client.once(constants.EVENTS.RECONNECT, () => this.reconnect())
 
-        // Listen for authentication failures.
-        this._client.once(constants.EVENTS.AUTHENTICATION_FAILED, reject)
+          // Listen for authentication failures.
+          this._client.once(constants.EVENTS.AUTHENTICATION_FAILED, reject)
 
-        // Once the client is connected, resolve ...
-        this._client.once(constants.EVENTS.CONNECTED, resolve)
-      }
-    })
+          // Once the client is connected, resolve ...
+          this._client.once(constants.EVENTS.CONNECTED, resolve)
+        }),
+      ])
+        .then(handleConnectSuccess.bind(this))
+        .catch(handleConnectRetry.bind(this))
+    }
 
-    return Promise.race([
-      utils.delayReject(
-        this.options.connectionTimeout,
-        new Errors.TimeoutError(constants.ERROR_CONNECT_TIMED_OUT),
-      ),
-      connect,
-    ])
-      .then(handleConnectSuccess.bind(this))
-      .catch(handleConnectRetry.bind(this))
+    return this._connectPromise
   }
 
   /**
@@ -250,7 +246,8 @@ class Chat extends EventEmitter {
       this.options = { ...this.options, ...newOptions }
     }
 
-    this.readyState = 2
+    this._connectPromise = null
+    this._readyState = 2
 
     const channels = this.getChannels()
     this.disconnect()
@@ -294,30 +291,32 @@ class Chat extends EventEmitter {
    */
   join(maybeChannel) {
     const channel = sanitizers.channel(maybeChannel)
+    const promises = [
+      this.connect,
+      utils.onceResolve(this, `${constants.COMMANDS.ROOM_STATE}/${channel}`),
+    ]
 
-    const roomState = utils.onceResolve(
-      this,
-      `${constants.COMMANDS.ROOM_STATE}/${channel}`,
-    )
+    if (!chatUtils.isUserAnonymous(this.options.username)) {
+      promises.push(
+        utils.onceResolve(this, `${constants.COMMANDS.USER_STATE}/${channel}`),
+      )
+    }
 
-    const userState = utils.onceResolve(
-      this,
-      `${constants.COMMANDS.USER_STATE}/${channel}`,
-    )
+    const join = Promise.all(promises).then(([, roomState, userState]) => {
+      /**
+       * @typedef {Object} ChannelState
+       * Channel state information
+       * @property {RoomStateTags} roomState
+       * @property {?UserStateTags} userState
+       */
+      const channelState = {
+        roomState: roomState.tags,
+        userState: get(userState, 'tags', null),
+      }
 
-    const join = Promise.all([this.connect, roomState, userState]).then(
-      ([, { channel, tags: roomState }, { tags: userState }]) => {
-        /**
-         * @typedef {Object} ChannelState
-         * Channel state information
-         * @property {RoomStateTags} roomState
-         * @property {UserStateTags} userState
-         */
-        const channelState = { roomState, userState }
-        this.setChannelState(channel, channelState)
-        return channelState
-      },
-    )
+      this.setChannelState(roomState.channel, channelState)
+      return channelState
+    })
 
     const send = this.send(`${constants.COMMANDS.JOIN} ${channel}`)
 
@@ -347,31 +346,31 @@ class Chat extends EventEmitter {
    * Send a message to a channel.
    * @param {string} channel
    * @param {string} message
-   * @return {Promise<UserStateMessage, string>}
+   * @return {Promise<?UserStateMessage, string>}
    */
   say(maybeChannel, message) {
-    const channel = sanitizers.channel(maybeChannel)
+    return this.isUserAuthenticated().then(() => {
+      const channel = sanitizers.channel(maybeChannel)
 
-    const userState = utils.onceResolve(
-      this,
-      `${constants.COMMANDS.USER_STATE}/${channel}`,
-    )
+      const say = Promise.all([
+        this.connect,
+        utils.onceResolve(this, `${constants.COMMANDS.USER_STATE}/${channel}`),
+      ])
 
-    const say = Promise.all([this.connect, userState])
+      const send = this.send(
+        `${constants.COMMANDS.PRIVATE_MESSAGE} ${channel} :${message}`,
+      )
 
-    const send = this.send(
-      `${constants.COMMANDS.PRIVATE_MESSAGE} ${channel} :${message}`,
-    )
-
-    return send.then(() =>
-      Promise.race([
-        utils.delayReject(
-          this.options.joinTimeout,
-          constants.ERROR_SAY_TIMED_OUT,
-        ),
-        say,
-      ]),
-    )
+      return send.then(() =>
+        Promise.race([
+          utils.delayReject(
+            this.options.joinTimeout,
+            constants.ERROR_SAY_TIMED_OUT,
+          ),
+          say,
+        ]),
+      )
+    })
   }
 
   /**
@@ -381,7 +380,9 @@ class Chat extends EventEmitter {
    * @return {Promise<undefined>}
    */
   whisper(user, message) {
-    return this.send(`${constants.COMMANDS.WHISPER} :/w ${user} ${message}`)
+    return this.isUserAuthenticated().then(() => {
+      return this.send(`${constants.COMMANDS.WHISPER} :/w ${user} ${message}`)
+    })
   }
 
   /**
@@ -390,9 +391,11 @@ class Chat extends EventEmitter {
    * @return {Promise<Array<UserStateMessage>>}
    */
   broadcast(message) {
-    return Promise.all(
-      this.getChannels().map(channel => this.say(channel, message)),
-    )
+    return this.isUserAuthenticated().then(() => {
+      return Promise.all(
+        this.getChannels().map(channel => this.say(channel, message)),
+      )
+    })
   }
 
   emit(eventName, message) {
@@ -413,10 +416,24 @@ class Chat extends EventEmitter {
      */
     super.emit(constants.EVENTS.ALL, message)
   }
+
+  /**
+   * Ensure the user is authenticated.
+   * @return {Promise}
+   */
+  isUserAuthenticated() {
+    return new Promise((resolve, reject) => {
+      if (chatUtils.isUserAnonymous(this.options.username)) {
+        reject(new Error('Not authenticated'))
+      } else {
+        resolve()
+      }
+    })
+  }
 }
 
 function handleConnectSuccess(globalUserState) {
-  this.readyState = 3
+  this._readyState = 3
   this._connectionAttempts = 0
 
   // Process GLOBALUSERSTATE message.
@@ -426,7 +443,8 @@ function handleConnectSuccess(globalUserState) {
 }
 
 function handleConnectRetry(error) {
-  this.readyState = 2
+  this._connectPromise = null
+  this._readyState = 2
 
   if (error.event === constants.EVENTS.AUTHENTICATION_FAILED) {
     return this.options
@@ -505,7 +523,7 @@ function handleMessage(baseMessage) {
       message = parsers.modeMessage(preMessage)
       eventName = `${message.command}/${channel}`
 
-      if (message.username === this.userState.username) {
+      if (this.userState && message.username === this.userState.username) {
         const channelState = this.getChannelState(channel)
 
         this.setChannelState(channel, {
@@ -521,7 +539,7 @@ function handleMessage(baseMessage) {
 
     case constants.EVENTS.GLOBAL_USER_STATE: {
       message = parsers.globalUserStateMessage(preMessage)
-      this.userState = message.tags
+      this._userState = message.tags
       break
     }
 
@@ -577,7 +595,8 @@ function handleMessage(baseMessage) {
 }
 
 function handleDisconnect() {
-  this.readyState = 4
+  this._connectPromise = null
+  this._readyState = 5
 }
 
 export { constants }

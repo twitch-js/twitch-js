@@ -1,4 +1,5 @@
 {
+  "WELCOME": ":tmi.twitch.tv 001 <user> :Welcome, GLHF!\n:tmi.twitch.tv 002 <user> :Your host is tmi.twitch.tv\n:tmi.twitch.tv 003 <user> :This server is rather new\n:tmi.twitch.tv 004 <user> :-\n:tmi.twitch.tv 375 <user> :-\n:tmi.twitch.tv 372 <user> :You are in a maze of twisty passages.\n:tmi.twitch.tv 376 <user> :>",
   "CLEARCHAT": {
     "CHANNEL": ":tmi.twitch.tv CLEARCHAT #dallas",
     "USER_WITH_REASON": "@ban-reason=Follow\\sthe\\srules :tmi.twitch.tv CLEARCHAT #dallas :ronni",

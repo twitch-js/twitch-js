@@ -1,6 +1,12 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Chat connect should connect 1`] = `
+exports[`Chat connect should connect as anonymous 1`] = `
+Object {
+  "command": "CONNECTED",
+}
+`;
+
+exports[`Chat connect should connect as authenticated 1`] = `
 Object {
   "_raw": "@color=#0D4200;display-name=dallas;emote-sets=0,33,50,237,793,2126,3517,4578,5569,9400,10337,12239;turbo=0;user-id=1337;user-type=admin :tmi.twitch.tv GLOBALUSERSTATE",
   "channel": undefined,
@@ -43,6 +49,93 @@ Array [
 
 exports[`Chat reconnect should reconnect and rejoin channels 2`] = `
 Array [
+  Array [
+    Object {
+      "event": "DISCONNECTED",
+      "isSelf": false,
+      "messageEvent": Object {
+        "data": undefined,
+      },
+      "timestamp": 2018-01-01T00:00:00.000Z,
+    },
+  ],
+  Array [
+    Object {
+      "_raw": ":tmi.twitch.tv 001 USERNAME :Welcome, GLHF!",
+      "channel": "USERNAME",
+      "command": "001",
+      "isSelf": false,
+      "message": "Welcome, GLHF!",
+      "tags": Object {},
+      "timestamp": 2018-01-01T00:00:00.000Z,
+    },
+  ],
+  Array [
+    Object {
+      "_raw": ":tmi.twitch.tv 002 USERNAME :Your host is tmi.twitch.tv",
+      "channel": "USERNAME",
+      "command": "002",
+      "isSelf": false,
+      "message": "Your host is tmi.twitch.tv",
+      "tags": Object {},
+      "timestamp": 2018-01-01T00:00:00.000Z,
+    },
+  ],
+  Array [
+    Object {
+      "_raw": ":tmi.twitch.tv 003 USERNAME :This server is rather new",
+      "channel": "USERNAME",
+      "command": "003",
+      "isSelf": false,
+      "message": "This server is rather new",
+      "tags": Object {},
+      "timestamp": 2018-01-01T00:00:00.000Z,
+    },
+  ],
+  Array [
+    Object {
+      "_raw": ":tmi.twitch.tv 004 USERNAME :-",
+      "channel": "USERNAME",
+      "command": "004",
+      "isSelf": false,
+      "message": "-",
+      "tags": Object {},
+      "timestamp": 2018-01-01T00:00:00.000Z,
+    },
+  ],
+  Array [
+    Object {
+      "_raw": ":tmi.twitch.tv 375 USERNAME :-",
+      "channel": "USERNAME",
+      "command": "375",
+      "isSelf": false,
+      "message": "-",
+      "tags": Object {},
+      "timestamp": 2018-01-01T00:00:00.000Z,
+    },
+  ],
+  Array [
+    Object {
+      "_raw": ":tmi.twitch.tv 372 USERNAME :You are in a maze of twisty passages.",
+      "channel": "USERNAME",
+      "command": "372",
+      "isSelf": false,
+      "message": "You are in a maze of twisty passages.",
+      "tags": Object {},
+      "timestamp": 2018-01-01T00:00:00.000Z,
+    },
+  ],
+  Array [
+    Object {
+      "_raw": ":tmi.twitch.tv 376 USERNAME :>",
+      "channel": "USERNAME",
+      "command": "376",
+      "isSelf": false,
+      "message": ">",
+      "tags": Object {},
+      "timestamp": 2018-01-01T00:00:00.000Z,
+    },
+  ],
   Array [
     Object {
       "_raw": "@color=#0D4200;display-name=dallas;emote-sets=0,33,50,237,793,2126,3517,4578,5569,9400,10337,12239;turbo=0;user-id=1337;user-type=admin :tmi.twitch.tv GLOBALUSERSTATE",
@@ -903,6 +996,8 @@ Object {
 }
 `;
 
+exports[`Chat should handle messages PRIVMSG whisper when anonymous 1`] = `[Error: Not authenticated]`;
+
 exports[`Chat should handle messages USERNOTICE GIFT_PAID_UPGRADE 1`] = `
 Object {
   "_raw": "@badges=subscriber/0,premium/1;color=#8A2BE2;display-name=ElizabethSwann;emotes=;id=5bd3e064-c1e4-451b-9d7e-afe8cf5a44a2;login=elizabethswann;mod=0;msg-id=giftpaidupgrade;msg-param-promo-gift-total=123816;msg-param-promo-name=Subtember;msg-param-sender-login=cannibulcake;msg-param-sender-name=CannibulCake;room-id=7236692;subscriber=1;system-msg=ElizabethSwann\\\\sis\\\\scontinuing\\\\sthe\\\\sGift\\\\sSub\\\\sthey\\\\sgot\\\\sfrom\\\\sCannibulCake!\\\\sThey're\\\\sone\\\\sof\\\\s123816\\\\sgift\\\\ssubs\\\\sto\\\\scontinue\\\\sthis\\\\sSubtember.;tmi-sent-ts=1536880884587;turbo=0;user-id=85946347;user-type= :tmi.twitch.tv USERNOTICE #dansgaming",
@@ -1306,6 +1401,8 @@ Object {
 }
 `;
 
+exports[`Chat should handle multiple channels should deny message broadcasting when anonymous 1`] = `[Error: Not authenticated]`;
+
 exports[`Chat should join channel 1`] = `
 Object {
   "roomState": Object {
@@ -1351,3 +1448,5 @@ Object {
   },
 }
 `;
+
+exports[`Chat should throw when sending a message as anonymous 1`] = `[Error: Not authenticated]`;

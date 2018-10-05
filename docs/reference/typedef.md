@@ -394,9 +394,9 @@ Chat options
   </thead>
   <tbody>
 <tr>
-    <td>username</td><td><code>string</code></td><td></td><td></td>
+    <td>[username]</td><td><code>string</code></td><td></td><td></td>
     </tr><tr>
-    <td>token</td><td><code>string</code></td><td></td><td><p>OAuth token (use <a href="https://twitchapps.com/tmi/">https://twitchapps.com/tmi/</a> to generate one)</p>
+    <td>[token]</td><td><code>string</code></td><td></td><td><p>OAuth token (use <a href="https://twitchapps.com/tmi/">https://twitchapps.com/tmi/</a> to generate one)</p>
 </td>
     </tr><tr>
     <td>[connectionTimeout]</td><td><code>number</code></td><td><code>CONNECTION_TIMEOUT</code></td><td></td>
