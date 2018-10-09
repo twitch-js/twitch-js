@@ -120,8 +120,6 @@ API options
     <td>[token]</td><td><code>string</code></td><td></td><td><p>Optional if clientId is defined.</p>
 </td>
     </tr><tr>
-    <td>[urlRoot]</td><td><code>string</code></td><td></td><td></td>
-    </tr><tr>
     <td>[debug]</td><td><code>boolean</code></td><td><code>false</code></td><td></td>
     </tr><tr>
     <td>[onAuthenticationFailure]</td><td><code>function</code></td><td></td><td></td>

@@ -1,5 +1,5 @@
 import camelcaseKeys from 'camelcase-keys'
-import { get, includes, replace } from 'lodash'
+import { get, includes, toUpper } from 'lodash'
 
 import fetchUtil from '../utils/fetch'
 import * as Errors from '../utils/fetch/Errors'
@@ -63,10 +63,6 @@ class Api {
     return this._options
   }
 
-  set readyState(readyState) {
-    this._readyState = constants.READY_STATES[readyState] ? readyState : 0
-  }
-
   get readyState() {
     return this._readyState
   }
@@ -84,12 +80,30 @@ class Api {
     this.options = { ...options, clientId, token }
   }
 
-  getHeaders() {
+  getAuthorizationType(version) {
+    if (toUpper(version) === 'HELIX') {
+      return 'Bearer'
+    }
+
+    return 'OAuth'
+  }
+
+  getBaseUrl(version) {
+    if (toUpper(version) === 'HELIX') {
+      return constants.HELIX_URL_ROOT
+    }
+
+    return constants.KRAKEN_URL_ROOT
+  }
+
+  getHeaders(version) {
     const { clientId, token } = this.options
+    const authType = this.getAuthorizationType(version)
+
     return {
       Accept: 'application/vnd.twitchtv.v5+json',
       'Client-ID': clientId ? clientId : undefined,
-      Authorization: token ? `OAuth ${token}` : undefined,
+      Authorization: token ? `${authType} ${token}` : undefined,
     }
   }
 
@@ -169,14 +183,14 @@ class Api {
 }
 
 function handleFetch(maybeUrl = '', options = {}) {
-  const url = replace(maybeUrl, /^\//g, '')
+  const [, version, url] = /^(?:([a-z]+):)?\/?(.*)$/i.exec(maybeUrl)
 
   const request = () =>
-    fetchUtil(`${this.options.urlRoot}/${url}`, {
+    fetchUtil(`${this.getBaseUrl(version)}/${url}`, {
       ...options,
       headers: {
         ...options.headers,
-        ...this.getHeaders(),
+        ...this.getHeaders(version),
       },
     }).then(res => camelcaseKeys(res, { deep: true }))
 

@@ -1,3 +1,4 @@
+export const HELIX_URL_ROOT = 'https://api.twitch.tv/helix'
 export const KRAKEN_URL_ROOT = 'https://api.twitch.tv/kraken'
 
 /** @typedef {string} ApiReadyState */
