@@ -1,4 +1,5 @@
 import Api from '../index'
+import * as constants from '../constants'
 import fetchUtil from '../../utils/fetch'
 import * as Errors from '../../utils/fetch/Errors'
 
@@ -129,6 +130,50 @@ describe('Api', () => {
         expect(error).toBeInstanceOf(Errors.FetchError)
         expect(error).toMatchSnapshot()
         done()
+      })
+    })
+  })
+
+  describe('versions', () => {
+    test('should fallback to the Kraken endpoint', () => {
+      const api = new Api(options)
+
+      const endpoint = 'ENDPOINT'
+      const opts = { a: { b: 'c ' } }
+
+      return api.get(endpoint, opts).then(() => {
+        const [actualEndpoint, actualOpts] = fetchUtil.mock.calls[0]
+
+        expect(actualEndpoint).toBe(`${constants.KRAKEN_URL_ROOT}/ENDPOINT`)
+        expect(actualOpts).toMatchObject(opts)
+      })
+    })
+
+    test('should call the Kraken endpoint', () => {
+      const api = new Api(options)
+
+      const endpoint = 'kraken:ENDPOINT'
+      const opts = { a: { b: 'c ' } }
+
+      return api.get(endpoint, opts).then(() => {
+        const [actualEndpoint, actualOpts] = fetchUtil.mock.calls[0]
+
+        expect(actualEndpoint).toBe(`${constants.KRAKEN_URL_ROOT}/ENDPOINT`)
+        expect(actualOpts).toMatchObject(opts)
+      })
+    })
+
+    test('should call the Helix endpoint', () => {
+      const api = new Api(options)
+
+      const endpoint = 'helix:ENDPOINT'
+      const opts = { a: { b: 'c ' } }
+
+      return api.get(endpoint, opts).then(() => {
+        const [actualEndpoint, actualOpts] = fetchUtil.mock.calls[0]
+
+        expect(actualEndpoint).toBe(`${constants.HELIX_URL_ROOT}/ENDPOINT`)
+        expect(actualOpts).toMatchObject(opts)
       })
     })
   })
