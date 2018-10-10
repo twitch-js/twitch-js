@@ -31,10 +31,10 @@ module.exports = (env = {}, argv) => {
 
     plugins: isProd
       ? [
-          new LodashModuleReplacementPlugin({ paths: true }),
+          new LodashModuleReplacementPlugin({ coercions: true, paths: true }),
           new MinifyPlugin({}, { sourceMap: 'source-map' }),
           new CompressionPlugin(),
         ]
-      : [new LodashModuleReplacementPlugin({ paths: true })],
+      : [new LodashModuleReplacementPlugin({ coercions: true, paths: true })],
   };
 };
