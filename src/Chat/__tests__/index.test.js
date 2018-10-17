@@ -17,8 +17,6 @@ const emitHelper = (emitter, rawMessages) =>
   )
 
 describe('Chat', () => {
-  let realDate
-
   const options = {
     server: 'localhost',
     port: 6667,
@@ -26,16 +24,6 @@ describe('Chat', () => {
     username: 'USERNAME',
     ssl: false,
   }
-
-  beforeAll(() => {
-    realDate = global.Date
-    const DATE_TO_USE = new Date('2018')
-    global.Date = jest.fn(() => DATE_TO_USE)
-  })
-
-  afterAll(() => {
-    global.Date = realDate
-  })
 
   describe('connect', () => {
     test('should connect as anonymous', async () => {
@@ -50,7 +38,9 @@ describe('Chat', () => {
       const chat = new Chat(options)
       const actual = await chat.connect()
 
-      expect(actual).toMatchSnapshot()
+      expect(actual).toMatchSnapshot({
+        timestamp: expect.any(Date),
+      })
       expect(chat.readyState).toBe(3)
     })
 
@@ -185,7 +175,12 @@ describe('Chat', () => {
       await chat.reconnect()
 
       expect(serverListener.mock.calls).toMatchSnapshot()
-      expect(chatListener.mock.calls).toMatchSnapshot()
+      chatListener.mock.calls.forEach(call => {
+        const actual = call[0]
+        expect(actual).toMatchSnapshot({
+          timestamp: expect.any(Date),
+        })
+      })
 
       server.removeListener('close')
       server.removeListener('open')
@@ -218,7 +213,9 @@ describe('Chat', () => {
       await chat.connect()
 
       chat.once(constants.EVENTS.JOIN, message => {
-        expect(message).toMatchSnapshot()
+        expect(message).toMatchSnapshot({
+          timestamp: expect.any(Date),
+        })
         done()
       })
 
@@ -230,7 +227,9 @@ describe('Chat', () => {
       await chat.connect()
 
       chat.once(constants.EVENTS.PART, message => {
-        expect(message).toMatchSnapshot()
+        expect(message).toMatchSnapshot({
+          timestamp: expect.any(Date),
+        })
         done()
       })
 
@@ -249,7 +248,13 @@ describe('Chat', () => {
 
       emitHelper(chat._client, membership.NAMES)
 
-      return emissions.then(actual => expect(actual).toMatchSnapshot())
+      return emissions.then(emission => {
+        emission.forEach(actual =>
+          expect(actual).toMatchSnapshot({
+            timestamp: expect.any(Date),
+          }),
+        )
+      })
     })
 
     describe('MODE', () => {
@@ -262,7 +267,9 @@ describe('Chat', () => {
           chat._channelState['#dallas'].userState.isModerator = false
 
           chat.once(constants.EVENTS.MODE, message => {
-            expect(message).toMatchSnapshot()
+            expect(message).toMatchSnapshot({
+              timestamp: expect.any(Date),
+            })
 
             const actual = chat._channelState['#dallas'].userState.isModerator
             const expected = true
@@ -281,7 +288,9 @@ describe('Chat', () => {
           chat._channelState['#dallas'].userState.isModerator = true
 
           chat.once(constants.EVENTS.MODE, message => {
-            expect(message).toMatchSnapshot()
+            expect(message).toMatchSnapshot({
+              timestamp: expect.any(Date),
+            })
 
             const actual = chat._channelState['#dallas'].userState.isModerator
             const expected = false
@@ -304,7 +313,9 @@ describe('Chat', () => {
           const before = chat._channelState['#dallas'].userState.isModerator
 
           chat.once(constants.EVENTS.MODE, message => {
-            expect(message).toMatchSnapshot()
+            expect(message).toMatchSnapshot({
+              timestamp: expect.any(Date),
+            })
 
             const after = chat._channelState['#dallas'].userState.isModerator
             expect(before).toEqual(after)
@@ -322,7 +333,9 @@ describe('Chat', () => {
           const before = chat._channelState['#dallas'].userState.isModerator
 
           chat.once(constants.EVENTS.MODE, message => {
-            expect(message).toMatchSnapshot()
+            expect(message).toMatchSnapshot({
+              timestamp: expect.any(Date),
+            })
 
             const after = chat._channelState['#dallas'].userState.isModerator
             expect(before).toEqual(after)
@@ -339,7 +352,9 @@ describe('Chat', () => {
       await chat.connect()
 
       chat.once(constants.EVENTS.CLEAR_CHAT, message => {
-        expect(message).toMatchSnapshot()
+        expect(message).toMatchSnapshot({
+          timestamp: expect.any(Date),
+        })
         done()
       })
 
@@ -351,7 +366,9 @@ describe('Chat', () => {
       await chat.connect()
 
       chat.once(constants.EVENTS.CLEAR_CHAT, message => {
-        expect(message).toMatchSnapshot()
+        expect(message).toMatchSnapshot({
+          timestamp: expect.any(Date),
+        })
         done()
       })
 
@@ -363,7 +380,9 @@ describe('Chat', () => {
       await chat.connect()
 
       chat.once(constants.EVENTS.HOST_TARGET, message => {
-        expect(message).toMatchSnapshot()
+        expect(message).toMatchSnapshot({
+          timestamp: expect.any(Date),
+        })
         done()
       })
 
@@ -375,7 +394,9 @@ describe('Chat', () => {
       await chat.connect()
 
       chat.once(constants.EVENTS.HOST_TARGET, message => {
-        expect(message).toMatchSnapshot()
+        expect(message).toMatchSnapshot({
+          timestamp: expect.any(Date),
+        })
         done()
       })
 
@@ -390,7 +411,9 @@ describe('Chat', () => {
           await chat.connect()
 
           chat.once(constants.EVENTS.NOTICE, message => {
-            expect(message).toMatchSnapshot()
+            expect(message).toMatchSnapshot({
+              timestamp: expect.any(Date),
+            })
             done()
           })
 
@@ -408,7 +431,9 @@ describe('Chat', () => {
           await chat.connect()
 
           chat.once(constants.COMMANDS.USER_NOTICE, message => {
-            expect(message).toMatchSnapshot()
+            expect(message).toMatchSnapshot({
+              timestamp: expect.any(Date),
+            })
             done()
           })
 
@@ -423,7 +448,9 @@ describe('Chat', () => {
         await chat.connect()
 
         chat.once('PRIVMSG', message => {
-          expect(message).toMatchSnapshot()
+          expect(message).toMatchSnapshot({
+            timestamp: expect.any(Date),
+          })
           done()
         })
 
@@ -460,7 +487,9 @@ describe('Chat', () => {
         expect.assertions(1)
 
         chat.on('CLEARCHAT', actual => {
-          expect(actual).toMatchSnapshot()
+          expect(actual).toMatchSnapshot({
+            timestamp: expect.any(Date),
+          })
           done()
         })
 
