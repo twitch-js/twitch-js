@@ -20,7 +20,7 @@ Object {
     "userId": "1337",
     "userType": "admin",
   },
-  "timestamp": 2018-01-01T00:00:00.000Z,
+  "timestamp": Any<Date>,
 }
 `;
 
@@ -48,219 +48,227 @@ Array [
 `;
 
 exports[`Chat reconnect should reconnect and rejoin channels 2`] = `
-Array [
-  Array [
-    Object {
-      "event": "DISCONNECTED",
-      "isSelf": false,
-      "messageEvent": Object {
-        "data": undefined,
-      },
-      "timestamp": 2018-01-01T00:00:00.000Z,
-    },
-  ],
-  Array [
-    Object {
-      "_raw": ":tmi.twitch.tv 001 USERNAME :Welcome, GLHF!",
-      "channel": "USERNAME",
-      "command": "001",
-      "isSelf": false,
-      "message": "Welcome, GLHF!",
-      "tags": Object {},
-      "timestamp": 2018-01-01T00:00:00.000Z,
-    },
-  ],
-  Array [
-    Object {
-      "_raw": ":tmi.twitch.tv 002 USERNAME :Your host is tmi.twitch.tv",
-      "channel": "USERNAME",
-      "command": "002",
-      "isSelf": false,
-      "message": "Your host is tmi.twitch.tv",
-      "tags": Object {},
-      "timestamp": 2018-01-01T00:00:00.000Z,
-    },
-  ],
-  Array [
-    Object {
-      "_raw": ":tmi.twitch.tv 003 USERNAME :This server is rather new",
-      "channel": "USERNAME",
-      "command": "003",
-      "isSelf": false,
-      "message": "This server is rather new",
-      "tags": Object {},
-      "timestamp": 2018-01-01T00:00:00.000Z,
-    },
-  ],
-  Array [
-    Object {
-      "_raw": ":tmi.twitch.tv 004 USERNAME :-",
-      "channel": "USERNAME",
-      "command": "004",
-      "isSelf": false,
-      "message": "-",
-      "tags": Object {},
-      "timestamp": 2018-01-01T00:00:00.000Z,
-    },
-  ],
-  Array [
-    Object {
-      "_raw": ":tmi.twitch.tv 375 USERNAME :-",
-      "channel": "USERNAME",
-      "command": "375",
-      "isSelf": false,
-      "message": "-",
-      "tags": Object {},
-      "timestamp": 2018-01-01T00:00:00.000Z,
-    },
-  ],
-  Array [
-    Object {
-      "_raw": ":tmi.twitch.tv 372 USERNAME :You are in a maze of twisty passages.",
-      "channel": "USERNAME",
-      "command": "372",
-      "isSelf": false,
-      "message": "You are in a maze of twisty passages.",
-      "tags": Object {},
-      "timestamp": 2018-01-01T00:00:00.000Z,
-    },
-  ],
-  Array [
-    Object {
-      "_raw": ":tmi.twitch.tv 376 USERNAME :>",
-      "channel": "USERNAME",
-      "command": "376",
-      "isSelf": false,
-      "message": ">",
-      "tags": Object {},
-      "timestamp": 2018-01-01T00:00:00.000Z,
-    },
-  ],
-  Array [
-    Object {
-      "_raw": "@color=#0D4200;display-name=dallas;emote-sets=0,33,50,237,793,2126,3517,4578,5569,9400,10337,12239;turbo=0;user-id=1337;user-type=admin :tmi.twitch.tv GLOBALUSERSTATE",
-      "channel": undefined,
-      "command": "GLOBALUSERSTATE",
-      "isSelf": false,
-      "message": undefined,
-      "tags": Object {
-        "color": "#0D4200",
-        "displayName": "dallas",
-        "emoteSets": Array [
-          "0",
-          "33",
-          "50",
-          "237",
-          "793",
-          "2126",
-          "3517",
-          "4578",
-          "5569",
-          "9400",
-          "10337",
-          "12239",
-        ],
-        "isTurboSubscriber": false,
-        "turbo": "0",
-        "userId": "1337",
-        "userType": "admin",
-        "username": "dallas",
-      },
-      "timestamp": 2018-01-01T00:00:00.000Z,
-    },
-  ],
-  Array [
-    Object {
-      "_raw": "@color=#0D4200;display-name=dallas;emote-sets=0,33,50,237,793,2126,3517,4578,5569,9400,10337,12239;turbo=0;user-id=1337;user-type=admin :tmi.twitch.tv GLOBALUSERSTATE",
-      "channel": undefined,
-      "command": "CONNECTED",
-      "isSelf": false,
-      "message": undefined,
-      "tags": Object {
-        "color": "#0D4200",
-        "displayName": "dallas",
-        "emoteSets": "0,33,50,237,793,2126,3517,4578,5569,9400,10337,12239",
-        "turbo": "0",
-        "userId": "1337",
-        "userType": "admin",
-      },
-      "timestamp": 2018-01-01T00:00:00.000Z,
-    },
-  ],
-  Array [
-    Object {
-      "_raw": ":ronni!ronni@ronni.tmi.twitch.tv JOIN #dallas",
-      "channel": "#dallas",
-      "command": "JOIN",
-      "isSelf": true,
-      "message": undefined,
-      "tags": Object {},
-      "timestamp": 2018-01-01T00:00:00.000Z,
-      "username": "ronni",
-    },
-  ],
-  Array [
-    Object {
-      "_raw": "@broadcaster-lang=en;r9k=0;slow=0;subs-only=0 :tmi.twitch.tv ROOMSTATE #dallas",
-      "channel": "#dallas",
-      "command": "ROOMSTATE",
-      "isSelf": false,
-      "message": undefined,
-      "tags": Object {
-        "broadcasterLang": "en",
-        "broadcasterLanguage": "en",
-        "isEmoteOnly": false,
-        "isFollowersOnly": false,
-        "isR9kEnabled": false,
-        "isSubscribersOnly": false,
-        "r9k": "0",
-        "slow": "0",
-        "slowDelay": 0,
-        "subsOnly": "0",
-      },
-      "timestamp": 2018-01-01T00:00:00.000Z,
-    },
-  ],
-  Array [
-    Object {
-      "_raw": "@color=#0D4200;display-name=ronni;emote-sets=0,33,50,237,793,2126,3517,4578,5569,9400,10337,12239;mod=1;subscriber=1;turbo=1;user-type=staff :tmi.twitch.tv USERSTATE #dallas",
-      "channel": "#dallas",
-      "command": "USERSTATE",
-      "isSelf": true,
-      "message": undefined,
-      "tags": Object {
-        "badges": Object {},
-        "bits": undefined,
-        "color": "#0D4200",
-        "displayName": "ronni",
-        "emoteSets": Array [
-          "0",
-          "33",
-          "50",
-          "237",
-          "793",
-          "2126",
-          "3517",
-          "4578",
-          "5569",
-          "9400",
-          "10337",
-          "12239",
-        ],
-        "emotes": Array [],
-        "isModerator": true,
-        "isSubGifter": false,
-        "isSubscriber": true,
-        "isTurboSubscriber": true,
-        "mod": "1",
-        "subscriber": "1",
-        "turbo": "1",
-        "userType": "staff",
-      },
-      "timestamp": 2018-01-01T00:00:00.000Z,
-    },
-  ],
-]
+Object {
+  "event": "DISCONNECTED",
+  "isSelf": false,
+  "messageEvent": Object {
+    "data": undefined,
+  },
+  "timestamp": Any<Date>,
+}
+`;
+
+exports[`Chat reconnect should reconnect and rejoin channels 3`] = `
+Object {
+  "_raw": ":tmi.twitch.tv 001 USERNAME :Welcome, GLHF!",
+  "channel": "USERNAME",
+  "command": "001",
+  "isSelf": false,
+  "message": "Welcome, GLHF!",
+  "tags": Object {},
+  "timestamp": Any<Date>,
+}
+`;
+
+exports[`Chat reconnect should reconnect and rejoin channels 4`] = `
+Object {
+  "_raw": ":tmi.twitch.tv 002 USERNAME :Your host is tmi.twitch.tv",
+  "channel": "USERNAME",
+  "command": "002",
+  "isSelf": false,
+  "message": "Your host is tmi.twitch.tv",
+  "tags": Object {},
+  "timestamp": Any<Date>,
+}
+`;
+
+exports[`Chat reconnect should reconnect and rejoin channels 5`] = `
+Object {
+  "_raw": ":tmi.twitch.tv 003 USERNAME :This server is rather new",
+  "channel": "USERNAME",
+  "command": "003",
+  "isSelf": false,
+  "message": "This server is rather new",
+  "tags": Object {},
+  "timestamp": Any<Date>,
+}
+`;
+
+exports[`Chat reconnect should reconnect and rejoin channels 6`] = `
+Object {
+  "_raw": ":tmi.twitch.tv 004 USERNAME :-",
+  "channel": "USERNAME",
+  "command": "004",
+  "isSelf": false,
+  "message": "-",
+  "tags": Object {},
+  "timestamp": Any<Date>,
+}
+`;
+
+exports[`Chat reconnect should reconnect and rejoin channels 7`] = `
+Object {
+  "_raw": ":tmi.twitch.tv 375 USERNAME :-",
+  "channel": "USERNAME",
+  "command": "375",
+  "isSelf": false,
+  "message": "-",
+  "tags": Object {},
+  "timestamp": Any<Date>,
+}
+`;
+
+exports[`Chat reconnect should reconnect and rejoin channels 8`] = `
+Object {
+  "_raw": ":tmi.twitch.tv 372 USERNAME :You are in a maze of twisty passages.",
+  "channel": "USERNAME",
+  "command": "372",
+  "isSelf": false,
+  "message": "You are in a maze of twisty passages.",
+  "tags": Object {},
+  "timestamp": Any<Date>,
+}
+`;
+
+exports[`Chat reconnect should reconnect and rejoin channels 9`] = `
+Object {
+  "_raw": ":tmi.twitch.tv 376 USERNAME :>",
+  "channel": "USERNAME",
+  "command": "376",
+  "isSelf": false,
+  "message": ">",
+  "tags": Object {},
+  "timestamp": Any<Date>,
+}
+`;
+
+exports[`Chat reconnect should reconnect and rejoin channels 10`] = `
+Object {
+  "_raw": "@color=#0D4200;display-name=dallas;emote-sets=0,33,50,237,793,2126,3517,4578,5569,9400,10337,12239;turbo=0;user-id=1337;user-type=admin :tmi.twitch.tv GLOBALUSERSTATE",
+  "channel": undefined,
+  "command": "GLOBALUSERSTATE",
+  "isSelf": false,
+  "message": undefined,
+  "tags": Object {
+    "color": "#0D4200",
+    "displayName": "dallas",
+    "emoteSets": Array [
+      "0",
+      "33",
+      "50",
+      "237",
+      "793",
+      "2126",
+      "3517",
+      "4578",
+      "5569",
+      "9400",
+      "10337",
+      "12239",
+    ],
+    "isTurboSubscriber": false,
+    "turbo": "0",
+    "userId": "1337",
+    "userType": "admin",
+    "username": "dallas",
+  },
+  "timestamp": Any<Date>,
+}
+`;
+
+exports[`Chat reconnect should reconnect and rejoin channels 11`] = `
+Object {
+  "_raw": "@color=#0D4200;display-name=dallas;emote-sets=0,33,50,237,793,2126,3517,4578,5569,9400,10337,12239;turbo=0;user-id=1337;user-type=admin :tmi.twitch.tv GLOBALUSERSTATE",
+  "channel": undefined,
+  "command": "CONNECTED",
+  "isSelf": false,
+  "message": undefined,
+  "tags": Object {
+    "color": "#0D4200",
+    "displayName": "dallas",
+    "emoteSets": "0,33,50,237,793,2126,3517,4578,5569,9400,10337,12239",
+    "turbo": "0",
+    "userId": "1337",
+    "userType": "admin",
+  },
+  "timestamp": Any<Date>,
+}
+`;
+
+exports[`Chat reconnect should reconnect and rejoin channels 12`] = `
+Object {
+  "_raw": ":ronni!ronni@ronni.tmi.twitch.tv JOIN #dallas",
+  "channel": "#dallas",
+  "command": "JOIN",
+  "isSelf": true,
+  "message": undefined,
+  "tags": Object {},
+  "timestamp": Any<Date>,
+  "username": "ronni",
+}
+`;
+
+exports[`Chat reconnect should reconnect and rejoin channels 13`] = `
+Object {
+  "_raw": "@broadcaster-lang=en;r9k=0;slow=0;subs-only=0 :tmi.twitch.tv ROOMSTATE #dallas",
+  "channel": "#dallas",
+  "command": "ROOMSTATE",
+  "isSelf": false,
+  "message": undefined,
+  "tags": Object {
+    "broadcasterLang": "en",
+    "broadcasterLanguage": "en",
+    "isEmoteOnly": false,
+    "isFollowersOnly": false,
+    "isR9kEnabled": false,
+    "isSubscribersOnly": false,
+    "r9k": "0",
+    "slow": "0",
+    "slowDelay": 0,
+    "subsOnly": "0",
+  },
+  "timestamp": Any<Date>,
+}
+`;
+
+exports[`Chat reconnect should reconnect and rejoin channels 14`] = `
+Object {
+  "_raw": "@color=#0D4200;display-name=ronni;emote-sets=0,33,50,237,793,2126,3517,4578,5569,9400,10337,12239;mod=1;subscriber=1;turbo=1;user-type=staff :tmi.twitch.tv USERSTATE #dallas",
+  "channel": "#dallas",
+  "command": "USERSTATE",
+  "isSelf": true,
+  "message": undefined,
+  "tags": Object {
+    "badges": Object {},
+    "bits": undefined,
+    "color": "#0D4200",
+    "displayName": "ronni",
+    "emoteSets": Array [
+      "0",
+      "33",
+      "50",
+      "237",
+      "793",
+      "2126",
+      "3517",
+      "4578",
+      "5569",
+      "9400",
+      "10337",
+      "12239",
+    ],
+    "emotes": Array [],
+    "isModerator": true,
+    "isSubGifter": false,
+    "isSubscriber": true,
+    "isTurboSubscriber": true,
+    "mod": "1",
+    "subscriber": "1",
+    "turbo": "1",
+    "userType": "staff",
+  },
+  "timestamp": Any<Date>,
+}
 `;
 
 exports[`Chat should handle messages CLEARCHAT 1`] = `
@@ -269,7 +277,7 @@ Object {
   "channel": "#dallas",
   "command": "CLEARCHAT",
   "isSelf": false,
-  "timestamp": 2018-01-01T00:00:00.000Z,
+  "timestamp": Any<Date>,
 }
 `;
 
@@ -284,7 +292,7 @@ Object {
     "banDuration": undefined,
     "banReason": "Follow the rules",
   },
-  "timestamp": 2018-01-01T00:00:00.000Z,
+  "timestamp": Any<Date>,
   "username": "ronni",
 }
 `;
@@ -299,7 +307,7 @@ Object {
   "message": undefined,
   "numberOfViewers": 123,
   "tags": Object {},
-  "timestamp": 2018-01-01T00:00:00.000Z,
+  "timestamp": Any<Date>,
   "username": "dallas",
 }
 `;
@@ -314,7 +322,7 @@ Object {
   "message": undefined,
   "numberOfViewers": 456,
   "tags": Object {},
-  "timestamp": 2018-01-01T00:00:00.000Z,
+  "timestamp": Any<Date>,
   "username": "-",
 }
 `;
@@ -327,7 +335,7 @@ Object {
   "isSelf": true,
   "message": undefined,
   "tags": Object {},
-  "timestamp": 2018-01-01T00:00:00.000Z,
+  "timestamp": Any<Date>,
   "username": "ronni",
 }
 `;
@@ -342,7 +350,7 @@ Object {
   "isSelf": false,
   "message": undefined,
   "tags": Object {},
-  "timestamp": 2018-01-01T00:00:00.000Z,
+  "timestamp": Any<Date>,
   "username": "ronni",
 }
 `;
@@ -357,7 +365,7 @@ Object {
   "isSelf": false,
   "message": undefined,
   "tags": Object {},
-  "timestamp": 2018-01-01T00:00:00.000Z,
+  "timestamp": Any<Date>,
   "username": "ronni",
 }
 `;
@@ -372,7 +380,7 @@ Object {
   "isSelf": false,
   "message": undefined,
   "tags": Object {},
-  "timestamp": 2018-01-01T00:00:00.000Z,
+  "timestamp": Any<Date>,
   "username": "dallas",
 }
 `;
@@ -387,57 +395,61 @@ Object {
   "isSelf": false,
   "message": undefined,
   "tags": Object {},
-  "timestamp": 2018-01-01T00:00:00.000Z,
+  "timestamp": Any<Date>,
   "username": "dallas",
 }
 `;
 
 exports[`Chat should handle messages NAMES 1`] = `
-Array [
-  Object {
-    "_raw": ":ronni.tmi.twitch.tv 353 ronni = #dallas :ronni fred wilma",
-    "channel": "#dallas",
-    "command": "353",
-    "event": "353",
-    "isSelf": true,
-    "listType": "chatters",
-    "message": undefined,
-    "tags": Object {},
-    "timestamp": 2018-01-01T00:00:00.000Z,
-    "usernames": Array [
-      "ronni",
-      "fred",
-      "wilma",
-    ],
-  },
-  Object {
-    "_raw": ":ronni.tmi.twitch.tv 353 ronni = #dallas :ronni fred wilma",
-    "channel": "#dallas",
-    "command": "353",
-    "event": "353",
-    "isSelf": true,
-    "listType": "chatters",
-    "message": undefined,
-    "tags": Object {},
-    "timestamp": 2018-01-01T00:00:00.000Z,
-    "usernames": Array [
-      "ronni",
-      "fred",
-      "wilma",
-    ],
-  },
-  Object {
-    "_raw": ":ronni.tmi.twitch.tv 366 ronni #dallas :End of /NAMES list",
-    "channel": "#dallas",
-    "command": "366",
-    "event": "366",
-    "isSelf": true,
-    "message": "End of /NAMES list",
-    "tags": Object {},
-    "timestamp": 2018-01-01T00:00:00.000Z,
-    "username": "ronni",
-  },
-]
+Object {
+  "_raw": ":ronni.tmi.twitch.tv 353 ronni = #dallas :ronni fred wilma",
+  "channel": "#dallas",
+  "command": "353",
+  "event": "353",
+  "isSelf": true,
+  "listType": "chatters",
+  "message": undefined,
+  "tags": Object {},
+  "timestamp": Any<Date>,
+  "usernames": Array [
+    "ronni",
+    "fred",
+    "wilma",
+  ],
+}
+`;
+
+exports[`Chat should handle messages NAMES 2`] = `
+Object {
+  "_raw": ":ronni.tmi.twitch.tv 353 ronni = #dallas :ronni fred wilma",
+  "channel": "#dallas",
+  "command": "353",
+  "event": "353",
+  "isSelf": true,
+  "listType": "chatters",
+  "message": undefined,
+  "tags": Object {},
+  "timestamp": Any<Date>,
+  "usernames": Array [
+    "ronni",
+    "fred",
+    "wilma",
+  ],
+}
+`;
+
+exports[`Chat should handle messages NAMES 3`] = `
+Object {
+  "_raw": ":ronni.tmi.twitch.tv 366 ronni #dallas :End of /NAMES list",
+  "channel": "#dallas",
+  "command": "366",
+  "event": "366",
+  "isSelf": true,
+  "message": "End of /NAMES list",
+  "tags": Object {},
+  "timestamp": Any<Date>,
+  "username": "ronni",
+}
 `;
 
 exports[`Chat should handle messages NOTICE ALREADY_BANNED 1`] = `
@@ -451,7 +463,7 @@ Object {
   "tags": Object {
     "msgId": "already_banned",
   },
-  "timestamp": 2018-01-01T00:00:00.000Z,
+  "timestamp": Any<Date>,
 }
 `;
 
@@ -466,7 +478,7 @@ Object {
   "tags": Object {
     "msgId": "already_emote_only_off",
   },
-  "timestamp": 2018-01-01T00:00:00.000Z,
+  "timestamp": Any<Date>,
 }
 `;
 
@@ -481,7 +493,7 @@ Object {
   "tags": Object {
     "msgId": "already_emote_only_on",
   },
-  "timestamp": 2018-01-01T00:00:00.000Z,
+  "timestamp": Any<Date>,
 }
 `;
 
@@ -496,7 +508,7 @@ Object {
   "tags": Object {
     "msgId": "already_r9k_off",
   },
-  "timestamp": 2018-01-01T00:00:00.000Z,
+  "timestamp": Any<Date>,
 }
 `;
 
@@ -511,7 +523,7 @@ Object {
   "tags": Object {
     "msgId": "already_r9k_on",
   },
-  "timestamp": 2018-01-01T00:00:00.000Z,
+  "timestamp": Any<Date>,
 }
 `;
 
@@ -526,7 +538,7 @@ Object {
   "tags": Object {
     "msgId": "already_subs_off",
   },
-  "timestamp": 2018-01-01T00:00:00.000Z,
+  "timestamp": Any<Date>,
 }
 `;
 
@@ -541,7 +553,7 @@ Object {
   "tags": Object {
     "msgId": "already_subs_on",
   },
-  "timestamp": 2018-01-01T00:00:00.000Z,
+  "timestamp": Any<Date>,
 }
 `;
 
@@ -556,7 +568,7 @@ Object {
   "tags": Object {
     "msgId": "AUTHENTICATION_FAILED",
   },
-  "timestamp": 2018-01-01T00:00:00.000Z,
+  "timestamp": Any<Date>,
 }
 `;
 
@@ -571,7 +583,7 @@ Object {
   "tags": Object {
     "msgId": "bad_host_hosting",
   },
-  "timestamp": 2018-01-01T00:00:00.000Z,
+  "timestamp": Any<Date>,
 }
 `;
 
@@ -586,7 +598,7 @@ Object {
   "tags": Object {
     "msgId": "bad_unban_no_ban",
   },
-  "timestamp": 2018-01-01T00:00:00.000Z,
+  "timestamp": Any<Date>,
 }
 `;
 
@@ -601,7 +613,7 @@ Object {
   "tags": Object {
     "msgId": "ban_success",
   },
-  "timestamp": 2018-01-01T00:00:00.000Z,
+  "timestamp": Any<Date>,
 }
 `;
 
@@ -616,7 +628,7 @@ Object {
   "tags": Object {
     "msgId": "emote_only_off",
   },
-  "timestamp": 2018-01-01T00:00:00.000Z,
+  "timestamp": Any<Date>,
 }
 `;
 
@@ -631,7 +643,7 @@ Object {
   "tags": Object {
     "msgId": "emote_only_on",
   },
-  "timestamp": 2018-01-01T00:00:00.000Z,
+  "timestamp": Any<Date>,
 }
 `;
 
@@ -646,7 +658,7 @@ Object {
   "tags": Object {
     "msgId": "host_off",
   },
-  "timestamp": 2018-01-01T00:00:00.000Z,
+  "timestamp": Any<Date>,
 }
 `;
 
@@ -661,7 +673,7 @@ Object {
   "tags": Object {
     "msgId": "host_on",
   },
-  "timestamp": 2018-01-01T00:00:00.000Z,
+  "timestamp": Any<Date>,
 }
 `;
 
@@ -676,7 +688,7 @@ Object {
   "tags": Object {
     "msgId": "hosts_remaining",
   },
-  "timestamp": 2018-01-01T00:00:00.000Z,
+  "timestamp": Any<Date>,
 }
 `;
 
@@ -691,7 +703,7 @@ Object {
   "tags": Object {
     "msgId": "msg_channel_suspended",
   },
-  "timestamp": 2018-01-01T00:00:00.000Z,
+  "timestamp": Any<Date>,
 }
 `;
 
@@ -706,7 +718,7 @@ Object {
   "tags": Object {
     "msgId": "r9k_off",
   },
-  "timestamp": 2018-01-01T00:00:00.000Z,
+  "timestamp": Any<Date>,
 }
 `;
 
@@ -721,7 +733,7 @@ Object {
   "tags": Object {
     "msgId": "r9k_on",
   },
-  "timestamp": 2018-01-01T00:00:00.000Z,
+  "timestamp": Any<Date>,
 }
 `;
 
@@ -740,7 +752,7 @@ Object {
   "tags": Object {
     "msgId": "room_mods",
   },
-  "timestamp": 2018-01-01T00:00:00.000Z,
+  "timestamp": Any<Date>,
 }
 `;
 
@@ -755,7 +767,7 @@ Object {
   "tags": Object {
     "msgId": "slow_off",
   },
-  "timestamp": 2018-01-01T00:00:00.000Z,
+  "timestamp": Any<Date>,
 }
 `;
 
@@ -770,7 +782,7 @@ Object {
   "tags": Object {
     "msgId": "slow_on",
   },
-  "timestamp": 2018-01-01T00:00:00.000Z,
+  "timestamp": Any<Date>,
 }
 `;
 
@@ -785,7 +797,7 @@ Object {
   "tags": Object {
     "msgId": "subs_off",
   },
-  "timestamp": 2018-01-01T00:00:00.000Z,
+  "timestamp": Any<Date>,
 }
 `;
 
@@ -800,7 +812,7 @@ Object {
   "tags": Object {
     "msgId": "subs_on",
   },
-  "timestamp": 2018-01-01T00:00:00.000Z,
+  "timestamp": Any<Date>,
 }
 `;
 
@@ -815,7 +827,7 @@ Object {
   "tags": Object {
     "msgId": "timeout_success",
   },
-  "timestamp": 2018-01-01T00:00:00.000Z,
+  "timestamp": Any<Date>,
 }
 `;
 
@@ -830,7 +842,7 @@ Object {
   "tags": Object {
     "msgId": "unban_success",
   },
-  "timestamp": 2018-01-01T00:00:00.000Z,
+  "timestamp": Any<Date>,
 }
 `;
 
@@ -845,7 +857,7 @@ Object {
   "tags": Object {
     "msgId": "unrecognized_cmd",
   },
-  "timestamp": 2018-01-01T00:00:00.000Z,
+  "timestamp": Any<Date>,
 }
 `;
 
@@ -857,7 +869,7 @@ Object {
   "isSelf": true,
   "message": undefined,
   "tags": Object {},
-  "timestamp": 2018-01-01T00:00:00.000Z,
+  "timestamp": Any<Date>,
   "username": "ronni",
 }
 `;
@@ -894,7 +906,7 @@ Object {
     "userId": "1337",
     "userType": "staff",
   },
-  "timestamp": 2018-01-01T00:00:00.000Z,
+  "timestamp": Any<Date>,
 }
 `;
 
@@ -910,7 +922,7 @@ Object {
   "tags": Object {
     "displayName": "ronni",
   },
-  "timestamp": 2018-01-01T00:00:00.000Z,
+  "timestamp": Any<Date>,
 }
 `;
 
@@ -926,7 +938,7 @@ Object {
   "tags": Object {
     "displayName": "ronni",
   },
-  "timestamp": 2018-01-01T00:00:00.000Z,
+  "timestamp": Any<Date>,
 }
 `;
 
@@ -942,7 +954,7 @@ Object {
   "tags": Object {
     "displayName": "ronni",
   },
-  "timestamp": 2018-01-01T00:00:00.000Z,
+  "timestamp": Any<Date>,
 }
 `;
 
@@ -992,7 +1004,7 @@ Object {
     "userId": "1337",
     "userType": "global_mod",
   },
-  "timestamp": 2018-01-01T00:00:00.000Z,
+  "timestamp": Any<Date>,
 }
 `;
 
@@ -1043,7 +1055,7 @@ Object {
     "userId": "85946347",
     "userType": undefined,
   },
-  "timestamp": 2018-01-01T00:00:00.000Z,
+  "timestamp": Any<Date>,
 }
 `;
 
@@ -1089,7 +1101,7 @@ Object {
     "userId": "123456",
     "userType": undefined,
   },
-  "timestamp": 2018-01-01T00:00:00.000Z,
+  "timestamp": Any<Date>,
 }
 `;
 
@@ -1137,7 +1149,7 @@ Object {
     "userId": "1337",
     "userType": "staff",
   },
-  "timestamp": 2018-01-01T00:00:00.000Z,
+  "timestamp": Any<Date>,
 }
 `;
 
@@ -1183,7 +1195,7 @@ Object {
     "userId": "131260580",
     "userType": undefined,
   },
-  "timestamp": 2018-01-01T00:00:00.000Z,
+  "timestamp": Any<Date>,
 }
 `;
 
@@ -1231,7 +1243,7 @@ Object {
     "userId": "109667930",
     "userType": undefined,
   },
-  "timestamp": 2018-01-01T00:00:00.000Z,
+  "timestamp": Any<Date>,
 }
 `;
 
@@ -1279,7 +1291,7 @@ Object {
     "userId": "1337",
     "userType": "staff",
   },
-  "timestamp": 2018-01-01T00:00:00.000Z,
+  "timestamp": Any<Date>,
 }
 `;
 
@@ -1332,7 +1344,7 @@ Object {
     "userId": "13405587",
     "userType": "staff",
   },
-  "timestamp": 2018-01-01T00:00:00.000Z,
+  "timestamp": Any<Date>,
 }
 `;
 
@@ -1378,7 +1390,7 @@ Object {
     "userId": "131260580",
     "userType": undefined,
   },
-  "timestamp": 2018-01-01T00:00:00.000Z,
+  "timestamp": Any<Date>,
 }
 `;
 
@@ -1396,7 +1408,7 @@ Object {
     "targetUserId": "200817980",
     "tmiSentTs": "1531857100477",
   },
-  "timestamp": 2018-01-01T00:00:00.000Z,
+  "timestamp": Any<Date>,
   "username": "aiibopz",
 }
 `;

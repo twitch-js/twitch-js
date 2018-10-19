@@ -8,8 +8,6 @@ import * as constants from '../constants'
 jest.mock('uws', () => require('ws'))
 
 describe('Chat/Client', () => {
-  let realDate
-
   const options = {
     server: 'localhost',
     port: 6668,
@@ -17,17 +15,6 @@ describe('Chat/Client', () => {
     username: 'USERNAME',
     ssl: false,
   }
-
-  beforeAll(() => {
-    realDate = Date
-    const DATE_TO_USE = new Date('2018')
-    global.Date = jest.fn(() => DATE_TO_USE)
-  })
-
-  afterAll(() => {
-    // eslint-disable-next-line no-global-assign
-    Date = realDate
-  })
 
   test('should receive CONNECTED event', done => {
     const client = new Client(options)
