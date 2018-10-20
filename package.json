@@ -36,7 +36,8 @@
     "dist",
     "examples",
     "lib",
-    "src"
+    "src",
+    "index.d.ts"
   ],
   "runkitExampleFilename": "examples/runkit.js",
   "scripts": {
