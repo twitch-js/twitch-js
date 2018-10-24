@@ -239,5 +239,19 @@
       "prettier --write",
       "git add"
     ]
+  },
+  "signale": {
+    "coloredInterpolation": false,
+    "displayScope": true,
+    "displayBadge": false,
+    "displayDate": false,
+    "displayFilename": true,
+    "displayLabel": true,
+    "displayTimestamp": true,
+    "underlineLabel": true,
+    "underlineMessage": false,
+    "underlinePrefix": false,
+    "underlineSuffix": false,
+    "uppercaseLabel": true
   }
 }
