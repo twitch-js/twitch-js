@@ -19,6 +19,8 @@ import * as parsers from './utils/parsers'
 import * as sanitizers from './utils/sanitizers'
 import * as validators from './utils/validators'
 
+require('./utils/formatting')
+
 /**
  * Chat client
  * @extends external:EventEmitter3
@@ -597,6 +599,8 @@ function handleMessage(baseMessage) {
 function handleDisconnect() {
   this._connectPromise = null
   this._readyState = 5
+
+  this.reconnect()
 }
 
 export { constants }

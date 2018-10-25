@@ -75,3 +75,9 @@ $RECYCLE.BIN/
 *.msi
 *.msm
 *.msp
+
+# IDE Specific
+# =========================
+
+# Visual Studio Code
+.vscode/*
