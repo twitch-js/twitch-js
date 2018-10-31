@@ -1,13 +1,14 @@
 require('./lib/Chat/utils/formatting')
+require('dotenv').config({ path: 'dev.env' })
 const Twitch = require('./lib/index')
 const { Signale } = require('signale')
 const signale = new Signale()
 const constants = require('./lib/Chat/constants')
 
 const tjs = new Twitch.default({
-  token: 'oauth:1aw3w3gme3zo5nm2rgqto2ew78nxys',
-  username: 'Stapleton',
-  clientId: 'zlu50gxzpp8utqsxdbu5m5vkgd9rlq',
+  token: process.env.TOKEN,
+  username: process.env.USERNAME,
+  clientId: process.env.CLIENT_ID,
 })
 tjs.chat
   .connect()
