@@ -125,6 +125,10 @@ class Chat extends EventEmitter {
   get options() {
     return this._options
   }
+604
+​
+605
+  this.reconnect()
 
   set options(maybeOptions) {
     this._options = validators.chatOptions(maybeOptions)
@@ -601,8 +605,6 @@ function handleMessage(baseMessage) {
 function handleDisconnect() {
   this._connectPromise = null
   this._readyState = 5
-
-  this.reconnect()
 }
 
 export { constants }
