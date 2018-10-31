@@ -26,7 +26,7 @@ class Client extends EventEmitter {
     const ws = new WebSocket(`${protocol}://${options.server}:${options.port}`)
 
     this.isReady = () => ws.readyState === 1
-    this.ws = ws
+    this.webSocket = ws
 
     ws.onopen = handleOpen.bind(this, options)
     ws.onmessage = handleMessage.bind(this, options)
