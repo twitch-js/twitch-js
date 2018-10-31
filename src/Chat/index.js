@@ -19,8 +19,6 @@ import * as parsers from './utils/parsers'
 import * as sanitizers from './utils/sanitizers'
 import * as validators from './utils/validators'
 
-require('./utils/formatting')
-
 /**
  * Chat client
  * @extends external:EventEmitter3
@@ -125,10 +123,6 @@ class Chat extends EventEmitter {
   get options() {
     return this._options
   }
-604
-​
-605
-  this.reconnect()
 
   set options(maybeOptions) {
     this._options = validators.chatOptions(maybeOptions)
@@ -239,9 +233,7 @@ class Chat extends EventEmitter {
    * Disconnected from Twitch.
    */
   disconnect() {
-    this._client
-    ? this._client.disconnect()
-    : console.log('You can\'t disconnect from what you aren\'t connected to.');
+    this._client.disconnect()
   }
 
   /**
