@@ -235,7 +235,9 @@ class Chat extends EventEmitter {
    * Disconnected from Twitch.
    */
   disconnect() {
-    this._client.disconnect()
+    this._client
+    ? this._client.disconnect()
+    : console.log('You can\'t disconnect from what you aren\'t connected to.');
   }
 
   /**
