@@ -34,12 +34,15 @@ class Queue extends BetterQueue {
 
   incrementRateLimiter(weight) {
     return () => {
-      this.rateLimiter = this.rateLimiter + 1 / weight
+      this.rateLimiter += 1 / weight
     }
   }
 
   burnDownRateLimiter() {
-    this.rateLimiter = Math.max(this.rateLimiter - 1, 0)
+    this.rateLimiter = Math.max(
+      this.rateLimiter - constants.QUEUE_BURNDOWN_RATE,
+      0,
+    )
   }
 
   push({ fn, priority, weight }) {
