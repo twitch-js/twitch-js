@@ -43,7 +43,7 @@
 
        // Finally, connect to the Twitch channel.
        client.connect();
-       ```
+   ```
 
    To see this code in action, see this [Codesandbox](https://codesandbox.io/s/z24j801k2p).
 
@@ -88,6 +88,6 @@
 
        // Finally, connect to the channel
        client.connect();
-       ```
+    ```
 
    To see this code in action, see this [RunKit](https://npm.runkit.com/twitch-js).
