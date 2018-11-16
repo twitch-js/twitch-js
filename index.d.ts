@@ -6,8 +6,8 @@
 // DefinitelyTyped compatible
 // TypeScript v2.3 is only required because of the dependency on request.
 
-/// <reference path="./node_modules/@types/ws/index.d.ts" />
-/// <reference path="./node_modules/@types/request/index.d.ts" />
+/// <reference types="ws" />
+/// <reference types="request" />
 
 import * as WebSocket from 'ws';
 import { RequestCallback, Options as ApiOptions } from 'request';
