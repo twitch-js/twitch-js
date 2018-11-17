@@ -1010,6 +1010,47 @@ Object {
 
 exports[`Chat should handle messages PRIVMSG whisper when anonymous 1`] = `[Error: Not authenticated]`;
 
+exports[`Chat should handle messages USERNOTICE ANON_GIFT_PAID_UPGRADE 1`] = `
+Object {
+  "_raw": "@badges=subscriber/0,premium/1;color=#8A2BE2;display-name=MrSquidzilla;emotes=;flags=;id=0717057c-510d-4da4-8d25-b592803bdeac;login=mrsquidzilla;mod=0;msg-id=anongiftpaidupgrade;room-id=51533859;subscriber=1;system-msg=MrSquidzilla\\\\sis\\\\scontinuing\\\\sthe\\\\sGift\\\\sSub\\\\sthey\\\\sgot\\\\sfrom\\\\san\\\\sanonymous\\\\suser!;tmi-sent-ts=1542326428725;turbo=0;user-id=43818429;user-type= :tmi.twitch.tv USERNOTICE #annemunition",
+  "channel": "#annemunition",
+  "command": "USERNOTICE",
+  "event": "ANON_GIFT_PAID_UPGRADE",
+  "isSelf": false,
+  "message": undefined,
+  "parameters": Object {},
+  "systemMessage": "MrSquidzilla is continuing the Gift Sub they got from an anonymous user!",
+  "tags": Object {
+    "badges": Object {
+      "premium": 1,
+      "subscriber": 0,
+    },
+    "bits": undefined,
+    "color": "#8A2BE2",
+    "displayName": "MrSquidzilla",
+    "emoteSets": undefined,
+    "emotes": Array [],
+    "flags": true,
+    "id": "0717057c-510d-4da4-8d25-b592803bdeac",
+    "isModerator": false,
+    "isSubGifter": false,
+    "isSubscriber": true,
+    "isTurboSubscriber": false,
+    "login": "mrsquidzilla",
+    "mod": "0",
+    "msgId": "anongiftpaidupgrade",
+    "roomId": "51533859",
+    "subscriber": "1",
+    "systemMsg": "MrSquidzilla is continuing the Gift Sub they got from an anonymous user!",
+    "tmiSentTs": "1542326428725",
+    "turbo": "0",
+    "userId": "43818429",
+    "userType": undefined,
+  },
+  "timestamp": Any<Date>,
+}
+`;
+
 exports[`Chat should handle messages USERNOTICE GIFT_PAID_UPGRADE 1`] = `
 Object {
   "_raw": "@badges=subscriber/0,premium/1;color=#8A2BE2;display-name=ElizabethSwann;emotes=;id=5bd3e064-c1e4-451b-9d7e-afe8cf5a44a2;login=elizabethswann;mod=0;msg-id=giftpaidupgrade;msg-param-promo-gift-total=123816;msg-param-promo-name=Subtember;msg-param-sender-login=cannibulcake;msg-param-sender-name=CannibulCake;room-id=7236692;subscriber=1;system-msg=ElizabethSwann\\\\sis\\\\scontinuing\\\\sthe\\\\sGift\\\\sSub\\\\sthey\\\\sgot\\\\sfrom\\\\sCannibulCake!\\\\sThey're\\\\sone\\\\sof\\\\s123816\\\\sgift\\\\ssubs\\\\sto\\\\scontinue\\\\sthis\\\\sSubtember.;tmi-sent-ts=1536880884587;turbo=0;user-id=85946347;user-type= :tmi.twitch.tv USERNOTICE #dansgaming",
