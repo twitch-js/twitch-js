@@ -63,11 +63,11 @@
     "node-fetch": "^1.7.3",
     "validator": "9.4.1",
     "whatwg-fetch": "^2.0.3",
-    "ws": "1.1.5"
+    "ws": "1.1.5",
+    "@types/request": "^2.47.1",
+    "@types/ws": "^5.1.2"
   },
   "devDependencies": {
-    "@types/request": "^2.47.1",
-    "@types/ws": "^5.1.2",
     "babel-cli": "^6.24.1",
     "babel-core": "^6.26.0",
     "babel-eslint": "8.0.3",

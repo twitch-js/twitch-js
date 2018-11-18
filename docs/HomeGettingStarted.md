@@ -12,6 +12,7 @@ If you are using a module bundler, such [Webpack](https://webpack.js.org/), [Bro
    ```bash
    npm install --save twitch-js
    ```
+   
 2. Import TwitchJS
 
    ```js
