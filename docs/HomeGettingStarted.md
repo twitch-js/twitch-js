@@ -11,11 +11,6 @@ If you are using a module bundler, such [Webpack](https://webpack.js.org/), [Bro
 1. Add TwitchJS to your project:
    ```bash
    npm install --save twitch-js
-   ```
-   For Typescript project, you need to add types in your project
-   ```
-   npm install --save-dev @types/request @types/ws
-   ```
    
 2. Import TwitchJS
 
