@@ -7,6 +7,8 @@ import { EventEmitter } from 'eventemitter3'
 
 import { get } from 'lodash'
 
+import logger from '../utils/logger'
+
 import * as utils from '../utils'
 import * as chatUtils from './utils'
 
@@ -86,6 +88,8 @@ class Chat extends EventEmitter {
      * @type {ChatOptions}
      */
     this.options = maybeOptions
+
+    this.log = logger.scope('Chat')
 
     /**
      * @private
@@ -179,6 +183,8 @@ class Chat extends EventEmitter {
    */
   connect() {
     if (!this._connectPromise) {
+      this.log.await('Connecting')
+
       this._connectPromise = Promise.race([
         utils.delayReject(
           this.options.connectionTimeout,
@@ -292,6 +298,9 @@ class Chat extends EventEmitter {
    */
   join(maybeChannel) {
     const channel = sanitizers.channel(maybeChannel)
+
+    this.log.await(`Joining ${channel}`)
+
     const promises = [
       this.connect,
       utils.onceResolve(this, `${constants.COMMANDS.ROOM_STATE}/${channel}`),
@@ -316,6 +325,9 @@ class Chat extends EventEmitter {
       }
 
       this.setChannelState(roomState.channel, channelState)
+
+      this.log.success(`Joined ${channel}`)
+
       return channelState
     })
 
@@ -338,6 +350,7 @@ class Chat extends EventEmitter {
    */
   part(maybeChannel) {
     const channel = sanitizers.channel(maybeChannel)
+    this.log.info(`Parting ${channel}`)
 
     this.removeChannelState(channel)
     this.send(`${constants.COMMANDS.PART} ${channel}`)
@@ -353,6 +366,8 @@ class Chat extends EventEmitter {
     return this.isUserAuthenticated().then(() => {
       const channel = sanitizers.channel(maybeChannel)
 
+      const info = `PRIVMSG/${channel} :${message}`
+
       const say = Promise.all([
         this.connect,
         utils.onceResolve(this, `${constants.COMMANDS.USER_STATE}/${channel}`),
@@ -362,15 +377,18 @@ class Chat extends EventEmitter {
         `${constants.COMMANDS.PRIVATE_MESSAGE} ${channel} :${message}`,
       )
 
-      return send.then(() =>
-        Promise.race([
-          utils.delayReject(
-            this.options.joinTimeout,
-            constants.ERROR_SAY_TIMED_OUT,
-          ),
-          say,
-        ]),
-      )
+      return send
+        .then(() =>
+          Promise.race([
+            utils.delayReject(
+              this.options.joinTimeout,
+              constants.ERROR_SAY_TIMED_OUT,
+            ),
+            say,
+          ]),
+        )
+        .then(() => this.log.success(info))
+        .catch(() => this.log.error(info))
     })
   }
 
@@ -401,6 +419,11 @@ class Chat extends EventEmitter {
 
   emit(eventName, message) {
     if (eventName) {
+      const displayName =
+        get(message, 'tags.displayName') || message.username || ''
+      const info = get(message, 'message') || ''
+      this.log.info(eventName, `${displayName}${info ? ':' : ''}`, info)
+
       eventName
         .split('/')
         .filter(part => part !== '#')
@@ -437,6 +460,8 @@ function handleConnectSuccess(globalUserState) {
   this._readyState = 3
   this._connectionAttempts = 0
 
+  this.log.success('Connected')
+
   // Process GLOBALUSERSTATE message.
   handleMessage.call(this, globalUserState)
 
@@ -447,6 +472,8 @@ function handleConnectRetry(error) {
   this._connectPromise = null
   this._readyState = 2
 
+  this.log.await('Retrying ...')
+
   if (error.event === constants.EVENTS.AUTHENTICATION_FAILED) {
     return this.options
       .onAuthenticationFailure()
@@ -454,6 +481,7 @@ function handleConnectRetry(error) {
       .then(() => utils.delay(this.options.connectionTimeout))
       .then(() => this.connect())
       .catch(() => {
+        this.log.error('Connection failed')
         throw new Errors.AuthenticationError(error)
       })
   }

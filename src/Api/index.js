@@ -1,5 +1,6 @@
-import camelcaseKeys from 'camelcase-keys'
-import { get, includes, toUpper } from 'lodash'
+import { get, includes, pickBy, toUpper } from 'lodash'
+
+import logger from '../utils/logger'
 
 import fetchUtil from '../utils/fetch'
 import * as Errors from '../utils/fetch/Errors'
@@ -26,6 +27,8 @@ class Api {
    */
   constructor(maybeOptions = {}) {
     this.options = maybeOptions
+
+    this.log = logger.scope('Api')
 
     /**
      * API ready state
@@ -100,11 +103,11 @@ class Api {
     const { clientId, token } = this.options
     const authType = this.getAuthorizationType(version)
 
-    return {
+    return pickBy({
       Accept: 'application/vnd.twitchtv.v5+json',
       'Client-ID': clientId ? clientId : undefined,
       Authorization: token ? `${authType} ${token}` : undefined,
-    }
+    })
   }
 
   /**
@@ -184,21 +187,32 @@ class Api {
 
 function handleFetch(maybeUrl = '', options = {}) {
   const [, version, url] = /^(?:([a-z]+):)?\/?(.*)$/i.exec(maybeUrl)
+  const baseUrl = `${this.getBaseUrl(version)}/${url}`
+
+  const info = `${options.method || 'GET'} ${baseUrl}`
+
+  this.log.await(info)
 
   const request = () =>
-    fetchUtil(`${this.getBaseUrl(version)}/${url}`, {
+    fetchUtil(baseUrl, {
       ...options,
       headers: {
         ...options.headers,
         ...this.getHeaders(version),
       },
-    }).then(res => camelcaseKeys(res, { deep: true }))
+    }).then(res => {
+      this.log.success(info)
+      return res
+    })
 
   return request().catch(error => {
+    this.log.error(info, error.body, error)
+
     if (error instanceof Errors.AuthenticationError) {
       return this.options
         .onAuthenticationFailure()
         .then(token => (this.options = { ...this.options, token }))
+        .then(() => this.log.await('Retrying (with new credentials)', info))
         .then(() => request())
     }
 
