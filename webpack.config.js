@@ -27,6 +27,8 @@ module.exports = (env = {}, argv) => {
       umdNamedDefine: true,
     },
 
+    node: { fs: 'empty' },
+
     devtool: isProd ? false : 'source-map',
 
     plugins: isProd
