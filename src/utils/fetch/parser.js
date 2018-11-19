@@ -1,3 +1,5 @@
+import camelcaseKeys from 'camelcase-keys'
+
 import ErrorFactory from './Errors'
 
 const parser = response =>
@@ -5,7 +7,7 @@ const parser = response =>
     if (!response.ok) {
       throw ErrorFactory(response, json)
     }
-    return json
+    return camelcaseKeys(json, { deep: true })
   })
 
 export default parser
