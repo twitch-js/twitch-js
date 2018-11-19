@@ -18,6 +18,11 @@ const generalTimestamp = maybeTimestamp => {
   return timestamp.toString() !== 'Invalid Date' ? timestamp : new Date()
 }
 
+const usernameFromPrefix = maybePrefix => {
+  const [, username] = /([^!]+)/.exec(maybePrefix) || []
+  return username
+}
+
 const userType = maybeUserType => {
   return typeof maybeUserType === 'string' ? maybeUserType : undefined
 }
@@ -90,6 +95,7 @@ export {
   generalNumber,
   generalBoolean,
   generalTimestamp,
+  usernameFromPrefix,
   userType,
   broadcasterLanguage,
   badges,
