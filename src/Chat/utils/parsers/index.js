@@ -397,7 +397,14 @@ const userNoticeMessage = baseMessage => {
 
   /* eslint-disable no-fallthrough */
   switch (tags.msgId) {
-    case constants.USER_NOTICE_MESSAGE_IDS.GIFT_PAID_UPGRADE:
+    /**
+     * On anonymous gifted subscription paid upgrade to a channel.
+     * @event Chat#USERNOTICE/ANON_GIFT_PAID_UPGRADE
+     * @mixes UserStateMessage AnonGiftPaidUpgradeMessage
+     * @property {'ANON_GIFT_PAID_UPGRADE'} event
+     */
+    case constants.USER_NOTICE_MESSAGE_IDS.ANON_GIFT_PAID_UPGRADE:
+
     /**
      * On gifted subscription paid upgrade to a channel.
      * @event Chat#USERNOTICE/GIFT_PAID_UPGRADE
@@ -409,6 +416,7 @@ const userNoticeMessage = baseMessage => {
      * @property {string} parameters.senderLogin
      * @property {string} parameters.senderName
      */
+    case constants.USER_NOTICE_MESSAGE_IDS.GIFT_PAID_UPGRADE:
 
     /**
      * On channel raid.

@@ -21,11 +21,12 @@ export const COMMAND_TIMEOUT = 1000 // milliseconds.
 export const CLIENT_PRIORITY = 100
 
 // See https://dev.twitch.tv/docs/irc/guide/#command--message-limits.
-export const RATE_LIMIT_USER = 40 // per minute.
-export const RATE_LIMIT_MODERATOR = 200 // per minute.
-export const RATE_LIMIT_KNOWN_BOT = 100 // per minute.
-export const RATE_LIMIT_VERIFIED_BOT = 15000 // per minute.
+export const RATE_LIMIT_USER = 20 // per period.
+export const RATE_LIMIT_MODERATOR = 100 // per period.
+export const RATE_LIMIT_KNOWN_BOT = 50 // per period.
+export const RATE_LIMIT_VERIFIED_BOT = 7500 // per period.
 
+export const QUEUE_BURNDOWN_RATE = 1 / RATE_LIMIT_USER
 export const QUEUE_TICK_RATE = 1000 // milliseconds.
 
 export const ERROR_CONNECT_TIMED_OUT = 'ERROR: connect timed out'
@@ -145,6 +146,7 @@ export const NOTICE_MESSAGE_IDS = {
 
 // See https://dev.twitch.tv/docs/irc/tags#usernotice-twitch-tags.
 export const USER_NOTICE_MESSAGE_IDS = {
+  ANON_GIFT_PAID_UPGRADE: 'anongiftpaidupgrade',
   GIFT_PAID_UPGRADE: 'giftpaidupgrade',
   RAID: 'raid',
   RESUBSCRIPTION: 'resub',
@@ -177,6 +179,7 @@ export const EVENTS = {
   ERROR_ENCOUNTERED: 'ERROR_ENCOUNTERED',
   PARSE_ERROR_ENCOUNTERED: 'PARSE_ERROR_ENCOUNTERED',
 
+  ANON_GIFT_PAID_UPGRADE: 'ANON_GIFT_PAID_UPGRADE',
   GIFT_PAID_UPGRADE: 'GIFT_PAID_UPGRADE',
   RAID: 'RAID',
   RESUBSCRIPTION: 'RESUBSCRIPTION',

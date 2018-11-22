@@ -95,6 +95,8 @@ const userNoticeMessageParameters = tags =>
 
 const userNoticeEvent = tags => {
   switch (tags.msgId) {
+    case constants.USER_NOTICE_MESSAGE_IDS.ANON_GIFT_PAID_UPGRADE:
+      return constants.EVENTS.ANON_GIFT_PAID_UPGRADE
     case constants.USER_NOTICE_MESSAGE_IDS.GIFT_PAID_UPGRADE:
       return constants.EVENTS.GIFT_PAID_UPGRADE
     case constants.USER_NOTICE_MESSAGE_IDS.RESUBSCRIPTION:
