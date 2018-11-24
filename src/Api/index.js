@@ -1,6 +1,6 @@
 import { get, includes, pickBy, toUpper } from 'lodash'
 
-import logger from '../utils/logger'
+import { createLogger } from '../utils/logger'
 
 import fetchUtil from '../utils/fetch'
 import * as Errors from '../utils/fetch/Errors'
@@ -28,7 +28,7 @@ class Api {
   constructor(maybeOptions = {}) {
     this.options = maybeOptions
 
-    this.log = logger.scope('Api')
+    this.log = createLogger({ scope: 'Api' })
 
     /**
      * API ready state
@@ -191,7 +191,7 @@ function handleFetch(maybeUrl = '', options = {}) {
 
   const info = `${options.method || 'GET'} ${baseUrl}`
 
-  this.log.await(info)
+  this.log.info(info)
 
   const request = () =>
     fetchUtil(baseUrl, {
@@ -201,7 +201,7 @@ function handleFetch(maybeUrl = '', options = {}) {
         ...this.getHeaders(version),
       },
     }).then(res => {
-      this.log.success(info)
+      this.log.info(info)
       return res
     })
 
@@ -212,7 +212,7 @@ function handleFetch(maybeUrl = '', options = {}) {
       return this.options
         .onAuthenticationFailure()
         .then(token => (this.options = { ...this.options, token }))
-        .then(() => this.log.await('Retrying (with new credentials)', info))
+        .then(() => this.log.info('Retrying (with new credentials)', info))
         .then(() => request())
     }
 

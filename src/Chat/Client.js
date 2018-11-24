@@ -1,7 +1,7 @@
 import { EventEmitter } from 'eventemitter3'
 import WebSocket from '../../shims/uws'
 
-import logger from '../utils/logger'
+import { createLogger } from '../utils/logger'
 
 import * as constants from './constants'
 import baseParser from './utils/parsers'
@@ -23,7 +23,7 @@ class Client extends EventEmitter {
     // Validate options.
     const options = validators.clientOptions(maybeOptions)
 
-    const log = logger.scope('Chat/Client')
+    const log = createLogger({ scope: 'Chat/Client' })
 
     // Instantiate WebSocket.
     const protocol = options.ssl ? 'wss' : 'ws'
@@ -96,7 +96,11 @@ function handleMessage(log, options, messageEvent) {
       const username = message.username || ''
       const info = message.message || ''
 
-      log.debug('>', event, `${username}${info ? ':' : ''}`, info)
+      log.debug(
+        '> %s %s',
+        event,
+        JSON.stringify({ ...message, _raw: undefined }),
+      )
 
       // Handle authentication failure.
       if (utils.isAuthenticationFailedMessage(message)) {

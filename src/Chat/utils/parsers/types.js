@@ -1,4 +1,4 @@
-import { isFinite, replace } from 'lodash'
+import { isFinite, replace, camelCase } from 'lodash'
 
 const generalString = maybeMessage => {
   return typeof maybeMessage === 'string'
@@ -48,7 +48,7 @@ const badges = maybeBadges => {
   return typeof maybeBadges === 'string'
     ? maybeBadges.split(',').reduce((parsed, badge) => {
         const [key, value] = badge.split('/')
-        return { ...parsed, [key]: parseInt(value, 10) }
+        return { ...parsed, [camelCase(key)]: parseInt(value, 10) }
       }, {})
     : {}
 }

@@ -1,11 +1,31 @@
-import signale from 'signale'
+import winston, { format } from 'winston'
 
-signale.config({
-  displayTimestamp: true,
+const myFormat = format.printf(info => {
+  return [info.timestamp, info.level, `[${info.label}]`, info.message]
+    .concat(info.durationMs ? `(${info.durationMs}ms)` : [])
+    .join(' ')
 })
 
-const originalScope = signale.scope.bind(signale)
+const createLogger = ({ scope, ...options } = {}) => {
+  const label = ['twitch-js'].concat(scope || [])
 
-signale.scope = scope => originalScope(`twitch-js/${scope}`)
+  return winston.createLogger({
+    level: 'info',
+    format: format.combine(
+      format.label({ label: label.join('/') }),
+      format.splat(),
+      format.colorize(),
+      format.simple(),
+      format.timestamp(),
+      format.prettyPrint(),
+      myFormat,
+    ),
+    transports: [new winston.transports.Console()],
+    ...options,
+  })
+}
 
-export default signale
+const logger = createLogger()
+
+export { createLogger }
+export default logger

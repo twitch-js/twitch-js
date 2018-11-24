@@ -7,7 +7,7 @@ import { EventEmitter } from 'eventemitter3'
 
 import { get } from 'lodash'
 
-import logger from '../utils/logger'
+import { createLogger } from '../utils/logger'
 
 import * as utils from '../utils'
 import * as chatUtils from './utils'
@@ -89,7 +89,7 @@ class Chat extends EventEmitter {
      */
     this.options = maybeOptions
 
-    this.log = logger.scope('Chat')
+    this.log = createLogger({ scope: 'Chat' })
 
     /**
      * @private
@@ -183,7 +183,8 @@ class Chat extends EventEmitter {
    */
   connect() {
     if (!this._connectPromise) {
-      this.log.await('Connecting')
+      const connectProfiler = this.log.startTimer()
+      this.log.info('Connecting ...')
 
       this._connectPromise = Promise.race([
         utils.delayReject(
@@ -218,7 +219,10 @@ class Chat extends EventEmitter {
           this._client.once(constants.EVENTS.AUTHENTICATION_FAILED, reject)
 
           // Once the client is connected, resolve ...
-          this._client.once(constants.EVENTS.CONNECTED, resolve)
+          this._client.once(constants.EVENTS.CONNECTED, e => {
+            connectProfiler.done({ message: 'Connected' })
+            resolve(e)
+          })
         }),
       ])
         .then(handleConnectSuccess.bind(this))
@@ -299,7 +303,8 @@ class Chat extends EventEmitter {
   join(maybeChannel) {
     const channel = sanitizers.channel(maybeChannel)
 
-    this.log.await(`Joining ${channel}`)
+    this.log.info(`Joining ${channel}`)
+    const joinProfiler = this.log.startTimer()
 
     const promises = [
       this.connect,
@@ -326,8 +331,7 @@ class Chat extends EventEmitter {
 
       this.setChannelState(roomState.channel, channelState)
 
-      this.log.success(`Joined ${channel}`)
-
+      joinProfiler.done({ message: `Joined ${channel}` })
       return channelState
     })
 
@@ -387,7 +391,7 @@ class Chat extends EventEmitter {
             say,
           ]),
         )
-        .then(() => this.log.success(info))
+        .then(() => this.log.info(info))
         .catch(() => this.log.error(info))
     })
   }
@@ -422,7 +426,11 @@ class Chat extends EventEmitter {
       const displayName =
         get(message, 'tags.displayName') || message.username || ''
       const info = get(message, 'message') || ''
-      this.log.info(eventName, `${displayName}${info ? ':' : ''}`, info)
+      this.log.info(
+        `${eventName} %s %s`,
+        `${displayName}${info ? ':' : ''}`,
+        info,
+      )
 
       eventName
         .split('/')
@@ -460,8 +468,6 @@ function handleConnectSuccess(globalUserState) {
   this._readyState = 3
   this._connectionAttempts = 0
 
-  this.log.success('Connected')
-
   // Process GLOBALUSERSTATE message.
   handleMessage.call(this, globalUserState)
 
@@ -472,7 +478,7 @@ function handleConnectRetry(error) {
   this._connectPromise = null
   this._readyState = 2
 
-  this.log.await('Retrying ...')
+  this.log.info('Retrying ...')
 
   if (error.event === constants.EVENTS.AUTHENTICATION_FAILED) {
     return this.options
