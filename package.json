@@ -179,7 +179,12 @@
       "plugin:import/errors",
       "plugin:import/warnings",
       "plugin:jest/recommended"
-    ]
+    ],
+    "rules": {
+      "no-alert": 2,
+      "no-debugger": 2,
+      "no-console": 2
+    }
   },
   "eslintIgnore": [
     "dist",

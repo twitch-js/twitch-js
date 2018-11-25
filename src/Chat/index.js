@@ -7,7 +7,7 @@ import { EventEmitter } from 'eventemitter3'
 
 import { get } from 'lodash'
 
-import { createLogger } from '../utils/logger'
+import createLogger from '../utils/logger/create'
 
 import * as utils from '../utils'
 import * as chatUtils from './utils'
@@ -89,7 +89,7 @@ class Chat extends EventEmitter {
      */
     this.options = maybeOptions
 
-    this.log = createLogger({ scope: 'Chat' })
+    this.log = createLogger({ scope: 'Chat', ...this.options.log })
 
     /**
      * @private

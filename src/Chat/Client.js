@@ -1,7 +1,8 @@
 import { EventEmitter } from 'eventemitter3'
+import { stringify } from 'qs'
 import WebSocket from '../../shims/uws'
 
-import { createLogger } from '../utils/logger'
+import createLogger from '../utils/logger/create'
 
 import * as constants from './constants'
 import baseParser from './utils/parsers'
@@ -23,7 +24,7 @@ class Client extends EventEmitter {
     // Validate options.
     const options = validators.clientOptions(maybeOptions)
 
-    const log = createLogger({ scope: 'Chat/Client' })
+    const log = createLogger({ scope: 'Chat/Client', ...options.log })
 
     // Instantiate WebSocket.
     const protocol = options.ssl ? 'wss' : 'ws'
@@ -93,8 +94,6 @@ function handleMessage(log, options, messageEvent) {
 
     messages.forEach(message => {
       const event = message.command || ''
-      const username = message.username || ''
-      const info = message.message || ''
 
       log.debug(
         '> %s %s',
@@ -145,7 +144,13 @@ function handleMessage(log, options, messageEvent) {
       this.emit(constants.EVENTS.ALL, message)
     })
   } catch (error) {
-    log.error('ParseError', error, rawMessage)
+    const title = 'Parsing error encountered'
+    const query = stringify({ title, body: rawMessage })
+    log.error(
+      'Parsing error encountered. Please create an issue: %s',
+      `https://github.com/twitch-apis/twitch-js/issues/new?${query}`,
+      error,
+    )
 
     const message = new Errors.ParseError(error, rawMessage)
 

@@ -18,9 +18,10 @@ const chatOptions = maybeOptions => {
    * Chat options
    * @typedef {Object} ChatOptions
    * @property {string} [username]
-   * @property {string} [token] OAuth token (use {@link https://twitchapps.com/tmi/} to generate one)
+   * @property {string} [token] OAuth token (use {@link https://twitchtokengenerator.com/} to generate one)
    * @property {number} [connectionTimeout=CONNECTION_TIMEOUT]
    * @property {number} [joinTimeout=JOIN_TIMEOUT]
+   * @property {Object} log
    * @property {boolean} [debug=false]
    * @property {Function} [onAuthenticationFailure]
    */
@@ -29,7 +30,6 @@ const chatOptions = maybeOptions => {
     token: value => isNil(value) || isString(value),
     connectionTimeout: isFinite,
     joinTimeout: isFinite,
-    debug: isBoolean,
     onAuthenticationFailure: isFunction,
   }
 
@@ -43,7 +43,6 @@ const chatOptions = maybeOptions => {
       token: null,
       connectionTimeout: constants.CONNECTION_TIMEOUT,
       joinTimeout: constants.JOIN_TIMEOUT,
-      debug: false,
       onAuthenticationFailure: () => Promise.reject(),
     },
   )

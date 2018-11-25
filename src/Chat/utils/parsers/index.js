@@ -1,7 +1,7 @@
 import { parse } from 'irc-message'
 import camelcaseKeys from 'camelcase-keys'
 
-import { has, isEmpty, isFinite, pickBy, toNumber, toUpper } from 'lodash'
+import { has, isEmpty, isFinite, toNumber, toUpper } from 'lodash'
 
 import * as constants from '../../constants'
 import * as utils from '../'

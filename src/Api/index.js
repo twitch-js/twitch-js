@@ -1,6 +1,6 @@
 import { get, includes, pickBy, toUpper } from 'lodash'
 
-import { createLogger } from '../utils/logger'
+import createLogger from '../utils/logger/create'
 
 import fetchUtil from '../utils/fetch'
 import * as Errors from '../utils/fetch/Errors'
@@ -28,7 +28,8 @@ class Api {
   constructor(maybeOptions = {}) {
     this.options = maybeOptions
 
-    this.log = createLogger({ scope: 'Api' })
+    this.log = createLogger({ scope: 'Api', ...this.options.log })
+    this.log.debug('test')
 
     /**
      * API ready state
@@ -186,12 +187,12 @@ class Api {
 }
 
 function handleFetch(maybeUrl = '', options = {}) {
+  const fetchProfiler = this.log.startTimer()
+
   const [, version, url] = /^(?:([a-z]+):)?\/?(.*)$/i.exec(maybeUrl)
   const baseUrl = `${this.getBaseUrl(version)}/${url}`
 
-  const info = `${options.method || 'GET'} ${baseUrl}`
-
-  this.log.info(info)
+  const message = `${options.method || 'GET'} ${baseUrl}`
 
   const request = () =>
     fetchUtil(baseUrl, {
@@ -201,18 +202,18 @@ function handleFetch(maybeUrl = '', options = {}) {
         ...this.getHeaders(version),
       },
     }).then(res => {
-      this.log.info(info)
+      fetchProfiler.done({ message })
       return res
     })
 
   return request().catch(error => {
-    this.log.error(info, error.body, error)
+    fetchProfiler.done({ level: 'error', message: error.body })
 
     if (error instanceof Errors.AuthenticationError) {
       return this.options
         .onAuthenticationFailure()
         .then(token => (this.options = { ...this.options, token }))
-        .then(() => this.log.info('Retrying (with new credentials)', info))
+        .then(() => this.log.info('Retrying (with new credentials)'))
         .then(() => request())
     }
 

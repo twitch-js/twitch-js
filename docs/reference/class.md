@@ -1193,6 +1193,8 @@ TwitchJs constructor
     </tr><tr>
     <td>options.clientId</td><td><code>string</code></td>
     </tr><tr>
+    <td>options.log</td><td><code>Object</code></td>
+    </tr><tr>
     <td>[options.onAuthenticationFailure]</td><td><code>function</code></td>
     </tr><tr>
     <td>[options.chat]</td><td><code><a href="typedef#ChatOptions">ChatOptions</a></code></td>
