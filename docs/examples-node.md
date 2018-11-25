@@ -15,7 +15,7 @@ const username = TWITCH_USERNAME
 const channel = 'twitchapis'
 
 // Instantiate clients.
-const { api, chatConstants } = new TwitchJs({ token, username })
+const { api, chat, chatConstants } = new TwitchJs({ token, username })
 
 // Get featured streams.
 api.get('streams/featured').then(response => {
