@@ -29,7 +29,6 @@ class Api {
     this.options = maybeOptions
 
     this.log = createLogger({ scope: 'Api', ...this.options.log })
-    this.log.debug('test')
 
     /**
      * API ready state

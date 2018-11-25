@@ -85,11 +85,11 @@ describe('Chat', () => {
     })
   })
 
-  test('should allow options to be updated', async () => {
+  test('should allow options to be updated', () => {
     const chat = new Chat(options)
 
     const newJoinTimeout = 9876
-    await chat.updateOptions({ joinTimeout: newJoinTimeout })
+    chat.updateOptions({ joinTimeout: newJoinTimeout })
 
     expect(chat._options.joinTimeout).toBe(newJoinTimeout)
   })
