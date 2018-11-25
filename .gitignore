@@ -4,6 +4,7 @@
 # Builds
 dist
 lib
+docs
 twitch-js-*.tgz
 /package
 
