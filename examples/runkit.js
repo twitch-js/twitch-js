@@ -1,43 +1,27 @@
-const TwitchJs = require('../lib').default;
-
-require('dotenv').config();
+const TwitchJs = require('twitch-js').default;
 
 // Provide your token, username and channel. You can generate a token here:
 // https://twitchapps.com/tmi/
 const token = process.env.TWITCH_TOKEN;
-const refreshToken = process.env.TWITCH_REFRESH_TOKEN;
 const username = process.env.TWITCH_USERNAME;
 
-const channel = process.env.TWITCH_CHANNEL;
-const otherChannels = [
-  // 'og_arist0tle',
-  // 'spencerawest',
-  // 'kate',
-  // '88bitmusic',
-  'riss',
-  'g33z3r_hd',
-];
+const channel = 'twitchapis';
 
 // Instantiate clients.
-const { api, chat, chatConstants } = new TwitchJs({
-  token,
-  username,
-  log: { level: 'info' },
-  api: { log: { level: 'debug' } },
+const { api, chat, chatConstants } = new TwitchJs({ token, username });
+
+// Get featured streams.
+api.get('streams/featured').then(response => {
+  console.log(response);
+  // Do stuff ...
 });
 
-// Start example.
-(async function() {
-  // Retrieve latest stream.
-  const { streams } = await api.get('streams', {
-    search: { offset: 500, limit: 5 },
-  });
+// Listen to all events.
+const log = msg => console.log(msg);
+chat.on(chatConstants.EVENTS.ALL, log);
 
-  const channels = streams.map(s => s.channel.name);
-
-  // Connect to chat.
-  await chat.connect();
-
-  // Join channel.
-  await Promise.all(otherChannels.map(chat.join.bind(chat)));
-})();
+// Connect ...
+chat.connect().then(() => {
+  // ... and then join the channel.
+  chat.join(channel);
+});
