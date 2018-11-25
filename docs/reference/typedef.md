@@ -109,20 +109,21 @@ API options
 <table>
   <thead>
     <tr>
-      <th>Name</th><th>Type</th><th>Default</th><th>Description</th>
+      <th>Name</th><th>Type</th><th>Description</th>
     </tr>
   </thead>
   <tbody>
 <tr>
-    <td>[clientId]</td><td><code>string</code></td><td></td><td><p>Optional if token is defined.</p>
+    <td>[clientId]</td><td><code>string</code></td><td><p>Optional if token is defined.</p>
 </td>
     </tr><tr>
-    <td>[token]</td><td><code>string</code></td><td></td><td><p>Optional if clientId is defined.</p>
+    <td>[token]</td><td><code>string</code></td><td><p>Optional if clientId is defined.</p>
 </td>
     </tr><tr>
-    <td>[debug]</td><td><code>boolean</code></td><td><code>false</code></td><td></td>
+    <td>[log]</td><td><code>Object</code></td><td><p>Log options</p>
+</td>
     </tr><tr>
-    <td>[onAuthenticationFailure]</td><td><code>function</code></td><td></td><td></td>
+    <td>[onAuthenticationFailure]</td><td><code>function</code></td><td></td>
     </tr>  </tbody>
 </table>
 
@@ -396,14 +397,14 @@ Chat options
 <tr>
     <td>[username]</td><td><code>string</code></td><td></td><td></td>
     </tr><tr>
-    <td>[token]</td><td><code>string</code></td><td></td><td><p>OAuth token (use <a href="https://twitchapps.com/tmi/">https://twitchapps.com/tmi/</a> to generate one)</p>
+    <td>[token]</td><td><code>string</code></td><td></td><td><p>OAuth token (use <a href="https://twitchtokengenerator.com/">https://twitchtokengenerator.com/</a> to generate one)</p>
 </td>
     </tr><tr>
     <td>[connectionTimeout]</td><td><code>number</code></td><td><code>CONNECTION_TIMEOUT</code></td><td></td>
     </tr><tr>
     <td>[joinTimeout]</td><td><code>number</code></td><td><code>JOIN_TIMEOUT</code></td><td></td>
     </tr><tr>
-    <td>[debug]</td><td><code>boolean</code></td><td><code>false</code></td><td></td>
+    <td>log</td><td><code>Object</code></td><td></td><td></td>
     </tr><tr>
     <td>[onAuthenticationFailure]</td><td><code>function</code></td><td></td><td></td>
     </tr>  </tbody>

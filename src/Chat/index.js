@@ -7,6 +7,8 @@ import { EventEmitter } from 'eventemitter3'
 
 import { get } from 'lodash'
 
+import createLogger from '../utils/logger/create'
+
 import * as utils from '../utils'
 import * as chatUtils from './utils'
 
@@ -86,6 +88,8 @@ class Chat extends EventEmitter {
      * @type {ChatOptions}
      */
     this.options = maybeOptions
+
+    this.log = createLogger({ scope: 'Chat', ...this.options.log })
 
     /**
      * @private
@@ -179,6 +183,9 @@ class Chat extends EventEmitter {
    */
   connect() {
     if (!this._connectPromise) {
+      const connectProfiler = this.log.startTimer()
+      this.log.info('Connecting ...')
+
       this._connectPromise = Promise.race([
         utils.delayReject(
           this.options.connectionTimeout,
@@ -212,7 +219,10 @@ class Chat extends EventEmitter {
           this._client.once(constants.EVENTS.AUTHENTICATION_FAILED, reject)
 
           // Once the client is connected, resolve ...
-          this._client.once(constants.EVENTS.CONNECTED, resolve)
+          this._client.once(constants.EVENTS.CONNECTED, e => {
+            connectProfiler.done({ message: 'Connected' })
+            resolve(e)
+          })
         }),
       ])
         .then(handleConnectSuccess.bind(this))
@@ -292,6 +302,10 @@ class Chat extends EventEmitter {
    */
   join(maybeChannel) {
     const channel = sanitizers.channel(maybeChannel)
+
+    this.log.info(`Joining ${channel}`)
+    const joinProfiler = this.log.startTimer()
+
     const promises = [
       this.connect,
       utils.onceResolve(this, `${constants.COMMANDS.ROOM_STATE}/${channel}`),
@@ -316,6 +330,8 @@ class Chat extends EventEmitter {
       }
 
       this.setChannelState(roomState.channel, channelState)
+
+      joinProfiler.done({ message: `Joined ${channel}` })
       return channelState
     })
 
@@ -338,6 +354,7 @@ class Chat extends EventEmitter {
    */
   part(maybeChannel) {
     const channel = sanitizers.channel(maybeChannel)
+    this.log.info(`Parting ${channel}`)
 
     this.removeChannelState(channel)
     this.send(`${constants.COMMANDS.PART} ${channel}`)
@@ -353,6 +370,8 @@ class Chat extends EventEmitter {
     return this.isUserAuthenticated().then(() => {
       const channel = sanitizers.channel(maybeChannel)
 
+      const info = `PRIVMSG/${channel} :${message}`
+
       const say = Promise.all([
         this.connect,
         utils.onceResolve(this, `${constants.COMMANDS.USER_STATE}/${channel}`),
@@ -362,15 +381,18 @@ class Chat extends EventEmitter {
         `${constants.COMMANDS.PRIVATE_MESSAGE} ${channel} :${message}`,
       )
 
-      return send.then(() =>
-        Promise.race([
-          utils.delayReject(
-            this.options.joinTimeout,
-            constants.ERROR_SAY_TIMED_OUT,
-          ),
-          say,
-        ]),
-      )
+      return send
+        .then(() =>
+          Promise.race([
+            utils.delayReject(
+              this.options.joinTimeout,
+              constants.ERROR_SAY_TIMED_OUT,
+            ),
+            say,
+          ]),
+        )
+        .then(() => this.log.info(info))
+        .catch(() => this.log.error(info))
     })
   }
 
@@ -401,6 +423,15 @@ class Chat extends EventEmitter {
 
   emit(eventName, message) {
     if (eventName) {
+      const displayName =
+        get(message, 'tags.displayName') || message.username || ''
+      const info = get(message, 'message') || ''
+      this.log.info(
+        `${eventName} %s %s`,
+        `${displayName}${info ? ':' : ''}`,
+        info,
+      )
+
       eventName
         .split('/')
         .filter(part => part !== '#')
@@ -447,6 +478,8 @@ function handleConnectRetry(error) {
   this._connectPromise = null
   this._readyState = 2
 
+  this.log.info('Retrying ...')
+
   if (error.event === constants.EVENTS.AUTHENTICATION_FAILED) {
     return this.options
       .onAuthenticationFailure()
@@ -454,6 +487,7 @@ function handleConnectRetry(error) {
       .then(() => utils.delay(this.options.connectionTimeout))
       .then(() => this.connect())
       .catch(() => {
+        this.log.error('Connection failed')
         throw new Errors.AuthenticationError(error)
       })
   }

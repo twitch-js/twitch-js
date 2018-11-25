@@ -6,7 +6,6 @@
 [![npm](https://img.shields.io/npm/dm/twitch-js.svg?longCache=true&style=flat-square)](https://www.npmjs.com/package/twitch-js)
 [![GitHub issues](https://img.shields.io/github/issues/twitch-apis/twitch-js.svg?longCache=true&style=flat-square)](https://github.com/twitch-apis/twitch-js/issues)
 [![Coverage Status](https://img.shields.io/codecov/c/github/twitch-apis/twitch-js/next.svg?longCache=true&style=flat-square)](https://codecov.io/gh/twitch-apis/twitch-js/branch/next)
-[![Gitter](https://img.shields.io/gitter/room/twitch-apis/twitch-js.svg?longCache=true&style=flat-square)](https://gitter.im/twitch-apis/twitch-js)
 
 A community-centric, community-supported Twitch JavaScript SDK.
 

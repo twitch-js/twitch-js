@@ -1,11 +1,5 @@
 import invariant from 'invariant'
-import {
-  conformsTo,
-  defaultsDeep,
-  isBoolean,
-  isFunction,
-  isString,
-} from 'lodash'
+import { conformsTo, defaultsDeep, isFunction, isString } from 'lodash'
 
 const apiOptions = maybeOptions => {
   /**
@@ -13,12 +7,11 @@ const apiOptions = maybeOptions => {
    * @typedef {Object} ApiOptions
    * @property {string} [clientId] Optional if token is defined.
    * @property {string} [token] Optional if clientId is defined.
-   * @property {boolean} [debug=false]
+   * @property {Object} [log] Log options
    * @property {function} [onAuthenticationFailure]
    *
    */
   const shape = {
-    debug: isBoolean,
     onAuthenticationFailure: isFunction,
   }
 
@@ -36,7 +29,6 @@ const apiOptions = maybeOptions => {
     {},
     { ...maybeOptions },
     {
-      debug: false,
       onAuthenticationFailure: () => Promise.reject(),
     },
   )

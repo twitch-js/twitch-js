@@ -27,14 +27,26 @@ module.exports = (env = {}, argv) => {
       umdNamedDefine: true,
     },
 
+    node: { fs: 'empty' },
+
     devtool: isProd ? false : 'source-map',
 
     plugins: isProd
       ? [
-          new LodashModuleReplacementPlugin({ coercions: true, paths: true }),
+          new LodashModuleReplacementPlugin({
+            coercions: true,
+            paths: true,
+            shorthands: true,
+          }),
           new MinifyPlugin({}, { sourceMap: 'source-map' }),
           new CompressionPlugin(),
         ]
-      : [new LodashModuleReplacementPlugin({ coercions: true, paths: true })],
+      : [
+          new LodashModuleReplacementPlugin({
+            coercions: true,
+            paths: true,
+            shorthands: true,
+          }),
+        ],
   };
 };

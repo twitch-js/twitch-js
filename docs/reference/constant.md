@@ -15,7 +15,7 @@ sidebar_label: Constants
 
 <a name="CONNECTION_TIMEOUT"></a>
 
-## CONNECTION_TIMEOUT : <code>number</code>
+## CONNECTION\_TIMEOUT : <code>number</code>
 **Kind**: global constant  
 **Default**: <code>5000</code>  
 
@@ -23,7 +23,7 @@ sidebar_label: Constants
 
 <a name="JOIN_TIMEOUT"></a>
 
-## JOIN_TIMEOUT : <code>number</code>
+## JOIN\_TIMEOUT : <code>number</code>
 **Kind**: global constant  
 **Default**: <code>1000</code>  
 

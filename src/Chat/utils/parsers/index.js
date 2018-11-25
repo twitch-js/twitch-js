@@ -17,24 +17,27 @@ const base = rawMessages => {
       return
     }
 
-    const { raw, tags, command, params: [channel, message] } = parse(rawMessage)
+    const { raw, tags, command, prefix, params: [channel, message] } = parse(
+      rawMessage,
+    )
 
     /**
      * Base message parsed from Twitch
      * @mixin BaseMessage
      * @property {string} _raw Un-parsed message
      * @property {Date} timestamp Timestamp
+     * @property {string} username Username
      * @property {string} command Command
-     * @property {(ClearChatTags|GlobalUserStateTags|PrivateMessageTags|RoomStateTags|UserNoticeTags|UserStateTags)} tags Twitch tags
      * @property {string} [channel] Channel
+     * @property {(ClearChatTags|GlobalUserStateTags|PrivateMessageTags|RoomStateTags|UserNoticeTags|UserStateTags)} tags Twitch tags
      * @property {string} [message] Message
-     * @property {string} [event] Associated event
      */
     messages.push({
       _raw: raw,
       timestamp: typeParsers.generalTimestamp(
         parseInt(tags['tmi-sent-ts'], 10),
       ),
+      username: typeParsers.usernameFromPrefix(prefix),
       command,
       channel: channel !== '*' ? channel : '',
       tags: isEmpty(tags) ? {} : camelcaseKeys(tags),
@@ -104,7 +107,7 @@ const modeMessage = baseMessage => {
       : constants.EVENTS.MOD_LOST,
     channel,
     username,
-    message: undefined,
+    message: `${mode}o`,
     isModerator,
   }
 }
