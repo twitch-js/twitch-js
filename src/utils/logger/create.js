@@ -5,6 +5,11 @@
  */
 import winston, { format } from 'winston'
 
+const silent =
+  process.env.NODE_ENV === 'production' ||
+  process.env.NODE_ENV === 'test' ||
+  process.env.CI
+
 const defaultFormatter = format.printf(info => {
   return [info.timestamp, info.level, `[${info.label}]`, info.message]
     .concat(info.durationMs ? `(${info.durationMs}ms)` : [])
@@ -24,6 +29,7 @@ const defaultLogSettings = () => ({
   level: 'info',
   format: format.combine(...defaultFormat, defaultFormatter),
   transports: [new winston.transports.Console()],
+  silent,
 })
 
 const createLogger = ({ scope, ...options } = {}) => {
