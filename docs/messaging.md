@@ -82,7 +82,7 @@ All messages sent to Twitch are automatically rate-limited according to
 [Twitch Developer documentation](https://dev.twitch.tv/docs/irc/guide/#command--message-limits).
 Currently, messages are limited **20 per 30 seconds**, with support for
 moderator, known and verified bots
-[planned](https://github.com/twitch-apis/twitch-js/issues/100).
+[planned](https://github.com/twitch-devs/twitch-js/issues/100).
 
 ### Speak in channel
 
@@ -113,7 +113,7 @@ chat.ban(channel, 'ronni')
 ```
 
 **Note:** `Promise`-resolves for each commands are
-[planned](https://github.com/twitch-apis/twitch-js/issues/87).
+[planned](https://github.com/twitch-devs/twitch-js/issues/87).
 
 ## Joining multiple channels
 

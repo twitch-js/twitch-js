@@ -20,7 +20,7 @@ sidebar_label: Enums
 
 <a name="READY_STATES"></a>
 
-## READY\_STATES : <code>enum</code>
+## READY_STATES : <code>enum</code>
 API client ready state
 
 **Kind**: global enum  
@@ -51,7 +51,7 @@ API client ready state
 
 <a name="READY_STATES"></a>
 
-## READY\_STATES : <code>enum</code>
+## READY_STATES : <code>enum</code>
 Chat client ready state
 
 **Kind**: global enum  

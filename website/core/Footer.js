@@ -42,21 +42,21 @@ class Footer extends React.Component {
           <div>
             <h5>Community</h5>
             <a
-              href="https://github.com/twitch-apis/twitch-js/issues"
+              href="https://github.com/twitch-devs/twitch-js/issues"
               target="_blank"
               rel="noreferrer noopener"
             >
               Issues
             </a>
             <a
-              href="https://github.com/twitch-apis/twitch-js/pulls"
+              href="https://github.com/twitch-devs/twitch-js/pulls"
               target="_blank"
               rel="noreferrer noopener"
             >
               Pull Requests
             </a>
             <a
-              href="https://gitter.im/twitch-apis/twitch-js"
+              href="https://gitter.im/twitch-devs/twitch-js"
               target="_blank"
               rel="noreferrer noopener"
             >
@@ -65,16 +65,16 @@ class Footer extends React.Component {
           </div>
           <div>
             <h5>More</h5>
-            <a href="https://github.com/twitch-apis/twitch-js">GitHub</a>
+            <a href="https://github.com/twitch-devs/twitch-js">GitHub</a>
             <a href="https://www.npmjs.com/package/twitch-js">NPM</a>
-            <a href="https://codecov.io/gh/twitch-apis/twitch-js/branch/next">
+            <a href="https://codecov.io/gh/twitch-devs/twitch-js/branch/next">
               Codecov
             </a>
             <a
               className="github-button"
               href={this.props.config.repoUrl}
               data-icon="octicon-star"
-              data-count-href="/twitch-apis/twitch-js/stargazers"
+              data-count-href="/twitch-devs/twitch-js/stargazers"
               data-show-count={true}
               data-count-aria-label="# stargazers on GitHub"
               aria-label="Star this project on GitHub"

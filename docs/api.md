@@ -44,4 +44,4 @@ api
 ## New Twitch API (Helix)
 
 Support for New Twitch API (Helix) is
-[planned](https://github.com/twitch-apis/twitch-js/issues/92).
+[planned](https://github.com/twitch-devs/twitch-js/issues/92).

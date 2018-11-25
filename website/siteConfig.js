@@ -14,7 +14,7 @@ const users = []
 const siteConfig = {
   title: 'TwitchJS' /* title for your website */,
   tagline: 'A community-centric, community-supported Twitch JavaScript SDK.',
-  url: 'https://twitch-apis.github.io' /* your website url */,
+  url: 'https://twitch-devs.github.io' /* your website url */,
   baseUrl: '/twitch-js/' /* base url for your project */,
   // For github.io type URLs, you would set the url and baseUrl like:
   //   url: 'https://facebook.github.io',
@@ -22,7 +22,7 @@ const siteConfig = {
 
   // Used for publishing and more
   projectName: 'twitch-js',
-  organizationName: 'twitch-apis',
+  organizationName: 'twitch-devs',
   // For top-level user or org sites, the organization is still the same.
   // e.g., for the https://JoelMarcey.github.io site, it would be set like...
   //   organizationName: 'JoelMarcey'
@@ -32,7 +32,7 @@ const siteConfig = {
     { doc: 'getting-started', label: 'Docs' },
     { search: false },
     {
-      href: 'https://github.com/twitch-apis/twitch-js/tree/next',
+      href: 'https://github.com/twitch-devs/twitch-js/tree/next',
       label: 'GitHub',
     },
   ],
