@@ -1,4 +1,4 @@
-const mockJson = jest.fn(() => Promise.resolve())
+const mockJson = jest.fn(() => Promise.resolve({}))
 
 const mockFetch = jest.fn(() => {
   return Promise.resolve({

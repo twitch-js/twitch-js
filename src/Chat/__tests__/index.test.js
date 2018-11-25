@@ -85,13 +85,13 @@ describe('Chat', () => {
     })
   })
 
-  test('should allow options to be updated', () => {
+  test('should allow options to be updated', async () => {
     const chat = new Chat(options)
-    expect(chat._options.debug).toBe(false)
-    chat.updateOptions({ token: 'NEW_TOKEN', debug: true })
 
-    expect(chat._options.token).toBe(options.token)
-    expect(chat._options.debug).toBe(true)
+    const newJoinTimeout = 9876
+    await chat.updateOptions({ joinTimeout: newJoinTimeout })
+
+    expect(chat._options.joinTimeout).toBe(newJoinTimeout)
   })
 
   test('should join channel', async () => {

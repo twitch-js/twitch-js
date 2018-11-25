@@ -22,7 +22,6 @@ const chatOptions = maybeOptions => {
    * @property {number} [connectionTimeout=CONNECTION_TIMEOUT]
    * @property {number} [joinTimeout=JOIN_TIMEOUT]
    * @property {Object} log
-   * @property {boolean} [debug=false]
    * @property {Function} [onAuthenticationFailure]
    */
   const shape = {

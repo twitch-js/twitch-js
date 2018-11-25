@@ -406,8 +406,6 @@ Chat options
     </tr><tr>
     <td>log</td><td><code>Object</code></td><td></td><td></td>
     </tr><tr>
-    <td>[debug]</td><td><code>boolean</code></td><td><code>false</code></td><td></td>
-    </tr><tr>
     <td>[onAuthenticationFailure]</td><td><code>function</code></td><td></td><td></td>
     </tr>  </tbody>
 </table>
