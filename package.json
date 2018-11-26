@@ -61,7 +61,6 @@
     "docs:build": "node scripts/jsdoc2md/generateDocs.js",
     "website": "cd website && yarn start",
     "website:build": "cd website && yarn build",
-    "website:publish": "cd website && yarn publish-gh-pages",
     "jsdoc2md": "node scripts/jsdoc2md/generateDocs.js",
     "jsdoc2md:watch": "nodemon --exec npm run jsdoc2md",
     "dtslint": "dtslint types"
