@@ -3,6 +3,10 @@ const path = require('path')
 const BUILD_PATH = path.join(__dirname, '../../dist/twitch-js.js')
 
 describe('Browser E2E', () => {
+  if (!process.env.CI) {
+    require('dotenv').config()
+  }
+
   const token = process.env.TWITCH_TOKEN
   const username = process.env.TWITCH_USERNAME
   const channel = process.env.TWITCH_USERNAME
@@ -10,14 +14,8 @@ describe('Browser E2E', () => {
     ? `Travis CI E2E Build #${process.env.TRAVIS_BUILD_NUMBER}`
     : `Local E2E ${new Date()}`
 
-  let page
-  beforeAll(async () => {
-    page = await global.__BROWSER__.newPage()
+  beforeEach(async () => {
     await page.addScriptTag({ path: BUILD_PATH })
-  })
-
-  afterAll(async () => {
-    await page.close()
   })
 
   describe('Chat', () => {
