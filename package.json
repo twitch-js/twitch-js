@@ -225,6 +225,7 @@
     "delay": "500"
   },
   "jest": {
+    "setupFiles": ["<rootDir>/jest.setup.js"],
     "testPathIgnorePatterns": [
       "<rootDir>/__mocks__",
       "<rootDir>/dist",

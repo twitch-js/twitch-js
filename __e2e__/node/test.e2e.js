@@ -1,9 +1,6 @@
-import consola from 'consola'
 import TwitchJs from '../../lib'
 
 describe('Node E2E', () => {
-  consola.clear()
-
   if (!process.env.CI) {
     require('dotenv').config()
   }
