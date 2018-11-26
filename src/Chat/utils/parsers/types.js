@@ -1,4 +1,4 @@
-import { isFinite, replace } from 'lodash'
+import { isFinite, replace, camelCase } from 'lodash'
 
 const generalString = maybeMessage => {
   return typeof maybeMessage === 'string'
@@ -16,6 +16,11 @@ const generalBoolean = maybeBoolean => maybeBoolean === '1'
 const generalTimestamp = maybeTimestamp => {
   const timestamp = new Date(parseInt(maybeTimestamp, 10))
   return timestamp.toString() !== 'Invalid Date' ? timestamp : new Date()
+}
+
+const usernameFromPrefix = maybePrefix => {
+  const [, username] = /([^!]+)/.exec(maybePrefix) || []
+  return username
 }
 
 const userType = maybeUserType => {
@@ -43,7 +48,7 @@ const badges = maybeBadges => {
   return typeof maybeBadges === 'string'
     ? maybeBadges.split(',').reduce((parsed, badge) => {
         const [key, value] = badge.split('/')
-        return { ...parsed, [key]: parseInt(value, 10) }
+        return { ...parsed, [camelCase(key)]: parseInt(value, 10) }
       }, {})
     : {}
 }
@@ -90,6 +95,7 @@ export {
   generalNumber,
   generalBoolean,
   generalTimestamp,
+  usernameFromPrefix,
   userType,
   broadcasterLanguage,
   badges,

@@ -46,19 +46,19 @@ Base message parsed from Twitch
     <td>timestamp</td><td><code>Date</code></td><td><p>Timestamp</p>
 </td>
     </tr><tr>
-    <td>command</td><td><code>string</code></td><td><p>Command</p>
+    <td>username</td><td><code>string</code></td><td><p>Username</p>
 </td>
     </tr><tr>
-    <td>tags</td><td><code><a href="typedef#ClearChatTags">ClearChatTags</a></code> | <code><a href="typedef#GlobalUserStateTags">GlobalUserStateTags</a></code> | <code><a href="typedef#PrivateMessageTags">PrivateMessageTags</a></code> | <code><a href="typedef#RoomStateTags">RoomStateTags</a></code> | <code><a href="typedef#UserNoticeTags">UserNoticeTags</a></code> | <code><a href="typedef#UserStateTags">UserStateTags</a></code></td><td><p>Twitch tags</p>
+    <td>command</td><td><code>string</code></td><td><p>Command</p>
 </td>
     </tr><tr>
     <td>[channel]</td><td><code>string</code></td><td><p>Channel</p>
 </td>
     </tr><tr>
-    <td>[message]</td><td><code>string</code></td><td><p>Message</p>
+    <td>tags</td><td><code><a href="typedef#ClearChatTags">ClearChatTags</a></code> | <code><a href="typedef#GlobalUserStateTags">GlobalUserStateTags</a></code> | <code><a href="typedef#PrivateMessageTags">PrivateMessageTags</a></code> | <code><a href="typedef#RoomStateTags">RoomStateTags</a></code> | <code><a href="typedef#UserNoticeTags">UserNoticeTags</a></code> | <code><a href="typedef#UserStateTags">UserStateTags</a></code></td><td><p>Twitch tags</p>
 </td>
     </tr><tr>
-    <td>[event]</td><td><code>string</code></td><td><p>Associated event</p>
+    <td>[message]</td><td><code>string</code></td><td><p>Message</p>
 </td>
     </tr>  </tbody>
 </table>

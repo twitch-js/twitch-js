@@ -56,10 +56,12 @@ describe('Api', () => {
 
     test('should update client options', async () => {
       const api = new Api(options)
-      expect(api._options.debug).toBe(false)
-      await api.initialize({ debug: true })
+      expect(api._options.token).toBe(options.token)
 
-      expect(api._options.debug).toBe(true)
+      const newToken = 'NEW_TOKEN'
+      await api.initialize({ token: newToken })
+
+      expect(api._options.token).toBe(newToken)
     })
   })
 

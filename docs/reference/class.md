@@ -218,7 +218,7 @@ Chat client
 
 **Kind**: global class  
 **Extends**: [<code>EventEmitter3</code>](external#external_EventEmitter3)  
-**Emits**: [<code>\*</code>](#Chat+event_*), [<code>CLEARCHAT</code>](#Chat+event_CLEARCHAT), [<code>CLEARCHAT/USER_BANNED</code>](#Chat+event_CLEARCHAT/USER_BANNED), [<code>GLOBALUSERSTATE</code>](#Chat+event_GLOBALUSERSTATE), [<code>HOSTTARGET</code>](#Chat+event_HOSTTARGET), [<code>JOIN</code>](#Chat+event_JOIN), [<code>MODE</code>](#Chat+event_MODE), [<code>NAMES</code>](#Chat+event_NAMES), [<code>NAMES_END</code>](#Chat+event_NAMES_END), [<code>NOTICE</code>](#Chat+event_NOTICE), [<code>NOTICE/ROOM_MODS</code>](#Chat+event_NOTICE/ROOM_MODS), [<code>PART</code>](#Chat+event_PART), [<code>PRIVMSG</code>](#Chat+event_PRIVMSG), [<code>PRIVMSG/CHEER</code>](#Chat+event_PRIVMSG/CHEER), [<code>ROOMSTATE</code>](#Chat+event_ROOMSTATE), <code>Chat#event:USERNOTICE</code>, [<code>USERNOTICE/ANON_GIFT_PAID_UPGRADE</code>](#Chat+event_USERNOTICE/ANON_GIFT_PAID_UPGRADE), [<code>USERNOTICE/GIFT_PAID_UPGRADE</code>](#Chat+event_USERNOTICE/GIFT_PAID_UPGRADE), [<code>USERNOTICE/RAID</code>](#Chat+event_USERNOTICE/RAID), [<code>USERNOTICE/RESUBSCRIPTION</code>](#Chat+event_USERNOTICE/RESUBSCRIPTION), [<code>USERNOTICE/RITUAL</code>](#Chat+event_USERNOTICE/RITUAL), [<code>USERNOTICE/SUBSCRIPTION</code>](#Chat+event_USERNOTICE/SUBSCRIPTION), [<code>USERNOTICE/SUBSCRIPTION_GIFT</code>](#Chat+event_USERNOTICE/SUBSCRIPTION_GIFT), [<code>USERSTATE</code>](#Chat+event_USERSTATE)  
+**Emits**: [<code>\*</code>](#Chat+event_*), [<code>CLEARCHAT</code>](#Chat+event_CLEARCHAT), [<code>CLEARCHAT/USER\_BANNED</code>](#Chat+event_CLEARCHAT/USER_BANNED), [<code>GLOBALUSERSTATE</code>](#Chat+event_GLOBALUSERSTATE), [<code>HOSTTARGET</code>](#Chat+event_HOSTTARGET), [<code>JOIN</code>](#Chat+event_JOIN), [<code>MODE</code>](#Chat+event_MODE), [<code>NAMES</code>](#Chat+event_NAMES), [<code>NAMES\_END</code>](#Chat+event_NAMES_END), [<code>NOTICE</code>](#Chat+event_NOTICE), [<code>NOTICE/ROOM\_MODS</code>](#Chat+event_NOTICE/ROOM_MODS), [<code>PART</code>](#Chat+event_PART), [<code>PRIVMSG</code>](#Chat+event_PRIVMSG), [<code>PRIVMSG/CHEER</code>](#Chat+event_PRIVMSG/CHEER), [<code>ROOMSTATE</code>](#Chat+event_ROOMSTATE), <code>Chat#event:USERNOTICE</code>, [<code>USERNOTICE/ANON\_GIFT\_PAID\_UPGRADE</code>](#Chat+event_USERNOTICE/ANON_GIFT_PAID_UPGRADE), [<code>USERNOTICE/GIFT\_PAID\_UPGRADE</code>](#Chat+event_USERNOTICE/GIFT_PAID_UPGRADE), [<code>USERNOTICE/RAID</code>](#Chat+event_USERNOTICE/RAID), [<code>USERNOTICE/RESUBSCRIPTION</code>](#Chat+event_USERNOTICE/RESUBSCRIPTION), [<code>USERNOTICE/RITUAL</code>](#Chat+event_USERNOTICE/RITUAL), [<code>USERNOTICE/SUBSCRIPTION</code>](#Chat+event_USERNOTICE/SUBSCRIPTION), [<code>USERNOTICE/SUBSCRIPTION\_GIFT</code>](#Chat+event_USERNOTICE/SUBSCRIPTION_GIFT), [<code>USERSTATE</code>](#Chat+event_USERSTATE)  
 
 * [Chat](#Chat) ⇐ [<code>EventEmitter3</code>](external#external_EventEmitter3)
     * [new Chat(options)](#new_Chat_new)
@@ -1192,6 +1192,8 @@ TwitchJs constructor
     <td>options.username</td><td><code>string</code></td>
     </tr><tr>
     <td>options.clientId</td><td><code>string</code></td>
+    </tr><tr>
+    <td>options.log</td><td><code>Object</code></td>
     </tr><tr>
     <td>[options.onAuthenticationFailure]</td><td><code>function</code></td>
     </tr><tr>

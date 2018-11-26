@@ -21,6 +21,7 @@ Object {
     "userType": "admin",
   },
   "timestamp": Any<Date>,
+  "username": "tmi.twitch.tv",
 }
 `;
 
@@ -67,6 +68,7 @@ Object {
   "message": "Welcome, GLHF!",
   "tags": Object {},
   "timestamp": Any<Date>,
+  "username": "tmi.twitch.tv",
 }
 `;
 
@@ -79,6 +81,7 @@ Object {
   "message": "Your host is tmi.twitch.tv",
   "tags": Object {},
   "timestamp": Any<Date>,
+  "username": "tmi.twitch.tv",
 }
 `;
 
@@ -91,6 +94,7 @@ Object {
   "message": "This server is rather new",
   "tags": Object {},
   "timestamp": Any<Date>,
+  "username": "tmi.twitch.tv",
 }
 `;
 
@@ -103,6 +107,7 @@ Object {
   "message": "-",
   "tags": Object {},
   "timestamp": Any<Date>,
+  "username": "tmi.twitch.tv",
 }
 `;
 
@@ -115,6 +120,7 @@ Object {
   "message": "-",
   "tags": Object {},
   "timestamp": Any<Date>,
+  "username": "tmi.twitch.tv",
 }
 `;
 
@@ -127,6 +133,7 @@ Object {
   "message": "You are in a maze of twisty passages.",
   "tags": Object {},
   "timestamp": Any<Date>,
+  "username": "tmi.twitch.tv",
 }
 `;
 
@@ -139,6 +146,7 @@ Object {
   "message": ">",
   "tags": Object {},
   "timestamp": Any<Date>,
+  "username": "tmi.twitch.tv",
 }
 `;
 
@@ -173,6 +181,7 @@ Object {
     "username": "dallas",
   },
   "timestamp": Any<Date>,
+  "username": "tmi.twitch.tv",
 }
 `;
 
@@ -192,6 +201,7 @@ Object {
     "userType": "admin",
   },
   "timestamp": Any<Date>,
+  "username": "tmi.twitch.tv",
 }
 `;
 
@@ -228,6 +238,7 @@ Object {
     "subsOnly": "0",
   },
   "timestamp": Any<Date>,
+  "username": "tmi.twitch.tv",
 }
 `;
 
@@ -268,6 +279,7 @@ Object {
     "userType": "staff",
   },
   "timestamp": Any<Date>,
+  "username": "tmi.twitch.tv",
 }
 `;
 
@@ -278,6 +290,7 @@ Object {
   "command": "CLEARCHAT",
   "isSelf": false,
   "timestamp": Any<Date>,
+  "username": "tmi.twitch.tv",
 }
 `;
 
@@ -348,7 +361,7 @@ Object {
   "event": "MOD_GAINED",
   "isModerator": true,
   "isSelf": false,
-  "message": undefined,
+  "message": "+o",
   "tags": Object {},
   "timestamp": Any<Date>,
   "username": "ronni",
@@ -363,7 +376,7 @@ Object {
   "event": "MOD_LOST",
   "isModerator": false,
   "isSelf": false,
-  "message": undefined,
+  "message": "-o",
   "tags": Object {},
   "timestamp": Any<Date>,
   "username": "ronni",
@@ -378,7 +391,7 @@ Object {
   "event": "MOD_GAINED",
   "isModerator": true,
   "isSelf": false,
-  "message": undefined,
+  "message": "+o",
   "tags": Object {},
   "timestamp": Any<Date>,
   "username": "dallas",
@@ -393,7 +406,7 @@ Object {
   "event": "MOD_LOST",
   "isModerator": false,
   "isSelf": false,
-  "message": undefined,
+  "message": "-o",
   "tags": Object {},
   "timestamp": Any<Date>,
   "username": "dallas",
@@ -411,6 +424,7 @@ Object {
   "message": undefined,
   "tags": Object {},
   "timestamp": Any<Date>,
+  "username": "ronni.tmi.twitch.tv",
   "usernames": Array [
     "ronni",
     "fred",
@@ -430,6 +444,7 @@ Object {
   "message": undefined,
   "tags": Object {},
   "timestamp": Any<Date>,
+  "username": "ronni.tmi.twitch.tv",
   "usernames": Array [
     "ronni",
     "fred",
@@ -464,6 +479,7 @@ Object {
     "msgId": "already_banned",
   },
   "timestamp": Any<Date>,
+  "username": "tmi.twitch.tv",
 }
 `;
 
@@ -479,6 +495,7 @@ Object {
     "msgId": "already_emote_only_off",
   },
   "timestamp": Any<Date>,
+  "username": "tmi.twitch.tv",
 }
 `;
 
@@ -494,6 +511,7 @@ Object {
     "msgId": "already_emote_only_on",
   },
   "timestamp": Any<Date>,
+  "username": "tmi.twitch.tv",
 }
 `;
 
@@ -509,6 +527,7 @@ Object {
     "msgId": "already_r9k_off",
   },
   "timestamp": Any<Date>,
+  "username": "tmi.twitch.tv",
 }
 `;
 
@@ -524,6 +543,7 @@ Object {
     "msgId": "already_r9k_on",
   },
   "timestamp": Any<Date>,
+  "username": "tmi.twitch.tv",
 }
 `;
 
@@ -539,6 +559,7 @@ Object {
     "msgId": "already_subs_off",
   },
   "timestamp": Any<Date>,
+  "username": "tmi.twitch.tv",
 }
 `;
 
@@ -554,6 +575,7 @@ Object {
     "msgId": "already_subs_on",
   },
   "timestamp": Any<Date>,
+  "username": "tmi.twitch.tv",
 }
 `;
 
@@ -569,6 +591,7 @@ Object {
     "msgId": "AUTHENTICATION_FAILED",
   },
   "timestamp": Any<Date>,
+  "username": "tmi.twitch.tv",
 }
 `;
 
@@ -584,6 +607,7 @@ Object {
     "msgId": "bad_host_hosting",
   },
   "timestamp": Any<Date>,
+  "username": "tmi.twitch.tv",
 }
 `;
 
@@ -599,6 +623,7 @@ Object {
     "msgId": "bad_unban_no_ban",
   },
   "timestamp": Any<Date>,
+  "username": "tmi.twitch.tv",
 }
 `;
 
@@ -614,6 +639,7 @@ Object {
     "msgId": "ban_success",
   },
   "timestamp": Any<Date>,
+  "username": "tmi.twitch.tv",
 }
 `;
 
@@ -629,6 +655,7 @@ Object {
     "msgId": "emote_only_off",
   },
   "timestamp": Any<Date>,
+  "username": "tmi.twitch.tv",
 }
 `;
 
@@ -644,6 +671,7 @@ Object {
     "msgId": "emote_only_on",
   },
   "timestamp": Any<Date>,
+  "username": "tmi.twitch.tv",
 }
 `;
 
@@ -659,6 +687,7 @@ Object {
     "msgId": "host_off",
   },
   "timestamp": Any<Date>,
+  "username": "tmi.twitch.tv",
 }
 `;
 
@@ -674,6 +703,7 @@ Object {
     "msgId": "host_on",
   },
   "timestamp": Any<Date>,
+  "username": "tmi.twitch.tv",
 }
 `;
 
@@ -689,6 +719,7 @@ Object {
     "msgId": "hosts_remaining",
   },
   "timestamp": Any<Date>,
+  "username": "tmi.twitch.tv",
 }
 `;
 
@@ -704,6 +735,7 @@ Object {
     "msgId": "msg_channel_suspended",
   },
   "timestamp": Any<Date>,
+  "username": "tmi.twitch.tv",
 }
 `;
 
@@ -719,6 +751,7 @@ Object {
     "msgId": "r9k_off",
   },
   "timestamp": Any<Date>,
+  "username": "tmi.twitch.tv",
 }
 `;
 
@@ -734,6 +767,7 @@ Object {
     "msgId": "r9k_on",
   },
   "timestamp": Any<Date>,
+  "username": "tmi.twitch.tv",
 }
 `;
 
@@ -753,6 +787,7 @@ Object {
     "msgId": "room_mods",
   },
   "timestamp": Any<Date>,
+  "username": "tmi.twitch.tv",
 }
 `;
 
@@ -768,6 +803,7 @@ Object {
     "msgId": "slow_off",
   },
   "timestamp": Any<Date>,
+  "username": "tmi.twitch.tv",
 }
 `;
 
@@ -783,6 +819,7 @@ Object {
     "msgId": "slow_on",
   },
   "timestamp": Any<Date>,
+  "username": "tmi.twitch.tv",
 }
 `;
 
@@ -798,6 +835,7 @@ Object {
     "msgId": "subs_off",
   },
   "timestamp": Any<Date>,
+  "username": "tmi.twitch.tv",
 }
 `;
 
@@ -813,6 +851,7 @@ Object {
     "msgId": "subs_on",
   },
   "timestamp": Any<Date>,
+  "username": "tmi.twitch.tv",
 }
 `;
 
@@ -828,6 +867,7 @@ Object {
     "msgId": "timeout_success",
   },
   "timestamp": Any<Date>,
+  "username": "tmi.twitch.tv",
 }
 `;
 
@@ -843,6 +883,7 @@ Object {
     "msgId": "unban_success",
   },
   "timestamp": Any<Date>,
+  "username": "tmi.twitch.tv",
 }
 `;
 
@@ -858,6 +899,7 @@ Object {
     "msgId": "unrecognized_cmd",
   },
   "timestamp": Any<Date>,
+  "username": "tmi.twitch.tv",
 }
 `;
 
@@ -907,6 +949,7 @@ Object {
     "userType": "staff",
   },
   "timestamp": Any<Date>,
+  "username": "ronni",
 }
 `;
 
@@ -923,6 +966,7 @@ Object {
     "displayName": "ronni",
   },
   "timestamp": Any<Date>,
+  "username": "jtv",
 }
 `;
 
@@ -939,6 +983,7 @@ Object {
     "displayName": "ronni",
   },
   "timestamp": Any<Date>,
+  "username": "jtv",
 }
 `;
 
@@ -955,6 +1000,7 @@ Object {
     "displayName": "ronni",
   },
   "timestamp": Any<Date>,
+  "username": "jtv",
 }
 `;
 
@@ -967,7 +1013,7 @@ Object {
   "message": "Kappa Keepo Kappa",
   "tags": Object {
     "badges": Object {
-      "global_mod": 1,
+      "globalMod": 1,
       "turbo": 1,
     },
     "bits": undefined,
@@ -1005,6 +1051,7 @@ Object {
     "userType": "global_mod",
   },
   "timestamp": Any<Date>,
+  "username": "ronni",
 }
 `;
 
@@ -1048,6 +1095,7 @@ Object {
     "userType": undefined,
   },
   "timestamp": Any<Date>,
+  "username": "tmi.twitch.tv",
 }
 `;
 
@@ -1097,6 +1145,7 @@ Object {
     "userType": undefined,
   },
   "timestamp": Any<Date>,
+  "username": "tmi.twitch.tv",
 }
 `;
 
@@ -1143,6 +1192,7 @@ Object {
     "userType": undefined,
   },
   "timestamp": Any<Date>,
+  "username": "tmi.twitch.tv",
 }
 `;
 
@@ -1191,6 +1241,7 @@ Object {
     "userType": "staff",
   },
   "timestamp": Any<Date>,
+  "username": "tmi.twitch.tv",
 }
 `;
 
@@ -1237,6 +1288,7 @@ Object {
     "userType": undefined,
   },
   "timestamp": Any<Date>,
+  "username": "tmi.twitch.tv",
 }
 `;
 
@@ -1257,7 +1309,7 @@ Object {
   "tags": Object {
     "badges": Object {
       "bits": 5000,
-      "sub-gifter": 1,
+      "subGifter": 1,
       "subscriber": 12,
     },
     "bits": undefined,
@@ -1285,6 +1337,7 @@ Object {
     "userType": undefined,
   },
   "timestamp": Any<Date>,
+  "username": "tmi.twitch.tv",
 }
 `;
 
@@ -1333,6 +1386,7 @@ Object {
     "userType": "staff",
   },
   "timestamp": Any<Date>,
+  "username": "tmi.twitch.tv",
 }
 `;
 
@@ -1386,6 +1440,7 @@ Object {
     "userType": "staff",
   },
   "timestamp": Any<Date>,
+  "username": "tmi.twitch.tv",
 }
 `;
 
@@ -1432,6 +1487,7 @@ Object {
     "userType": undefined,
   },
   "timestamp": Any<Date>,
+  "username": "tmi.twitch.tv",
 }
 `;
 

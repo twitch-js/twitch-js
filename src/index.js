@@ -23,6 +23,7 @@ class TwitchJs {
    * @param {string} options.token
    * @param {string} options.username
    * @param {string} options.clientId
+   * @param {Object} options.log
    * @param {function} [options.onAuthenticationFailure]
    * @param {ChatOptions} [options.chat]
    * @param {ApiOptions} [options.api]
@@ -31,17 +32,30 @@ class TwitchJs {
     token,
     username,
     clientId,
+    log,
     onAuthenticationFailure,
     chat,
     api,
   }) {
     /** @type {Chat} */
-    this.chat = new Chat({ ...chat, token, username, onAuthenticationFailure })
+    this.chat = new Chat({
+      log,
+      ...chat,
+      token,
+      username,
+      onAuthenticationFailure,
+    })
     /** @type {Object} */
     this.chatConstants = ChatConstants
 
     /** @type {Api} */
-    this.api = new Api({ ...api, token, clientId, onAuthenticationFailure })
+    this.api = new Api({
+      log,
+      ...api,
+      token,
+      clientId,
+      onAuthenticationFailure,
+    })
   }
 
   /**
