@@ -3,6 +3,8 @@ require('any-observable/register')('symbol-observable')
 const fs = require('fs')
 const path = require('path')
 
+const mkdirp = require('mkdirp')
+
 const jsdoc2md = require('jsdoc-to-markdown')
 const groupBy = require('lodash/groupBy')
 
@@ -12,6 +14,9 @@ const Listr = require('listr')
 const inputFile = 'src/**/*.js'
 const outputDir = './docs/reference'
 const partials = fs.readdirSync(`${__dirname}/partials`)
+
+// Create docs directory.
+mkdirp.sync(path.resolve(__dirname, '../../', outputDir))
 
 const titleMap = {
   class: 'Classes',
