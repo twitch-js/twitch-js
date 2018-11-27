@@ -148,7 +148,7 @@ function handleMessage(log, options, messageEvent) {
     const query = stringify({ title, body: rawMessage })
     log.error(
       'Parsing error encountered. Please create an issue: %s',
-      `https://github.com/twitch-apis/twitch-js/issues/new?${query}`,
+      `https://github.com/twitch-devs/twitch-js/issues/new?${query}`,
       error,
     )
 
