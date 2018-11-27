@@ -190,12 +190,15 @@ class Client extends EventEmitter {
 
       this.emit(message.command, message)
       this.emit(constants.EVENTS.ALL, message)
-      throw message
-    } finally {
-      const message = {
-        _raw: rawMessage,
-        timestamp: new Date(),
-      }
+    })
+  } catch (error) {
+    const title = 'Parsing error encountered'
+    const query = stringify({ title, body: rawMessage })
+    log.error(
+      'Parsing error encountered. Please create an issue: %s',
+      `https://github.com/twitch-devs/twitch-js/issues/new?${query}`,
+      error,
+    )
 
       this.emit(constants.EVENTS.RAW, message)
     }
