@@ -48,7 +48,7 @@
     "test:e2e:browser": "jest --config __e2e__/browser/jest.config.js",
     "test:e2e:node": "jest --config __e2e__/node/jest.config.js",
     "test:e2e": "run-s test:e2e:*",
-    "precommit": "yarn docs:build && git add \"*.md\" && lint-staged",
+    "precommit": "lint-staged",
     "prettier": "prettier --write \"**/*.{js,md}\"",
     "prepublish": "yarn build",
     "prebuild": "yarn clean",
