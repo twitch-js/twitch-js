@@ -5,6 +5,7 @@ cache:
   yarn: true
   directories:
     - "node_modules"
+    - "website/node_modules"
 
 before_install:
   - curl -o- -L https://yarnpkg.com/install.sh | bash -s -- --version 1.9.2
@@ -16,11 +17,13 @@ script:
   - yarn test:coverage:report
   - if [ "$TRAVIS_PULL_REQUEST" = "false" ]; then yarn test:e2e; fi
 
+  - yarn docs:build
+
 after_success:
   - yarn coveralls
 
 before_deploy: |
-  # Handle release version number for NPM
+  # Handle release version number for NPM.
 
   # Retrieve current version.
   PACKAGE_VERSION=$(node -p "require('./package.json').version")
@@ -51,18 +54,35 @@ before_deploy: |
     npm version $NEXT_VERSION --message "v$NEXT_VERSION [ci skip]"
   fi
 
+  # Build website.
+
+  # Retrieve website source.
+  curl -sL https://github.com/twitch-devs/twitch-js-docs/archive/ffac6be7cc5d28fabf347b5ad90b8ce75da68b43.tar.gz | tar xz --strip 1 */docs */website
+  (cd website && yarn install && yarn build)
+
+
 deploy:
+  # Deploy v1.
   - provider: npm
     email: $NPM_EMAIL
     api_key: $NPM_AUTH_TOKEN
     skip_cleanup: true
     on:
       branch: master
+  # Deploy v2.
   - provider: npm
     email: $NPM_EMAIL
     api_key: $NPM_AUTH_TOKEN
     skip_cleanup: true
     tag: next
+    on:
+      branch: next
+  # Deploy website.
+  - provider: pages
+    skip-cleanup: true
+    github-token: $GITHUB_TOKEN
+    keep-history: true
+    local-dir: website/build/twitch-js
     on:
       branch: next
 

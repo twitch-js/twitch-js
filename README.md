@@ -1,18 +1,18 @@
-# [TwitchJS](https://twitch-apis.github.io/twitch-js)
+# [TwitchJS](https://twitch-devs.github.io/twitch-js)
 
-[![Travis branch](https://img.shields.io/travis/twitch-apis/twitch-js/master.svg?longCache=true&style=flat-square)](https://travis-ci.org/twitch-apis/twitch-js)
+[![Travis branch](https://img.shields.io/travis/twitch-devs/twitch-js/master.svg?longCache=true&style=flat-square)](https://travis-ci.org/twitch-devs/twitch-js)
 [![npm](https://img.shields.io/npm/v/twitch-js.svg?longCache=true&style=flat-square)](https://www.npmjs.com/package/twitch-js)
 [![npm](https://img.shields.io/npm/v/twitch-js/next.svg?longCache=true&style=flat-square)](https://www.npmjs.com/package/twitch-js/v/next)
 [![npm](https://img.shields.io/npm/dm/twitch-js.svg?longCache=true&style=flat-square)](https://www.npmjs.com/package/twitch-js)
-[![GitHub issues](https://img.shields.io/github/issues/twitch-apis/twitch-js.svg?longCache=true&style=flat-square)](https://github.com/twitch-apis/twitch-js/issues)
-[![Coverage Status](https://img.shields.io/codecov/c/github/twitch-apis/twitch-js/next.svg?longCache=true&style=flat-square)](https://codecov.io/gh/twitch-apis/twitch-js/branch/next)
+[![GitHub issues](https://img.shields.io/github/issues/twitch-devs/twitch-js.svg?longCache=true&style=flat-square)](https://github.com/twitch-devs/twitch-js/issues)
+[![Coverage Status](https://img.shields.io/codecov/c/github/twitch-devs/twitch-js/next.svg?longCache=true&style=flat-square)](https://codecov.io/gh/twitch-devs/twitch-js/branch/next)
 
 A community-centric, community-supported Twitch JavaScript SDK.
 
 ## Warning
 
 This branch is under active development; expect **breaking changes**. Please use
-[v1](https://github.com/twitch-apis/twitch-js/tree/master) instead. If you still
+[v1](https://github.com/twitch-devs/twitch-js/tree/master) instead. If you still
 choose to use this branch, use version pinning, refer to the diffs, and update
 accordingly to avoid regressions.
 
@@ -30,7 +30,7 @@ accordingly to avoid regressions.
 ### In progress...
 
 Here are the
-[planned features](https://github.com/twitch-apis/twitch-js/milestone/1). If you
+[planned features](https://github.com/twitch-devs/twitch-js/milestone/1). If you
 feel something is missing, create an issue or submit a PR against the next
 branch.
 
@@ -74,7 +74,7 @@ If you are not using a module bundler, precompiled builds are available in the
 ## Contribution guidelines
 
 If you wish to contribute, please see the
-[CONTRIBUTING](https://github.com/twitch-apis/twitch-js/blob/master/CONTRIBUTING.md)
+[CONTRIBUTING](https://github.com/twitch-devs/twitch-js/blob/master/CONTRIBUTING.md)
 doc.
 
 ## Special thanks
