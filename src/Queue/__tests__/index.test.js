@@ -24,25 +24,49 @@ describe('Chat/Queue', () => {
     queue.push({ fn: fnTwo })
   })
 
-  test.only(
-    'should queue fn calls',
-    () => {
+  describe('rate-limiting', () => {
+    const NativeDate = Date
+    let d = new Date()
+
+    beforeAll(() => {
+      Object.assign(Date, NativeDate)
+      global.Date = jest.fn(() => new NativeDate(d.toISOString()))
+    })
+
+    afterAll(() => {
+      global.Date = NativeDate
+    })
+
+    test('should limit rate of fn calls', done => {
       const fn = jest.fn()
 
+      const maxLength = 3
+      const tickInterval = 2000
+      const totalCalls = 10
+
+      let numberOfTasksFinished = 0
       const onTaskFinished = () => {
-        // console.log(new Date())
+        numberOfTasksFinished++
+        expect(numberOfTasksFinished).toBe(numberOfTasksFinished)
+
+        if (numberOfTasksFinished % maxLength === 0) {
+          d.setMilliseconds(d.getMilliseconds() + tickInterval + 1)
+        }
+
+        if (numberOfTasksFinished === totalCalls) {
+          done()
+        }
       }
 
       const queue = new Queue({
-        maxLength: 3,
-        tickInterval: 2000,
+        maxLength,
+        tickInterval,
         onTaskFinished,
       })
 
-      for (let i = 1; i <= 10; i++) {
+      for (let i = 1; i <= totalCalls; i++) {
         queue.push({ fn })
       }
-    },
-    10000,
-  )
+    })
+  })
 })
