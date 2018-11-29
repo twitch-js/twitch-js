@@ -19,9 +19,9 @@ class Queue {
     const {
       maxLength = 20,
       tickInterval = 30000,
-      onTaskQueued = function() {},
-      onTaskFinished = function() {},
-      onQueueDrained = function() {},
+      onTaskQueued = () => {},
+      onTaskFinished = () => {},
+      onQueueDrained = () => {},
     } = options
 
     this._maxLength = maxLength
@@ -53,14 +53,6 @@ class Queue {
       .on('finish', this._handleTaskFinished)
   }
 
-  pause = () => {
-    return this._q.pause()
-  }
-
-  resume = () => {
-    return this._q.resume()
-  }
-
   _handlePriority = ({ priority = 1 }, cb) => cb(null, priority)
 
   _handlePrecondition = cb => {
@@ -75,16 +67,17 @@ class Queue {
 
   _handleTaskQueued = (taskId, task) => {
     this._callbacks.onTaskQueued(taskId, task)
-
-    if (!this._timestamp) {
-      this._timestamp = new Date()
-    }
   }
 
   _handleTaskFinished = (taskId, result) => {
-    this._callbacks.onTaskFinished(taskId, result)
+    const now = new Date()
+    if (now - this._timestamp > this._tickInterval) {
+      this._timestamp = new Date()
+    }
 
     this._length = this._length + 1
+
+    this._callbacks.onTaskFinished(taskId, result)
   }
 
   _handleQueueDrained = () => {
