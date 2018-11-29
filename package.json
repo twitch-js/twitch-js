@@ -50,7 +50,6 @@
     "test:e2e": "run-s test:e2e:*",
     "precommit": "lint-staged",
     "prettier": "prettier --write \"**/*.{js,md}\"",
-    "prepublish": "yarn build",
     "prebuild": "yarn clean",
     "build:lib": "cross-env BABEL_ENV=production babel src --out-dir lib --source-maps",
     "build:dist:dev": "webpack",
