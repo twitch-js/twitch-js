@@ -1,24 +1,34 @@
 import BetterQueue from 'better-queue'
 import MemoryStore from 'better-queue-memory'
 import setImmediate from 'core-js/library/fn/set-immediate'
-// import { get } from 'lodash'
+import { noop } from 'lodash'
 
 import * as constants from './constants'
-
-const EMPTY_INTERVAL_ID = -1
 
 class Queue {
   _q
 
-  _maxLength = 20
+  _maxLength
   _length = 0
 
-  _tickInterval = 30000
-  _tickIntervalId = EMPTY_INTERVAL_ID
+  _timestamp = new Date()
+  _tickInterval
 
-  constructor({ maxLength = 20, tickInterval = 30000 } = {}) {
-    this._tickInterval = tickInterval
+  _callbacks = {}
+
+  constructor(options = {}) {
+    const {
+      maxLength = 20,
+      tickInterval = 30000,
+      onTaskQueued = noop,
+      onTaskFinished = noop,
+      onQueueDrained = noop,
+    } = options
+
     this._maxLength = maxLength
+    this._tickInterval = tickInterval
+
+    this._callbacks = { onTaskQueued, onTaskFinished, onQueueDrained }
 
     this._q = new BetterQueue(
       ({ fn }, cb) => {
@@ -37,31 +47,49 @@ class Queue {
     this._q.on('drain', this._handleQueueDrained)
   }
 
-  push({ fn, priority }) {
-    return this._q.push({ fn, priority }).on('finish', this._handleTaskFinish)
+  push = ({ fn, priority }) => {
+    return this._q
+      .push({ fn, priority })
+      .on('accepted', this._handleTaskQueued)
+      .on('finish', this._handleTaskFinished)
+  }
+
+  pause = () => {
+    return this._q.pause()
+  }
+
+  resume = () => {
+    return this._q.resume()
   }
 
   _handlePriority = ({ priority = 1 }, cb) => cb(null, priority)
 
   _handlePrecondition = cb => {
+    const now = new Date()
+    if (now - this._timestamp > this._tickInterval) {
+      this._timestamp = now
+      this._length = Math.max(0, this._length - this._maxLength)
+    }
+
     cb(null, this._length < this._maxLength)
   }
 
-  _handleTaskFinish = () => {
-    if (this._tickIntervalId === EMPTY_INTERVAL_ID) {
-      this._tickIntervalId = setInterval(this._tick, this._tickInterval)
+  _handleTaskQueued = (taskId, task) => {
+    this._callbacks.onTaskQueued(taskId, task)
+
+    if (!this._timestamp) {
+      this._timestamp = new Date()
     }
+  }
+
+  _handleTaskFinished = (taskId, result) => {
+    this._callbacks.onTaskFinished(taskId, result)
 
     this._length = this._length + 1
   }
 
-  _tick = () => {
-    this._length = Math.max(0, this._length - this._maxLength)
-  }
-
   _handleQueueDrained = () => {
-    clearInterval(this._tickIntervalId)
-    this._tickIntervalId = EMPTY_INTERVAL_ID
+    this._callbacks.onQueueDrained()
   }
 }
 

@@ -183,7 +183,8 @@
     "rules": {
       "no-alert": 2,
       "no-debugger": 2,
-      "no-console": 2
+      "no-console": 2,
+      "jest/no-disabled-tests": 2
     }
   },
   "eslintIgnore": [
