@@ -1,4 +1,4 @@
-import { random } from 'lodash'
+import { random, toLower } from 'lodash'
 import { ANONYMOUS_USERNAME } from '../constants'
 
 function channel(value) {
@@ -10,7 +10,7 @@ function channel(value) {
     return value
   }
 
-  return `#${value}`
+  return toLower(`#${value}`)
 }
 
 function oauth(value) {

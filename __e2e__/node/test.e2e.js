@@ -1,6 +1,10 @@
 import TwitchJs from '../../lib'
 
 describe('Node E2E', () => {
+  if (!process.env.CI) {
+    require('dotenv').config()
+  }
+
   const token = process.env.TWITCH_TOKEN
   const username = process.env.TWITCH_USERNAME
   const channel = process.env.TWITCH_USERNAME
@@ -8,7 +12,7 @@ describe('Node E2E', () => {
     ? `Travis CI E2E Build #${process.env.TRAVIS_BUILD_NUMBER}`
     : `Local E2E ${new Date()}`
 
-  afterAll(() => setTimeout(() => process.exit(), 1000))
+  afterAll(() => setTimeout(process.exit.bind(process), 1000))
 
   describe('Chat', () => {
     test('should connect and send message', async () => {

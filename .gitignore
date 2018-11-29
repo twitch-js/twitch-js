@@ -4,6 +4,8 @@
 # Builds
 dist
 lib
+docs
+website
 twitch-js-*.tgz
 /package
 
@@ -27,13 +29,6 @@ coverage
 # see https://npmjs.org/doc/faq.html#Should-I-check-my-node_modules-folder-into-git
 node_modules
 package-lock.json
-
-# Docusaurus
-website/translated_docs
-website/build/
-website/yarn.lock
-website/node_modules
-website/i18n/*
 
 
 # =========================

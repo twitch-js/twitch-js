@@ -1,5 +1,8 @@
 import { EventEmitter } from 'eventemitter3'
+import { stringify } from 'qs'
 import WebSocket from '../../shims/uws'
+
+import createLogger from '../utils/logger/create'
 
 import * as constants from './constants'
 import baseParser from './utils/parsers'
@@ -21,6 +24,8 @@ class Client extends EventEmitter {
     // Validate options.
     const options = validators.clientOptions(maybeOptions)
 
+    const log = createLogger({ scope: 'Chat/Client', ...options.log })
+
     // Instantiate WebSocket.
     const protocol = options.ssl ? 'wss' : 'ws'
     const ws = new WebSocket(`${protocol}://${options.server}:${options.port}`)
@@ -28,14 +33,14 @@ class Client extends EventEmitter {
     this.isReady = () => ws.readyState === 1
 
     ws.onopen = handleOpen.bind(this, options)
-    ws.onmessage = handleMessage.bind(this, options)
+    ws.onmessage = handleMessage.bind(this, log, options)
     ws.onerror = handleError.bind(this)
     ws.onclose = handleClose.bind(this)
 
     // Instantiate Queue.
     const queue = new Queue()
 
-    const elevatedContext = { self: this, ws, queue }
+    const elevatedContext = { self: this, log, ws, queue }
 
     this.send = this.send.bind(elevatedContext)
     this.disconnect = this.disconnect.bind(elevatedContext)
@@ -50,6 +55,8 @@ class Client extends EventEmitter {
    */
   send(message, { priority, ...weighProps } = {}) {
     const fn = this.ws.send.bind(this.ws, message)
+
+    this.log.debug('<', message)
 
     const task = this.queue.push({
       fn,
@@ -77,7 +84,7 @@ function handleOpen(options) {
   this.send(`NICK ${options.username}`, { priority })
 }
 
-function handleMessage(options, messageEvent) {
+function handleMessage(log, options, messageEvent) {
   const rawMessage = messageEvent.data
 
   try {
@@ -86,6 +93,14 @@ function handleMessage(options, messageEvent) {
     const messages = baseParser(rawMessage)
 
     messages.forEach(message => {
+      const event = message.command || ''
+
+      log.debug(
+        '> %s %s',
+        event,
+        JSON.stringify({ ...message, _raw: undefined }),
+      )
+
       // Handle authentication failure.
       if (utils.isAuthenticationFailedMessage(message)) {
         this.emit(constants.EVENTS.AUTHENTICATION_FAILED, {
@@ -129,6 +144,14 @@ function handleMessage(options, messageEvent) {
       this.emit(constants.EVENTS.ALL, message)
     })
   } catch (error) {
+    const title = 'Parsing error encountered'
+    const query = stringify({ title, body: rawMessage })
+    log.error(
+      'Parsing error encountered. Please create an issue: %s',
+      `https://github.com/twitch-devs/twitch-js/issues/new?${query}`,
+      error,
+    )
+
     const message = new Errors.ParseError(error, rawMessage)
 
     this.emit(message.command, message)
