@@ -22,7 +22,6 @@ const clearChat = tags => ({
  * @property {Array<string>} emoteSets
  * @property {string} userType
  * @property {string} username
- * @property {boolean} isTurboSubscriber
  * @see https://dev.twitch.tv/docs/irc/tags#globaluserstate-twitch-tags
  */
 const globalUserState = tags => ({
@@ -30,7 +29,6 @@ const globalUserState = tags => ({
   emoteSets: types.emoteSets(tags.emoteSets),
   userType: types.userType(tags.userType),
   username: toLower(tags.displayName),
-  isTurboSubscriber: types.generalBoolean(tags.turbo),
 })
 
 /** PRIVMSG tags
@@ -125,7 +123,6 @@ const userNoticeEvent = tags => {
  * @property {boolean} isModerator
  * @property {boolean} isSubscriber
  * @property {boolean} isSubGifter
- * @property {boolean} isTurboSubscriber
  * @property {number} [bits]
  * @see https://dev.twitch.tv/docs/irc/tags#userstate-twitch-tags
  */
@@ -139,7 +136,6 @@ const userState = tags => ({
   isModerator: types.generalBoolean(tags.mod),
   isSubscriber: types.generalBoolean(tags.subscriber),
   isSubGifter: /sub-gifter\/\d/.test(tags.badges),
-  isTurboSubscriber: types.generalBoolean(tags.turbo),
 })
 
 export {
