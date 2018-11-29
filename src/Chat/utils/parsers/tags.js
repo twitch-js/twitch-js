@@ -134,7 +134,7 @@ const userState = tags => ({
   emoteSets: types.emoteSets(tags.emoteSets),
   userType: types.userType(tags.userType),
   isModerator: types.generalBoolean(tags.mod),
-  isSubscriber: types.generalBoolean(tags.subscriber),
+  isSubscriber: /subscriber\/\d/.test(tags.badges),
   isSubGifter: /sub-gifter\/\d/.test(tags.badges),
 })
 
