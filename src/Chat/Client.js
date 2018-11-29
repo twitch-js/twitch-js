@@ -3,6 +3,8 @@ import { get } from 'lodash'
 import { stringify } from 'qs'
 import WebSocket from '../../shims/uws'
 
+import Queue from '../Queue'
+
 import createLogger from '../utils/logger/create'
 
 import * as constants from './constants'
@@ -11,7 +13,6 @@ import * as validators from './utils/validators'
 import * as utils from './utils'
 
 import * as Errors from './Errors'
-import Queue from './Queue'
 
 const priority = constants.CLIENT_PRIORITY
 

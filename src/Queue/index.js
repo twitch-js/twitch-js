@@ -1,7 +1,7 @@
 import BetterQueue from 'better-queue'
 import MemoryStore from 'better-queue-memory'
 import setImmediate from 'core-js/library/fn/set-immediate'
-import { get } from 'lodash'
+// import { get } from 'lodash'
 
 import * as constants from './constants'
 
@@ -38,36 +38,25 @@ class Queue {
   }
 
   push({ fn, priority }) {
-    return this._q
-      .push({ fn, priority })
-      .on('accepted', this._handleTaskAccepted)
-      .on('finish', this._handleTaskFinish)
+    return this._q.push({ fn, priority }).on('finish', this._handleTaskFinish)
   }
 
   _handlePriority = ({ priority = 1 }, cb) => cb(null, priority)
 
-  _handlePrecondition = cb => cb(null, this._length <= this._maxLength)
+  _handlePrecondition = cb => {
+    cb(null, this._length < this._maxLength)
+  }
 
-  _handleTaskAccepted = () => {
+  _handleTaskFinish = () => {
     if (this._tickIntervalId === EMPTY_INTERVAL_ID) {
       this._tickIntervalId = setInterval(this._tick, this._tickInterval)
     }
 
-    this._increaseLength()
-  }
-
-  _tick = () => (this._length = Math.max(0, this._length - this._maxLength))
-
-  _handleTaskFinish = () => {
-    this._decreaseLength()
-  }
-
-  _increaseLength = () => {
     this._length = this._length + 1
   }
 
-  _decreaseLength = () => {
-    this._length = Math.max(0, this._length - 1)
+  _tick = () => {
+    this._length = Math.max(0, this._length - this._maxLength)
   }
 
   _handleQueueDrained = () => {
