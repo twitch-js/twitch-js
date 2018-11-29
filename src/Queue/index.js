@@ -1,7 +1,6 @@
 import BetterQueue from 'better-queue'
 import MemoryStore from 'better-queue-memory'
 import setImmediate from 'core-js/library/fn/set-immediate'
-import { noop } from 'lodash'
 
 import * as constants from './constants'
 
@@ -20,9 +19,9 @@ class Queue {
     const {
       maxLength = 20,
       tickInterval = 30000,
-      onTaskQueued = noop,
-      onTaskFinished = noop,
-      onQueueDrained = noop,
+      onTaskQueued = function() {},
+      onTaskFinished = function() {},
+      onQueueDrained = function() {},
     } = options
 
     this._maxLength = maxLength

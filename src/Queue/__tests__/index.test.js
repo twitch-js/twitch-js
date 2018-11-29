@@ -1,4 +1,4 @@
-import Queue from '../'
+import Queue from '../index'
 
 describe('Chat/Queue', () => {
   test('should call fn on push', done => {
