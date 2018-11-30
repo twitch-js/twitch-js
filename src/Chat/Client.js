@@ -53,10 +53,12 @@ class Client extends EventEmitter {
     this._ws.onclose = this._handleClose.bind(this)
 
     // Instantiate Queue.
-    this._queue = this._createQueue(this._options)
-    this._moderatorQueue = this._options.isVerified
-      ? this._queue
-      : this._createQueue({ isModerator: true })
+    const queue = new Queue()
+
+    const elevatedContext = { self: this, log, ws, queue }
+
+    this.send = this.send.bind(elevatedContext)
+    this.disconnect = this.disconnect.bind(elevatedContext)
   }
 
   isReady = () => get(this, '_ws.readyState') === 1
@@ -70,24 +72,20 @@ class Client extends EventEmitter {
    * @param {number} options.priority
    * @param {boolean} options.isModerator
    */
-  send = (message, { priority = 1, isModerator } = {}) => {
-    const fn = this._ws.send.bind(this._ws, message)
+  send(message, { priority, ...weighProps } = {}) {
+    const fn = this.ws.send.bind(this.ws, message)
 
-    const queue = isModerator ? this._moderatorQueue : this._queue
+    this.log.debug('<', message)
 
-    const task = queue.push({ fn, priority })
+    const task = this.queue.push({
+      fn,
+      priority,
+      weight: utils.getMessageQueueWeight(weighProps),
+    })
 
-    return new Promise((resolve, reject) =>
-      task
-        .on('accepted', () => {
-          resolve()
-          this._log.debug('<', message)
-        })
-        .on('failed', () => {
-          reject()
-          this._log.error('<', message)
-        }),
-    )
+    return new Promise((resolve, reject) => {
+      task.on('accepted', resolve).on('failed', reject)
+    })
   }
 
   disconnect = () => {
@@ -95,54 +93,65 @@ class Client extends EventEmitter {
     this._ws.close()
   }
 
-  _createQueue = ({ isModerator, isVerified, isKnown }) => {
-    if (isModerator) {
-      return new Queue({ maxLength: constants.RATE_LIMIT_MODERATOR })
-    } else if (isVerified) {
-      return new Queue({ maxLength: constants.RATE_LIMIT_VERIFIED_BOT })
-    } else if (isKnown) {
-      return new Queue({ maxLength: constants.RATE_LIMIT_KNOWN_BOT })
-    }
-    return new Queue()
-  }
+/**
+ * @function handleOpen
+ * @private
+ * @param {object} options
+ */
+function handleOpen(options) {
+  // Register for Twitch-specific capabilities.
+  this.send(`CAP REQ :${constants.CAPABILITIES.join(' ')}`, { priority })
 
-  _isUserAnonymous = () => utils.isUserAnonymous(get(this, '_options.username'))
+  // Authenticate.
+  this.send(`PASS ${options.oauth}`, { priority })
+  this.send(`NICK ${options.username}`, { priority })
+}
 
-  _handleOpen = () => {
-    // Register for Twitch-specific capabilities.
-    this.send(`CAP REQ :${constants.CAPABILITIES.join(' ')}`, { priority })
+/**
+ * @function handleMessage
+ * @private
+ * @param {any} log
+ * @param {ChatOptions} options
+ * @param {object} messageEvent
+ */
+function handleMessage(log, options, messageEvent) {
+  const rawMessage = messageEvent.data
 
-    // Authenticate.
-    const { token, username } = this._options
-    this.send(`PASS ${token}`, { priority })
-    this.send(`NICK ${username}`, { priority })
-  }
+  try {
+    handleKeepAlive.call(this)
 
-  _handleMessage = messageEvent => {
-    const rawMessage = messageEvent.data
+    const messages = baseParser(rawMessage)
 
-    try {
-      this._handleKeepAlive()
+    messages.forEach(message => {
+      const event = message.command || ''
 
-      const messages = baseParser(rawMessage)
+      log.debug(
+        '> %s %s',
+        event,
+        JSON.stringify({ ...message, _raw: undefined }),
+      )
 
-      messages.forEach(message => {
-        const event = message.command || ''
+      // Handle authentication failure.
+      if (utils.isAuthenticationFailedMessage(message)) {
+        this.emit(constants.EVENTS.AUTHENTICATION_FAILED, {
+          ...message,
+          event: constants.EVENTS.AUTHENTICATION_FAILED,
+        })
 
-        this._log.debug(
-          '> %s %s',
-          event,
-          JSON.stringify({ ...message, _raw: undefined }),
-        )
+        this.disconnect()
+      } else {
+        // Handle PING/PONG.
+        if (message.command === constants.COMMANDS.PING) {
+          this.send('PONG :tmi.twitch.tv', { priority })
+        }
 
-        // Handle authentication failure.
-        if (utils.isAuthenticationFailedMessage(message)) {
-          this.emit(constants.EVENTS.AUTHENTICATION_FAILED, {
-            ...message,
-            event: constants.EVENTS.AUTHENTICATION_FAILED,
-          })
-
-          this.disconnect()
+        // Handle successful connections.
+        if (utils.isUserAnonymous(options.username)) {
+          if (message.command === constants.COMMANDS.WELCOME) {
+            this.emit(constants.EVENTS.CONNECTED, {
+              command: constants.EVENTS.CONNECTED,
+            })
+          }
         } else {
           // Handle PING/PONG.
           if (message.command === constants.COMMANDS.PING) {
@@ -190,15 +199,12 @@ class Client extends EventEmitter {
 
       this.emit(message.command, message)
       this.emit(constants.EVENTS.ALL, message)
-    })
-  } catch (error) {
-    const title = 'Parsing error encountered'
-    const query = stringify({ title, body: rawMessage })
-    log.error(
-      'Parsing error encountered. Please create an issue: %s',
-      `https://github.com/twitch-devs/twitch-js/issues/new?${query}`,
-      error,
-    )
+      throw message
+    } finally {
+      const message = {
+        _raw: rawMessage,
+        timestamp: new Date(),
+      }
 
       this.emit(constants.EVENTS.RAW, message)
     }
