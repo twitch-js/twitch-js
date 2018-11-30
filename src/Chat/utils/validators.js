@@ -19,14 +19,18 @@ const chatOptions = maybeOptions => {
    * @typedef {Object} ChatOptions
    * @property {string} [username]
    * @property {string} [token] OAuth token (use {@link https://twitchtokengenerator.com/} to generate one)
+   * @property {boolean} [isKnown]
+   * @property {boolean} [isVerified]
    * @property {number} [connectionTimeout=CONNECTION_TIMEOUT]
    * @property {number} [joinTimeout=JOIN_TIMEOUT]
-   * @property {Object} log
+   * @property {Object} [log]
    * @property {Function} [onAuthenticationFailure]
    */
   const shape = {
     username: isString,
     token: value => isNil(value) || isString(value),
+    isKnown: isBoolean,
+    isVerified: isBoolean,
     connectionTimeout: isFinite,
     joinTimeout: isFinite,
     onAuthenticationFailure: isFunction,
@@ -36,10 +40,11 @@ const chatOptions = maybeOptions => {
     {
       ...maybeOptions,
       username: sanitizers.username(maybeOptions.username),
-      oauth: sanitizers.oauth(maybeOptions.token),
+      token: sanitizers.token(maybeOptions.token),
     },
     {
-      token: null,
+      isKnown: false,
+      isVerified: false,
       connectionTimeout: constants.CONNECTION_TIMEOUT,
       joinTimeout: constants.JOIN_TIMEOUT,
       onAuthenticationFailure: () => Promise.reject(),
@@ -57,22 +62,26 @@ const chatOptions = maybeOptions => {
 const clientOptions = maybeOptions => {
   const shape = {
     username: isString,
-    oauth: isString,
+    token: isString,
     server: isString,
     port: isFinite,
     ssl: isBoolean,
+    isKnown: isBoolean,
+    isVerified: isBoolean,
   }
 
   const options = defaults(
     {
       ...maybeOptions,
       username: sanitizers.username(maybeOptions.username),
-      oauth: sanitizers.oauth(maybeOptions.token),
+      token: sanitizers.token(maybeOptions.token),
     },
     {
       server: constants.CHAT_SERVER,
       port: constants.CHAT_SERVER_SSL_PORT,
       ssl: true,
+      isKnown: false,
+      isVerified: false,
     },
   )
 

@@ -89,7 +89,7 @@ class Chat extends EventEmitter {
      */
     this.options = maybeOptions
 
-    this.log = createLogger({ scope: 'Chat', ...this.options.log })
+    this._log = createLogger({ scope: 'Chat', ...this.options.log })
 
     /**
      * @private
@@ -183,7 +183,9 @@ class Chat extends EventEmitter {
    */
   connect() {
     if (!this._connectPromise) {
-      const connectProfiler = this.log.startTimer({ message: 'Connecting ...' })
+      const connectProfiler = this._log.startTimer({
+        message: 'Connecting ...',
+      })
 
       this._connectPromise = Promise.race([
         utils.delayReject(
@@ -206,10 +208,14 @@ class Chat extends EventEmitter {
           this._client = new Client(this.options)
 
           // Handle messages.
-          this._client.on(constants.EVENTS.ALL, handleMessage, this)
+          this._client.on(constants.EVENTS.ALL, this._handleMessage, this)
 
           // Handle disconnects.
-          this._client.on(constants.EVENTS.DISCONNECTED, handleDisconnect, this)
+          this._client.on(
+            constants.EVENTS.DISCONNECTED,
+            this._handleDisconnect,
+            this,
+          )
 
           // Listen for reconnects.
           this._client.once(constants.EVENTS.RECONNECT, () => this.reconnect())
@@ -224,8 +230,8 @@ class Chat extends EventEmitter {
           })
         }),
       ])
-        .then(handleConnectSuccess.bind(this))
-        .catch(handleConnectRetry.bind(this))
+        .then(this._handleConnectSuccess)
+        .catch(this._handleConnectRetry)
     }
 
     return this._connectPromise
@@ -302,8 +308,8 @@ class Chat extends EventEmitter {
   join(maybeChannel) {
     const channel = sanitizers.channel(maybeChannel)
 
-    this.log.info(`Joining ${channel}`)
-    const joinProfiler = this.log.startTimer()
+    this._log.info(`Joining ${channel}`)
+    const joinProfiler = this._log.startTimer()
 
     const promises = [
       this.connect,
@@ -353,7 +359,7 @@ class Chat extends EventEmitter {
    */
   part(maybeChannel) {
     const channel = sanitizers.channel(maybeChannel)
-    this.log.info(`Parting ${channel}`)
+    this._log.info(`Parting ${channel}`)
 
     this.removeChannelState(channel)
     this.send(`${constants.COMMANDS.PART} ${channel}`)
@@ -366,7 +372,7 @@ class Chat extends EventEmitter {
    * @return {Promise<?UserStateMessage, string>}
    */
   say(maybeChannel, message) {
-    return this.isUserAuthenticated().then(() => {
+    return this._isUserAuthenticated().then(() => {
       const channel = sanitizers.channel(maybeChannel)
 
       const info = `PRIVMSG/${channel} :${message}`
@@ -390,8 +396,8 @@ class Chat extends EventEmitter {
             say,
           ]),
         )
-        .then(() => this.log.info(info))
-        .catch(() => this.log.error(info))
+        .then(() => this._log.info(info))
+        .catch(() => this._log.error(info))
     })
   }
 
@@ -402,7 +408,7 @@ class Chat extends EventEmitter {
    * @return {Promise<undefined>}
    */
   whisper(user, message) {
-    return this.isUserAuthenticated().then(() => {
+    return this._isUserAuthenticated().then(() => {
       return this.send(`${constants.COMMANDS.WHISPER} :/w ${user} ${message}`)
     })
   }
@@ -413,19 +419,19 @@ class Chat extends EventEmitter {
    * @return {Promise<Array<UserStateMessage>>}
    */
   broadcast(message) {
-    return this.isUserAuthenticated().then(() => {
+    return this._isUserAuthenticated().then(() => {
       return Promise.all(
         this.getChannels().map(channel => this.say(channel, message)),
       )
     })
   }
 
-  emit(eventName, message) {
+  _emit(eventName, message) {
     if (eventName) {
       const displayName =
         get(message, 'tags.displayName') || message.username || ''
       const info = get(message, 'message') || ''
-      this.log.info(
+      this._log.info(
         `${eventName} %s %s`,
         `${displayName}${info ? ':' : ''}`,
         info,
@@ -452,7 +458,7 @@ class Chat extends EventEmitter {
    * Ensure the user is authenticated.
    * @return {Promise}
    */
-  isUserAuthenticated() {
+  _isUserAuthenticated() {
     return new Promise((resolve, reject) => {
       if (chatUtils.isUserAnonymous(this.options.username)) {
         reject(new Error('Not authenticated'))
@@ -461,176 +467,176 @@ class Chat extends EventEmitter {
       }
     })
   }
-}
 
-function handleConnectSuccess(globalUserState) {
-  this._readyState = 3
-  this._connectionAttempts = 0
+  _handleConnectSuccess = globalUserState => {
+    this._readyState = 3
+    this._connectionAttempts = 0
 
-  // Process GLOBALUSERSTATE message.
-  handleMessage.call(this, globalUserState)
+    // Process GLOBALUSERSTATE message.
+    this._handleMessage(globalUserState)
 
-  return globalUserState
-}
-
-function handleConnectRetry(error) {
-  this._connectPromise = null
-  this._readyState = 2
-
-  this.log.info('Retrying ...')
-
-  if (error.event === constants.EVENTS.AUTHENTICATION_FAILED) {
-    return this.options
-      .onAuthenticationFailure()
-      .then(token => (this.options = { ...this.options, token }))
-      .then(() => utils.delay(this.options.connectionTimeout))
-      .then(() => this.connect())
-      .catch(() => {
-        this.log.error('Connection failed')
-        throw new Errors.AuthenticationError(error)
-      })
+    return globalUserState
   }
 
-  return this.connect()
-}
+  _handleConnectRetry = error => {
+    this._connectPromise = null
+    this._readyState = 2
 
-function handleMessage(baseMessage) {
-  const channel = sanitizers.channel(baseMessage.channel)
+    this._log.info('Retrying ...')
 
-  const displayName = get(
-    this.getChannelState(channel),
-    'userState.displayName',
-    '',
-  )
-  const messageDisplayName = get(baseMessage, 'tags.displayName')
-  const isSelf = displayName === messageDisplayName
-
-  const preMessage = { ...baseMessage, isSelf }
-
-  let eventName = preMessage.command
-  let message = preMessage
-
-  switch (preMessage.command) {
-    case constants.EVENTS.JOIN: {
-      message = parsers.joinOrPartMessage(preMessage)
-      message.isSelf = true
-      eventName = `${message.command}/${channel}`
-      break
+    if (error.event === constants.EVENTS.AUTHENTICATION_FAILED) {
+      return this.options
+        .onAuthenticationFailure()
+        .then(token => (this.options = { ...this.options, token }))
+        .then(() => utils.delay(this.options.connectionTimeout))
+        .then(() => this.connect())
+        .catch(() => {
+          this._log.error('Connection failed')
+          throw new Errors.AuthenticationError(error)
+        })
     }
 
-    case constants.EVENTS.PART: {
-      message = parsers.joinOrPartMessage(preMessage)
-      message.isSelf = true
-      eventName = `${message.command}/${channel}`
-      break
-    }
+    return this.connect()
+  }
 
-    case constants.EVENTS.NAMES: {
-      message = parsers.namesMessage(preMessage)
-      message.isSelf = true
-      eventName = `${message.command}/${channel}`
-      break
-    }
+  _handleMessage = baseMessage => {
+    const channel = sanitizers.channel(baseMessage.channel)
 
-    case constants.EVENTS.NAMES_END: {
-      message = parsers.namesEndMessage(preMessage)
-      message.isSelf = true
-      eventName = `${message.command}/${channel}`
-      break
-    }
+    const displayName = get(
+      this.getChannelState(channel),
+      'userState.displayName',
+      '',
+    )
+    const messageDisplayName = get(baseMessage, 'tags.displayName')
+    const isSelf = displayName === messageDisplayName
 
-    case constants.EVENTS.CLEAR_CHAT: {
-      message = parsers.clearChatMessage(preMessage)
-      eventName = message.event
-        ? `${message.command}/${message.event}/${channel}`
-        : `${message.command}/${channel}`
-      break
-    }
+    const preMessage = { ...baseMessage, isSelf }
 
-    case constants.EVENTS.HOST_TARGET: {
-      message = parsers.hostTargetMessage(preMessage)
-      eventName = `${message.command}/${channel}`
-      break
-    }
+    let eventName = preMessage.command
+    let message = preMessage
 
-    case constants.EVENTS.MODE: {
-      message = parsers.modeMessage(preMessage)
-      eventName = `${message.command}/${channel}`
+    switch (preMessage.command) {
+      case constants.EVENTS.JOIN: {
+        message = parsers.joinOrPartMessage(preMessage)
+        message.isSelf = true
+        eventName = `${message.command}/${channel}`
+        break
+      }
 
-      if (this.userState && message.username === this.userState.username) {
-        const channelState = this.getChannelState(channel)
+      case constants.EVENTS.PART: {
+        message = parsers.joinOrPartMessage(preMessage)
+        message.isSelf = true
+        eventName = `${message.command}/${channel}`
+        break
+      }
+
+      case constants.EVENTS.NAMES: {
+        message = parsers.namesMessage(preMessage)
+        message.isSelf = true
+        eventName = `${message.command}/${channel}`
+        break
+      }
+
+      case constants.EVENTS.NAMES_END: {
+        message = parsers.namesEndMessage(preMessage)
+        message.isSelf = true
+        eventName = `${message.command}/${channel}`
+        break
+      }
+
+      case constants.EVENTS.CLEAR_CHAT: {
+        message = parsers.clearChatMessage(preMessage)
+        eventName = message.event
+          ? `${message.command}/${message.event}/${channel}`
+          : `${message.command}/${channel}`
+        break
+      }
+
+      case constants.EVENTS.HOST_TARGET: {
+        message = parsers.hostTargetMessage(preMessage)
+        eventName = `${message.command}/${channel}`
+        break
+      }
+
+      case constants.EVENTS.MODE: {
+        message = parsers.modeMessage(preMessage)
+        eventName = `${message.command}/${channel}`
+
+        if (this.userState && message.username === this.userState.username) {
+          const channelState = this.getChannelState(channel)
+
+          this.setChannelState(channel, {
+            ...channelState,
+            userState: {
+              ...channelState.userState,
+              isModerator: message.isModerator,
+            },
+          })
+        }
+        break
+      }
+
+      case constants.EVENTS.GLOBAL_USER_STATE: {
+        message = parsers.globalUserStateMessage(preMessage)
+        this._userState = message.tags
+        break
+      }
+
+      case constants.EVENTS.USER_STATE: {
+        message = parsers.userStateMessage(preMessage)
+        eventName = `${message.command}/${channel}`
 
         this.setChannelState(channel, {
-          ...channelState,
-          userState: {
-            ...channelState.userState,
-            isModerator: message.isModerator,
-          },
+          ...this.getChannelState(channel),
+          userState: message.userState,
         })
+        break
       }
-      break
+
+      case constants.EVENTS.ROOM_STATE: {
+        message = parsers.roomStateMessage(preMessage)
+        eventName = `${message.command}/${channel}`
+
+        this.setChannelState(channel, {
+          ...this.getChannelState(channel),
+          roomState: message.roomState,
+        })
+        break
+      }
+
+      case constants.EVENTS.NOTICE: {
+        message = parsers.noticeMessage(preMessage)
+        eventName = `${message.command}/${message.event}/${channel}`
+        break
+      }
+
+      case constants.EVENTS.USER_NOTICE: {
+        message = parsers.userNoticeMessage(preMessage)
+        eventName = `${message.command}/${message.event}/${channel}`
+        break
+      }
+
+      case constants.EVENTS.PRIVATE_MESSAGE: {
+        message = parsers.privateMessage(preMessage)
+        eventName = message.event
+          ? `${message.command}/${message.event}/${channel}`
+          : `${message.command}/${channel}`
+        break
+      }
+
+      default: {
+        const command = chatUtils.getEventNameFromMessage(preMessage)
+        eventName = channel === '#' ? command : `${command}/${channel}`
+      }
     }
 
-    case constants.EVENTS.GLOBAL_USER_STATE: {
-      message = parsers.globalUserStateMessage(preMessage)
-      this._userState = message.tags
-      break
-    }
-
-    case constants.EVENTS.USER_STATE: {
-      message = parsers.userStateMessage(preMessage)
-      eventName = `${message.command}/${channel}`
-
-      this.setChannelState(channel, {
-        ...this.getChannelState(channel),
-        userState: message.userState,
-      })
-      break
-    }
-
-    case constants.EVENTS.ROOM_STATE: {
-      message = parsers.roomStateMessage(preMessage)
-      eventName = `${message.command}/${channel}`
-
-      this.setChannelState(channel, {
-        ...this.getChannelState(channel),
-        roomState: message.roomState,
-      })
-      break
-    }
-
-    case constants.EVENTS.NOTICE: {
-      message = parsers.noticeMessage(preMessage)
-      eventName = `${message.command}/${message.event}/${channel}`
-      break
-    }
-
-    case constants.EVENTS.USER_NOTICE: {
-      message = parsers.userNoticeMessage(preMessage)
-      eventName = `${message.command}/${message.event}/${channel}`
-      break
-    }
-
-    case constants.EVENTS.PRIVATE_MESSAGE: {
-      message = parsers.privateMessage(preMessage)
-      eventName = message.event
-        ? `${message.command}/${message.event}/${channel}`
-        : `${message.command}/${channel}`
-      break
-    }
-
-    default: {
-      const command = chatUtils.getEventNameFromMessage(preMessage)
-      eventName = channel === '#' ? command : `${command}/${channel}`
-    }
+    this._emit(eventName, message)
   }
 
-  this.emit(eventName, message)
-}
-
-function handleDisconnect() {
-  this._connectPromise = null
-  this._readyState = 5
+  _handleDisconnect = () => {
+    this._connectPromise = null
+    this._readyState = 5
+  }
 }
 
 export { constants }

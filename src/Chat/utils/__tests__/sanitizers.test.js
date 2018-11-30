@@ -24,19 +24,19 @@ describe('Chat/utils/sanitizers', () => {
 
   describe('password', () => {
     test('should return "TWITCHJS"', () => {
-      const actual = sanitizers.oauth(null)
+      const actual = sanitizers.token(null)
       const expected = 'TWITCHJS'
       expect(actual).toEqual(expected)
     })
 
     test('should return the input password', () => {
-      const actual = sanitizers.oauth('oauth:lorem')
+      const actual = sanitizers.token('oauth:lorem')
       const expected = 'oauth:lorem'
       expect(actual).toEqual(expected)
     })
 
     test('should return the password prepended by "oauth:"', () => {
-      const actual = sanitizers.oauth('lorem')
+      const actual = sanitizers.token('lorem')
       const expected = 'oauth:lorem'
       expect(actual).toEqual(expected)
     })

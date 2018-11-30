@@ -85,8 +85,8 @@ class Client extends EventEmitter {
     this.send(`CAP REQ :${constants.CAPABILITIES.join(' ')}`, { priority })
 
     // Authenticate.
-    const { oauth, username } = this._options
-    this.send(`PASS ${oauth}`, { priority })
+    const { token, username } = this._options
+    this.send(`PASS ${token}`, { priority })
     this.send(`NICK ${username}`, { priority })
   }
 

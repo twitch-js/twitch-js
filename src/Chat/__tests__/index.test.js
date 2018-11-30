@@ -71,7 +71,7 @@ describe('Chat', () => {
 
       chat.connect().then(() => {
         expect(onAuthenticationFailure).toHaveBeenCalled()
-        expect(chat.options.token).toEqual('TOKEN')
+        expect(chat.options.token).toEqual('oauth:TOKEN')
         done()
       })
     })
@@ -202,7 +202,7 @@ describe('Chat', () => {
 
       await chat.reconnect({ token: 'NEW_TOKEN', debug: true })
 
-      expect(chat._options.token).toBe('NEW_TOKEN')
+      expect(chat._options.token).toBe('oauth:NEW_TOKEN')
       expect(chat._options.debug).toBe(true)
     })
   })
