@@ -25,6 +25,13 @@ after_success:
 before_deploy: |
   # Handle release version number for NPM.
 
+  # Only run before_deploy once.
+  if ! [[ "$BEFORE_DEPLOY_RUN" ]]; then
+    export BEFORE_DEPLOY_RUN=1
+  else
+    exit 0
+  fi
+
   # Retrieve current version.
   PACKAGE_VERSION=$(node -p "require('./package.json').version")
 
@@ -86,6 +93,16 @@ deploy:
     on:
       branch: next
 
-after_deploy:
-  - git push --follow-tags https://$GITHUB_TOKEN@github.com/$TRAVIS_REPO_SLUG HEAD:$TRAVIS_BRANCH
-  - yarn test:coverage:report
+after_deploy: |
+  # Only run after_deploy once.
+  if ! [[ "$AFTER_DEPLOY_RUN" ]]; then
+    export AFTER_DEPLOY_RUN=1
+  else
+    exit 0
+  fi
+
+  # Update version.
+  git push --follow-tags https://$GITHUB_TOKEN@github.com/$TRAVIS_REPO_SLUG HEAD:$TRAVIS_BRANCH
+
+  # Report coverage.
+  yarn test:coverage:report
