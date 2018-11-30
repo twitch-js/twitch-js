@@ -40,11 +40,6 @@ export const RATE_LIMIT_KNOWN_BOT = 50
  */
 export const RATE_LIMIT_VERIFIED_BOT = 7500
 
-/** @const {number} */
-export const QUEUE_BURNDOWN_RATE = 1 / RATE_LIMIT_USER
-/** @const {number} @desc In milliseconds  */
-export const QUEUE_TICK_RATE = 1000
-
 /** @const {string} */
 export const ERROR_CONNECT_TIMED_OUT = 'ERROR: connect timed out'
 /** @const {string} */
