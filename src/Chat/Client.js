@@ -46,7 +46,9 @@ class Client extends EventEmitter {
 
     // Instantiate Queue.
     this._queue = this._createQueue(this._options)
-    this._moderatorQueue = this._createQueue({ isModerator: true })
+    this._moderatorQueue = this._options.isVerified
+      ? this._queue
+      : this._createQueue({ isModerator: true })
   }
 
   isReady = () => get(this, '_ws.readyState') === 1
