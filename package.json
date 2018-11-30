@@ -50,7 +50,6 @@
     "test:e2e": "run-s test:e2e:*",
     "precommit": "lint-staged",
     "prettier": "prettier --write \"**/*.{js,md}\"",
-    "prepublish": "yarn build",
     "prebuild": "yarn clean",
     "build:lib": "cross-env BABEL_ENV=production babel src --out-dir lib --source-maps",
     "build:dist:dev": "webpack",
@@ -184,7 +183,8 @@
     "rules": {
       "no-alert": 2,
       "no-debugger": 2,
-      "no-console": 2
+      "no-console": 2,
+      "jest/no-disabled-tests": 2
     }
   },
   "eslintIgnore": [
