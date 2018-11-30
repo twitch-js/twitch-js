@@ -181,7 +181,7 @@ class Chat extends EventEmitter {
    * Connect to Twitch.
    * @return {Promise<?GlobalUserStateMessage, string>} Global user state message
    */
-  connect() {
+  connect = () => {
     if (!this._connectPromise) {
       const connectProfiler = this._log.startTimer({
         message: 'Connecting ...',
@@ -241,14 +241,14 @@ class Chat extends EventEmitter {
    * Sends a raw message to Twitch.
    * @param {string} message - Message to send.
    */
-  send(message) {
-    return this._client.send(message)
+  send = (message, options) => {
+    return this._client.send(message, options)
   }
 
   /**
    * Disconnected from Twitch.
    */
-  disconnect() {
+  disconnect = () => {
     this._client.disconnect()
   }
 
@@ -257,7 +257,7 @@ class Chat extends EventEmitter {
    * @param {ChatOptions} [options] Provide new options to client.
    * @return {Promise<ChannelState[], string>} Channel states
    */
-  reconnect(newOptions) {
+  reconnect = newOptions => {
     if (newOptions) {
       this.options = { ...this.options, ...newOptions }
     }
@@ -305,7 +305,7 @@ class Chat extends EventEmitter {
    *     })
    *   })
    */
-  join(maybeChannel) {
+  join = maybeChannel => {
     const channel = sanitizers.channel(maybeChannel)
 
     this._log.info(`Joining ${channel}`)
@@ -357,7 +357,7 @@ class Chat extends EventEmitter {
    * Depart from a channel.
    * @param {string} channel
    */
-  part(maybeChannel) {
+  part = maybeChannel => {
     const channel = sanitizers.channel(maybeChannel)
     this._log.info(`Parting ${channel}`)
 
@@ -371,11 +371,13 @@ class Chat extends EventEmitter {
    * @param {string} message
    * @return {Promise<?UserStateMessage, string>}
    */
-  say(maybeChannel, message) {
+  say = (maybeChannel, message) => {
     return this._isUserAuthenticated().then(() => {
       const channel = sanitizers.channel(maybeChannel)
 
       const info = `PRIVMSG/${channel} :${message}`
+
+      const isModerator = get(this, ['_channelState', channel, 'isModerator'])
 
       const say = Promise.all([
         this.connect,
@@ -384,6 +386,7 @@ class Chat extends EventEmitter {
 
       const send = this.send(
         `${constants.COMMANDS.PRIVATE_MESSAGE} ${channel} :${message}`,
+        { isModerator },
       )
 
       return send
@@ -407,7 +410,7 @@ class Chat extends EventEmitter {
    * @param {string} message
    * @return {Promise<undefined>}
    */
-  whisper(user, message) {
+  whisper = (user, message) => {
     return this._isUserAuthenticated().then(() => {
       return this.send(`${constants.COMMANDS.WHISPER} :/w ${user} ${message}`)
     })
@@ -418,7 +421,7 @@ class Chat extends EventEmitter {
    * @param {string} message
    * @return {Promise<Array<UserStateMessage>>}
    */
-  broadcast(message) {
+  broadcast = message => {
     return this._isUserAuthenticated().then(() => {
       return Promise.all(
         this.getChannels().map(channel => this.say(channel, message)),

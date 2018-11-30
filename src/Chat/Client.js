@@ -57,7 +57,7 @@ class Client extends EventEmitter {
    * @param {number} options.priority
    * @param {MessageWeightProps} ...options.weighProps
    */
-  send = (message, { priority, ...weighProps } = {}) => {
+  send = (message, { priority, isModerator } = {}) => {
     const fn = this._ws.send.bind(this._ws, message)
 
     this._log.debug('<', message)
@@ -65,7 +65,6 @@ class Client extends EventEmitter {
     const task = this._queue.push({
       fn,
       priority,
-      weight: utils.getMessageQueueWeight(weighProps),
     })
 
     return new Promise((resolve, reject) =>
