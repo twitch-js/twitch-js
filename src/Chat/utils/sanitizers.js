@@ -13,7 +13,7 @@ function channel(value) {
   return toLower(`#${value}`)
 }
 
-function oauth(value) {
+function token(value) {
   if (value == null) {
     return 'TWITCHJS'
   }
@@ -33,4 +33,4 @@ function username(value) {
   return value
 }
 
-export { channel, oauth, username }
+export { channel, token, username }

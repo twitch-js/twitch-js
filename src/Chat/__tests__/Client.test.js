@@ -50,6 +50,57 @@ describe('Chat/Client', () => {
     server.sendMessageToClient(membership.PING)
   })
 
+  describe('queue', () => {
+    test('should create a queue', () => {
+      const client = new Client(options)
+
+      const actual = client._queue._maxLength
+      const expected = constants.RATE_LIMIT_USER
+
+      expect(actual).toEqual(expected)
+    })
+
+    test('should create a moderator queue', () => {
+      const client = new Client(options)
+
+      const actual = client._moderatorQueue._maxLength
+      const expected = constants.RATE_LIMIT_MODERATOR
+
+      expect(actual).toEqual(expected)
+    })
+
+    test('should create a queue for known bots', () => {
+      const client = new Client({ ...options, isKnown: true })
+
+      const actual = client._queue._maxLength
+      const expected = constants.RATE_LIMIT_KNOWN_BOT
+
+      expect(actual).toEqual(expected)
+    })
+
+    test('shoud create a queue for verified bots', () => {
+      const client = new Client({ ...options, isVerified: true })
+
+      const actual = client._queue._maxLength
+      const expected = constants.RATE_LIMIT_VERIFIED_BOT
+
+      expect(actual).toEqual(expected)
+      expect(client._queue).toEqual(client._moderatorQueue)
+    })
+
+    test('should use moderator queue', async () => {
+      const client = new Client({ ...options })
+
+      const queueSpy = jest.spyOn(client._queue, 'push')
+      const moderatorQueueSpy = jest.spyOn(client._moderatorQueue, 'push')
+
+      await client.send('MESSAGE', { isModerator: true })
+
+      expect(queueSpy).toHaveBeenCalledTimes(3)
+      expect(moderatorQueueSpy).toHaveBeenCalledTimes(1)
+    })
+  })
+
   describe('keep alive', () => {
     afterAll(() => {
       jest.useRealTimers()
