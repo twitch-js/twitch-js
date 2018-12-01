@@ -374,7 +374,9 @@ class Chat extends EventEmitter {
    */
   connect = () => {
     if (!this._connectPromise) {
-      const connectProfiler = this.log.startTimer({ message: 'Connecting ...' })
+      const connectProfiler = this._log.startTimer({
+        message: 'Connecting ...',
+      })
 
       this._connectPromise = Promise.race([
         utils.delayReject(

@@ -53,12 +53,10 @@ class Client extends EventEmitter {
     this._ws.onclose = this._handleClose.bind(this)
 
     // Instantiate Queue.
-    const queue = new Queue()
-
-    const elevatedContext = { self: this, log, ws, queue }
-
-    this.send = this.send.bind(elevatedContext)
-    this.disconnect = this.disconnect.bind(elevatedContext)
+    this._queue = this._createQueue(this._options)
+    this._moderatorQueue = this._options.isVerified
+      ? this._queue
+      : this._createQueue({ isModerator: true })
   }
 
   isReady = () => get(this, '_ws.readyState') === 1
@@ -72,20 +70,24 @@ class Client extends EventEmitter {
    * @param {number} options.priority
    * @param {boolean} options.isModerator
    */
-  send(message, { priority, ...weighProps } = {}) {
-    const fn = this.ws.send.bind(this.ws, message)
+  send = (message, { priority = 1, isModerator } = {}) => {
+    const fn = this._ws.send.bind(this._ws, message)
 
-    this.log.debug('<', message)
+    const queue = isModerator ? this._moderatorQueue : this._queue
 
-    const task = this.queue.push({
-      fn,
-      priority,
-      weight: utils.getMessageQueueWeight(weighProps),
-    })
+    const task = queue.push({ fn, priority })
 
-    return new Promise((resolve, reject) => {
-      task.on('accepted', resolve).on('failed', reject)
-    })
+    return new Promise((resolve, reject) =>
+      task
+        .on('accepted', () => {
+          resolve()
+          this._log.debug('<', message)
+        })
+        .on('failed', () => {
+          reject()
+          this._log.error('<', message)
+        }),
+    )
   }
 
   disconnect = () => {
@@ -93,29 +95,29 @@ class Client extends EventEmitter {
     this._ws.close()
   }
 
-/**
- * @function handleOpen
- * @private
- * @param {object} options
- */
-function handleOpen(options) {
-  // Register for Twitch-specific capabilities.
-  this.send(`CAP REQ :${constants.CAPABILITIES.join(' ')}`, { priority })
+  _createQueue = ({ isModerator, isVerified, isKnown }) => {
+    if (isModerator) {
+      return new Queue({ maxLength: constants.RATE_LIMIT_MODERATOR })
+    } else if (isVerified) {
+      return new Queue({ maxLength: constants.RATE_LIMIT_VERIFIED_BOT })
+    } else if (isKnown) {
+      return new Queue({ maxLength: constants.RATE_LIMIT_KNOWN_BOT })
+    }
+    return new Queue()
+  }
+
+  _isUserAnonymous = () => utils.isUserAnonymous(get(this, '_options.username'))
 
   // Authenticate.
   this.send(`PASS ${options.oauth}`, { priority })
   this.send(`NICK ${options.username}`, { priority })
 }
 
-/**
- * @function handleMessage
- * @private
- * @param {any} log
- * @param {ChatOptions} options
- * @param {object} messageEvent
- */
-function handleMessage(log, options, messageEvent) {
-  const rawMessage = messageEvent.data
+    // Authenticate.
+    const { token, username } = this._options
+    this.send(`PASS ${token}`, { priority })
+    this.send(`NICK ${username}`, { priority })
+  }
 
   try {
     handleKeepAlive.call(this)
