@@ -128,7 +128,6 @@ const namesMessage = baseMessage => {
    * @event Chat#NAMES
    * @mixes BaseMessage NamesMessage
    * @property {Array<string>} usernames Array of usernames present in channel
-   * @property {('mods'|'chatters')} listType
    * @see https://dev.twitch.tv/docs/irc/membership/#names-twitch-membership
    */
   return {
@@ -136,7 +135,6 @@ const namesMessage = baseMessage => {
     channel,
     event: constants.EVENTS.NAMES,
     usernames: namesV,
-    listType: names.length > 1000 ? 'mods' : 'chatters',
     message: undefined,
   }
 }

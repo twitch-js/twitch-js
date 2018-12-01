@@ -1,0 +1,8 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Chat/utils/parsers/tags privateMessageCheerEvent should return cheer event object 1`] = `
+Object {
+  "bits": 100,
+  "event": "CHEER",
+}
+`;

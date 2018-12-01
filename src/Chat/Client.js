@@ -45,7 +45,10 @@ class Client extends EventEmitter {
     this._ws.onclose = this._handleClose.bind(this)
 
     // Instantiate Queue.
-    this._queue = new Queue()
+    this._queue = this._createQueue(this._options)
+    this._moderatorQueue = this._options.isVerified
+      ? this._queue
+      : this._createQueue({ isModerator: true })
   }
 
   isReady = () => get(this, '_ws.readyState') === 1
@@ -55,27 +58,42 @@ class Client extends EventEmitter {
    * @param {string} message
    * @param {Object} options
    * @param {number} options.priority
-   * @param {MessageWeightProps} ...options.weighProps
+   * @param {boolean} options.isModerator
    */
-  send = (message, { priority, ...weighProps } = {}) => {
+  send = (message, { priority = 1, isModerator } = {}) => {
     const fn = this._ws.send.bind(this._ws, message)
 
-    this._log.debug('<', message)
+    const queue = isModerator ? this._moderatorQueue : this._queue
 
-    const task = this._queue.push({
-      fn,
-      priority,
-      weight: utils.getMessageQueueWeight(weighProps),
-    })
+    const task = queue.push({ fn, priority })
 
     return new Promise((resolve, reject) =>
-      task.on('accepted', resolve).on('failed', reject),
+      task
+        .on('accepted', () => {
+          resolve()
+          this._log.debug('<', message)
+        })
+        .on('failed', () => {
+          reject()
+          this._log.error('<', message)
+        }),
     )
   }
 
   disconnect = () => {
     this._handleKeepAliveReset()
     this._ws.close()
+  }
+
+  _createQueue = ({ isModerator, isVerified, isKnown }) => {
+    if (isModerator) {
+      return new Queue({ maxLength: constants.RATE_LIMIT_MODERATOR })
+    } else if (isVerified) {
+      return new Queue({ maxLength: constants.RATE_LIMIT_VERIFIED_BOT })
+    } else if (isKnown) {
+      return new Queue({ maxLength: constants.RATE_LIMIT_KNOWN_BOT })
+    }
+    return new Queue()
   }
 
   _isUserAnonymous = () => utils.isUserAnonymous(get(this, '_options.username'))
@@ -85,8 +103,8 @@ class Client extends EventEmitter {
     this.send(`CAP REQ :${constants.CAPABILITIES.join(' ')}`, { priority })
 
     // Authenticate.
-    const { oauth, username } = this._options
-    this.send(`PASS ${oauth}`, { priority })
+    const { token, username } = this._options
+    this.send(`PASS ${token}`, { priority })
     this.send(`NICK ${username}`, { priority })
   }
 
