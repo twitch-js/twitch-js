@@ -7,7 +7,9 @@
   },
   "HOSTTARGET": {
     "START": ":tmi.twitch.tv HOSTTARGET #ronni :dallas 123",
-    "STOP": ":tmi.twitch.tv HOSTTARGET #ronni :- 456"
+    "START_WITHOUT_VIEWERS": ":tmi.twitch.tv HOSTTARGET #ronni :dallas",
+    "STOP": ":tmi.twitch.tv HOSTTARGET #ronni :- 456",
+    "STOP_WITHOUT_VIEWERS": ":tmi.twitch.tv HOSTTARGET #ronni :-"
   },
   "NOTICE": {
     "ALREADY_BANNED": "@msg-id=already_banned :tmi.twitch.tv NOTICE #dallas :<user> is already banned in this channel.",

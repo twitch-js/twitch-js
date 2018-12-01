@@ -37,6 +37,32 @@ describe('Chat/Queue', () => {
       global.Date = NativeDate
     })
 
+    test('should retain timestamp within interval', () => {
+      const tickInterval = 2000
+      const queue = new Queue({ tickInterval })
+
+      const expected = queue._timestamp
+
+      // Pass time less than interval.
+      d.setMilliseconds(d.getMilliseconds() + 1)
+
+      queue._handleTaskFinished()
+      expect(queue._timestamp).toEqual(expected)
+    })
+
+    test('should reset timestamp after interval time has passed', () => {
+      const tickInterval = 2000
+      const queue = new Queue({ tickInterval })
+
+      // Pass time more than interval.
+      d.setMilliseconds(d.getMilliseconds() + tickInterval + 1)
+
+      const expected = d
+
+      queue._handleTaskFinished()
+      expect(queue._timestamp).toEqual(expected)
+    })
+
     test('should limit rate of fn calls', done => {
       const fn = jest.fn()
 

@@ -60,7 +60,7 @@ class Client extends EventEmitter {
    * @param {number} options.priority
    * @param {boolean} options.isModerator
    */
-  send = (message, { priority, isModerator } = {}) => {
+  send = (message, { priority = 1, isModerator } = {}) => {
     const fn = this._ws.send.bind(this._ws, message)
 
     const queue = isModerator ? this._moderatorQueue : this._queue

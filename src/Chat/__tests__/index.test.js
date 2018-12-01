@@ -375,32 +375,22 @@ describe('Chat', () => {
       emitHelper(chat._client, commands.CLEARCHAT.USER_WITH_REASON)
     })
 
-    test('HOSTTARGET start', async done => {
-      const chat = new Chat(options)
-      await chat.connect()
+    describe('HOSTTARGET', () => {
+      const table = Object.entries(commands.HOSTTARGET)
 
-      chat.once(constants.EVENTS.HOST_TARGET, message => {
-        expect(message).toMatchSnapshot({
-          timestamp: expect.any(Date),
+      test.each(table)('%s', async (name, raw, done) => {
+        const chat = new Chat(options)
+        await chat.connect()
+
+        chat.once(constants.EVENTS.HOST_TARGET, message => {
+          expect(message).toMatchSnapshot({
+            timestamp: expect.any(Date),
+          })
+          done()
         })
-        done()
+
+        emitHelper(chat._client, raw)
       })
-
-      emitHelper(chat._client, commands.HOSTTARGET.START)
-    })
-
-    test('HOSTTARGET stop', async done => {
-      const chat = new Chat(options)
-      await chat.connect()
-
-      chat.once(constants.EVENTS.HOST_TARGET, message => {
-        expect(message).toMatchSnapshot({
-          timestamp: expect.any(Date),
-        })
-        done()
-      })
-
-      emitHelper(chat._client, commands.HOSTTARGET.STOP)
     })
 
     describe('NOTICE', () => {
