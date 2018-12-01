@@ -19,8 +19,8 @@ const chatOptions = maybeOptions => {
    * @typedef {Object} ChatOptions
    * @property {string} [username]
    * @property {string} [token] OAuth token (use {@link https://twitchtokengenerator.com/} to generate one)
-   * @property {boolean} [isKnown]
-   * @property {boolean} [isVerified]
+   * @property {boolean} [isKnown] bot is known (see {@link https://dev.twitch.tv/docs/irc/guide/#known-and-verified-bots} for more information)
+   * @property {boolean} [isVerified] bot is verified (see {@link https://dev.twitch.tv/docs/irc/guide/#known-and-verified-bots} for more information)
    * @property {number} [connectionTimeout=CONNECTION_TIMEOUT]
    * @property {number} [joinTimeout=JOIN_TIMEOUT]
    * @property {Object} [log]
