@@ -19,7 +19,11 @@ const generalTimestamp = maybeTimestamp => {
 }
 
 const usernameFromPrefix = maybePrefix => {
-  const [, username] = /([^!]+)/.exec(maybePrefix) || []
+  if (typeof maybePrefix !== 'string') {
+    return undefined
+  }
+
+  const [, username] = /([^!]+)/.exec(maybePrefix)
   return username
 }
 

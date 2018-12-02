@@ -1,6 +1,9 @@
 import { EventEmitter } from 'eventemitter3'
+import { get } from 'lodash'
 import { stringify } from 'qs'
 import WebSocket from '../../shims/uws'
+
+import Queue from '../Queue'
 
 import createLogger from '../utils/logger/create'
 
@@ -10,206 +13,228 @@ import * as validators from './utils/validators'
 import * as utils from './utils'
 
 import * as Errors from './Errors'
-import Queue from './Queue'
 
 const priority = constants.CLIENT_PRIORITY
 
 class Client extends EventEmitter {
-  pingTimer = null
-  reconnectTimer = null
+  _options
+  _log
+
+  _ws
+  _queue
+
+  _pingTimeoutId = -1
+  _reconnectTimeoutId = -1
 
   constructor(maybeOptions = {}) {
     super()
 
     // Validate options.
-    const options = validators.clientOptions(maybeOptions)
+    this._options = validators.clientOptions(maybeOptions)
+    const { ssl, server, port, log } = this._options
 
-    const log = createLogger({ scope: 'Chat/Client', ...options.log })
+    this._log = createLogger({ scope: 'Chat/Client', ...log })
 
     // Instantiate WebSocket.
-    const protocol = options.ssl ? 'wss' : 'ws'
-    const ws = new WebSocket(`${protocol}://${options.server}:${options.port}`)
+    const protocol = ssl ? 'wss' : 'ws'
+    this._ws = new WebSocket(`${protocol}://${server}:${port}`)
 
-    this.isReady = () => ws.readyState === 1
-
-    ws.onopen = handleOpen.bind(this, options)
-    ws.onmessage = handleMessage.bind(this, log, options)
-    ws.onerror = handleError.bind(this)
-    ws.onclose = handleClose.bind(this)
+    this._ws.onopen = this._handleOpen.bind(this)
+    this._ws.onmessage = this._handleMessage.bind(this)
+    this._ws.onerror = this._handleError.bind(this)
+    this._ws.onclose = this._handleClose.bind(this)
 
     // Instantiate Queue.
-    const queue = new Queue()
-
-    const elevatedContext = { self: this, log, ws, queue }
-
-    this.send = this.send.bind(elevatedContext)
-    this.disconnect = this.disconnect.bind(elevatedContext)
+    this._queue = this._createQueue(this._options)
+    this._moderatorQueue = this._options.isVerified
+      ? this._queue
+      : this._createQueue({ isModerator: true })
   }
+
+  isReady = () => get(this, '_ws.readyState') === 1
 
   /**
    * Send message to Twitch
    * @param {string} message
    * @param {Object} options
    * @param {number} options.priority
-   * @param {MessageWeightProps} ...options.weighProps
+   * @param {boolean} options.isModerator
    */
-  send(message, { priority, ...weighProps } = {}) {
-    const fn = this.ws.send.bind(this.ws, message)
+  send = (message, { priority = 1, isModerator } = {}) => {
+    const fn = this._ws.send.bind(this._ws, message)
 
-    this.log.debug('<', message)
+    const queue = isModerator ? this._moderatorQueue : this._queue
 
-    const task = this.queue.push({
-      fn,
-      priority,
-      weight: utils.getMessageQueueWeight(weighProps),
-    })
+    const task = queue.push({ fn, priority })
 
-    return new Promise((resolve, reject) => {
-      task.on('accepted', resolve).on('failed', reject)
-    })
+    return new Promise((resolve, reject) =>
+      task
+        .on('accepted', () => {
+          resolve()
+          this._log.debug('<', message)
+        })
+        .on('failed', () => {
+          reject()
+          this._log.error('<', message)
+        }),
+    )
   }
 
-  disconnect() {
-    handleKeepAliveReset.call(this.self)
-    this.ws.close()
+  disconnect = () => {
+    this._handleKeepAliveReset()
+    this._ws.close()
   }
-}
 
-function handleOpen(options) {
-  // Register for Twitch-specific capabilities.
-  this.send(`CAP REQ :${constants.CAPABILITIES.join(' ')}`, { priority })
+  _createQueue = ({ isModerator, isVerified, isKnown }) => {
+    if (isModerator) {
+      return new Queue({ maxLength: constants.RATE_LIMIT_MODERATOR })
+    } else if (isVerified) {
+      return new Queue({ maxLength: constants.RATE_LIMIT_VERIFIED_BOT })
+    } else if (isKnown) {
+      return new Queue({ maxLength: constants.RATE_LIMIT_KNOWN_BOT })
+    }
+    return new Queue()
+  }
 
-  // Authenticate.
-  this.send(`PASS ${options.oauth}`, { priority })
-  this.send(`NICK ${options.username}`, { priority })
-}
+  _isUserAnonymous = () => utils.isUserAnonymous(get(this, '_options.username'))
 
-function handleMessage(log, options, messageEvent) {
-  const rawMessage = messageEvent.data
+  _handleOpen = () => {
+    // Register for Twitch-specific capabilities.
+    this.send(`CAP REQ :${constants.CAPABILITIES.join(' ')}`, { priority })
 
-  try {
-    handleKeepAlive.call(this)
+    // Authenticate.
+    const { token, username } = this._options
+    this.send(`PASS ${token}`, { priority })
+    this.send(`NICK ${username}`, { priority })
+  }
 
-    const messages = baseParser(rawMessage)
+  _handleMessage = messageEvent => {
+    const rawMessage = messageEvent.data
 
-    messages.forEach(message => {
-      const event = message.command || ''
+    try {
+      this._handleKeepAlive()
 
-      log.debug(
-        '> %s %s',
-        event,
-        JSON.stringify({ ...message, _raw: undefined }),
+      const messages = baseParser(rawMessage)
+
+      messages.forEach(message => {
+        const event = message.command || ''
+
+        this._log.debug(
+          '> %s %s',
+          event,
+          JSON.stringify({ ...message, _raw: undefined }),
+        )
+
+        // Handle authentication failure.
+        if (utils.isAuthenticationFailedMessage(message)) {
+          this.emit(constants.EVENTS.AUTHENTICATION_FAILED, {
+            ...message,
+            event: constants.EVENTS.AUTHENTICATION_FAILED,
+          })
+
+          this.disconnect()
+        } else {
+          // Handle PING/PONG.
+          if (message.command === constants.COMMANDS.PING) {
+            this.send('PONG :tmi.twitch.tv', { priority })
+          }
+
+          // Handle successful connections.
+          if (this._isUserAnonymous()) {
+            if (message.command === constants.COMMANDS.WELCOME) {
+              this.emit(constants.EVENTS.CONNECTED, {
+                command: constants.EVENTS.CONNECTED,
+              })
+            }
+          } else {
+            if (message.command === constants.COMMANDS.GLOBAL_USER_STATE) {
+              this.emit(constants.EVENTS.CONNECTED, {
+                ...message,
+                command: constants.EVENTS.CONNECTED,
+              })
+            }
+          }
+
+          // Handle RECONNECT.
+          if (message.command === constants.COMMANDS.RECONNECT) {
+            this.emit(constants.EVENTS.RECONNECT, {
+              ...message,
+              command: constants.EVENTS.RECONNECT,
+            })
+          }
+        }
+
+        // Emit all messages.
+        this.emit(constants.EVENTS.ALL, message)
+      })
+    } catch (error) {
+      const title = 'Parsing error encountered'
+      const query = stringify({ title, body: rawMessage })
+      this._log.error(
+        'Parsing error encountered. Please create an issue: %s',
+        `https://github.com/twitch-devs/twitch-js/issues/new?${query}`,
+        error,
       )
 
-      // Handle authentication failure.
-      if (utils.isAuthenticationFailedMessage(message)) {
-        this.emit(constants.EVENTS.AUTHENTICATION_FAILED, {
-          ...message,
-          event: constants.EVENTS.AUTHENTICATION_FAILED,
-        })
+      const message = new Errors.ParseError(error, rawMessage)
 
-        this.disconnect()
-      } else {
-        // Handle PING/PONG.
-        if (message.command === constants.COMMANDS.PING) {
-          this.send('PONG :tmi.twitch.tv', { priority })
-        }
-
-        // Handle successful connections.
-        if (utils.isUserAnonymous(options.username)) {
-          if (message.command === constants.COMMANDS.WELCOME) {
-            this.emit(constants.EVENTS.CONNECTED, {
-              command: constants.EVENTS.CONNECTED,
-            })
-          }
-        } else {
-          if (message.command === constants.COMMANDS.GLOBAL_USER_STATE) {
-            this.emit(constants.EVENTS.CONNECTED, {
-              ...message,
-              command: constants.EVENTS.CONNECTED,
-            })
-          }
-        }
-
-        // Handle RECONNECT.
-        if (message.command === constants.COMMANDS.RECONNECT) {
-          this.emit(constants.EVENTS.RECONNECT, {
-            ...message,
-            command: constants.EVENTS.RECONNECT,
-          })
-        }
+      this.emit(message.command, message)
+      this.emit(constants.EVENTS.ALL, message)
+      throw message
+    } finally {
+      const message = {
+        _raw: rawMessage,
+        timestamp: new Date(),
       }
 
-      // Emit all messages.
-      this.emit(constants.EVENTS.ALL, message)
-    })
-  } catch (error) {
-    const title = 'Parsing error encountered'
-    const query = stringify({ title, body: rawMessage })
-    log.error(
-      'Parsing error encountered. Please create an issue: %s',
-      `https://github.com/twitch-devs/twitch-js/issues/new?${query}`,
-      error,
-    )
+      this.emit(constants.EVENTS.RAW, message)
+    }
+  }
 
-    const message = new Errors.ParseError(error, rawMessage)
-
-    this.emit(message.command, message)
-    this.emit(constants.EVENTS.ALL, message)
-    throw message
-  } finally {
+  _handleError = messageEvent => {
     const message = {
-      _raw: rawMessage,
       timestamp: new Date(),
+      event: constants.EVENTS.ERROR_ENCOUNTERED,
+      messageEvent,
     }
 
-    this.emit(constants.EVENTS.RAW, message)
-  }
-}
-
-function handleError(messageEvent) {
-  const message = {
-    timestamp: new Date(),
-    event: constants.EVENTS.ERROR_ENCOUNTERED,
-    messageEvent,
+    this.emit(constants.EVENTS.ERROR_ENCOUNTERED, message)
+    this.emit(constants.EVENTS.ALL, message)
   }
 
-  this.emit(constants.EVENTS.ERROR_ENCOUNTERED, message)
-  this.emit(constants.EVENTS.ALL, message)
-}
+  _handleClose = messageEvent => {
+    const message = {
+      timestamp: new Date(),
+      event: constants.EVENTS.DISCONNECTED,
+      messageEvent,
+    }
 
-function handleClose(messageEvent) {
-  const message = {
-    timestamp: new Date(),
-    event: constants.EVENTS.DISCONNECTED,
-    messageEvent,
+    this.emit(constants.EVENTS.DISCONNECTED, message)
+    this.emit(constants.EVENTS.ALL, message)
   }
 
-  this.emit(constants.EVENTS.DISCONNECTED, message)
-  this.emit(constants.EVENTS.ALL, message)
-}
+  _handleKeepAlive = () => {
+    this._handleKeepAliveReset()
 
-function handleKeepAlive() {
-  handleKeepAliveReset.call(this)
+    if (this.isReady()) {
+      this._pingTimeoutId = setTimeout(
+        () => this.send(constants.COMMANDS.PING, { priority }),
+        constants.KEEP_ALIVE_PING_TIMEOUT,
+      )
+    }
 
-  if (this.isReady()) {
-    this.pingTimer = setTimeout(
-      () => this.send(constants.COMMANDS.PING, { priority }),
-      constants.KEEP_ALIVE_PING_TIMEOUT,
+    this._reconnectTimeoutId = setTimeout(
+      () => this.emit(constants.EVENTS.RECONNECT, {}),
+      constants.KEEP_ALIVE_RECONNECT_TIMEOUT,
     )
   }
 
-  this.reconnectTimer = setTimeout(
-    () => this.emit(constants.EVENTS.RECONNECT, {}),
-    constants.KEEP_ALIVE_RECONNECT_TIMEOUT,
-  )
-}
-
-function handleKeepAliveReset() {
-  clearTimeout(this.pingTimer)
-  clearTimeout(this.reconnectTimer)
-  this.pingTimer = null
-  this.reconnectTimer = null
+  _handleKeepAliveReset = () => {
+    clearTimeout(this._pingTimeoutId)
+    clearTimeout(this._reconnectTimeoutId)
+    this._pingTimeoutId = -1
+    this._reconnectTimeoutId = -1
+  }
 }
 
 export default Client

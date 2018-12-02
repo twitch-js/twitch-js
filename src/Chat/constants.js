@@ -26,9 +26,6 @@ export const RATE_LIMIT_MODERATOR = 100 // per period.
 export const RATE_LIMIT_KNOWN_BOT = 50 // per period.
 export const RATE_LIMIT_VERIFIED_BOT = 7500 // per period.
 
-export const QUEUE_BURNDOWN_RATE = 1 / RATE_LIMIT_USER
-export const QUEUE_TICK_RATE = 1000 // milliseconds.
-
 export const ERROR_CONNECT_TIMED_OUT = 'ERROR: connect timed out'
 export const ERROR_CONNECTION_IN_PROGRESS = 'ERROR: connection in progress'
 export const ERROR_JOIN_TIMED_OUT = 'ERROR: join timed out'
