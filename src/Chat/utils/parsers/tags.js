@@ -120,9 +120,6 @@ const userNoticeEvent = tags => {
  * @property {BadgesTag} badges
  * @property {Array<EmoteTag>} emotes
  * @property {Array<string>} emoteSets
- * @property {boolean} isModerator
- * @property {boolean} isSubscriber
- * @property {boolean} isSubGifter
  * @property {number} [bits]
  * @see https://dev.twitch.tv/docs/irc/tags#userstate-twitch-tags
  */
@@ -133,9 +130,6 @@ const userState = tags => ({
   emotes: types.emotes(tags.emotes),
   emoteSets: types.emoteSets(tags.emoteSets),
   userType: types.userType(tags.userType),
-  isModerator: types.generalBoolean(tags.mod),
-  isSubscriber: /subscriber\/\d/.test(tags.badges),
-  isSubGifter: /sub-gifter\/\d/.test(tags.badges),
 })
 
 export {
