@@ -2,7 +2,9 @@ import Chat, { constants as ChatConstants } from './Chat'
 import Api from './Api'
 
 /**
- * TwitchJs client
+ * @class
+ * @public
+ * @classdesc TwitchJs client
  * @example <caption>Instantiating TwitchJS</caption>
  * const token = 'cfabdegwdoklmawdzdo98xt2fo512y'
  * const username = 'ronni'
@@ -16,9 +18,11 @@ import Api from './Api'
  *   // Do stuff ...
  * })
  */
+
 class TwitchJs {
   /**
    * TwitchJs constructor
+   * @constructor
    * @param {Object} options
    * @param {string} options.token
    * @param {string} options.username
@@ -37,7 +41,10 @@ class TwitchJs {
     chat,
     api,
   }) {
-    /** @type {Chat} */
+    /**
+     * @public
+     * @property {Chat} chat
+     */
     this.chat = new Chat({
       log,
       ...chat,
@@ -45,10 +52,17 @@ class TwitchJs {
       username,
       onAuthenticationFailure,
     })
-    /** @type {Object} */
+
+    /**
+     * @public
+     * @property {Object} chatConstants
+     */
     this.chatConstants = ChatConstants
 
-    /** @type {Api} */
+    /**
+     * @public
+     * @property {Api} api
+     */
     this.api = new Api({
       log,
       ...api,
@@ -59,7 +73,8 @@ class TwitchJs {
   }
 
   /**
-   * Update client options.
+   * @function TwitchJs#updateOptions
+   * @desc Update client options.
    * @param {Object} options
    * @param {ChatOptions} [options.chat] New chat client options.
    * @param {ApiOptions} [options.api] New API client options.

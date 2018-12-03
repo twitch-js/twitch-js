@@ -1,0 +1,11 @@
+{
+  "source": {
+    "include": ["./src/index.js", "./src/Chat/index.js", "./src/Api/index.js"],
+    "exclude": ["./src/**/utils/**", "./src/utils/**"]
+  },
+  "opts": {
+    "template": "./node_modules/tsd-jsdoc/dist/",
+    "destination": "./typings",
+    "recurse": true
+  }
+}

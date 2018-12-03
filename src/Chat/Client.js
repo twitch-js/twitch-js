@@ -14,8 +14,15 @@ import * as utils from './utils'
 
 import * as Errors from './Errors'
 
+import { ChatOptions } from './index'
+
 const priority = constants.CLIENT_PRIORITY
 
+/**
+ * @class
+ * @private
+ * @extends EventEmitter
+ */
 class Client extends EventEmitter {
   _options
   _log
@@ -26,6 +33,7 @@ class Client extends EventEmitter {
   _pingTimeoutId = -1
   _reconnectTimeoutId = -1
 
+  /** @param {ChatOptions} [maybeOptions={}] */
   constructor(maybeOptions = {}) {
     super()
 
@@ -55,6 +63,8 @@ class Client extends EventEmitter {
 
   /**
    * Send message to Twitch
+   * @function Client#send
+   * @private
    * @param {string} message
    * @param {Object} options
    * @param {number} options.priority
