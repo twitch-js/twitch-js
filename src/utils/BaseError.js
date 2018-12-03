@@ -1,4 +1,12 @@
+/**
+ * @class
+ * @extends Error
+ */
 class BaseError extends Error {
+  /**
+   * @arg {string} message
+   * @arg {...any} params
+   */
   constructor(message, ...params) {
     super(message, ...params)
 
@@ -6,7 +14,10 @@ class BaseError extends Error {
       Error.captureStackTrace(this, BaseError)
     }
 
-    this.message = `${message} [TwitchJS]`
+    /** @prop {string} message */
+    this.message = `[TwitchJS] > ${message}`
+
+    /** @prop {Date} timestamp */
     this.timestamp = new Date()
   }
 }

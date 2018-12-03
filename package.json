@@ -56,6 +56,7 @@
     "build:lib": "cross-env BABEL_ENV=production babel src --out-dir lib --source-maps",
     "build:dist:dev": "webpack",
     "build:dist:prod": "webpack --env.production",
+    "build:typings": "jsdoc -c typings/generateTypes.json",
     "build": "run-p build:**",
     "start:example": "nodemon examples/runkit.js",
     "docs:build:watch": "nodemon --exec yarn docs:build",
@@ -117,6 +118,7 @@
     "puppeteer": "^1.6.1",
     "rimraf": "^2.6.2",
     "semver": "^5.5.0",
+    "tsd-jsdoc": "oscarxcore/tsd-jsdoc",
     "webpack": "^3.12.0"
   },
   "optionalDependencies": {

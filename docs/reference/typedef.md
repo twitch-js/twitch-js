@@ -9,6 +9,8 @@ sidebar_label: Type Definitions
 <dl>
 <dt><a href="#ApiReadyState">ApiReadyState</a> : <code>string</code></dt>
   <dd></dd>
+  <dt><a href="#ApiOptions">ApiOptions</a> : <code>object</code></dt>
+  <dd></dd>
   <dt><a href="#ApiStatusState">ApiStatusState</a> : <code>Object</code></dt>
   <dd><p>API status state.</p>
 </dd>
@@ -17,9 +19,26 @@ sidebar_label: Type Definitions
 </dd>
   <dt><a href="#ClientReadyState">ClientReadyState</a> : <code>string</code></dt>
   <dd></dd>
-  <dt><a href="#ChannelState">ChannelState</a> : <code>Object</code></dt>
-  <dd><p>Channel state information</p>
-</dd>
+  <dt><a href="#UserNoticeMessageParam">UserNoticeMessageParam</a> : <code>object</code></dt>
+  <dd></dd>
+  <dt><a href="#ClearChatTags">ClearChatTags</a> : <code>object</code></dt>
+  <dd></dd>
+  <dt><a href="#ClearMessageTags">ClearMessageTags</a> : <code>object</code></dt>
+  <dd></dd>
+  <dt><a href="#GlobalUserState">GlobalUserState</a> : <code>object</code></dt>
+  <dd></dd>
+  <dt><a href="#PrivateMessage">PrivateMessage</a> : <code>object</code></dt>
+  <dd></dd>
+  <dt><a href="#RoomState">RoomState</a> : <code>object</code></dt>
+  <dd></dd>
+  <dt><a href="#UserNotice">UserNotice</a> : <code>object</code></dt>
+  <dd></dd>
+  <dt><a href="#UserState">UserState</a> : <code>object</code></dt>
+  <dd></dd>
+  <dt><a href="#ChannelState">ChannelState</a> : <code>object</code></dt>
+  <dd></dd>
+  <dt><a href="#ChatOptions">ChatOptions</a> : <code>object</code></dt>
+  <dd></dd>
   <dt><a href="#ClearChatTags">ClearChatTags</a> : <code>Object</code></dt>
   <dd><p>CLEARCHAT tags</p>
 </dd>
@@ -56,6 +75,36 @@ sidebar_label: Type Definitions
 
 ## ApiReadyState : <code>string</code>
 **Kind**: global typedef  
+
+* * *
+
+<a name="ApiOptions"></a>
+
+## ApiOptions : <code>object</code>
+**Kind**: global typedef  
+**Properties**
+
+<table>
+  <thead>
+    <tr>
+      <th>Name</th><th>Type</th><th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+<tr>
+    <td>[clientId]</td><td><code>string</code></td><td><p>Optional if token is defined.</p>
+</td>
+    </tr><tr>
+    <td>[token]</td><td><code>string</code></td><td><p>Optional if clientId is defined.</p>
+</td>
+    </tr><tr>
+    <td>[log]</td><td><code>object</code></td><td><p>Log options</p>
+</td>
+    </tr><tr>
+    <td>[onAuthenticationFailure]</td><td><code>function</code></td><td></td>
+    </tr>  </tbody>
+</table>
+
 
 * * *
 
@@ -137,11 +186,9 @@ API options
 
 * * *
 
-<a name="ChannelState"></a>
+<a name="UserNoticeMessageParam"></a>
 
-## ChannelState : <code>Object</code>
-Channel state information
-
+## UserNoticeMessageParam : <code>object</code>
 **Kind**: global typedef  
 **Properties**
 
@@ -153,9 +200,333 @@ Channel state information
   </thead>
   <tbody>
 <tr>
-    <td>roomState</td><td><code><a href="typedef#RoomStateTags">RoomStateTags</a></code></td>
+    <td>displayName</td><td><code>string</code></td>
     </tr><tr>
-    <td>userState</td><td><code><a href="typedef#UserStateTags">UserStateTags</a></code></td>
+    <td>login</td><td><code>string</code></td>
+    </tr><tr>
+    <td>months</td><td><code>string</code></td>
+    </tr><tr>
+    <td>recipientDisplayName</td><td><code>string</code></td>
+    </tr><tr>
+    <td>recipientId</td><td><code>string</code></td>
+    </tr><tr>
+    <td>recipientUserName</td><td><code>string</code></td>
+    </tr><tr>
+    <td>subPlan</td><td><code>string</code></td>
+    </tr><tr>
+    <td>subPlanName</td><td><code>string</code></td>
+    </tr><tr>
+    <td>viewerCount</td><td><code>string</code></td>
+    </tr><tr>
+    <td>ritualName</td><td><code>string</code></td>
+    </tr>  </tbody>
+</table>
+
+
+* * *
+
+<a name="ClearChatTags"></a>
+
+## ClearChatTags : <code>object</code>
+**Kind**: global typedef  
+**See**: [https://dev.twitch.tv/docsc/irc/tags/#clearchat-twitch-tags](https://dev.twitch.tv/docsc/irc/tags/#clearchat-twitch-tags)  
+**Properties**
+
+<table>
+  <thead>
+    <tr>
+      <th>Name</th><th>Type</th>
+    </tr>
+  </thead>
+  <tbody>
+<tr>
+    <td>banDuration</td><td><code>string</code></td>
+    </tr><tr>
+    <td>banReason</td><td><code>string</code></td>
+    </tr>  </tbody>
+</table>
+
+
+* * *
+
+<a name="ClearMessageTags"></a>
+
+## ClearMessageTags : <code>object</code>
+**Kind**: global typedef  
+**See**: [https://dev.twitch.tv/docs/irc/tags/#clearmsg-twitch-tags](https://dev.twitch.tv/docs/irc/tags/#clearmsg-twitch-tags)  
+**Properties**
+
+<table>
+  <thead>
+    <tr>
+      <th>Name</th><th>Type</th>
+    </tr>
+  </thead>
+  <tbody>
+<tr>
+    <td>login</td><td><code>string</code></td>
+    </tr><tr>
+    <td>message</td><td><code>string</code></td>
+    </tr><tr>
+    <td>targetMsgId</td><td><code>string</code></td>
+    </tr>  </tbody>
+</table>
+
+
+* * *
+
+<a name="GlobalUserState"></a>
+
+## GlobalUserState : <code>object</code>
+**Kind**: global typedef  
+**See**: [https://dev.twitch.tv/docs/irc/tags/#globaluserstate-twitch-tags](https://dev.twitch.tv/docs/irc/tags/#globaluserstate-twitch-tags)  
+**Properties**
+
+<table>
+  <thead>
+    <tr>
+      <th>Name</th><th>Type</th><th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+<tr>
+    <td>raw</td><td><code>string</code></td><td><p>Raw IRC response</p>
+</td>
+    </tr><tr>
+    <td>badges</td><td><code>string</code></td><td></td>
+    </tr><tr>
+    <td>color</td><td><code>string</code></td><td></td>
+    </tr><tr>
+    <td>displayName</td><td><code>string</code></td><td></td>
+    </tr><tr>
+    <td>emoteSets</td><td><code>string</code></td><td></td>
+    </tr>  </tbody>
+</table>
+
+
+* * *
+
+<a name="PrivateMessage"></a>
+
+## PrivateMessage : <code>object</code>
+**Kind**: global typedef  
+**See**: [https://dev.twitch.tv/docs/irc/tags/#privmsg-twitch-tags](https://dev.twitch.tv/docs/irc/tags/#privmsg-twitch-tags)  
+**Properties**
+
+<table>
+  <thead>
+    <tr>
+      <th>Name</th><th>Type</th>
+    </tr>
+  </thead>
+  <tbody>
+<tr>
+    <td>badges</td><td><code>string</code></td>
+    </tr><tr>
+    <td>bits</td><td><code>string</code></td>
+    </tr><tr>
+    <td>color</td><td><code>string</code></td>
+    </tr><tr>
+    <td>displayName</td><td><code>string</code></td>
+    </tr><tr>
+    <td>emotes</td><td><code>string</code></td>
+    </tr><tr>
+    <td>id</td><td><code>string</code></td>
+    </tr><tr>
+    <td>message</td><td><code>string</code></td>
+    </tr><tr>
+    <td>mod</td><td><code>string</code></td>
+    </tr><tr>
+    <td>roomId</td><td><code>string</code></td>
+    </tr><tr>
+    <td>subscriber</td><td><code>string</code></td>
+    </tr><tr>
+    <td>tmiSentTS</td><td><code>string</code></td>
+    </tr><tr>
+    <td>turbo</td><td><code>string</code></td>
+    </tr><tr>
+    <td>userId</td><td><code>string</code></td>
+    </tr><tr>
+    <td>userType</td><td><code>string</code></td>
+    </tr>  </tbody>
+</table>
+
+
+* * *
+
+<a name="RoomState"></a>
+
+## RoomState : <code>object</code>
+**Kind**: global typedef  
+**See**: [https://dev.twitch.tv/docs/irc/tags/#roomstate-twitch-tags](https://dev.twitch.tv/docs/irc/tags/#roomstate-twitch-tags)  
+**Properties**
+
+<table>
+  <thead>
+    <tr>
+      <th>Name</th><th>Type</th>
+    </tr>
+  </thead>
+  <tbody>
+<tr>
+    <td>broadcasterLang</td><td><code>string</code></td>
+    </tr><tr>
+    <td>emoteOnly</td><td><code>string</code></td>
+    </tr><tr>
+    <td>followersOnly</td><td><code>string</code></td>
+    </tr><tr>
+    <td>r9k</td><td><code>string</code></td>
+    </tr><tr>
+    <td>slow</td><td><code>string</code></td>
+    </tr><tr>
+    <td>subsOnly</td><td><code>string</code></td>
+    </tr>  </tbody>
+</table>
+
+
+* * *
+
+<a name="UserNotice"></a>
+
+## UserNotice : <code>object</code>
+**Kind**: global typedef  
+**See**: [https://dev.twitch.tv/docs/irc/tags/#usernotice-twitch-tags](https://dev.twitch.tv/docs/irc/tags/#usernotice-twitch-tags)  
+**Properties**
+
+<table>
+  <thead>
+    <tr>
+      <th>Name</th><th>Type</th>
+    </tr>
+  </thead>
+  <tbody>
+<tr>
+    <td>badges</td><td><code>string</code></td>
+    </tr><tr>
+    <td>color</td><td><code>string</code></td>
+    </tr><tr>
+    <td>displayName</td><td><code>string</code></td>
+    </tr><tr>
+    <td>emotes</td><td><code>string</code></td>
+    </tr><tr>
+    <td>id</td><td><code>string</code></td>
+    </tr><tr>
+    <td>login</td><td><code>string</code></td>
+    </tr><tr>
+    <td>message</td><td><code>string</code></td>
+    </tr><tr>
+    <td>mod</td><td><code>string</code></td>
+    </tr><tr>
+    <td>msgId</td><td><code>string</code></td>
+    </tr><tr>
+    <td>msgParam</td><td><code><a href="typedef#UserNoticeMessageParam">UserNoticeMessageParam</a></code></td>
+    </tr><tr>
+    <td>roomId</td><td><code>string</code></td>
+    </tr><tr>
+    <td>subscriber</td><td><code>string</code></td>
+    </tr><tr>
+    <td>systemMsg</td><td><code>string</code></td>
+    </tr><tr>
+    <td>tmiSentTS</td><td><code>string</code></td>
+    </tr><tr>
+    <td>turbo</td><td><code>string</code></td>
+    </tr><tr>
+    <td>userId</td><td><code>string</code></td>
+    </tr><tr>
+    <td>userType</td><td><code>string</code></td>
+    </tr>  </tbody>
+</table>
+
+
+* * *
+
+<a name="UserState"></a>
+
+## UserState : <code>object</code>
+**Kind**: global typedef  
+**See**: [https://dev.twitch.tv/docs/irc/tags/#userstate-twitch-tags](https://dev.twitch.tv/docs/irc/tags/#userstate-twitch-tags)  
+**Properties**
+
+<table>
+  <thead>
+    <tr>
+      <th>Name</th><th>Type</th>
+    </tr>
+  </thead>
+  <tbody>
+<tr>
+    <td>badges</td><td><code>string</code></td>
+    </tr><tr>
+    <td>color</td><td><code>string</code></td>
+    </tr><tr>
+    <td>displayName</td><td><code>string</code></td>
+    </tr><tr>
+    <td>emotes</td><td><code>string</code></td>
+    </tr><tr>
+    <td>mod</td><td><code>string</code></td>
+    </tr><tr>
+    <td>subscriber</td><td><code>string</code></td>
+    </tr><tr>
+    <td>turbo</td><td><code>string</code></td>
+    </tr><tr>
+    <td>userType</td><td><code>string</code></td>
+    </tr>  </tbody>
+</table>
+
+
+* * *
+
+<a name="ChannelState"></a>
+
+## ChannelState : <code>object</code>
+**Kind**: global typedef  
+**Properties**
+
+<table>
+  <thead>
+    <tr>
+      <th>Name</th><th>Type</th>
+    </tr>
+  </thead>
+  <tbody>
+<tr>
+    <td>channel</td><td><code>string</code></td>
+    </tr><tr>
+    <td>roomState</td><td><code><a href="typedef#RoomState">RoomState</a></code></td>
+    </tr><tr>
+    <td>userState</td><td><code><a href="typedef#UserState">UserState</a></code></td>
+    </tr>  </tbody>
+</table>
+
+
+* * *
+
+<a name="ChatOptions"></a>
+
+## ChatOptions : <code>object</code>
+**Kind**: global typedef  
+**Properties**
+
+<table>
+  <thead>
+    <tr>
+      <th>Name</th><th>Type</th><th>Default</th><th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+<tr>
+    <td>[username]</td><td><code>string</code></td><td></td><td></td>
+    </tr><tr>
+    <td>[token]</td><td><code>string</code></td><td></td><td><p>OAuth token (use <a href="https://twitchtokengenerator.com/">https://twitchtokengenerator.com/</a> to generate one)</p>
+</td>
+    </tr><tr>
+    <td>[connectionTimeout]</td><td><code>number</code></td><td><code>CONNECTION_TIMEOUT</code></td><td></td>
+    </tr><tr>
+    <td>[joinTimeout]</td><td><code>number</code></td><td><code>JOIN_TIMEOUT</code></td><td></td>
+    </tr><tr>
+    <td>log</td><td><code>object</code></td><td></td><td></td>
+    </tr><tr>
+    <td>[onAuthenticationFailure]</td><td><code>function</code></td><td></td><td></td>
     </tr>  </tbody>
 </table>
 

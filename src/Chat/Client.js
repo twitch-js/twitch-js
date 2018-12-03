@@ -12,12 +12,22 @@ import * as utils from './utils'
 import * as Errors from './Errors'
 import Queue from './Queue'
 
+import { ChatOptions } from './index'
+
 const priority = constants.CLIENT_PRIORITY
 
+/**
+ * @class
+ * @private
+ * @extends EventEmitter
+ */
 class Client extends EventEmitter {
+  /** @property {any} pingTimer @private */
   pingTimer = null
+  /** @property {any} reconnectTimer @private */
   reconnectTimer = null
 
+  /** @param {ChatOptions} [maybeOptions={}] */
   constructor(maybeOptions = {}) {
     super()
 
@@ -48,10 +58,13 @@ class Client extends EventEmitter {
 
   /**
    * Send message to Twitch
+   * @function Client#send
+   * @private
    * @param {string} message
    * @param {Object} options
    * @param {number} options.priority
    * @param {MessageWeightProps} ...options.weighProps
+   * @return {Promise}
    */
   send(message, { priority, ...weighProps } = {}) {
     const fn = this.ws.send.bind(this.ws, message)
@@ -69,12 +82,21 @@ class Client extends EventEmitter {
     })
   }
 
+  /**
+   * @function Client#disconnect
+   * @private
+   */
   disconnect() {
     handleKeepAliveReset.call(this.self)
     this.ws.close()
   }
 }
 
+/**
+ * @function handleOpen
+ * @private
+ * @param {object} options
+ */
 function handleOpen(options) {
   // Register for Twitch-specific capabilities.
   this.send(`CAP REQ :${constants.CAPABILITIES.join(' ')}`, { priority })
@@ -84,6 +106,13 @@ function handleOpen(options) {
   this.send(`NICK ${options.username}`, { priority })
 }
 
+/**
+ * @function handleMessage
+ * @private
+ * @param {any} log
+ * @param {ChatOptions} options
+ * @param {object} messageEvent
+ */
 function handleMessage(log, options, messageEvent) {
   const rawMessage = messageEvent.data
 
@@ -167,6 +196,11 @@ function handleMessage(log, options, messageEvent) {
   }
 }
 
+/**
+ * @function handleError
+ * @private
+ * @param {object} messageEvent
+ */
 function handleError(messageEvent) {
   const message = {
     timestamp: new Date(),
@@ -178,6 +212,11 @@ function handleError(messageEvent) {
   this.emit(constants.EVENTS.ALL, message)
 }
 
+/**
+ * @function handleClose
+ * @private
+ * @param {object} messageEvent
+ */
 function handleClose(messageEvent) {
   const message = {
     timestamp: new Date(),
@@ -189,6 +228,10 @@ function handleClose(messageEvent) {
   this.emit(constants.EVENTS.ALL, message)
 }
 
+/**
+ * @function handleKeepAlive
+ * @private
+ */
 function handleKeepAlive() {
   handleKeepAliveReset.call(this)
 
@@ -205,6 +248,10 @@ function handleKeepAlive() {
   )
 }
 
+/**
+ * @function handleKeepAliveReset
+ * @private
+ */
 function handleKeepAliveReset() {
   clearTimeout(this.pingTimer)
   clearTimeout(this.reconnectTimer)

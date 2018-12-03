@@ -1,8 +1,135 @@
 /**
+ * @typedef {object} UserNoticeMessageParam
+ * @property {?string} displayName
+ * @property {?string} login
+ * @property {?string} months
+ * @property {?string} recipientDisplayName
+ * @property {?string} recipientId
+ * @property {?string} recipientUserName
+ * @property {?string} subPlan
+ * @property {?string} subPlanName
+ * @property {?string} viewerCount
+ * @property {?string} ritualName
+ */
+/**
+ * @external CLEARCHAT
+ * @see {@link https://dev.twitch.tv/docsc/irc/tags/#clearchat-twitch-tags}
+ *
+ * @typedef {object} ClearChatTags
+ * @property {string} banDuration
+ * @property {string} banReason
+ */
+/**
+ * @external CLEARMSG
+ * @see {@link https://dev.twitch.tv/docs/irc/tags/#clearmsg-twitch-tags}
+ *
+ * @typedef {object} ClearMessageTags
+ * @property {string} login
+ * @property {string} message
+ * @property {string} targetMsgId
+ */
+/**
+ * @external GLOBALUSERSTATE
+ * @see {@link https://dev.twitch.tv/docs/irc/tags/#globaluserstate-twitch-tags}
+ *
+ * @typedef {object} GlobalUserState
+ * @property {string} raw Raw IRC response
+ * @property {string} badges
+ * @property {string} color
+ * @property {string} displayName
+ * @property {string} emoteSets
+ */
+/**
+ * @external PRIVMSG
+ * @see {@link https://dev.twitch.tv/docs/irc/tags/#privmsg-twitch-tags}
+ *
+ * @typedef {object} PrivateMessage
+ * @property {string} badges
+ * @property {?string} bits
+ * @property {string} color
+ * @property {string} displayName
+ * @property {string} emotes
+ * @property {string} id
+ * @property {string} message
+ * @property {string} mod
+ * @property {string} roomId
+ * @property {string} subscriber
+ * @property {string} tmiSentTS
+ * @property {string} turbo
+ * @property {string} userId
+ * @property {string} userType
+ */
+/**
+ * @external ROOMSTATE
+ * @see {@link https://dev.twitch.tv/docs/irc/tags/#roomstate-twitch-tags}
+ *
+ * @typedef {object} RoomState
+ * @property {string} broadcasterLang
+ * @property {string} emoteOnly
+ * @property {string} followersOnly
+ * @property {string} r9k
+ * @property {string} slow
+ * @property {string} subsOnly
+ */
+/**
+ * @external USERNOTICE
+ * @see {@link https://dev.twitch.tv/docs/irc/tags/#usernotice-twitch-tags}
+ *
+ * @typedef {object} UserNotice
+ * @property {string} badges
+ * @property {string} color
+ * @property {string} displayName
+ * @property {string} emotes
+ * @property {string} id
+ * @property {string} login
+ * @property {string} message
+ * @property {string} mod
+ * @property {string} msgId
+ * @property {UserNoticeMessageParam} msgParam
+ * @property {string} roomId
+ * @property {string} subscriber
+ * @property {string} systemMsg
+ * @property {string} tmiSentTS
+ * @property {string} turbo
+ * @property {string} userId
+ * @property {string} userType
+ */
+/**
+ * @external USERSTATE
+ * @see {@link https://dev.twitch.tv/docs/irc/tags/#userstate-twitch-tags}
+ *
+ * @typedef {object} UserState
+ * @property {string} badges
+ * @property {string} color
+ * @property {string} displayName
+ * @property {string} emotes
+ * @property {string} mod
+ * @property {string} subscriber
+ * @property {string} turbo
+ * @property {string} userType
+ */
+/**
+ * @typedef {object} ChannelState
+ * @property {string} channel
+ * @property {RoomState} roomState
+ * @property {UserState} userState
+ */
+/**
+ * @typedef {object} ChatOptions
+ * @property {string} [username]
+ * @property {string} [token] OAuth token (use {@link https://twitchtokengenerator.com/} to generate one)
+ * @property {number} [connectionTimeout=CONNECTION_TIMEOUT]
+ * @property {number} [joinTimeout=JOIN_TIMEOUT]
+ * @property {object} log
+ * @property {Function} [onAuthenticationFailure]
+ */
+
+/**
  * EventEmitter3 is a high performance EventEmitter
  * @external EventEmitter3
  * @see {@link https://github.com/primus/eventemitter3 EventEmitter3}
  */
+
 import { EventEmitter } from 'eventemitter3'
 
 import { get } from 'lodash'
@@ -21,9 +148,13 @@ import * as parsers from './utils/parsers'
 import * as sanitizers from './utils/sanitizers'
 import * as validators from './utils/validators'
 
+import { ApiOptions } from '../Api'
+
 /**
- * Chat client
- * @extends external:EventEmitter3
+ * @class
+ * @public
+ * @extends EventEmitter
+ * @classdesc Twitch Chat Client
  *
  * @emits Chat#*
  * @emits Chat#CLEARCHAT
@@ -75,49 +206,52 @@ import * as validators from './utils/validators'
  * })
  */
 class Chat extends EventEmitter {
-  /**
-   * Chat constructor.
-   * @param {ChatOptions} options
-   */
+  /** @param {ChatOptions} options */
   constructor(maybeOptions) {
     super()
 
     /**
-     * Validated options.
-     * @private
      * @type {ChatOptions}
+     * @private
      */
     this.options = maybeOptions
 
-    this.log = createLogger({ scope: 'Chat', ...this.options.log })
+    /**
+     * @type {any}
+     * @public
+     */
+    this.log = createLogger({
+      scope: 'Chat',
+      ...this.options.log,
+    })
 
     /**
-     * @private
      * @type {number}
+     * @private
      */
     this._readyState = 0
 
     /**
-     * @private
      * @type {number}
+     * @private
      */
     this._connectionAttempts = 0
 
     /**
+     * @type {?GlobalUserState}
      * @private
-     * @type {?GlobalUserStateTags}
      */
     this._userState = null
 
     /**
+     * @type {ChannelState}
      * @private
-     * @type {Object.<string, ChannelState>}
      */
     this._channelState = {}
 
     /**
-     * @private
      * @type {?Promise}
+     * @private
      */
     this._connectPromise = null
 
@@ -125,24 +259,50 @@ class Chat extends EventEmitter {
     Object.assign(this, commandsFactory.call(this))
   }
 
+  /**
+   * @function Chat#getOptions
+   * @public
+   * @desc Retrieves the current [ChatOptions]{@link Chat#ChatOptions}
+   * @return {ChatOptions} Options of the client
+   */
   get options() {
     return this._options
   }
 
+  /**
+   * @function Chat#setOptions
+   * @public
+   * @desc Validates the passed options before changing `_options`
+   * @param {ChatOptions} options
+   */
   set options(maybeOptions) {
     this._options = validators.chatOptions(maybeOptions)
   }
 
+  /**
+   * @function Chat#getReadyState
+   * @public
+   * @desc Retrieves the current `_readyState` of the client.
+   * @return {number} Ready state
+   */
   get readyState() {
     return this._readyState
   }
 
+  /**
+   * @function Chat#getUserState
+   * @public
+   * @desc Retrieves the current `_userState`  of the client.
+   * @return {?GlobalUserState} User state tags
+   */
   get userState() {
     return this._userState
   }
 
   /**
-   * Update client options.
+   * @function Chat#updateOptions
+   * @public
+   * @desc Updates the clients options after first instantiation.
    * @param {ApiOptions} options New client options. To update `token` or `username`, use [**api.reconnect()**]{@link Chat#reconnect}.
    */
   updateOptions(options) {
@@ -150,18 +310,45 @@ class Chat extends EventEmitter {
     this.options = { ...options, token, username }
   }
 
+  /**
+   * @function Chat#getChannels
+   * @public
+   * @desc Retrieves all channels the client is connected to.
+   * @return {Array<string>} Array of channel names
+   */
   getChannels() {
     return Object.keys(this._channelState)
   }
 
+  /**
+   * @function Chat#getChannelState
+   * @public
+   * @desc Retrieves and return the internal `_channelState` object.
+   * @param {string} channel
+   * @return {ChannelState} Internal `_channelState` object.
+   */
   getChannelState(channel) {
     return this._channelState[channel]
   }
 
+  /**
+   * @function Chat#setChannelState
+   * @public
+   * @desc Sets the state of a specific channel in the client.
+   * @param {string} channel
+   * @param {object} state
+   */
   setChannelState(channel, state) {
     this._channelState[channel] = state
   }
 
+  /**
+   * @function Chat#removeChannelState
+   * @public
+   * @desc Removes the state of a specific channel from the client.
+   * @param {string} channel
+   * @return {ChannelState} Clients `_channelState` with the requested channel state removed.
+   */
   removeChannelState(channel) {
     this._channelState = Object.entries(this._channelState).reduce(
       (channelStates, [name, state]) => {
@@ -173,18 +360,25 @@ class Chat extends EventEmitter {
     )
   }
 
+  /**
+   * @function Chat#clearChannelState
+   * @public
+   * @desc Clears the client `_channelState`.
+   */
   clearChannelState() {
     this._channelState = {}
   }
 
   /**
-   * Connect to Twitch.
-   * @return {Promise<?GlobalUserStateMessage, string>} Global user state message
+   * @function Chat#connect
+   * @public
+   * @desc Connect to Twitch.
+   * @return {Promise<?GlobalUserState, string>}
    */
   connect() {
     if (!this._connectPromise) {
       const connectProfiler = this.log.startTimer()
-      this.log.info('Connecting ...')
+      this.log.info('Connecting...')
 
       this._connectPromise = Promise.race([
         utils.delayReject(
@@ -233,24 +427,31 @@ class Chat extends EventEmitter {
   }
 
   /**
-   * Sends a raw message to Twitch.
+   * @function Chat#send
+   * @public
+   * @desc Sends a raw message to Twitch.
    * @param {string} message - Message to send.
+   * @return {Promise} Resolves on success, rejects on failure.
    */
   send(message) {
     return this._client.send(message)
   }
 
   /**
-   * Disconnected from Twitch.
+   * @function Chat#disconnect
+   * @public
+   * @desc Disconnected from Twitch.
    */
   disconnect() {
     this._client.disconnect()
   }
 
   /**
-   * Reconnect to Twitch.
-   * @param {ChatOptions} [options] Provide new options to client.
-   * @return {Promise<ChannelState[], string>} Channel states
+   * @function Chat#reconnect
+   * @public
+   * @desc Reconnect to Twitch.
+   * @param {object} newOptions Provide new options to client.
+   * @return {Promise<Array<ChannelState>, string>}
    */
   reconnect(newOptions) {
     if (newOptions) {
@@ -269,7 +470,9 @@ class Chat extends EventEmitter {
   }
 
   /**
-   * Join a channel.
+   * @function Chat#join
+   * @public
+   * @desc Join a channel.
    * @param {string} channel
    * @return {Promise<ChannelState, string>}
    *
@@ -318,12 +521,6 @@ class Chat extends EventEmitter {
     }
 
     const join = Promise.all(promises).then(([, roomState, userState]) => {
-      /**
-       * @typedef {Object} ChannelState
-       * Channel state information
-       * @property {RoomStateTags} roomState
-       * @property {?UserStateTags} userState
-       */
       const channelState = {
         roomState: roomState.tags,
         userState: get(userState, 'tags', null),
@@ -349,7 +546,9 @@ class Chat extends EventEmitter {
   }
 
   /**
-   * Depart from a channel.
+   * @function Chat#part
+   * @public
+   * @desc Depart from a channel.
    * @param {string} channel
    */
   part(maybeChannel) {
@@ -361,7 +560,9 @@ class Chat extends EventEmitter {
   }
 
   /**
-   * Send a message to a channel.
+   * @function Chat#say
+   * @public
+   * @desc Send a message to a channel.
    * @param {string} channel
    * @param {string} message
    * @return {Promise<?UserStateMessage, string>}
@@ -397,7 +598,9 @@ class Chat extends EventEmitter {
   }
 
   /**
-   * Whisper to another user.
+   * @function Chat#whisper
+   * @public
+   * @desc Whisper to another user.
    * @param {string} user
    * @param {string} message
    * @return {Promise<undefined>}
@@ -409,7 +612,9 @@ class Chat extends EventEmitter {
   }
 
   /**
-   * Broadcast message to all connected channels.
+   * @function Chat#broadcast
+   * @public
+   * @desc Broadcast message to all connected channels.
    * @param {string} message
    * @return {Promise<Array<UserStateMessage>>}
    */
@@ -421,6 +626,12 @@ class Chat extends EventEmitter {
     })
   }
 
+  /**
+   * @function Chat#emit
+   * @public
+   * @param {string} eventName
+   * @param {string} message
+   */
   emit(eventName, message) {
     if (eventName) {
       const displayName =
@@ -442,15 +653,13 @@ class Chat extends EventEmitter {
         }, [])
     }
 
-    /**
-     * All events are also emitted with this event name.
-     * @event Chat#*
-     */
     super.emit(constants.EVENTS.ALL, message)
   }
 
   /**
-   * Ensure the user is authenticated.
+   * @function Chat#isUserAuthenticated
+   * @public
+   * @desc Ensure the user is authenticated.
    * @return {Promise}
    */
   isUserAuthenticated() {
@@ -464,6 +673,11 @@ class Chat extends EventEmitter {
   }
 }
 
+/**
+ * @function handleConnectSuccess
+ * @private
+ * @param {GlobalUserState} globalUserState
+ */
 function handleConnectSuccess(globalUserState) {
   this._readyState = 3
   this._connectionAttempts = 0
@@ -474,6 +688,12 @@ function handleConnectSuccess(globalUserState) {
   return globalUserState
 }
 
+/**
+ * @function handleConnectRetry
+ * @private
+ * @param {Error} error
+ * @return {Promise<?GlobalUserState, string>}
+ */
 function handleConnectRetry(error) {
   this._connectPromise = null
   this._readyState = 2
@@ -495,6 +715,11 @@ function handleConnectRetry(error) {
   return this.connect()
 }
 
+/**
+ * @function handleMessage
+ * @private
+ * @param {object} baseMessage
+ */
 function handleMessage(baseMessage) {
   const channel = sanitizers.channel(baseMessage.channel)
 
@@ -629,6 +854,10 @@ function handleMessage(baseMessage) {
   this.emit(eventName, message)
 }
 
+/**
+ * @function handleDisconnect
+ * @private
+ */
 function handleDisconnect() {
   this._connectPromise = null
   this._readyState = 5

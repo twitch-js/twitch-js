@@ -4,6 +4,11 @@ import setImmediate from 'core-js/library/fn/set-immediate'
 
 import * as constants from './constants'
 
+/**
+ * @class
+ * @private
+ * @extends BetterQueue
+ */
 class Queue extends BetterQueue {
   rateLimiter = 0
   rateLimiterIntervalId
@@ -32,12 +37,21 @@ class Queue extends BetterQueue {
     )
   }
 
+  /**
+   * @function Queue#incrementRateLimiter
+   * @private
+   * @param {number} weight
+   */
   incrementRateLimiter(weight) {
     return () => {
       this.rateLimiter += 1 / weight
     }
   }
 
+  /**
+   * @function Queue#burnDownRateLimiter
+   * @private
+   */
   burnDownRateLimiter() {
     this.rateLimiter = Math.max(
       this.rateLimiter - constants.QUEUE_BURNDOWN_RATE,
@@ -45,6 +59,15 @@ class Queue extends BetterQueue {
     )
   }
 
+  /**
+   * @function Queue#push
+   * @private
+   * @param {object} args
+   * @param {Function} args.fn
+   * @param {number} args.priority
+   * @param {number} args.weight
+   * @return {Queue}
+   */
   push({ fn, priority, weight }) {
     return super
       .push({ fn, priority })
