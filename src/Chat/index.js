@@ -212,13 +212,13 @@ class Chat extends EventEmitter {
 
     /**
      * @type {ChatOptions}
-     * @private
+     * @public
      */
     this.options = maybeOptions
 
     /**
      * @type {any}
-     * @public
+     * @private
      */
     this._log = createLogger({ scope: 'Chat', ...this.options.log })
 
@@ -670,43 +670,44 @@ class Chat extends EventEmitter {
       }
     })
   }
+}
 
 function handleConnectSuccess(globalUserState) {
   this._readyState = 3
   this._connectionAttempts = 0
 
-    // Process GLOBALUSERSTATE message.
-    this._handleMessage(globalUserState)
+  // Process GLOBALUSERSTATE message.
+  this._handleMessage(globalUserState)
 
-    return globalUserState
-  }
+  return globalUserState
+}
 
 function handleConnectRetry(error) {
   this._connectPromise = null
   this._readyState = 2
 
-    this._log.info('Retrying ...')
+  this._log.info('Retrying ...')
 
-    if (error.event === constants.EVENTS.AUTHENTICATION_FAILED) {
-      return this.options
-        .onAuthenticationFailure()
-        .then(token => (this.options = { ...this.options, token }))
-        .then(() => utils.delay(this.options.connectionTimeout))
-        .then(() => this.connect())
-        .catch(() => {
-          this._log.error('Connection failed')
-          throw new Errors.AuthenticationError(error)
-        })
-    }
-
-    return this.connect()
+  if (error.event === constants.EVENTS.AUTHENTICATION_FAILED) {
+    return this.options
+      .onAuthenticationFailure()
+      .then(token => (this.options = { ...this.options, token }))
+      .then(() => utils.delay(this.options.connectionTimeout))
+      .then(() => this.connect())
+      .catch(() => {
+        this._log.error('Connection failed')
+        throw new Errors.AuthenticationError(error)
+      })
   }
 
-  _handleMessage = baseMessage => {
-    const channel = sanitizers.channel(baseMessage.channel)
+  return this.connect()
+}
 
-function handleMessage(baseMessage) {
+_handleMessage = baseMessage => {
   const channel = sanitizers.channel(baseMessage.channel)
+
+  function handleMessage(baseMessage) {
+    const channel = sanitizers.channel(baseMessage.channel)
 
     const preMessage = { ...baseMessage, isSelf }
 
