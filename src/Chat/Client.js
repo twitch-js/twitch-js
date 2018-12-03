@@ -108,10 +108,9 @@ class Client extends EventEmitter {
 
   _isUserAnonymous = () => utils.isUserAnonymous(get(this, '_options.username'))
 
-  // Authenticate.
-  this.send(`PASS ${options.oauth}`, { priority })
-  this.send(`NICK ${options.username}`, { priority })
-}
+  _handleOpen = () => {
+    // Register for Twitch-specific capabilities.
+    this.send(`CAP REQ :${constants.CAPABILITIES.join(' ')}`, { priority })
 
     // Authenticate.
     const { token, username } = this._options
@@ -119,41 +118,31 @@ class Client extends EventEmitter {
     this.send(`NICK ${username}`, { priority })
   }
 
-  try {
-    handleKeepAlive.call(this)
+  _handleMessage = messageEvent => {
+    const rawMessage = messageEvent.data
 
-    const messages = baseParser(rawMessage)
+    try {
+      this._handleKeepAlive()
 
-    messages.forEach(message => {
-      const event = message.command || ''
+      const messages = baseParser(rawMessage)
 
-      log.debug(
-        '> %s %s',
-        event,
-        JSON.stringify({ ...message, _raw: undefined }),
-      )
+      messages.forEach(message => {
+        const event = message.command || ''
 
-      // Handle authentication failure.
-      if (utils.isAuthenticationFailedMessage(message)) {
-        this.emit(constants.EVENTS.AUTHENTICATION_FAILED, {
-          ...message,
-          event: constants.EVENTS.AUTHENTICATION_FAILED,
-        })
+        this._log.debug(
+          '> %s %s',
+          event,
+          JSON.stringify({ ...message, _raw: undefined }),
+        )
 
-        this.disconnect()
-      } else {
-        // Handle PING/PONG.
-        if (message.command === constants.COMMANDS.PING) {
-          this.send('PONG :tmi.twitch.tv', { priority })
-        }
+        // Handle authentication failure.
+        if (utils.isAuthenticationFailedMessage(message)) {
+          this.emit(constants.EVENTS.AUTHENTICATION_FAILED, {
+            ...message,
+            event: constants.EVENTS.AUTHENTICATION_FAILED,
+          })
 
-        // Handle successful connections.
-        if (utils.isUserAnonymous(options.username)) {
-          if (message.command === constants.COMMANDS.WELCOME) {
-            this.emit(constants.EVENTS.CONNECTED, {
-              command: constants.EVENTS.CONNECTED,
-            })
-          }
+          this.disconnect()
         } else {
           // Handle PING/PONG.
           if (message.command === constants.COMMANDS.PING) {

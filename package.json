@@ -61,10 +61,7 @@
     "docs:build:watch": "nodemon --exec yarn docs:build",
     "docs:build": "node scripts/jsdoc2md/generateDocs.js",
     "website": "cd website && yarn start",
-    "website:build": "cd website && yarn build",
-    "jsdoc2md": "node scripts/jsdoc2md/generateDocs.js",
-    "jsdoc2md:watch": "nodemon --exec npm run jsdoc2md",
-    "dtslint": "dtslint types"
+    "website:build": "cd website && yarn build"
   },
   "dependencies": {
     "@types/form-data": "^2.2.1",
