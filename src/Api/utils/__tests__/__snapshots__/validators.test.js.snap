@@ -1,0 +1,9 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Api/utils/validators apiOptions should return default chat options 1`] = `
+Object {
+  "onAuthenticationFailure": [Function],
+  "token": "TOKEN",
+  "username": "USERNAME",
+}
+`;

@@ -2,32 +2,6 @@ import * as constants from '../../constants'
 import * as utils from '../index'
 
 describe('Chat/utils', () => {
-  describe('getMessageQueueWeight', () => {
-    test('should return verified bot rate', () => {
-      const actual = utils.getMessageQueueWeight({ isVerifiedBot: true })
-      const expected = constants.RATE_LIMIT_VERIFIED_BOT
-      expect(actual).toEqual(expected)
-    })
-
-    test('should return known bot rate', () => {
-      const actual = utils.getMessageQueueWeight({ isKnownBot: true })
-      const expected = constants.RATE_LIMIT_KNOWN_BOT
-      expect(actual).toEqual(expected)
-    })
-
-    test('should return moderator rate', () => {
-      const actual = utils.getMessageQueueWeight({ isModerator: true })
-      const expected = constants.RATE_LIMIT_MODERATOR
-      expect(actual).toEqual(expected)
-    })
-
-    test('should return default rate', () => {
-      const actual = utils.getMessageQueueWeight()
-      const expected = constants.RATE_LIMIT_USER
-      expect(actual).toEqual(expected)
-    })
-  })
-
   describe('isAuthenticationFailedMessage', () => {
     test('should return true for authentication failed messages', () => {
       const message = {
