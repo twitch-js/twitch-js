@@ -85,7 +85,7 @@ class Client extends EventEmitter {
     this._ws.close()
   }
 
-  _createQueue = ({ isModerator, isVerified, isKnown }) => {
+  _createQueue({ isModerator, isVerified, isKnown }) {
     if (isModerator) {
       return new Queue({ maxLength: constants.RATE_LIMIT_MODERATOR })
     } else if (isVerified) {
@@ -96,9 +96,11 @@ class Client extends EventEmitter {
     return new Queue()
   }
 
-  _isUserAnonymous = () => utils.isUserAnonymous(get(this, '_options.username'))
+  _isUserAnonymous() {
+    return utils.isUserAnonymous(get(this, '_options.username'))
+  }
 
-  _handleOpen = () => {
+  _handleOpen() {
     // Register for Twitch-specific capabilities.
     this.send(`CAP REQ :${constants.CAPABILITIES.join(' ')}`, { priority })
 
@@ -108,7 +110,7 @@ class Client extends EventEmitter {
     this.send(`NICK ${username}`, { priority })
   }
 
-  _handleMessage = messageEvent => {
+  _handleMessage(messageEvent) {
     const rawMessage = messageEvent.data
 
     try {
@@ -191,7 +193,7 @@ class Client extends EventEmitter {
     }
   }
 
-  _handleError = messageEvent => {
+  _handleError(messageEvent) {
     const message = {
       timestamp: new Date(),
       event: constants.EVENTS.ERROR_ENCOUNTERED,
@@ -202,7 +204,7 @@ class Client extends EventEmitter {
     this.emit(constants.EVENTS.ALL, message)
   }
 
-  _handleClose = messageEvent => {
+  _handleClose(messageEvent) {
     const message = {
       timestamp: new Date(),
       event: constants.EVENTS.DISCONNECTED,
@@ -213,7 +215,7 @@ class Client extends EventEmitter {
     this.emit(constants.EVENTS.ALL, message)
   }
 
-  _handleKeepAlive = () => {
+  _handleKeepAlive() {
     this._handleKeepAliveReset()
 
     if (this.isReady()) {
@@ -229,7 +231,7 @@ class Client extends EventEmitter {
     )
   }
 
-  _handleKeepAliveReset = () => {
+  _handleKeepAliveReset() {
     clearTimeout(this._pingTimeoutId)
     clearTimeout(this._reconnectTimeoutId)
     this._pingTimeoutId = -1

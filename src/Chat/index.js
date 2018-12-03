@@ -230,8 +230,8 @@ class Chat extends EventEmitter {
           })
         }),
       ])
-        .then(this._handleConnectSuccess)
-        .catch(this._handleConnectRetry)
+        .then(this._handleConnectSuccess.bind(this))
+        .catch(this._handleConnectRetry.bind(this))
     }
 
     return this._connectPromise
@@ -473,7 +473,7 @@ class Chat extends EventEmitter {
     })
   }
 
-  _handleConnectSuccess = globalUserState => {
+  _handleConnectSuccess(globalUserState) {
     this._readyState = 3
     this._connectionAttempts = 0
 
@@ -483,7 +483,7 @@ class Chat extends EventEmitter {
     return globalUserState
   }
 
-  _handleConnectRetry = error => {
+  _handleConnectRetry(error) {
     this._connectPromise = null
     this._readyState = 2
 
@@ -504,7 +504,7 @@ class Chat extends EventEmitter {
     return this.connect()
   }
 
-  _handleMessage = baseMessage => {
+  _handleMessage(baseMessage) {
     const channel = sanitizers.channel(baseMessage.channel)
 
     const selfUsername = get(this, '_userState.username', '')
@@ -634,7 +634,7 @@ class Chat extends EventEmitter {
     this._emit(eventName, message)
   }
 
-  _handleDisconnect = () => {
+  _handleDisconnect() {
     this._connectPromise = null
     this._readyState = 5
   }
