@@ -16,7 +16,7 @@ import Client from './Client'
 import * as Errors from './Errors'
 
 import * as constants from './constants'
-import { commandsFactory } from './utils/commands'
+import * as commands from './utils/commands'
 import * as parsers from './utils/parsers'
 import * as sanitizers from './utils/sanitizers'
 import * as validators from './utils/validators'
@@ -122,7 +122,7 @@ class Chat extends EventEmitter {
     this._connectPromise = null
 
     // Create commands.
-    Object.assign(this, commandsFactory.call(this))
+    Object.assign(this, commands.factory(this))
   }
 
   get options() {
@@ -329,6 +329,7 @@ class Chat extends EventEmitter {
        * @property {RoomStateTags} roomState
        * @property {?UserStateTags} userState
        */
+
       const channelState = {
         roomState: roomState.tags,
         userState: get(userState, 'tags', null),
@@ -371,35 +372,40 @@ class Chat extends EventEmitter {
    * @param {string} message
    * @return {Promise<?UserStateMessage, string>}
    */
-  say = (maybeChannel, message) => {
+  say = (maybeChannel, message, ...messageArgs) => {
     return this._isUserAuthenticated().then(() => {
       const channel = sanitizers.channel(maybeChannel)
+      const args = messageArgs.length ? ['', ...messageArgs].join(' ') : ''
 
-      const info = `PRIVMSG/${channel} :${message}`
+      const info = `PRIVMSG/${channel} :${message}${args}`
 
       const isModerator = get(this, ['_channelState', channel, 'isModerator'])
-
-      const say = Promise.all([
-        this.connect,
-        utils.onceResolve(this, `${constants.COMMANDS.USER_STATE}/${channel}`),
-      ])
-
       const send = this.send(
-        `${constants.COMMANDS.PRIVATE_MESSAGE} ${channel} :${message}`,
+        `${constants.COMMANDS.PRIVATE_MESSAGE} ${channel} :${message}${args}`,
         { isModerator },
       )
 
-      return send
-        .then(() =>
-          Promise.race([
-            utils.delayReject(
-              this.options.joinTimeout,
-              constants.ERROR_SAY_TIMED_OUT,
-            ),
-            say,
-          ]),
-        )
-        .then(() => this._log.info(info))
+      const say = Promise.all([this.connect, send])
+
+      const timeout = utils.delayReject(
+        this.options.joinTimeout,
+        constants.ERROR_SAY_TIMED_OUT,
+      )
+
+      const commandResolvers = commands.resolvers(this)(
+        channel,
+        message,
+        ...messageArgs,
+      )
+
+      const resolvers = [timeout, ...commandResolvers]
+
+      return say
+        .then(() => Promise.race(resolvers))
+        .then(res => {
+          this._log.info(info)
+          return res
+        })
         .catch(() => this._log.error(info))
     })
   }
@@ -434,11 +440,7 @@ class Chat extends EventEmitter {
       const displayName =
         get(message, 'tags.displayName') || message.username || ''
       const info = get(message, 'message') || ''
-      this._log.info(
-        `${eventName} %s %s`,
-        `${displayName}${info ? ':' : ''}`,
-        info,
-      )
+      this._log.info(`${eventName}`, `${displayName}${info ? ':' : ''}`, info)
 
       eventName
         .split('/')
@@ -505,13 +507,9 @@ class Chat extends EventEmitter {
   _handleMessage = baseMessage => {
     const channel = sanitizers.channel(baseMessage.channel)
 
-    const displayName = get(
-      this.getChannelState(channel),
-      'userState.displayName',
-      '',
-    )
-    const messageDisplayName = get(baseMessage, 'tags.displayName')
-    const isSelf = displayName === messageDisplayName
+    const selfUsername = get(this, '_userState.username', '')
+    const messageUsername = get(baseMessage, 'tags.username')
+    const isSelf = selfUsername === messageUsername
 
     const preMessage = { ...baseMessage, isSelf }
 
@@ -565,7 +563,7 @@ class Chat extends EventEmitter {
         message = parsers.modeMessage(preMessage)
         eventName = `${message.command}/${channel}`
 
-        if (this.userState && message.username === this.userState.username) {
+        if (isSelf) {
           const channelState = this.getChannelState(channel)
 
           this.setChannelState(channel, {
@@ -591,7 +589,7 @@ class Chat extends EventEmitter {
 
         this.setChannelState(channel, {
           ...this.getChannelState(channel),
-          userState: message.userState,
+          userState: message.tags,
         })
         break
       }

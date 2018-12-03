@@ -1,162 +1,255 @@
-import { camelCase, gt } from 'lodash'
+import { camelCase } from 'lodash'
 
 import * as utils from '../../utils'
 import * as constants from '../constants'
 
-function commandCreator({ command, timeout, confirmations = [] }) {
-  return (channel, ...args) => {
-    const timeoutDelay =
-      gt(timeout, 0) || confirmations.length
-        ? utils.delayReject(
-            timeout || constants.COMMAND_TIMEOUT,
-            constants.ERROR_COMMAND_TIMED_OUT,
-          )
-        : Promise.resolve()
+const factory = (chatInstance = {}) => {
+  Object.entries(constants.CHAT_COMMANDS).forEach(([key, command]) => {
+    chatInstance[camelCase(key)] = (channel, ...args) =>
+      chatInstance.say(channel, `/${command}`, ...args)
+  })
+}
 
-    const unrecognized = new Promise((resolve, reject) => {
-      this.once(constants.NOTICE_MESSAGE_IDS.UNRECOGNIZED_COMMAND, () => {
-        reject(constants.ERROR_COMMAND_UNRECOGNIZED)
-      })
-    })
+const resolvers = chatInstance => (channel, commandOrMessage = '') => {
+  const [, command] = /^\/(.+)/.exec(commandOrMessage) || []
 
-    const confirmation = Promise.race(
-      confirmations.map(
-        ({ event, cb }) =>
-          new Promise((resolve, reject) => {
-            this.once(event, message => {
-              if (typeof cb !== 'function') {
-                return resolve(message)
-              }
+  switch (command) {
+    case constants.CHAT_COMMANDS.BAN:
+      return [
+        utils.onceResolve(
+          chatInstance,
+          `${constants.EVENTS.BAN_SUCCESS}/${channel}`,
+        ),
+        utils.onceResolve(
+          chatInstance,
+          `${constants.EVENTS.ALREADY_BANNED}/${channel}`,
+        ),
+      ]
 
-              const result = cb(message, command, ...args)
-              return result === true ? resolve(message) : reject(result)
-            })
-          }),
-      ),
-    )
+    case constants.CHAT_COMMANDS.CLEAR:
+      return [
+        utils.onceResolve(
+          chatInstance,
+          `${constants.EVENTS.CLEAR_CHAT}/${channel}`,
+        ),
+      ]
 
-    const message = `/${command} ${args.join(' ')}`
-    this.say(channel, message)
+    case constants.CHAT_COMMANDS.COLOR:
+      return [
+        utils.onceResolve(
+          chatInstance,
+          `${constants.EVENTS.COLOR_CHANGED}/${channel}`,
+        ),
+      ]
 
-    return Promise.race([timeoutDelay, unrecognized, confirmation])
+    case constants.CHAT_COMMANDS.COMMERCIAL:
+      return [
+        utils.onceResolve(
+          chatInstance,
+          `${constants.EVENTS.COMMERCIAL_SUCCESS}/${channel}`,
+        ),
+      ]
+
+    case constants.CHAT_COMMANDS.EMOTE_ONLY:
+      return [
+        utils.onceResolve(
+          chatInstance,
+          `${constants.EVENTS.EMOTE_ONLY_ON}/${channel}`,
+        ),
+        utils.onceResolve(
+          chatInstance,
+          `${constants.EVENTS.ALREADY_EMOTE_ONLY_ON}/${channel}`,
+        ),
+      ]
+    case constants.CHAT_COMMANDS.EMOTE_ONLY_OFF:
+      return [
+        utils.onceResolve(
+          chatInstance,
+          `${constants.EVENTS.EMOTE_ONLY_OFF}/${channel}`,
+        ),
+        utils.onceResolve(
+          chatInstance,
+          `${constants.EVENTS.ALREADY_EMOTE_ONLY_OFF}/${channel}`,
+        ),
+      ]
+
+    case constants.CHAT_COMMANDS.FOLLOWERS_ONLY:
+      return [
+        utils.onceResolve(
+          chatInstance,
+          `${constants.EVENTS.FOLLOWERS_ON_ZERO}/${channel}`,
+        ),
+        utils.onceResolve(
+          chatInstance,
+          `${constants.EVENTS.FOLLOWERS_ON}/${channel}`,
+        ),
+      ]
+    case constants.CHAT_COMMANDS.FOLLOWERS_ONLY_OFF:
+      return [
+        utils.onceResolve(
+          chatInstance,
+          `${constants.EVENTS.FOLLOWERS_OFF}/${channel}`,
+        ),
+      ]
+
+    case constants.CHAT_COMMANDS.HELP:
+      return [
+        utils.onceResolve(
+          chatInstance,
+          `${constants.EVENTS.COMMANDS_AVAILABLE}/${channel}`,
+        ),
+      ]
+
+    case constants.CHAT_COMMANDS.HOST:
+      return [
+        utils.onceResolve(
+          chatInstance,
+          `${constants.EVENTS.HOST_ON}/${channel}`,
+        ),
+      ]
+
+    case constants.CHAT_COMMANDS.MARKER:
+      return [Promise.resolve()]
+
+    // case constants.CHAT_COMMANDS.ME:
+    // Use resolver for private messages.
+
+    case constants.CHAT_COMMANDS.MOD:
+      return [
+        utils.onceResolve(
+          chatInstance,
+          `${constants.EVENTS.MOD_SUCCESS}/${channel}`,
+        ),
+        utils.onceResolve(
+          chatInstance,
+          `${constants.EVENTS.BAD_MOD_MOD}/${channel}`,
+        ),
+      ]
+    case constants.CHAT_COMMANDS.MODS:
+      return [
+        utils.onceResolve(
+          chatInstance,
+          `${constants.EVENTS.ROOM_MODS}/${channel}`,
+        ),
+      ]
+
+    case constants.CHAT_COMMANDS.R9K:
+      return [
+        utils.onceResolve(
+          chatInstance,
+          `${constants.EVENTS.R9K_ON}/${channel}`,
+        ),
+        utils.onceResolve(
+          chatInstance,
+          `${constants.EVENTS.ALREADY_R9K_ON}/${channel}`,
+        ),
+      ]
+    case constants.CHAT_COMMANDS.R9K_OFF:
+      return [
+        utils.onceResolve(
+          chatInstance,
+          `${constants.EVENTS.R9K_OFF}/${channel}`,
+        ),
+        utils.onceResolve(
+          chatInstance,
+          `${constants.EVENTS.ALREADY_R9K_OFF}/${channel}`,
+        ),
+      ]
+
+    case constants.CHAT_COMMANDS.RAID:
+      return [Promise.resolve()]
+
+    case constants.CHAT_COMMANDS.SLOW:
+      return [
+        utils.onceResolve(
+          chatInstance,
+          `${constants.EVENTS.SLOW_ON}/${channel}`,
+        ),
+      ]
+    case constants.CHAT_COMMANDS.SLOW_OFF:
+      return [
+        utils.onceResolve(
+          chatInstance,
+          `${constants.EVENTS.SLOW_OFF}/${channel}`,
+        ),
+      ]
+
+    case constants.CHAT_COMMANDS.SUBSCRIBERS:
+      return [
+        utils.onceResolve(
+          chatInstance,
+          `${constants.EVENTS.SUBS_ON}/${channel}`,
+        ),
+        utils.onceResolve(
+          chatInstance,
+          `${constants.EVENTS.ALREADY_SUBS_ON}/${channel}`,
+        ),
+      ]
+    case constants.CHAT_COMMANDS.SUBSCRIBERS_OFF:
+      return [
+        utils.onceResolve(
+          chatInstance,
+          `${constants.EVENTS.SUBS_OFF}/${channel}`,
+        ),
+        utils.onceResolve(
+          chatInstance,
+          `${constants.EVENTS.ALREADY_SUBS_OFF}/${channel}`,
+        ),
+      ]
+
+    case constants.CHAT_COMMANDS.TIMEOUT:
+      return [
+        utils.onceResolve(
+          chatInstance,
+          `${constants.EVENTS.TIMEOUT_SUCCESS}/${channel}`,
+        ),
+      ]
+
+    case constants.CHAT_COMMANDS.UNBAN:
+      return [
+        utils.onceResolve(
+          chatInstance,
+          `${constants.EVENTS.UNBAN_SUCCESS}/${channel}`,
+        ),
+        utils.onceResolve(
+          chatInstance,
+          `${constants.EVENTS.BAD_UNBAN_NO_BAN}/${channel}`,
+        ),
+      ]
+
+    case constants.CHAT_COMMANDS.UNHOST:
+      return [
+        utils.onceResolve(
+          chatInstance,
+          `${constants.EVENTS.HOST_OFF}/${channel}`,
+        ),
+      ]
+
+    case constants.CHAT_COMMANDS.UNMOD:
+      return [
+        utils.onceResolve(
+          chatInstance,
+          `${constants.EVENTS.HOST_OFF}/${channel}`,
+        ),
+      ]
+
+    case constants.CHAT_COMMANDS.UNRAID:
+      return [
+        utils.onceResolve(
+          chatInstance,
+          `${constants.EVENTS.UNRAID_SUCCESS}/${channel}`,
+        ),
+      ]
+
+    // Resolver for private messages.
+    default:
+      return [
+        utils.onceResolve(
+          chatInstance,
+          `${constants.COMMANDS.USER_STATE}/${channel}`,
+        ),
+      ]
   }
 }
 
-function commandsFactory() {
-  return Object.entries(commandMap).reduce(
-    (commands, [command, commandCreatorArgs]) => ({
-      ...commands,
-      [command]: commandCreator.call(this, { ...commandCreatorArgs }),
-    }),
-    {},
-  )
-}
-
-const commandMap = Object.entries(constants.CHAT_COMMANDS).reduce(
-  (commands, [key, value]) => {
-    switch (value) {
-      case constants.CHAT_COMMANDS.BAN:
-        return {
-          ...commands,
-          [camelCase(key)]: {
-            command: value,
-            confirmations: [
-              {
-                event: `${constants.COMMANDS.NOTICE}/${
-                  constants.NOTICE_MESSAGE_IDS.BAN_SUCCESS
-                }`,
-              },
-              {
-                event: `${constants.COMMANDS.NOTICE}/${
-                  constants.NOTICE_MESSAGE_IDS.ALREADY_BANNED
-                }`,
-              },
-            ],
-          },
-        }
-      case constants.CHAT_COMMANDS.EMOTE_ONLY:
-        return {
-          ...commands,
-          [camelCase(key)]: {
-            command: value,
-            confirmations: [
-              {
-                event: `${constants.COMMANDS.NOTICE}/${
-                  constants.NOTICE_MESSAGE_IDS.EMOTE_ONLY_ON
-                }`,
-              },
-              {
-                event: `${constants.COMMANDS.NOTICE}/${
-                  constants.NOTICE_MESSAGE_IDS.ALREADY_EMOTE_ONLY_ON
-                }`,
-              },
-            ],
-          },
-        }
-      case constants.CHAT_COMMANDS.EMOTE_ONLY_OFF:
-        return {
-          ...commands,
-          [camelCase(key)]: {
-            command: value,
-            confirmations: [
-              {
-                event: `${constants.COMMANDS.NOTICE}/${
-                  constants.NOTICE_MESSAGE_IDS.EMOTE_ONLY_OFF
-                }`,
-              },
-              {
-                event: `${constants.COMMANDS.NOTICE}/${
-                  constants.NOTICE_MESSAGE_IDS.ALREADY_EMOTE_ONLY_OFF
-                }`,
-              },
-            ],
-          },
-        }
-      case constants.CHAT_COMMANDS.MODS:
-        return {
-          ...commands,
-          [camelCase(key)]: {
-            command: value,
-            confirmations: [
-              {
-                event: `${constants.COMMANDS.NOTICE}/${
-                  constants.EVENTS.ROOM_MODS
-                }`,
-              },
-            ],
-          },
-        }
-      case constants.CHAT_COMMANDS.ME:
-      case constants.CHAT_COMMANDS.CLEAR:
-      case constants.CHAT_COMMANDS.COLOR:
-      case constants.CHAT_COMMANDS.COMMERCIAL:
-      case constants.CHAT_COMMANDS.FOLLOWERS_ONLY:
-      case constants.CHAT_COMMANDS.FOLLOWERS_ONLY_OFF:
-      case constants.CHAT_COMMANDS.HOST:
-      case constants.CHAT_COMMANDS.MOD:
-      case constants.CHAT_COMMANDS.PART:
-      case constants.CHAT_COMMANDS.R9K:
-      case constants.CHAT_COMMANDS.R9K_OFF:
-      case constants.CHAT_COMMANDS.SLOW:
-      case constants.CHAT_COMMANDS.SLOW_OFF:
-      case constants.CHAT_COMMANDS.SUBSCRIBERS:
-      case constants.CHAT_COMMANDS.SUBSCRIBERS_OFF:
-      case constants.CHAT_COMMANDS.TIMEOUT:
-      case constants.CHAT_COMMANDS.UNBAN:
-      case constants.CHAT_COMMANDS.UNHOST:
-      case constants.CHAT_COMMANDS.UNMOD:
-      case constants.CHAT_COMMANDS.WHISPER:
-      default:
-        return {
-          ...commands,
-          [camelCase(key)]: {
-            command: value,
-            confirmations: [],
-          },
-        }
-    }
-  },
-  {},
-)
-
-export { commandCreator, commandsFactory }
+export { factory, resolvers }

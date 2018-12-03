@@ -123,8 +123,14 @@ export const NOTICE_MESSAGE_IDS = {
   BAD_HOST_HOSTING: 'bad_host_hosting',
   BAN_SUCCESS: 'ban_success',
   BAD_UNBAN_NO_BAN: 'bad_unban_no_ban',
+  COLOR_CHANGED: 'color_changed',
+  CMDS_AVAILABLE: 'cmds_available',
+  COMMERCIAL_SUCCESS: 'commercial_success',
   EMOTE_ONLY_OFF: 'emote_only_off',
   EMOTE_ONLY_ON: 'emote_only_on',
+  FOLLOWERS_OFF: 'followers_off',
+  FOLLOWERS_ON: 'followers_on',
+  FOLLOWERS_ON_ZERO: 'followers_on_zero',
   HOST_OFF: 'host_off',
   HOST_ON: 'host_on',
   HOSTS_REMAINING: 'hosts_remaining',
@@ -138,6 +144,7 @@ export const NOTICE_MESSAGE_IDS = {
   SUBS_ON: 'subs_on',
   TIMEOUT_SUCCESS: 'timeout_success',
   UNBAN_SUCCESS: 'unban_success',
+  UNRAID_SUCCESS: 'unraid_succss',
   UNRECOGNIZED_COMMAND: 'unrecognized_cmd',
 }
 
@@ -165,6 +172,13 @@ export const MESSAGE_IDS = {
  * @property {string} RAW
  */
 export const EVENTS = {
+  ...Object.keys(NOTICE_MESSAGE_IDS).reduce(
+    (noticeEvents, noticeEvent) => ({
+      ...noticeEvents,
+      [noticeEvent]: `${COMMANDS.NOTICE}/${noticeEvent}`,
+    }),
+    {},
+  ),
   ...COMMANDS,
 
   RAW: 'RAW',
@@ -185,7 +199,7 @@ export const EVENTS = {
   SUBSCRIPTION_GIFT: 'SUBSCRIPTION_GIFT',
   SUBSCRIPTION_GIFT_COMMUNITY: 'SUBSCRIPTION_GIFT_COMMUNITY',
 
-  ROOM_MODS: 'ROOM_MODS',
+  // ROOM_MODS: 'ROOM_MODS',
   MOD_GAINED: 'MOD_GAINED',
   MOD_LOST: 'MOD_LOST',
 
@@ -200,21 +214,25 @@ export const EVENTS = {
 
 // See https://help.twitch.tv/customer/en/portal/articles/659095-chat-moderation-commands.
 export const CHAT_COMMANDS = {
-  ME: 'me',
   BAN: 'ban',
   CLEAR: 'clear',
   COLOR: 'color',
   COMMERCIAL: 'commercial',
+  // DISCONNECTED: 'disconnect',
   EMOTE_ONLY: 'emoteonly',
   EMOTE_ONLY_OFF: 'emoteonlyoff',
   FOLLOWERS_ONLY: 'followers',
-  FOLLOWERS_ONLY_OFF: 'followersonlyoff',
+  FOLLOWERS_ONLY_OFF: 'followersoff',
+  HELP: 'help',
   HOST: 'host',
+  MARKER: 'marker',
+  ME: 'me',
   MOD: 'mod',
   MODS: 'mods',
   // PART: 'part',
-  R9K: 'r9k',
-  R9K_OFF: 'r9koff',
+  R9K: 'r9kbeta',
+  R9K_OFF: 'r9kbetaoff',
+  RAID: 'raid',
   SLOW: 'slow',
   SLOW_OFF: 'slowoff',
   SUBSCRIBERS: 'subscribers',
@@ -223,5 +241,6 @@ export const CHAT_COMMANDS = {
   UNBAN: 'unban',
   UNHOST: 'unhost',
   UNMOD: 'unmod',
+  UNRAID: 'unraid',
   // WHISPER: 'w',
 }
