@@ -226,14 +226,8 @@ Object {
   "message": undefined,
   "tags": Object {
     "broadcasterLang": "en",
-    "broadcasterLanguage": "en",
-    "isEmoteOnly": false,
-    "isFollowersOnly": false,
-    "isR9kEnabled": false,
-    "isSubscribersOnly": false,
     "r9k": "0",
     "slow": "0",
-    "slowDelay": 0,
     "subsOnly": "0",
   },
   "timestamp": Any<Date>,
@@ -1467,14 +1461,8 @@ exports[`Chat should join channel 1`] = `
 Object {
   "roomState": Object {
     "broadcasterLang": "en",
-    "broadcasterLanguage": "en",
-    "isEmoteOnly": false,
-    "isFollowersOnly": false,
-    "isR9kEnabled": false,
-    "isSubscribersOnly": false,
     "r9k": "0",
     "slow": "0",
-    "slowDelay": 0,
     "subsOnly": "0",
   },
   "userState": Object {

@@ -46,22 +46,10 @@ const privateMessageCheerEvent = tags => {
 /**
  * ROOMSTATE Tag
  * @typedef {Object} RoomStateTags
- * @property {string} broadcasterLanguage
- * @property {number} slowDelay
- * @property {boolean} isFollowersOnly
- * @property {boolean} isSubscribersOnly
- * @property {boolean} isEmoteOnly
- * @property {boolean} isR9kEnabled
  * @see https://dev.twitch.tv/docs/irc/tags#roomstate-twitch-tags
  */
 const roomState = tags => ({
   ...tags,
-  broadcasterLanguage: types.broadcasterLanguage(tags.broadcasterLang),
-  slowDelay: parseInt(tags.slow, 10),
-  isEmoteOnly: types.generalBoolean(tags.emoteOnly),
-  isFollowersOnly: types.generalBoolean(tags.followersOnly),
-  isR9kEnabled: types.generalBoolean(tags.r9k),
-  isSubscribersOnly: types.generalBoolean(tags.subsOnly),
 })
 
 /** USERNOTICE tags
