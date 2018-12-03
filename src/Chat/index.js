@@ -508,7 +508,7 @@ class Chat extends EventEmitter {
     const channel = sanitizers.channel(baseMessage.channel)
 
     const selfUsername = get(this, '_userState.username', '')
-    const messageUsername = get(baseMessage, 'tags.username')
+    const messageUsername = get(baseMessage, 'username')
     const isSelf = selfUsername === messageUsername
 
     const preMessage = { ...baseMessage, isSelf }
@@ -563,7 +563,7 @@ class Chat extends EventEmitter {
         message = parsers.modeMessage(preMessage)
         eventName = `${message.command}/${channel}`
 
-        if (isSelf) {
+        if (selfUsername === message.username) {
           const channelState = this.getChannelState(channel)
 
           this.setChannelState(channel, {
