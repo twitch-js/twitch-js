@@ -117,6 +117,14 @@ describe('Chat', () => {
     chat.say('#dallas', 'Kappa Keepo Kappa')
   })
 
+  test('say should resolve with event', async () => {
+    const chat = new Chat(options)
+    await chat.connect()
+
+    const userState = await chat.say('#dallas', 'Kappa Keepo Kappa')
+    expect(userState).toMatchSnapshot({ timestamp: expect.any(Date) })
+  })
+
   test('should throw when sending a message as anonymous', async () => {
     const chat = new Chat({})
     await chat.connect()

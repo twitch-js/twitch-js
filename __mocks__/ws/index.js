@@ -79,6 +79,9 @@ class WebSocket extends EventEmitter {
         this.emit('message', tags.ROOMSTATE.JOIN)
         this.emit('message', tags.USERSTATE.JOIN)
         break
+      case 'PRIVMSG':
+        this.emit('message', tags.USERSTATE.JOIN)
+        break
       default:
       // No default.
     }
