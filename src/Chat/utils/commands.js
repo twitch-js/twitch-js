@@ -3,14 +3,14 @@ import { camelCase } from 'lodash'
 import * as utils from '../../utils'
 import * as constants from '../constants'
 
-const factory = (chatInstance = {}) => {
+const factory = chatInstance => {
   Object.entries(constants.CHAT_COMMANDS).forEach(([key, command]) => {
     chatInstance[camelCase(key)] = (channel, ...args) =>
       chatInstance.say(channel, `/${command}`, ...args)
   })
 }
 
-const resolvers = chatInstance => (channel, commandOrMessage = '') => {
+const resolvers = chatInstance => (channel, commandOrMessage) => {
   const [, command] = /^\/(.+)/.exec(commandOrMessage) || []
 
   switch (command) {
