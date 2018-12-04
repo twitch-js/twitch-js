@@ -22,7 +22,6 @@ const clearChat = tags => ({
  * @property {Array<string>} emoteSets
  * @property {string} userType
  * @property {string} username
- * @property {boolean} isTurboSubscriber
  * @see https://dev.twitch.tv/docs/irc/tags#globaluserstate-twitch-tags
  */
 const globalUserState = tags => ({
@@ -30,7 +29,6 @@ const globalUserState = tags => ({
   emoteSets: types.emoteSets(tags.emoteSets),
   userType: types.userType(tags.userType),
   username: toLower(tags.displayName),
-  isTurboSubscriber: types.generalBoolean(tags.turbo),
 })
 
 /** PRIVMSG tags
@@ -48,22 +46,10 @@ const privateMessageCheerEvent = tags => {
 /**
  * ROOMSTATE Tag
  * @typedef {Object} RoomStateTags
- * @property {string} broadcasterLanguage
- * @property {number} slowDelay
- * @property {boolean} isFollowersOnly
- * @property {boolean} isSubscribersOnly
- * @property {boolean} isEmoteOnly
- * @property {boolean} isR9kEnabled
  * @see https://dev.twitch.tv/docs/irc/tags#roomstate-twitch-tags
  */
 const roomState = tags => ({
   ...tags,
-  broadcasterLanguage: types.broadcasterLanguage(tags.broadcasterLang),
-  slowDelay: parseInt(tags.slow, 10),
-  isEmoteOnly: types.generalBoolean(tags.emoteOnly),
-  isFollowersOnly: types.generalBoolean(tags.followersOnly),
-  isR9kEnabled: types.generalBoolean(tags.r9k),
-  isSubscribersOnly: types.generalBoolean(tags.subsOnly),
 })
 
 /** USERNOTICE tags
@@ -122,10 +108,6 @@ const userNoticeEvent = tags => {
  * @property {BadgesTag} badges
  * @property {Array<EmoteTag>} emotes
  * @property {Array<string>} emoteSets
- * @property {boolean} isModerator
- * @property {boolean} isSubscriber
- * @property {boolean} isSubGifter
- * @property {boolean} isTurboSubscriber
  * @property {number} [bits]
  * @see https://dev.twitch.tv/docs/irc/tags#userstate-twitch-tags
  */
@@ -136,10 +118,6 @@ const userState = tags => ({
   emotes: types.emotes(tags.emotes),
   emoteSets: types.emoteSets(tags.emoteSets),
   userType: types.userType(tags.userType),
-  isModerator: types.generalBoolean(tags.mod),
-  isSubscriber: types.generalBoolean(tags.subscriber),
-  isSubGifter: /sub-gifter\/\d/.test(tags.badges),
-  isTurboSubscriber: types.generalBoolean(tags.turbo),
 })
 
 export {
