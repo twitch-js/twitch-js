@@ -1,5 +1,3 @@
-require('any-observable/register')('symbol-observable')
-
 const fs = require('fs')
 const path = require('path')
 

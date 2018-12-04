@@ -1,47 +1,60 @@
 import * as utils from '../'
 
 describe('utils', () => {
-  describe('delay', () => {
+  describe('resolveAfter', () => {
     test('should resolve after specified time', done => {
       jest.useFakeTimers()
-      utils.delay(100).then(() => done())
+      utils.resolveAfter(100).then(() => done())
       jest.runOnlyPendingTimers()
     })
   })
-  describe('delayReject', () => {
+
+  describe('rejectAfter', () => {
     beforeEach(() => {
       jest.useFakeTimers()
     })
 
-    test('should call setTimeout', () => {
+    test('should call setTimeout', done => {
       const ms = 123
       const reason = 'MESSAGE'
 
-      const actual = utils.delayReject(ms, reason).catch(() => {
+      utils.rejectAfter(ms, reason).catch(() => {
         expect(setTimeout).toHaveBeenLastCalledWith(
           expect.any(Function),
           ms,
           reason,
         )
+        done()
       })
 
       jest.runOnlyPendingTimers()
-
-      return actual
     })
 
     test('should reject after specified time with reason', done => {
       const ms = 456
       const reason = 'timeout'
 
-      const actual = utils.delayReject(ms, reason).catch(rejectedReason => {
+      utils.rejectAfter(ms, reason).catch(rejectedReason => {
         expect(rejectedReason).toEqual(reason)
         done()
       })
 
       jest.runOnlyPendingTimers()
-
-      return actual
     })
+  })
+
+  test('resolveInSequence', async () => {
+    const cb = jest.fn()
+    const p = n => new Promise(resolve => resolve(cb(n)))
+
+    await utils.resolveInSequence([
+      p.bind(null, 1),
+      p.bind(null, 2),
+      p.bind(null, 3),
+    ])
+
+    expect(cb).toHaveBeenNthCalledWith(1, 1)
+    expect(cb).toHaveBeenNthCalledWith(2, 2)
+    expect(cb).toHaveBeenNthCalledWith(3, 3)
   })
 })

@@ -68,7 +68,7 @@ before_deploy: |
   # Build website.
 
   # Retrieve website source.
-  curl -sL https://github.com/twitch-devs/twitch-js-docs/archive/ffac6be7cc5d28fabf347b5ad90b8ce75da68b43.tar.gz | tar xz --strip 1 */docs */website
+  curl -sL https://github.com/twitch-devs/twitch-js-docs/archive/$DOCS_BRANCH.tar.gz | tar xz --strip 1 */docs */website
   (cd website && yarn install && yarn build)
 
 

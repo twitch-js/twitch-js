@@ -4,7 +4,7 @@ import commands from '../../../__mocks__/ws/__fixtures__/commands'
 import membership from '../../../__mocks__/ws/__fixtures__/membership'
 import tags from '../../../__mocks__/ws/__fixtures__/tags'
 
-import { onceResolve } from '../../utils'
+import { resolveOnEvent } from '../../utils'
 
 import Chat, { constants } from '../index'
 import parser from '../utils/parsers'
@@ -31,7 +31,7 @@ describe('Chat', () => {
       const actual = await chat.connect()
 
       expect(actual).toMatchSnapshot()
-      expect(chat.readyState).toBe(3)
+      expect(chat._readyState).toBe(3)
     })
 
     test('should connect as authenticated', async () => {
@@ -41,7 +41,7 @@ describe('Chat', () => {
       expect(actual).toMatchSnapshot({
         timestamp: expect.any(Date),
       })
-      expect(chat.readyState).toBe(3)
+      expect(chat._readyState).toBe(3)
     })
 
     test('should call onAuthenticationFailure', done => {
@@ -100,7 +100,7 @@ describe('Chat', () => {
 
     const actual = await chat.join('#dallas')
     expect(actual).toMatchSnapshot()
-    expect(chat.getChannelState('#dallas')).toEqual(actual)
+    expect(chat._getChannelState('#dallas')).toEqual(actual)
   })
 
   test('should send message to channel', async done => {
@@ -117,13 +117,21 @@ describe('Chat', () => {
     chat.say('#dallas', 'Kappa Keepo Kappa')
   })
 
+  test('say should resolve with event', async () => {
+    const chat = new Chat(options)
+    await chat.connect()
+
+    const userState = await chat.say('#dallas', 'Kappa Keepo Kappa')
+    expect(userState).toMatchSnapshot({ timestamp: expect.any(Date) })
+  })
+
   test('should throw when sending a message as anonymous', async () => {
     const chat = new Chat({})
     await chat.connect()
 
-    await expect(
-      chat.say('#dallas', 'Kappa Keepo Kappa'),
-    ).rejects.toMatchSnapshot()
+    await chat
+      .say('#dallas', 'Kappa Keepo Kappa')
+      .catch(err => expect(err).toMatchSnapshot())
   })
 
   test('should part a channel', async done => {
@@ -151,8 +159,8 @@ describe('Chat', () => {
     expect.assertions(2)
 
     chat.once(constants.EVENTS.DISCONNECTED, () => {
-      expect(chat.readyState).toBe(5)
-      expect(chat._connectPromise).toBe(null)
+      expect(chat._readyState).toBe(5)
+      expect(chat._connectionInProgress).toBe(null)
       done()
     })
 
@@ -241,9 +249,9 @@ describe('Chat', () => {
       await chat.connect()
 
       const emissions = Promise.all([
-        onceResolve(chat, constants.COMMANDS.NAMES),
-        onceResolve(chat, constants.COMMANDS.NAMES),
-        onceResolve(chat, constants.COMMANDS.NAMES_END),
+        resolveOnEvent(chat, constants.COMMANDS.NAMES),
+        resolveOnEvent(chat, constants.COMMANDS.NAMES),
+        resolveOnEvent(chat, constants.COMMANDS.NAMES_END),
       ])
 
       emitHelper(chat._client, membership.NAMES)
