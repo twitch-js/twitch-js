@@ -206,21 +206,24 @@ import { ApiOptions } from '../Api'
  * })
  */
 class Chat extends EventEmitter {
-  /**
-   * Validated options.
-   * @private
-   * @type {ChatOptions}
-   */
+
+  /** @private */
   _options
 
+  /** @private */
   _log
 
+  /** @private */
   _readyState = 0
 
+  /** @private */
   _connectionAttempts = 0
+  /** @private */
   _connectionInProgress = null
 
+  /** @private */
   _userState = {}
+  /** @private */
   _channelState = {}
 
   /**
@@ -263,7 +266,9 @@ class Chat extends EventEmitter {
   }
 
   /**
-   * Connect to Twitch.
+   * @function Chat#connect
+   * @public
+   * @desc Connect to Twitch.
    * @return {Promise<?GlobalUserStateMessage, string>} Global user state message
    */
   connect = () => {
@@ -296,7 +301,9 @@ class Chat extends EventEmitter {
   }
 
   /**
-   * Sends a raw message to Twitch.
+   * @function Chat#send
+   * @public
+   * @desc Sends a raw message to Twitch.
    * @param {string} message - Message to send.
    * @return {Promise} Resolves on success, rejects on failure.
    */
@@ -557,7 +564,6 @@ class Chat extends EventEmitter {
       })
     })
   }
-}
 
   _handleConnectSuccess(globalUserState) {
     this._readyState = 3
@@ -785,11 +791,6 @@ class Chat extends EventEmitter {
     this._connectionInProgress = null
     this._readyState = 5
   }
-}
-
-function handleDisconnect() {
-  this._connectPromise = null
-  this._readyState = 5
 }
 
 export { constants }
