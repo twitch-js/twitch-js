@@ -148,8 +148,6 @@ import * as parsers from './utils/parsers'
 import * as sanitizers from './utils/sanitizers'
 import * as validators from './utils/validators'
 
-import { ApiOptions } from '../Api'
-
 /**
  * @class
  * @public
