@@ -48,7 +48,7 @@
     "test:e2e:browser": "jest --config __e2e__/browser/jest.config.js",
     "test:e2e:node": "jest --config __e2e__/node/jest.config.js",
     "test:e2e": "run-s test:e2e:*",
-    "precommit": "lint-staged && jsdoc -c typings/generateTypes.json",
+    "precommit": "lint-staged",
     "prettier": "prettier --write \"**/*.{js,md}\"",
     "prebuild": "yarn clean",
     "build:lib": "cross-env BABEL_ENV=production babel src --out-dir lib --source-maps",
