@@ -22,6 +22,36 @@ import * as constants from './constants'
  * })
  */
 class Api {
+  _options
+  _log
+
+  /**
+   * API ready state
+   * @private
+   * @type {ApiReadyState}
+   */
+  _readyState = 1
+
+  /**
+   * API status state.
+   * @typedef {Object} ApiStatusState
+   * @property {Object} token
+   * @property {Object} token.authorization
+   * @property {Array<string>} token.authorization.scopes
+   * @property {string} token.authorization.createdAt
+   * @property {string} token.authorization.updatedAt
+   * @property {string} token.clientId
+   * @property {string} token.userId
+   * @property {string} token.userName
+   * @property {boolean} token.valid
+   */
+  /**
+   * API status.
+   * @private
+   * @type {ApiStatusState}
+   */
+  _status
+
   /**
    * API constructor.
    * @param {ApiOptions} options
@@ -33,37 +63,7 @@ class Api {
      */
     this.options = maybeOptions
 
-    /**
-     * @type {any}
-     * @public
-     */
-    this.log = createLogger({ scope: 'Api', ...this.options.log })
-
-    /**
-     * @type {number}
-     * @private
-     */
-    this._readyState = 1
-
-    /**
-     * API status state.
-     * @typedef {Object} ApiStatusState
-     * @property {Object} token
-     * @property {Object} token.authorization
-     * @property {Array<string>} token.authorization.scopes
-     * @property {string} token.authorization.createdAt
-     * @property {string} token.authorization.updatedAt
-     * @property {string} token.clientId
-     * @property {string} token.userId
-     * @property {string} token.userName
-     * @property {boolean} token.valid
-     */
-    /**
-     * API status.
-     * @type {ApiStatusState}
-     * @private
-     */
-    this._status = {}
+    this._log = createLogger({ scope: 'Api', ...this.options.log })
   }
 
   /**
@@ -112,51 +112,6 @@ class Api {
   updateOptions(options) {
     const { clientId, token } = this.options
     this.options = { ...options, clientId, token }
-  }
-
-  /**
-   * @function Api#getAuthorizationType
-   * @private
-   * @param {string} version
-   * @return {string}
-   */
-  getAuthorizationType(version) {
-    if (toUpper(version) === 'HELIX') {
-      return 'Bearer'
-    }
-
-    return 'OAuth'
-  }
-
-  /**
-   * @function Api#getBaseUrl
-   * @private
-   * @param {string} version
-   * @return {string}
-   */
-  getBaseUrl(version) {
-    if (toUpper(version) === 'HELIX') {
-      return constants.HELIX_URL_ROOT
-    }
-
-    return constants.KRAKEN_URL_ROOT
-  }
-
-  /**
-   * @function Api#getHeaders
-   * @private
-   * @param {string} version
-   * @return {object}
-   */
-  getHeaders(version) {
-    const { clientId, token } = this.options
-    const authType = this.getAuthorizationType(version)
-
-    return pickBy({
-      Accept: 'application/vnd.twitchtv.v5+json',
-      'Client-ID': clientId ? clientId : undefined,
-      Authorization: token ? `${authType} ${token}` : undefined,
-    })
   }
 
   /**
@@ -218,7 +173,7 @@ class Api {
    *   })
    */
   get(endpoint, options = {}) {
-    return handleFetch.call(this, endpoint, options)
+    return this._handleFetch(endpoint, options)
   }
 
   /**
@@ -229,7 +184,7 @@ class Api {
    * @param {FetchOptions} [options={method:'post'}]
    */
   post(endpoint, options = {}) {
-    return handleFetch.call(this, endpoint, { ...options, method: 'post' })
+    return this._handleFetch(endpoint, { ...options, method: 'post' })
   }
 
   /**
@@ -240,50 +195,70 @@ class Api {
    * @param {FetchOptions} [options={method:'put'}]
    */
   put(endpoint, options = {}) {
-    return handleFetch.call(this, endpoint, { ...options, method: 'put' })
+    return this._handleFetch(endpoint, { ...options, method: 'put' })
   }
-}
 
-/**
- * @function handleFetch
- * @private
- * @param {string} maybeUrl
- * @param {object} options
- * @return {any}
- */
-function handleFetch(maybeUrl = '', options = {}) {
-  const fetchProfiler = this.log.startTimer()
-
-  const [, version, url] = /^(?:([a-z]+):)?\/?(.*)$/i.exec(maybeUrl)
-  const baseUrl = `${this.getBaseUrl(version)}/${url}`
-
-  const message = `${options.method || 'GET'} ${baseUrl}`
-
-  const request = () =>
-    fetchUtil(baseUrl, {
-      ...options,
-      headers: {
-        ...options.headers,
-        ...this.getHeaders(version),
-      },
-    }).then(res => {
-      fetchProfiler.done({ message })
-      return res
-    })
-
-  return request().catch(error => {
-    fetchProfiler.done({ level: 'error', message: error.body })
-
-    if (error instanceof Errors.AuthenticationError) {
-      return this.options
-        .onAuthenticationFailure()
-        .then(token => (this.options = { ...this.options, token }))
-        .then(() => this.log.info('Retrying (with new credentials)'))
-        .then(() => request())
+  _getAuthorizationType(version) {
+    if (toUpper(version) === 'HELIX') {
+      return 'Bearer'
     }
 
-    throw error
-  })
+    return 'OAuth'
+  }
+
+  _getBaseUrl(version) {
+    if (toUpper(version) === 'HELIX') {
+      return constants.HELIX_URL_ROOT
+    }
+
+    return constants.KRAKEN_URL_ROOT
+  }
+
+  _getHeaders(version) {
+    const { clientId, token } = this.options
+    const authType = this._getAuthorizationType(version)
+
+    return pickBy({
+      Accept: 'application/vnd.twitchtv.v5+json',
+      'Client-ID': clientId ? clientId : undefined,
+      Authorization: token ? `${authType} ${token}` : undefined,
+    })
+  }
+
+  _handleFetch(maybeUrl = '', options = {}) {
+    const fetchProfiler = this._log.startTimer()
+
+    const [, version, url] = /^(?:([a-z]+):)?\/?(.*)$/i.exec(maybeUrl)
+    const baseUrl = `${this._getBaseUrl(version)}/${url}`
+
+    const message = `${options.method || 'GET'} ${baseUrl}`
+
+    const request = () =>
+      fetchUtil(baseUrl, {
+        ...options,
+        headers: {
+          ...options.headers,
+          ...this._getHeaders(version),
+        },
+      }).then(res => {
+        fetchProfiler.done({ message })
+        return res
+      })
+
+    return request().catch(error => {
+      fetchProfiler.done({ level: 'error', message: error.body })
+
+      if (error instanceof Errors.AuthenticationError) {
+        return this.options
+          .onAuthenticationFailure()
+          .then(token => (this.options = { ...this.options, token }))
+          .then(() => this._log.info('Retrying (with new credentials)'))
+          .then(() => request())
+      }
+
+      throw error
+    })
+  }
 }
 
 export default Api
