@@ -226,9 +226,9 @@ Object {
   "message": undefined,
   "tags": Object {
     "broadcasterLang": "en",
-    "r9k": "0",
-    "slow": "0",
-    "subsOnly": "0",
+    "r9k": false,
+    "slow": 0,
+    "subsOnly": false,
   },
   "timestamp": Any<Date>,
   "username": "tmi.twitch.tv",
@@ -982,7 +982,7 @@ Object {
   "tags": Object {
     "badges": Object {
       "bits": 1000,
-      "staff": 1,
+      "staff": true,
     },
     "bits": 100,
     "color": true,
@@ -1063,8 +1063,8 @@ Object {
   "message": "Kappa Keepo Kappa",
   "tags": Object {
     "badges": Object {
-      "globalMod": 1,
-      "turbo": 1,
+      "globalMod": true,
+      "turbo": true,
     },
     "bits": undefined,
     "color": "#0D4200",
@@ -1115,7 +1115,7 @@ Object {
   "systemMessage": "MrSquidzilla is continuing the Gift Sub they got from an anonymous user!",
   "tags": Object {
     "badges": Object {
-      "premium": 1,
+      "premium": true,
       "subscriber": 0,
     },
     "bits": undefined,
@@ -1158,7 +1158,7 @@ Object {
   "systemMessage": "ElizabethSwann is continuing the Gift Sub they got from CannibulCake! They're one of 123816 gift subs to continue this Subtember.",
   "tags": Object {
     "badges": Object {
-      "premium": 1,
+      "premium": true,
       "subscriber": 0,
     },
     "bits": undefined,
@@ -1203,7 +1203,7 @@ Object {
   "systemMessage": "15 raiders from TestChannel have joined !",
   "tags": Object {
     "badges": Object {
-      "turbo": 1,
+      "turbo": true,
     },
     "bits": undefined,
     "color": "#9ACD32",
@@ -1246,9 +1246,9 @@ Object {
   "systemMessage": "ronni has subscribed for 6 months!",
   "tags": Object {
     "badges": Object {
-      "broadcaster": 1,
-      "staff": 1,
-      "turbo": 1,
+      "broadcaster": true,
+      "staff": true,
+      "turbo": true,
     },
     "bits": undefined,
     "color": "#008000",
@@ -1335,7 +1335,7 @@ Object {
   "tags": Object {
     "badges": Object {
       "bits": 5000,
-      "subGifter": 1,
+      "subGifter": true,
       "subscriber": 12,
     },
     "bits": undefined,
@@ -1379,9 +1379,9 @@ Object {
   "systemMessage": "ronni just subscribed with Twitch Prime!",
   "tags": Object {
     "badges": Object {
-      "broadcaster": 1,
-      "staff": 1,
-      "turbo": 1,
+      "broadcaster": true,
+      "staff": true,
+      "turbo": true,
     },
     "bits": undefined,
     "color": "#008000",
@@ -1427,8 +1427,8 @@ Object {
   "systemMessage": "TWW2 gifted a Tier 1 sub to Mr_Woodchuck!",
   "tags": Object {
     "badges": Object {
-      "premium": 1,
-      "staff": 1,
+      "premium": true,
+      "staff": true,
     },
     "bits": undefined,
     "color": "#0000FF",
@@ -1526,9 +1526,9 @@ exports[`Chat should join channel 1`] = `
 Object {
   "roomState": Object {
     "broadcasterLang": "en",
-    "r9k": "0",
-    "slow": "0",
-    "subsOnly": "0",
+    "r9k": false,
+    "slow": 0,
+    "subsOnly": false,
   },
   "userState": Object {
     "badges": Object {},
