@@ -1,0 +1,19 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Chat/utils/parsers/types badges should parse known badges 1`] = `
+Object {
+  "admin": true,
+  "bits": 100,
+  "bitsLeader": 3,
+  "broadcaster": true,
+  "globalMod": true,
+  "moderator": true,
+  "partner": true,
+  "premium": true,
+  "staff": true,
+  "subGifter": true,
+  "subscriber": 9,
+  "turbo": true,
+  "vip": true,
+}
+`;

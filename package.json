@@ -103,7 +103,7 @@
     "eslint-config-prettier": "^2.9.0",
     "eslint-plugin-import": "2.8.0",
     "eslint-plugin-jest": "^21.17.0",
-    "husky": "^0.14.3",
+    "husky": "^1.2.0",
     "jest": "^23.3.0",
     "jest-puppeteer": "^3.5.1",
     "jsdoc-to-markdown": "^4.0.1",

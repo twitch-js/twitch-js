@@ -57,6 +57,7 @@ const badges = maybeBadges => {
    * @property {boolean} [broadcaster]
    * @property {boolean} [globalMod]
    * @property {boolean} [moderator]
+   * @property {boolean} [partner]
    * @property {boolean} [premium]
    * @property {boolean} [staff]
    * @property {boolean} [subGifter]
@@ -76,6 +77,7 @@ const badges = maybeBadges => {
           case 'broadcaster':
           case 'globalMod':
           case 'moderator':
+          case 'partner':
           case 'premium':
           case 'staff':
           case 'subGifter':
