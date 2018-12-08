@@ -1,4 +1,4 @@
-import { get, includes, pickBy, toUpper } from 'lodash'
+import { get, includes, toLower } from 'lodash'
 
 import createLogger from '../utils/logger/create'
 
@@ -165,9 +165,15 @@ class Api {
    * GET endpoint.
    * @param {string} endpoint
    * @param {FetchOptions} [options]
+   * @param {string} [options.version]
    *
    * @example <caption>Get Live Overwatch Streams</caption>
    * api.get('streams', { search: { game: 'Overwatch' } })
+   *   .then(response => {
+   *     // Do stuff with response ...
+   *   })
+   * @example <caption>Get user follows (Helix)</caption>
+   * api.get('users/follows', { version: 'helix', search: { to_id: '23161357' } })
    *   .then(response => {
    *     // Do stuff with response ...
    *   })
@@ -182,6 +188,7 @@ class Api {
    * POST endpoint.
    * @param {string} endpoint
    * @param {FetchOptions} [options={method:'post'}]
+   * @param {string} [options.version]
    */
   post(endpoint, options = {}) {
     return this._handleFetch(endpoint, { ...options, method: 'post' })
@@ -193,52 +200,67 @@ class Api {
    * PUT endpoint.
    * @param {string} endpoint
    * @param {FetchOptions} [options={method:'put'}]
+   * @param {string} [options.version]
    */
   put(endpoint, options = {}) {
     return this._handleFetch(endpoint, { ...options, method: 'put' })
   }
 
-  _getAuthorizationType(version) {
-    if (toUpper(version) === 'HELIX') {
-      return 'Bearer'
-    }
-
-    return 'OAuth'
+  _isVersionHelix(version) {
+    return toLower(version) === constants.HELIX_VERSION
   }
 
-  _getBaseUrl(version) {
-    if (toUpper(version) === 'HELIX') {
-      return constants.HELIX_URL_ROOT
-    }
-
-    return constants.KRAKEN_URL_ROOT
+  _getBaseUrl({ version } = {}) {
+    return this._isVersionHelix(version)
+      ? constants.HELIX_URL_ROOT
+      : constants.KRAKEN_URL_ROOT
   }
 
-  _getHeaders(version) {
+  _getHeaders({ version } = {}) {
     const { clientId, token } = this.options
-    const authType = this._getAuthorizationType(version)
 
-    return pickBy({
-      Accept: 'application/vnd.twitchtv.v5+json',
-      'Client-ID': clientId ? clientId : undefined,
-      Authorization: token ? `${authType} ${token}` : undefined,
-    })
+    const isHelix = this._isVersionHelix(version)
+
+    const authorizationHeader = isHelix
+      ? constants.HELIX_AUTHORIZATION_HEADER
+      : constants.KRAKEN_AUTHORIZATION_HEADER
+    const authorization = `${authorizationHeader} ${token}`
+
+    const headers = isHelix
+      ? {}
+      : { Accept: 'application/vnd.twitchtv.v5+json' }
+
+    if (clientId && token) {
+      return {
+        ...headers,
+        'Client-ID': clientId,
+        Authorization: authorization,
+      }
+    } else if (clientId) {
+      return { ...headers, 'Client-ID': clientId }
+    } else if (token) {
+      return { ...headers, Authorization: authorization }
+    }
+
+    return headers
   }
 
   _handleFetch(maybeUrl = '', options = {}) {
     const fetchProfiler = this._log.startTimer()
 
-    const [, version, url] = /^(?:([a-z]+):)?\/?(.*)$/i.exec(maybeUrl)
-    const baseUrl = `${this._getBaseUrl(version)}/${url}`
+    const baseUrl = this._getBaseUrl(options)
+    const headers = this._getHeaders(options)
+
+    const url = `${baseUrl}/${maybeUrl}`
 
     const message = `${options.method || 'GET'} ${baseUrl}`
 
     const request = () =>
-      fetchUtil(baseUrl, {
+      fetchUtil(url, {
         ...options,
         headers: {
           ...options.headers,
-          ...this._getHeaders(version),
+          ...headers,
         },
       }).then(res => {
         fetchProfiler.done({ message })

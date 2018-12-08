@@ -6,6 +6,8 @@ import * as Errors from '../../utils/fetch/Errors'
 jest.mock('../../utils/fetch')
 
 describe('Api', () => {
+  jest.setTimeout(500)
+
   const options = {
     token: 'TOKEN',
     clientId: 'CLIENT_ID',
@@ -154,7 +156,7 @@ describe('Api', () => {
     test('should call the Kraken endpoint', () => {
       const api = new Api(options)
 
-      const endpoint = 'kraken:ENDPOINT'
+      const endpoint = 'ENDPOINT'
       const opts = { a: { b: 'c ' } }
 
       return api.get(endpoint, opts).then(() => {
@@ -168,8 +170,8 @@ describe('Api', () => {
     test('should call the Helix endpoint', () => {
       const api = new Api(options)
 
-      const endpoint = 'helix:ENDPOINT'
-      const opts = { a: { b: 'c ' } }
+      const endpoint = 'ENDPOINT'
+      const opts = { version: 'helix', a: { b: 'c ' } }
 
       return api.get(endpoint, opts).then(() => {
         const [actualEndpoint, actualOpts] = fetchUtil.mock.calls[0]
