@@ -16,6 +16,7 @@ script:
 
   - yarn build
 
+  - yarn prettier
   - yarn lint
   - yarn test:coverage:report
   - if [ "$TRAVIS_PULL_REQUEST" = "false" ]; then yarn test:e2e; fi

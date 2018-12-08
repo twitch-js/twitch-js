@@ -50,7 +50,7 @@
     "test:e2e:node": "jest --config __e2e__/node/jest.config.js",
     "test:e2e": "run-s test:e2e:*",
     "precommit": "lint-staged",
-    "prettier": "prettier --write \"**/*.{js,md}\"",
+    "prettier": "prettier --list-different \"**/*.{js,md}\"",
     "prebuild": "yarn clean",
     "build:lib": "cross-env BABEL_ENV=production babel src --out-dir lib --source-maps",
     "build:dist:dev": "webpack",
