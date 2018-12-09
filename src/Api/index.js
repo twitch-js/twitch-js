@@ -230,19 +230,17 @@ class Api {
       ? {}
       : { Accept: 'application/vnd.twitchtv.v5+json' }
 
-    if (clientId && token) {
-      return {
-        ...headers,
-        'Client-ID': clientId,
-        Authorization: authorization,
-      }
-    } else if (clientId) {
-      return { ...headers, 'Client-ID': clientId }
-    } else if (token) {
+    if (!clientId) {
       return { ...headers, Authorization: authorization }
+    } else if (!token) {
+      return { ...headers, 'Client-ID': clientId }
     }
 
-    return headers
+    return {
+      ...headers,
+      'Client-ID': clientId,
+      Authorization: authorization,
+    }
   }
 
   _handleFetch(maybeUrl = '', options = {}) {
