@@ -31,6 +31,7 @@
     "yarn": "^1.9.2"
   },
   "main": "lib/index.js",
+  "types": "lib/types.d.ts",
   "files": [
     "dist",
     "lib",
@@ -54,6 +55,7 @@
     "build:lib": "cross-env BABEL_ENV=production babel src --out-dir lib --source-maps",
     "build:dist:dev": "webpack",
     "build:dist:prod": "webpack --env.production",
+    "build:types": "jsdoc --recurse --configure scripts/generateDeclaration/config.json",
     "build": "run-p build:**",
     "start:example": "nodemon examples/runkit.js",
     "docs:build:watch": "nodemon --exec yarn docs:build",
@@ -116,7 +118,7 @@
     "puppeteer": "^1.10.0",
     "rimraf": "^2.6.2",
     "semver": "^5.5.0",
-    "tsd-jsdoc": "oscarxcore/tsd-jsdoc",
+    "tsd-jsdoc": "^1.0.1",
     "webpack": "^3.12.0"
   },
   "optionalDependencies": {
