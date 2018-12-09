@@ -1,11 +1,3 @@
-/**
- * @typedef {object} ApiOptions
- * @property {string} [clientId] Optional if token is defined.
- * @property {string} [token] Optional if clientId is defined.
- * @property {object} [log] Log options
- * @property {Function} [onAuthenticationFailure]
- */
-
 import { get, includes, pickBy, toUpper } from 'lodash'
 
 import createLogger from '../utils/logger/create'

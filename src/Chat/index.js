@@ -1,130 +1,4 @@
 /**
- * @typedef {object} UserNoticeMessageParam
- * @property {?string} displayName
- * @property {?string} login
- * @property {?string} months
- * @property {?string} recipientDisplayName
- * @property {?string} recipientId
- * @property {?string} recipientUserName
- * @property {?string} subPlan
- * @property {?string} subPlanName
- * @property {?string} viewerCount
- * @property {?string} ritualName
- */
-/**
- * @external CLEARCHAT
- * @see {@link https://dev.twitch.tv/docsc/irc/tags/#clearchat-twitch-tags}
- *
- * @typedef {object} ClearChatTags
- * @property {string} banDuration
- * @property {string} banReason
- */
-/**
- * @external CLEARMSG
- * @see {@link https://dev.twitch.tv/docs/irc/tags/#clearmsg-twitch-tags}
- *
- * @typedef {object} ClearMessageTags
- * @property {string} login
- * @property {string} message
- * @property {string} targetMsgId
- */
-/**
- * @external GLOBALUSERSTATE
- * @see {@link https://dev.twitch.tv/docs/irc/tags/#globaluserstate-twitch-tags}
- *
- * @typedef {object} GlobalUserState
- * @property {string} raw Raw IRC response
- * @property {string} badges
- * @property {string} color
- * @property {string} displayName
- * @property {string} emoteSets
- */
-/**
- * @external PRIVMSG
- * @see {@link https://dev.twitch.tv/docs/irc/tags/#privmsg-twitch-tags}
- *
- * @typedef {object} PrivateMessage
- * @property {string} badges
- * @property {?string} bits
- * @property {string} color
- * @property {string} displayName
- * @property {string} emotes
- * @property {string} id
- * @property {string} message
- * @property {string} mod
- * @property {string} roomId
- * @property {string} subscriber
- * @property {string} tmiSentTS
- * @property {string} turbo
- * @property {string} userId
- * @property {string} userType
- */
-/**
- * @external ROOMSTATE
- * @see {@link https://dev.twitch.tv/docs/irc/tags/#roomstate-twitch-tags}
- *
- * @typedef {object} RoomState
- * @property {string} broadcasterLang
- * @property {string} emoteOnly
- * @property {string} followersOnly
- * @property {string} r9k
- * @property {string} slow
- * @property {string} subsOnly
- */
-/**
- * @external USERNOTICE
- * @see {@link https://dev.twitch.tv/docs/irc/tags/#usernotice-twitch-tags}
- *
- * @typedef {object} UserNotice
- * @property {string} badges
- * @property {string} color
- * @property {string} displayName
- * @property {string} emotes
- * @property {string} id
- * @property {string} login
- * @property {string} message
- * @property {string} mod
- * @property {string} msgId
- * @property {UserNoticeMessageParam} msgParam
- * @property {string} roomId
- * @property {string} subscriber
- * @property {string} systemMsg
- * @property {string} tmiSentTS
- * @property {string} turbo
- * @property {string} userId
- * @property {string} userType
- */
-/**
- * @external USERSTATE
- * @see {@link https://dev.twitch.tv/docs/irc/tags/#userstate-twitch-tags}
- *
- * @typedef {object} UserState
- * @property {string} badges
- * @property {string} color
- * @property {string} displayName
- * @property {string} emotes
- * @property {string} mod
- * @property {string} subscriber
- * @property {string} turbo
- * @property {string} userType
- */
-/**
- * @typedef {object} ChannelState
- * @property {string} channel
- * @property {RoomState} roomState
- * @property {UserState} userState
- */
-/**
- * @typedef {object} ChatOptions
- * @property {string} [username]
- * @property {string} [token] OAuth token (use {@link https://twitchtokengenerator.com/} to generate one)
- * @property {number} [connectionTimeout=CONNECTION_TIMEOUT]
- * @property {number} [joinTimeout=JOIN_TIMEOUT]
- * @property {object} log
- * @property {Function} [onAuthenticationFailure]
- */
-
-/**
  * EventEmitter3 is a high performance EventEmitter
  * @external EventEmitter3
  * @see {@link https://github.com/primus/eventemitter3 EventEmitter3}
@@ -204,7 +78,6 @@ import * as validators from './utils/validators'
  * })
  */
 class Chat extends EventEmitter {
-
   /** @private */
   _options
 
@@ -567,17 +440,17 @@ class Chat extends EventEmitter {
     this._readyState = 3
     this._connectionAttempts = 0
 
-  // Process GLOBALUSERSTATE message.
-  this._handleMessage(globalUserState)
+    // Process GLOBALUSERSTATE message.
+    this._handleMessage(globalUserState)
 
-  return globalUserState
-}
+    return globalUserState
+  }
 
   _handleConnectRetry(error) {
     this._connectionInProgress = null
     this._readyState = 2
 
-  this._log.info('Retrying ...')
+    this._log.info('Retrying ...')
 
     if (error.event === constants.EVENTS.AUTHENTICATION_FAILED) {
       return this.options
