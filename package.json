@@ -59,7 +59,7 @@
     "build": "run-p build:**",
     "start:example": "nodemon examples/runkit.js",
     "docs:build:watch": "nodemon --exec yarn docs:build",
-    "docs:build": "node scripts/jsdoc2md/generateDocs.js",
+    "docs:build": "node scripts/generateDocs",
     "website": "cd website && yarn start",
     "website:build": "cd website && yarn build",
     "website:publish": "cd website && yarn publish-gh-pages"
