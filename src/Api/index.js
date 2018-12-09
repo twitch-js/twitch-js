@@ -248,18 +248,20 @@ class Api {
   _handleFetch(maybeUrl = '', options = {}) {
     const fetchProfiler = this._log.startTimer()
 
-    const baseUrl = this._getBaseUrl(options)
-    const headers = this._getHeaders(options)
+    const { version, ...fetchOptions } = options
+
+    const baseUrl = this._getBaseUrl({ version })
+    const headers = this._getHeaders({ version })
 
     const url = `${baseUrl}/${maybeUrl}`
 
-    const message = `${options.method || 'GET'} ${baseUrl}`
+    const message = `${fetchOptions.method || 'GET'} ${baseUrl}`
 
     const request = () =>
       fetchUtil(url, {
-        ...options,
+        ...fetchOptions,
         headers: {
-          ...options.headers,
+          ...fetchOptions.headers,
           ...headers,
         },
       }).then(res => {

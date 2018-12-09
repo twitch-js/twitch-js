@@ -67,6 +67,36 @@ describe('Api', () => {
     })
   })
 
+  describe('headers', () => {
+    test('should create headers with clientId and token', async () => {
+      const api = new Api(options)
+      await api.get()
+
+      expect(fetchUtil.mock.calls).toMatchSnapshot()
+    })
+
+    test('should create headers with clientId', async () => {
+      const api = new Api({ ...options, token: undefined })
+      await api.get()
+
+      expect(fetchUtil.mock.calls).toMatchSnapshot()
+    })
+
+    test('should create headers with token', async () => {
+      const api = new Api({ ...options, clientId: undefined })
+      await api.get()
+
+      expect(fetchUtil.mock.calls).toMatchSnapshot()
+    })
+
+    test('should create headers for Helix', async () => {
+      const api = new Api(options)
+      await api.get('', { version: 'helix' })
+
+      expect(fetchUtil.mock.calls).toMatchSnapshot()
+    })
+  })
+
   describe('hasScope', () => {
     test('should reject if instance is uninitialized', () => {
       const api = new Api(options)
@@ -177,7 +207,7 @@ describe('Api', () => {
         const [actualEndpoint, actualOpts] = fetchUtil.mock.calls[0]
 
         expect(actualEndpoint).toBe(`${constants.HELIX_URL_ROOT}/ENDPOINT`)
-        expect(actualOpts).toMatchObject(opts)
+        expect(actualOpts).toMatchSnapshot()
       })
     })
   })
