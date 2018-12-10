@@ -53,13 +53,6 @@ class Client extends EventEmitter {
 
   isReady = () => get(this, '_ws.readyState') === 1
 
-  /**
-   * Send message to Twitch
-   * @param {string} message
-   * @param {Object} options
-   * @param {number} options.priority
-   * @param {boolean} options.isModerator
-   */
   send = (message, { priority = 1, isModerator } = {}) => {
     const fn = this._ws.send.bind(this._ws, message)
 

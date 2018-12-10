@@ -4,11 +4,11 @@ import { conformsTo, defaultsDeep, isFunction, isString } from 'lodash'
 const apiOptions = maybeOptions => {
   /**
    * API options
-   * @typedef {Object} Api#ApiOptions
+   * @typedef {Object} ApiOptions
    * @property {string} [clientId] Optional if token is defined.
    * @property {string} [token] Optional if clientId is defined.
    * @property {Object} [log] Log options
-   * @property {function} [onAuthenticationFailure]
+   * @property {Promise<string>} [onAuthenticationFailure]
    */
   const shape = {
     onAuthenticationFailure: isFunction,

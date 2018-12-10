@@ -9,6 +9,7 @@ import * as validators from './utils/validators'
 import * as constants from './constants'
 
 /**
+ * Twitch API client.
  * @class
  *
  * @example <caption>Get Featured Streams</caption>
@@ -24,29 +25,8 @@ class Api {
   _options
   _log
 
-  /**
-   * API ready state
-   * @type {ApiReadyState}
-   */
   _readyState = 1
 
-  /**
-   * API status state.
-   * @typedef {Object} ApiStatusState
-   * @property {Object} token
-   * @property {Object} token.authorization
-   * @property {Array<string>} token.authorization.scopes
-   * @property {string} token.authorization.createdAt
-   * @property {string} token.authorization.updatedAt
-   * @property {string} token.clientId
-   * @property {string} token.userId
-   * @property {string} token.userName
-   * @property {boolean} token.valid
-   */
-  /**
-   * API status.
-   * @type {ApiStatusState}
-   */
   _status
 
   /**
@@ -56,54 +36,50 @@ class Api {
   constructor(maybeOptions = {}) {
     /**
      * @type {ApiOptions}
-     * @private
      */
     this.options = maybeOptions
 
     this._log = createLogger({ scope: 'Api', ...this.options.log })
   }
 
-  /**
-   * @function
-   * @public
-   * @param {ApiOptions} options
-   */
   set options(maybeOptions) {
     this._options = validators.apiOptions(maybeOptions)
   }
 
-  /**
-   * @function Api#getOptions
-   * @public
-   * @returns {ApiOptions}
-   */
   get options() {
     return this._options
   }
 
   /**
-   * @function Api#getReadyState
-   * @public
-   * @returns {number}
-   *
+   * @type {enum}
    */
   get readyState() {
     return this._readyState
   }
 
   /**
-   * @function Api#getStatus
-   * @public
-   * @returns {ApiStatusState}
+   * @type {ApiStatusState}
    */
   get status() {
+    /**
+     * API status state.
+     * @typedef {Object} ApiStatusState
+     * @property {Object} token
+     * @property {Object} token.authorization
+     * @property {Array<string>} token.authorization.scopes
+     * @property {string} token.authorization.createdAt
+     * @property {string} token.authorization.updatedAt
+     * @property {string} token.clientId
+     * @property {string} token.userId
+     * @property {string} token.userName
+     * @property {boolean} token.valid
+     */
+
     return this._status
   }
 
   /**
    * Update client options.
-   * @function Api#updateOptions
-   * @public
    * @param {ApiOptions} options - New client options. To update `token` or `clientId`, use [**api.initialize()**]{@link Api#initialize}.
    */
   updateOptions(options) {
@@ -112,8 +88,6 @@ class Api {
   }
 
   /**
-   * @function Api#initialize
-   * @private
    * Initialize API client and retrieve status.
    * @param {ApiOptions} [options] - Provide new options to client.
    * @returns {Promise<ApiStatusState, Object>}
@@ -137,8 +111,6 @@ class Api {
   }
 
   /**
-   * @function Api#hasScope
-   * @private
    * Check if current credentials include `scope`.
    * @param {string} scope - Scope to check.
    * @returns {Promise<boolean, boolean>}
@@ -157,18 +129,17 @@ class Api {
   }
 
   /**
-   * @function Api#get
-   * @public
    * GET endpoint.
    * @param {string} endpoint
-   * @param {module:utils.FetchOptions} [options]
-   * @param {string} [options.version]
+   * @param {MethodOptions} [options]
+   * @returns {Promise<Object>}
    *
    * @example <caption>Get Live Overwatch Streams</caption>
    * api.get('streams', { search: { game: 'Overwatch' } })
    *   .then(response => {
    *     // Do stuff with response ...
    *   })
+   *
    * @example <caption>Get user follows (Helix)</caption>
    * api.get('users/follows', { version: 'helix', search: { to_id: '23161357' } })
    *   .then(response => {
@@ -180,24 +151,20 @@ class Api {
   }
 
   /**
-   * @function Api#post
-   * @public
    * POST endpoint.
    * @param {string} endpoint
-   * @param {module:utils.FetchOptions} [options={method:'post'}]
-   * @param {string} [options.version]
+   * @param {MethodOptions} [options={method:'post'}]
+   * @returns {Promise<Object>}
    */
   post(endpoint, options = {}) {
     return this._handleFetch(endpoint, { ...options, method: 'post' })
   }
 
   /**
-   * @function Api#put
-   * @public
    * PUT endpoint.
    * @param {string} endpoint
-   * @param {module:utils.FetchOptions} [options={method:'put'}]
-   * @param {string} [options.version]
+   * @param {MethodOptions} [options={method:'put'}]
+   * @returns {Promise<Object>}
    */
   put(endpoint, options = {}) {
     return this._handleFetch(endpoint, { ...options, method: 'put' })
@@ -243,6 +210,15 @@ class Api {
   _handleFetch(maybeUrl = '', options = {}) {
     const fetchProfiler = this._log.startTimer()
 
+    /**
+     * Method options
+     * @typedef {Object} MethodOptions
+     * @property {string|'helix'} [version] - API version
+     * @property {string} [method=get]
+     * @property {Object} [headers]
+     * @property {Object} [search]
+     * @property {Object|FormData} [body]
+     */
     const { version, ...fetchOptions } = options
 
     const baseUrl = this._getBaseUrl({ version })

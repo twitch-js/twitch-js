@@ -1,11 +1,11 @@
 {
   "source": {
-    "include": ["./src"],
-    "includePattern": ".+[^(\\.test)]\\.js$"
+    "include": ["src"],
+    "includePattern": "((?!test).)+\\.js$"
   },
   "opts": {
-    "template": "./node_modules/tsd-jsdoc",
-    "destination": "./lib",
-    "recurse": true
+    "recurse": true,
+    "template": "node_modules/tsd-jsdoc/dist",
+    "destination": "lib"
   }
 }

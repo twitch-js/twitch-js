@@ -51,7 +51,7 @@ const roomState = roomStateTags =>
    * ROOMSTATE Tag
    * @typedef {Object} RoomStateTags
    * @property {string} [broadcasterLang]
-   * @property {booelan} emoteOnly
+   * @property {boolean} emoteOnly
    * @property {boolean|number} followersOnly
    * @property {boolean} r9k
    * @property {number} slow

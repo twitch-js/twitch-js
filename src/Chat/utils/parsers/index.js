@@ -23,7 +23,7 @@ const base = rawMessages => {
 
     /**
      * Base message parsed from Twitch
-     * @mixin BaseMessage
+     * @interface BaseMessage
      * @property {string} _raw Un-parsed message
      * @property {Date} timestamp Timestamp
      * @property {string} username Username

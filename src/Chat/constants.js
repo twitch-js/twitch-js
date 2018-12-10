@@ -2,19 +2,9 @@ export const CHAT_SERVER = 'irc-ws.chat.twitch.tv'
 export const CHAT_SERVER_PORT = 6667
 export const CHAT_SERVER_SSL_PORT = 443
 
-/**
- * @constant
- * @type {number}
- * @default 5000
- */
 export const CONNECTION_TIMEOUT = 5000
 export const KEEP_ALIVE_PING_TIMEOUT = 55000
 export const KEEP_ALIVE_RECONNECT_TIMEOUT = 60000
-/**
- * @constant
- * @type {number}
- * @default 1000
- */
 export const JOIN_TIMEOUT = 1000 // milliseconds.
 export const COMMAND_TIMEOUT = 1000 // milliseconds.
 
@@ -43,25 +33,18 @@ export const PRIVATE_MESSAGE_HOSTED_RE = /:.+@jtv\.tmi\.twitch\.tv PRIVMSG #?(\w
 export const ANONYMOUS_USERNAME = 'justinfan'
 export const ANONYMOUS_USERNAME_RE = new RegExp(`^${ANONYMOUS_USERNAME}(\\d+)$`)
 
-/** @typedef {string} ClientReadyState */
 /**
  * Chat client ready state
- * @readonly
- * @enum {ClientReadyState}
- * @property {string} 0 not ready
- * @property {string} 1 connecting
- * @property {string} 2 reconnecting
- * @property {string} 3 connecting
- * @property {string} 4 disconnecting
- * @property {string} 5 disconnected
+ * @alias ClientReadyState
+ * @enum {number}
  */
-export const READY_STATES = {
-  0: 'NOT_READY',
-  1: 'CONNECTING',
-  2: 'RECONNECTING',
-  3: 'CONNECTED',
-  4: 'DISCONNECTING',
-  5: 'DISCONNECTED',
+const READY_STATES = {
+  NOT_READY: 0,
+  CONNECTING: 1,
+  RECONNECTING: 2,
+  CONNECTED: 3,
+  DISCONNECTING: 4,
+  DISCONNECTED: 5,
 }
 
 export const CAPABILITIES = [
@@ -165,12 +148,6 @@ export const MESSAGE_IDS = {
   ...USER_NOTICE_MESSAGE_IDS,
 }
 
-/**
- * Chat events
- * @readonly
- * @enum {string}
- * @property {string} RAW
- */
 export const EVENTS = {
   ...Object.keys(NOTICE_MESSAGE_IDS).reduce(
     (noticeEvents, noticeEvent) => ({
@@ -244,3 +221,5 @@ export const CHAT_COMMANDS = {
   UNRAID: 'unraid',
   // WHISPER: 'w',
 }
+
+export { READY_STATES }

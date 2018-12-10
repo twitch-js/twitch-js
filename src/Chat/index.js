@@ -1,9 +1,3 @@
-/**
- * EventEmitter3 is a high performance EventEmitter
- * @external EventEmitter3
- * @see {@link https://github.com/primus/eventemitter3 EventEmitter3}
- */
-
 import { EventEmitter } from 'eventemitter3'
 
 import { get } from 'lodash'
@@ -23,10 +17,9 @@ import * as sanitizers from './utils/sanitizers'
 import * as validators from './utils/validators'
 
 /**
+ * Twitch Chat Client
  * @class
- * @public
  * @extends EventEmitter
- * @classdesc Twitch Chat Client
  *
  * @emits Chat#*
  * @emits Chat#CLEARCHAT
@@ -78,23 +71,16 @@ import * as validators from './utils/validators'
  * })
  */
 class Chat extends EventEmitter {
-  /** @private */
   _options
 
-  /** @private */
   _log
 
-  /** @private */
   _readyState = 0
 
-  /** @private */
   _connectionAttempts = 0
-  /** @private */
   _connectionInProgress = null
 
-  /** @private */
   _userState = {}
-  /** @private */
   _channelState = {}
 
   /**
@@ -104,42 +90,28 @@ class Chat extends EventEmitter {
   constructor(maybeOptions) {
     super()
 
+    /**
+     * @type {ChatOptions}
+     */
     this.options = maybeOptions
 
-    /**
-     * @type {any}
-     * @private
-     */
     this._log = createLogger({ scope: 'Chat', ...this.options.log })
 
     // Create commands.
     Object.assign(this, commands.factory(this))
   }
 
-  /**
-   * @function Chat#getOptions
-   * @public
-   * @description Retrieves the current [ChatOptions]{@link Chat#ChatOptions}
-   * @returns {ChatOptions} Options of the client
-   */
   get options() {
     return this._options
   }
 
-  /**
-   * @function Chat#setOptions
-   * @public
-   * @description Validates the passed options before changing `_options`
-   * @param {ChatOptions} options
-   */
   set options(maybeOptions) {
     this._options = validators.chatOptions(maybeOptions)
   }
 
   /**
+   * Connect to Twitch.
    * @function Chat#connect
-   * @public
-   * @description Connect to Twitch.
    * @returns {Promise<?GlobalUserStateMessage, string>} Global user state message
    */
   connect = () => {
@@ -161,9 +133,8 @@ class Chat extends EventEmitter {
   }
 
   /**
+   * Updates the clients options after first instantiation.
    * @function Chat#updateOptions
-   * @public
-   * @description Updates the clients options after first instantiation.
    * @param {ApiOptions} options - New client options. To update `token` or `username`, use [**api.reconnect()**]{@link Chat#reconnect}.
    */
   updateOptions(options) {
@@ -172,9 +143,8 @@ class Chat extends EventEmitter {
   }
 
   /**
+   * Sends a raw message to Twitch.
    * @function Chat#send
-   * @public
-   * @description Sends a raw message to Twitch.
    * @param {string} message - Message to send.
    * @param {Object} [options]
    * @returns {Promise<void>} Resolves on success, rejects on failure.
@@ -182,16 +152,14 @@ class Chat extends EventEmitter {
   send = (message, options) => this._client.send(message, options)
 
   /**
+   * Disconnected from Twitch.
    * @function Chat#disconnect
-   * @public
-   * @description Disconnected from Twitch.
    */
   disconnect = () => this._client.disconnect()
 
   /**
+   * Reconnect to Twitch.
    * @function Chat#reconnect
-   * @public
-   * @description Reconnect to Twitch.
    * @param {Object} newOptions - Provide new options to client.
    * @returns {Promise<Array<ChannelState>, string>}
    */
@@ -212,9 +180,8 @@ class Chat extends EventEmitter {
   }
 
   /**
+   * Join a channel.
    * @function Chat#join
-   * @public
-   * @description Join a channel.
    * @param {string} channel
    * @returns {Promise<ChannelState, string>}
    *
@@ -267,15 +234,14 @@ class Chat extends EventEmitter {
 
     const join = Promise.all(promises).then(([, roomState, userState]) => {
       /**
-       * @typedef {Object} ChannelState
        * Channel state information
+       * @typedef {Object} ChannelState
        * @property {RoomStateTags} roomState
-       * @property {?UserStateTags} userState
+       * @property {UserStateTags} [userState]
        */
-
       const channelState = {
         roomState: roomState.tags,
-        userState: get(userState, 'tags', null),
+        userState: get(userState, 'tags', undefined),
       }
 
       this._setChannelState(roomState.channel, channelState)
@@ -298,9 +264,8 @@ class Chat extends EventEmitter {
   }
 
   /**
+   * Depart from a channel.
    * @function Chat#part
-   * @public
-   * @description Depart from a channel.
    * @param {string} channel
    */
   part = maybeChannel => {
@@ -312,9 +277,8 @@ class Chat extends EventEmitter {
   }
 
   /**
+   * Send a message to a channel.
    * @function Chat#say
-   * @public
-   * @description Send a message to a channel.
    * @param {string} channel
    * @param {string} message
    * @param {...Object} messageArgs
@@ -362,9 +326,8 @@ class Chat extends EventEmitter {
   }
 
   /**
+   * Whisper to another user.
    * @function Chat#whisper
-   * @public
-   * @description Whisper to another user.
    * @param {string} user
    * @param {string} message
    * @returns {Promise<undefined>}
@@ -379,9 +342,8 @@ class Chat extends EventEmitter {
     ])
 
   /**
+   * Broadcast message to all connected channels.
    * @function Chat#broadcast
-   * @public
-   * @description Broadcast message to all connected channels.
    * @param {string} message
    * @returns {Promise<Array<UserStateMessage>>}
    */
