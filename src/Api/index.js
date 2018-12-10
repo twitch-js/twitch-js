@@ -1,4 +1,4 @@
-import { get, includes, pickBy, toUpper } from 'lodash'
+import { get, includes, toLower } from 'lodash'
 
 import createLogger from '../utils/logger/create'
 
@@ -22,6 +22,36 @@ import * as constants from './constants'
  * })
  */
 class Api {
+  _options
+  _log
+
+  /**
+   * API ready state
+   * @private
+   * @type {ApiReadyState}
+   */
+  _readyState = 1
+
+  /**
+   * API status state.
+   * @typedef {Object} ApiStatusState
+   * @property {Object} token
+   * @property {Object} token.authorization
+   * @property {Array<string>} token.authorization.scopes
+   * @property {string} token.authorization.createdAt
+   * @property {string} token.authorization.updatedAt
+   * @property {string} token.clientId
+   * @property {string} token.userId
+   * @property {string} token.userName
+   * @property {boolean} token.valid
+   */
+  /**
+   * API status.
+   * @private
+   * @type {ApiStatusState}
+   */
+  _status
+
   /**
    * API constructor.
    * @param {ApiOptions} options
@@ -33,37 +63,7 @@ class Api {
      */
     this.options = maybeOptions
 
-    /**
-     * @type {any}
-     * @public
-     */
-    this.log = createLogger({ scope: 'Api', ...this.options.log })
-
-    /**
-     * @type {number}
-     * @private
-     */
-    this._readyState = 1
-
-    /**
-     * API status state.
-     * @typedef {Object} ApiStatusState
-     * @property {Object} token
-     * @property {Object} token.authorization
-     * @property {Array<string>} token.authorization.scopes
-     * @property {string} token.authorization.createdAt
-     * @property {string} token.authorization.updatedAt
-     * @property {string} token.clientId
-     * @property {string} token.userId
-     * @property {string} token.userName
-     * @property {boolean} token.valid
-     */
-    /**
-     * API status.
-     * @type {ApiStatusState}
-     * @private
-     */
-    this._status = {}
+    this._log = createLogger({ scope: 'Api', ...this.options.log })
   }
 
   /**
@@ -112,51 +112,6 @@ class Api {
   updateOptions(options) {
     const { clientId, token } = this.options
     this.options = { ...options, clientId, token }
-  }
-
-  /**
-   * @function Api#getAuthorizationType
-   * @private
-   * @param {string} version
-   * @return {string}
-   */
-  getAuthorizationType(version) {
-    if (toUpper(version) === 'HELIX') {
-      return 'Bearer'
-    }
-
-    return 'OAuth'
-  }
-
-  /**
-   * @function Api#getBaseUrl
-   * @private
-   * @param {string} version
-   * @return {string}
-   */
-  getBaseUrl(version) {
-    if (toUpper(version) === 'HELIX') {
-      return constants.HELIX_URL_ROOT
-    }
-
-    return constants.KRAKEN_URL_ROOT
-  }
-
-  /**
-   * @function Api#getHeaders
-   * @private
-   * @param {string} version
-   * @return {object}
-   */
-  getHeaders(version) {
-    const { clientId, token } = this.options
-    const authType = this.getAuthorizationType(version)
-
-    return pickBy({
-      Accept: 'application/vnd.twitchtv.v5+json',
-      'Client-ID': clientId ? clientId : undefined,
-      Authorization: token ? `${authType} ${token}` : undefined,
-    })
   }
 
   /**
@@ -210,15 +165,21 @@ class Api {
    * GET endpoint.
    * @param {string} endpoint
    * @param {FetchOptions} [options]
+   * @param {string} [options.version]
    *
    * @example <caption>Get Live Overwatch Streams</caption>
    * api.get('streams', { search: { game: 'Overwatch' } })
    *   .then(response => {
    *     // Do stuff with response ...
    *   })
+   * @example <caption>Get user follows (Helix)</caption>
+   * api.get('users/follows', { version: 'helix', search: { to_id: '23161357' } })
+   *   .then(response => {
+   *     // Do stuff with response ...
+   *   })
    */
   get(endpoint, options = {}) {
-    return handleFetch.call(this, endpoint, options)
+    return this._handleFetch(endpoint, options)
   }
 
   /**
@@ -227,9 +188,10 @@ class Api {
    * POST endpoint.
    * @param {string} endpoint
    * @param {FetchOptions} [options={method:'post'}]
+   * @param {string} [options.version]
    */
   post(endpoint, options = {}) {
-    return handleFetch.call(this, endpoint, { ...options, method: 'post' })
+    return this._handleFetch(endpoint, { ...options, method: 'post' })
   }
 
   /**
@@ -238,52 +200,87 @@ class Api {
    * PUT endpoint.
    * @param {string} endpoint
    * @param {FetchOptions} [options={method:'put'}]
+   * @param {string} [options.version]
    */
   put(endpoint, options = {}) {
-    return handleFetch.call(this, endpoint, { ...options, method: 'put' })
+    return this._handleFetch(endpoint, { ...options, method: 'put' })
   }
-}
 
-/**
- * @function handleFetch
- * @private
- * @param {string} maybeUrl
- * @param {object} options
- * @return {any}
- */
-function handleFetch(maybeUrl = '', options = {}) {
-  const fetchProfiler = this.log.startTimer()
+  _isVersionHelix(version) {
+    return toLower(version) === constants.HELIX_VERSION
+  }
 
-  const [, version, url] = /^(?:([a-z]+):)?\/?(.*)$/i.exec(maybeUrl)
-  const baseUrl = `${this.getBaseUrl(version)}/${url}`
+  _getBaseUrl({ version } = {}) {
+    return this._isVersionHelix(version)
+      ? constants.HELIX_URL_ROOT
+      : constants.KRAKEN_URL_ROOT
+  }
 
-  const message = `${options.method || 'GET'} ${baseUrl}`
+  _getHeaders({ version } = {}) {
+    const { clientId, token } = this.options
 
-  const request = () =>
-    fetchUtil(baseUrl, {
-      ...options,
-      headers: {
-        ...options.headers,
-        ...this.getHeaders(version),
-      },
-    }).then(res => {
-      fetchProfiler.done({ message })
-      return res
-    })
+    const isHelix = this._isVersionHelix(version)
 
-  return request().catch(error => {
-    fetchProfiler.done({ level: 'error', message: error.body })
+    const authorizationHeader = isHelix
+      ? constants.HELIX_AUTHORIZATION_HEADER
+      : constants.KRAKEN_AUTHORIZATION_HEADER
+    const authorization = `${authorizationHeader} ${token}`
 
-    if (error instanceof Errors.AuthenticationError) {
-      return this.options
-        .onAuthenticationFailure()
-        .then(token => (this.options = { ...this.options, token }))
-        .then(() => this.log.info('Retrying (with new credentials)'))
-        .then(() => request())
+    const headers = isHelix
+      ? {}
+      : { Accept: 'application/vnd.twitchtv.v5+json' }
+
+    if (!clientId) {
+      return { ...headers, Authorization: authorization }
+    } else if (!token) {
+      return { ...headers, 'Client-ID': clientId }
     }
 
-    throw error
-  })
+    return {
+      ...headers,
+      'Client-ID': clientId,
+      Authorization: authorization,
+    }
+  }
+
+  _handleFetch(maybeUrl = '', options = {}) {
+    const fetchProfiler = this._log.startTimer()
+
+    const { version, ...fetchOptions } = options
+
+    const baseUrl = this._getBaseUrl({ version })
+    const headers = this._getHeaders({ version })
+
+    const url = `${baseUrl}/${maybeUrl}`
+
+    const message = `${fetchOptions.method || 'GET'} ${baseUrl}`
+
+    const request = () =>
+      fetchUtil(url, {
+        ...fetchOptions,
+        headers: {
+          ...fetchOptions.headers,
+          ...headers,
+        },
+      }).then(res => {
+        fetchProfiler.done({ message })
+        return res
+      })
+
+    return request().catch(error => {
+      fetchProfiler.done({ level: 'error', message: error.body })
+
+      if (error instanceof Errors.AuthenticationError) {
+        return this.options
+          .onAuthenticationFailure()
+          .then(token => (this.options = { ...this.options, token }))
+          .then(() => this._log.info('Retrying (with new credentials)'))
+          .then(() => request())
+      }
+
+      throw error
+    })
+  }
 }
 
 export default Api

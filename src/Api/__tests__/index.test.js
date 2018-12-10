@@ -6,6 +6,8 @@ import * as Errors from '../../utils/fetch/Errors'
 jest.mock('../../utils/fetch')
 
 describe('Api', () => {
+  jest.setTimeout(500)
+
   const options = {
     token: 'TOKEN',
     clientId: 'CLIENT_ID',
@@ -62,6 +64,36 @@ describe('Api', () => {
       await api.initialize({ token: newToken })
 
       expect(api._options.token).toBe(newToken)
+    })
+  })
+
+  describe('headers', () => {
+    test('should create headers with clientId and token', async () => {
+      const api = new Api(options)
+      await api.get()
+
+      expect(fetchUtil.mock.calls).toMatchSnapshot()
+    })
+
+    test('should create headers with clientId', async () => {
+      const api = new Api({ ...options, token: undefined })
+      await api.get()
+
+      expect(fetchUtil.mock.calls).toMatchSnapshot()
+    })
+
+    test('should create headers with token', async () => {
+      const api = new Api({ ...options, clientId: undefined })
+      await api.get()
+
+      expect(fetchUtil.mock.calls).toMatchSnapshot()
+    })
+
+    test('should create headers for Helix', async () => {
+      const api = new Api(options)
+      await api.get('', { version: 'helix' })
+
+      expect(fetchUtil.mock.calls).toMatchSnapshot()
     })
   })
 
@@ -154,7 +186,7 @@ describe('Api', () => {
     test('should call the Kraken endpoint', () => {
       const api = new Api(options)
 
-      const endpoint = 'kraken:ENDPOINT'
+      const endpoint = 'ENDPOINT'
       const opts = { a: { b: 'c ' } }
 
       return api.get(endpoint, opts).then(() => {
@@ -168,14 +200,14 @@ describe('Api', () => {
     test('should call the Helix endpoint', () => {
       const api = new Api(options)
 
-      const endpoint = 'helix:ENDPOINT'
-      const opts = { a: { b: 'c ' } }
+      const endpoint = 'ENDPOINT'
+      const opts = { version: 'helix', a: { b: 'c ' } }
 
       return api.get(endpoint, opts).then(() => {
         const [actualEndpoint, actualOpts] = fetchUtil.mock.calls[0]
 
         expect(actualEndpoint).toBe(`${constants.HELIX_URL_ROOT}/ENDPOINT`)
-        expect(actualOpts).toMatchObject(opts)
+        expect(actualOpts).toMatchSnapshot()
       })
     })
   })
