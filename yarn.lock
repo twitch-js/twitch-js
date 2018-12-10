@@ -6885,7 +6885,7 @@ trim-right@^1.0.1:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/trim-right/-/trim-right-1.0.1.tgz#cb2e1203067e0c8de1f614094b9fe45704ea6003"
 
-tsd-jsdoc@^2.0.0-beta.6:
+tsd-jsdoc@2.0.0-beta.6:
   version "2.0.0-beta.6"
   resolved "https://registry.yarnpkg.com/tsd-jsdoc/-/tsd-jsdoc-2.0.0-beta.6.tgz#d3fbf916ea295c9f6d07525c8e70c9d70195e2b6"
   integrity sha512-qEhk//Sn2iPiz+ZDWF+r9IiatxshVz/MyOMx9Ph1cFOr7jGj0F1xAaPWC6z+3Tg2bqCuh6h89FV2JsFax0znNw==
