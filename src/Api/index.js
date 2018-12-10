@@ -9,7 +9,8 @@ import * as validators from './utils/validators'
 import * as constants from './constants'
 
 /**
- * API client
+ * @class
+ * @public
  *
  * @example <caption>Get Featured Streams</caption>
  * const token = 'cfabdegwdoklmawdzdo98xt2fo512y'
@@ -26,14 +27,21 @@ class Api {
    * @param {ApiOptions} options
    */
   constructor(maybeOptions = {}) {
+    /**
+     * @type {ApiOptions}
+     * @private
+     */
     this.options = maybeOptions
 
+    /**
+     * @type {any}
+     * @public
+     */
     this.log = createLogger({ scope: 'Api', ...this.options.log })
 
     /**
-     * API ready state
+     * @type {number}
      * @private
-     * @type {ApiReadyState}
      */
     this._readyState = 1
 
@@ -52,30 +60,53 @@ class Api {
      */
     /**
      * API status.
-     * @private
      * @type {ApiStatusState}
+     * @private
      */
     this._status = {}
   }
 
+  /**
+   * @function Api#setOptions
+   * @public
+   * @param {ApiOptions} options
+   */
   set options(maybeOptions) {
     this._options = validators.apiOptions(maybeOptions)
   }
 
+  /**
+   * @function Api#getOptions
+   * @public
+   * @return {ApiOptions}
+   */
   get options() {
     return this._options
   }
 
+  /**
+   * @function Api#getReadyState
+   * @public
+   * @return {number}
+   *
+   */
   get readyState() {
     return this._readyState
   }
 
+  /**
+   * @function Api#getStatus
+   * @public
+   * @return {ApiStatusState}
+   */
   get status() {
     return this._status
   }
 
   /**
    * Update client options.
+   * @function Api#updateOptions
+   * @public
    * @param {ApiOptions} options New client options. To update `token` or `clientId`, use [**api.initialize()**]{@link Api#initialize}.
    */
   updateOptions(options) {
@@ -83,6 +114,12 @@ class Api {
     this.options = { ...options, clientId, token }
   }
 
+  /**
+   * @function Api#getAuthorizationType
+   * @private
+   * @param {string} version
+   * @return {string}
+   */
   getAuthorizationType(version) {
     if (toUpper(version) === 'HELIX') {
       return 'Bearer'
@@ -91,6 +128,12 @@ class Api {
     return 'OAuth'
   }
 
+  /**
+   * @function Api#getBaseUrl
+   * @private
+   * @param {string} version
+   * @return {string}
+   */
   getBaseUrl(version) {
     if (toUpper(version) === 'HELIX') {
       return constants.HELIX_URL_ROOT
@@ -99,6 +142,12 @@ class Api {
     return constants.KRAKEN_URL_ROOT
   }
 
+  /**
+   * @function Api#getHeaders
+   * @private
+   * @param {string} version
+   * @return {object}
+   */
   getHeaders(version) {
     const { clientId, token } = this.options
     const authType = this.getAuthorizationType(version)
@@ -111,6 +160,8 @@ class Api {
   }
 
   /**
+   * @function Api#initialize
+   * @private
    * Initialize API client and retrieve status.
    * @param {ApiOptions} [options] Provide new options to client.
    * @returns {Promise<ApiStatusState, Object>}
@@ -134,6 +185,8 @@ class Api {
   }
 
   /**
+   * @function Api#hasScope
+   * @private
    * Check if current credentials include `scope`.
    * @param {string} scope Scope to check.
    * @return {Promise<boolean, boolean>}
@@ -152,6 +205,8 @@ class Api {
   }
 
   /**
+   * @function Api#get
+   * @public
    * GET endpoint.
    * @param {string} endpoint
    * @param {FetchOptions} [options]
@@ -167,6 +222,8 @@ class Api {
   }
 
   /**
+   * @function Api#post
+   * @public
    * POST endpoint.
    * @param {string} endpoint
    * @param {FetchOptions} [options={method:'post'}]
@@ -176,6 +233,8 @@ class Api {
   }
 
   /**
+   * @function Api#put
+   * @public
    * PUT endpoint.
    * @param {string} endpoint
    * @param {FetchOptions} [options={method:'put'}]
@@ -185,6 +244,13 @@ class Api {
   }
 }
 
+/**
+ * @function handleFetch
+ * @private
+ * @param {string} maybeUrl
+ * @param {object} options
+ * @return {any}
+ */
 function handleFetch(maybeUrl = '', options = {}) {
   const fetchProfiler = this.log.startTimer()
 
