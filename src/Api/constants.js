@@ -1,3 +1,7 @@
+/**
+ * @module Api
+ */
+
 export const HELIX_VERSION = 'helix'
 export const HELIX_URL_ROOT = 'https://api.twitch.tv/helix'
 export const HELIX_AUTHORIZATION_HEADER = 'Bearer'

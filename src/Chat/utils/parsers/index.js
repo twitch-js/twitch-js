@@ -332,6 +332,7 @@ const userStateMessage = baseMessage => {
  * @event Chat#PRIVMSG
  * @mixes UserStateMessage PrivateMessage
  */
+
 const privateMessage = baseMessage => {
   const { _raw, tags } = baseMessage
 
@@ -393,6 +394,7 @@ const privateMessage = baseMessage => {
  * @property {Object} parameters
  * @property {string} systemMessage
  */
+
 const userNoticeMessage = baseMessage => {
   const tags = tagParsers.userNotice(baseMessage.tags)
 

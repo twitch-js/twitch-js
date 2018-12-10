@@ -119,8 +119,8 @@ class Chat extends EventEmitter {
   /**
    * @function Chat#getOptions
    * @public
-   * @desc Retrieves the current [ChatOptions]{@link Chat#ChatOptions}
-   * @return {ChatOptions} Options of the client
+   * @description Retrieves the current [ChatOptions]{@link Chat#ChatOptions}
+   * @returns {ChatOptions} Options of the client
    */
   get options() {
     return this._options
@@ -129,7 +129,7 @@ class Chat extends EventEmitter {
   /**
    * @function Chat#setOptions
    * @public
-   * @desc Validates the passed options before changing `_options`
+   * @description Validates the passed options before changing `_options`
    * @param {ChatOptions} options
    */
   set options(maybeOptions) {
@@ -139,8 +139,8 @@ class Chat extends EventEmitter {
   /**
    * @function Chat#connect
    * @public
-   * @desc Connect to Twitch.
-   * @return {Promise<?GlobalUserStateMessage, string>} Global user state message
+   * @description Connect to Twitch.
+   * @returns {Promise<?GlobalUserStateMessage, string>} Global user state message
    */
   connect = () => {
     if (this._connectionInProgress) {
@@ -163,8 +163,8 @@ class Chat extends EventEmitter {
   /**
    * @function Chat#updateOptions
    * @public
-   * @desc Updates the clients options after first instantiation.
-   * @param {ApiOptions} options New client options. To update `token` or `username`, use [**api.reconnect()**]{@link Chat#reconnect}.
+   * @description Updates the clients options after first instantiation.
+   * @param {ApiOptions} options - New client options. To update `token` or `username`, use [**api.reconnect()**]{@link Chat#reconnect}.
    */
   updateOptions(options) {
     const { token, username } = this.options
@@ -174,25 +174,26 @@ class Chat extends EventEmitter {
   /**
    * @function Chat#send
    * @public
-   * @desc Sends a raw message to Twitch.
+   * @description Sends a raw message to Twitch.
    * @param {string} message - Message to send.
-   * @return {Promise} Resolves on success, rejects on failure.
+   * @param {Object} [options]
+   * @returns {Promise<void>} Resolves on success, rejects on failure.
    */
   send = (message, options) => this._client.send(message, options)
 
   /**
    * @function Chat#disconnect
    * @public
-   * @desc Disconnected from Twitch.
+   * @description Disconnected from Twitch.
    */
   disconnect = () => this._client.disconnect()
 
   /**
    * @function Chat#reconnect
    * @public
-   * @desc Reconnect to Twitch.
-   * @param {object} newOptions Provide new options to client.
-   * @return {Promise<Array<ChannelState>, string>}
+   * @description Reconnect to Twitch.
+   * @param {Object} newOptions - Provide new options to client.
+   * @returns {Promise<Array<ChannelState>, string>}
    */
   reconnect = newOptions => {
     if (newOptions) {
@@ -213,9 +214,9 @@ class Chat extends EventEmitter {
   /**
    * @function Chat#join
    * @public
-   * @desc Join a channel.
+   * @description Join a channel.
    * @param {string} channel
-   * @return {Promise<ChannelState, string>}
+   * @returns {Promise<ChannelState, string>}
    *
    * @example <caption>Joining #dallas</caption>
    * const channel = '#dallas'
@@ -299,7 +300,7 @@ class Chat extends EventEmitter {
   /**
    * @function Chat#part
    * @public
-   * @desc Depart from a channel.
+   * @description Depart from a channel.
    * @param {string} channel
    */
   part = maybeChannel => {
@@ -313,10 +314,11 @@ class Chat extends EventEmitter {
   /**
    * @function Chat#say
    * @public
-   * @desc Send a message to a channel.
+   * @description Send a message to a channel.
    * @param {string} channel
    * @param {string} message
-   * @return {Promise<?UserStateMessage, string>}
+   * @param {...Object} messageArgs
+   * @returns {Promise<?UserStateMessage, string>}
    */
   say = (maybeChannel, message, ...messageArgs) => {
     const channel = sanitizers.channel(maybeChannel)
@@ -362,10 +364,10 @@ class Chat extends EventEmitter {
   /**
    * @function Chat#whisper
    * @public
-   * @desc Whisper to another user.
+   * @description Whisper to another user.
    * @param {string} user
    * @param {string} message
-   * @return {Promise<undefined>}
+   * @returns {Promise<undefined>}
    */
   whisper = (user, message) =>
     utils.resolveInSequence([
@@ -379,9 +381,9 @@ class Chat extends EventEmitter {
   /**
    * @function Chat#broadcast
    * @public
-   * @desc Broadcast message to all connected channels.
+   * @description Broadcast message to all connected channels.
    * @param {string} message
-   * @return {Promise<Array<UserStateMessage>>}
+   * @returns {Promise<Array<UserStateMessage>>}
    */
   broadcast = message =>
     utils.resolveInSequence([

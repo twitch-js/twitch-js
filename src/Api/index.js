@@ -10,7 +10,6 @@ import * as constants from './constants'
 
 /**
  * @class
- * @public
  *
  * @example <caption>Get Featured Streams</caption>
  * const token = 'cfabdegwdoklmawdzdo98xt2fo512y'
@@ -27,7 +26,6 @@ class Api {
 
   /**
    * API ready state
-   * @private
    * @type {ApiReadyState}
    */
   _readyState = 1
@@ -47,7 +45,6 @@ class Api {
    */
   /**
    * API status.
-   * @private
    * @type {ApiStatusState}
    */
   _status
@@ -67,7 +64,7 @@ class Api {
   }
 
   /**
-   * @function Api#setOptions
+   * @function
    * @public
    * @param {ApiOptions} options
    */
@@ -78,7 +75,7 @@ class Api {
   /**
    * @function Api#getOptions
    * @public
-   * @return {ApiOptions}
+   * @returns {ApiOptions}
    */
   get options() {
     return this._options
@@ -87,7 +84,7 @@ class Api {
   /**
    * @function Api#getReadyState
    * @public
-   * @return {number}
+   * @returns {number}
    *
    */
   get readyState() {
@@ -97,7 +94,7 @@ class Api {
   /**
    * @function Api#getStatus
    * @public
-   * @return {ApiStatusState}
+   * @returns {ApiStatusState}
    */
   get status() {
     return this._status
@@ -107,7 +104,7 @@ class Api {
    * Update client options.
    * @function Api#updateOptions
    * @public
-   * @param {ApiOptions} options New client options. To update `token` or `clientId`, use [**api.initialize()**]{@link Api#initialize}.
+   * @param {ApiOptions} options - New client options. To update `token` or `clientId`, use [**api.initialize()**]{@link Api#initialize}.
    */
   updateOptions(options) {
     const { clientId, token } = this.options
@@ -118,7 +115,7 @@ class Api {
    * @function Api#initialize
    * @private
    * Initialize API client and retrieve status.
-   * @param {ApiOptions} [options] Provide new options to client.
+   * @param {ApiOptions} [options] - Provide new options to client.
    * @returns {Promise<ApiStatusState, Object>}
    * @see https://dev.twitch.tv/docs/v5/#root-url
    */
@@ -143,8 +140,8 @@ class Api {
    * @function Api#hasScope
    * @private
    * Check if current credentials include `scope`.
-   * @param {string} scope Scope to check.
-   * @return {Promise<boolean, boolean>}
+   * @param {string} scope - Scope to check.
+   * @returns {Promise<boolean, boolean>}
    * @see https://dev.twitch.tv/docs/authentication/#twitch-api-v5
    */
   hasScope(scope) {
@@ -164,7 +161,7 @@ class Api {
    * @public
    * GET endpoint.
    * @param {string} endpoint
-   * @param {FetchOptions} [options]
+   * @param {module:utils.FetchOptions} [options]
    * @param {string} [options.version]
    *
    * @example <caption>Get Live Overwatch Streams</caption>
@@ -187,7 +184,7 @@ class Api {
    * @public
    * POST endpoint.
    * @param {string} endpoint
-   * @param {FetchOptions} [options={method:'post'}]
+   * @param {module:utils.FetchOptions} [options={method:'post'}]
    * @param {string} [options.version]
    */
   post(endpoint, options = {}) {
@@ -199,7 +196,7 @@ class Api {
    * @public
    * PUT endpoint.
    * @param {string} endpoint
-   * @param {FetchOptions} [options={method:'put'}]
+   * @param {module:utils.FetchOptions} [options={method:'put'}]
    * @param {string} [options.version]
    */
   put(endpoint, options = {}) {

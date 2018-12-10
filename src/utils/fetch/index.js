@@ -6,7 +6,7 @@ import parser from './parser'
 
 /**
  * Fetch options
- * @typedef {Object} FetchOptions
+ * @typedef {Object} module:utils.FetchOptions
  * @property {string} [options.method=get] The request method, e.g., `get`, `post`.
  * @property {Object} [options.headers] Any headers you want to add to your request.
  * @property {Object} [options.search] Any query parameters you want to add to your request.
@@ -18,7 +18,7 @@ import parser from './parser'
  * @param {string} url
  * @param {FetchOptions} [options]
  * @param {Object} [qsOptions]
- * @return {Promise<Object, Object>}
+ * @returns {Promise<Object, Object>}
  */
 const fetchUtil = (url, options = {}, qsOptions = {}) => {
   const isBodyJson =

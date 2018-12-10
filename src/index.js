@@ -22,13 +22,12 @@ import Api from './Api'
 class TwitchJs {
   /**
    * TwitchJs constructor
-   * @constructor
    * @param {Object} options
    * @param {string} options.token
    * @param {string} options.username
    * @param {string} options.clientId
-   * @param {Object} options.log
-   * @param {function} [options.onAuthenticationFailure]
+   * @param {Object} [options.log]
+   * @param {Function} [options.onAuthenticationFailure]
    * @param {ChatOptions} [options.chat]
    * @param {ApiOptions} [options.api]
    */
@@ -74,10 +73,10 @@ class TwitchJs {
 
   /**
    * @function TwitchJs#updateOptions
-   * @desc Update client options.
+   * @description Update client options.
    * @param {Object} options
-   * @param {ChatOptions} [options.chat] New chat client options.
-   * @param {ApiOptions} [options.api] New API client options.
+   * @param {ChatOptions} [options.chat] - New chat client options.
+   * @param {ApiOptions} [options.api] - New API client options.
    */
   updateOptions({ chat, api }) {
     this.chat.updateOptions(chat)

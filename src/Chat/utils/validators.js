@@ -26,6 +26,7 @@ const chatOptions = maybeOptions => {
    * @property {Object} [log]
    * @property {Function} [onAuthenticationFailure]
    */
+
   const shape = {
     username: isString,
     token: value => isNil(value) || isString(value),
