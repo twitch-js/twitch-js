@@ -55,7 +55,6 @@
     "build:lib": "cross-env BABEL_ENV=production babel src --out-dir lib --source-maps",
     "build:dist:dev": "webpack",
     "build:dist:prod": "webpack --env.production",
-    "build:types": "jsdoc --recurse --configure scripts/generateDeclaration/config.json",
     "build": "run-p build:**",
     "start:example": "nodemon examples/runkit.js",
     "docs:build:watch": "nodemon --exec yarn docs:build",
