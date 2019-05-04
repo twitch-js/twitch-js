@@ -59,11 +59,11 @@
   },
   "dependencies": {
     "babel-runtime": "^6.26.0",
-    "lodash": "4.17.5",
+    "lodash": "^4.17.11",
     "node-fetch": "^1.7.3",
-    "validator": "9.4.1",
+    "validator": "^9.4.1",
     "whatwg-fetch": "^2.0.3",
-    "ws": "1.1.5",
+    "ws": "^1.1.5",
     "@types/request": "^2.47.1",
     "@types/ws": "^5.1.2"
   },
