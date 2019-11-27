@@ -1,7 +1,7 @@
 import { EventEmitter } from 'eventemitter3'
 import { get } from 'lodash'
 import { stringify } from 'qs'
-import WebSocket from '../../shims/uws'
+import WebSocket from 'ws'
 
 import Queue from '../Queue'
 

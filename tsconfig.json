@@ -1,0 +1,16 @@
+{
+  "compilerOptions": {
+    "lib": ["es5", "dom"],
+      "outDir": "lib",
+      "allowJs": true,
+      "target": "es5",
+      "declaration": true,
+      "sourceMap": true
+  },
+  "include": [
+      "src"
+  ],
+  "exclude": [
+    "**/__tests__"
+  ]
+}

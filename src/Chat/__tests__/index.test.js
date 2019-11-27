@@ -9,7 +9,7 @@ import { resolveOnEvent } from '../../utils'
 import Chat, { constants } from '../index'
 import parser from '../utils/parsers'
 
-jest.mock('uws', () => require('ws'))
+jest.mock('ws', () => require('ws'))
 
 const emitHelper = (emitter, rawMessages) =>
   parser(rawMessages).forEach(message =>

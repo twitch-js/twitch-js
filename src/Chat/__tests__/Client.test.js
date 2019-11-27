@@ -5,7 +5,7 @@ import membership from '../../../__mocks__/ws/__fixtures__/membership'
 import Client from '../Client'
 import * as constants from '../constants'
 
-jest.mock('uws', () => require('ws'))
+jest.mock('ws', () => require('ws'))
 
 describe('Chat/Client', () => {
   const options = {
