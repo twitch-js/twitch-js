@@ -1,7 +1,9 @@
 import invariant from 'invariant'
 import { conformsTo, defaultsDeep, isFunction, isString } from 'lodash'
 
-const apiOptions = maybeOptions => {
+import { Options } from '../types'
+
+export const apiOptions = (maybeOptions: any): Options | never => {
   /**
    * API options
    * @typedef {Object} ApiOptions
@@ -9,7 +11,6 @@ const apiOptions = maybeOptions => {
    * @property {string} [token] Optional if clientId is defined.
    * @property {Object} [log] Log options
    * @property {function} [onAuthenticationFailure]
-   *
    */
   const shape = {
     onAuthenticationFailure: isFunction,
@@ -39,7 +40,5 @@ const apiOptions = maybeOptions => {
     '[twitch-js/Api] options: Expected valid options',
   )
 
-  return options
+  return options as Options
 }
-
-export { apiOptions }

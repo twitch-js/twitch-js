@@ -1,17 +1,12 @@
 import * as constants from '../constants'
 
-const isAuthenticationFailedMessage = (message = {}) =>
+export const isAuthenticationFailedMessage = (message: BaseMessage) =>
   message.command === constants.EVENTS.NOTICE &&
   message.channel === '' &&
   message.message === 'Login authentication failed'
 
-const getEventNameFromMessage = (message = {}) =>
+export const getEventNameFromMessage = (message: BaseMessage) =>
   message.command || message.event || constants.EVENTS.ALL
 
-const isUserAnonymous = value => constants.ANONYMOUS_USERNAME_RE.test(value)
-
-export {
-  isAuthenticationFailedMessage,
-  getEventNameFromMessage,
-  isUserAnonymous,
-}
+export const isUserAnonymous = (value: string) =>
+  constants.ANONYMOUS_USERNAME_RE.test(value)

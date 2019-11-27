@@ -1,5 +1,19 @@
-import Chat, { constants as ChatConstants } from './Chat'
-import Api from './Api'
+import { ConsolaOptions } from 'consola'
+import Chat, {
+  constants as ChatConstants,
+  Options as ChatOptions,
+} from './Chat'
+import Api, { Options as ApiOptions } from './Api'
+
+type Options = {
+  clientId?: string
+  token?: string
+  username?: string
+  log?: ConsolaOptions
+  onAuthenticationFailure?: () => Promise<string>
+  chat?: ChatOptions
+  api?: ApiOptions
+}
 
 /**
  * @class
@@ -20,18 +34,11 @@ import Api from './Api'
  */
 
 class TwitchJs {
-  /**
-   * TwitchJs constructor
-   * @constructor
-   * @param {Object} options
-   * @param {string} options.token
-   * @param {string} options.username
-   * @param {string} options.clientId
-   * @param {Object} options.log
-   * @param {function} [options.onAuthenticationFailure]
-   * @param {ChatOptions} [options.chat]
-   * @param {ApiOptions} [options.api]
-   */
+  chat: Chat
+  api: Api
+
+  chatConstants: typeof ChatConstants
+
   constructor({
     token,
     username,
@@ -40,11 +47,7 @@ class TwitchJs {
     onAuthenticationFailure,
     chat,
     api,
-  }) {
-    /**
-     * @public
-     * @property {Chat} chat
-     */
+  }: Options) {
     this.chat = new Chat({
       log,
       ...chat,
@@ -53,16 +56,8 @@ class TwitchJs {
       onAuthenticationFailure,
     })
 
-    /**
-     * @public
-     * @property {Object} chatConstants
-     */
     this.chatConstants = ChatConstants
 
-    /**
-     * @public
-     * @property {Api} api
-     */
     this.api = new Api({
       log,
       ...api,
@@ -73,17 +68,13 @@ class TwitchJs {
   }
 
   /**
-   * @function TwitchJs#updateOptions
-   * @desc Update client options.
-   * @param {Object} options
-   * @param {ChatOptions} [options.chat] New chat client options.
-   * @param {ApiOptions} [options.api] New API client options.
+   * Update client options.
    */
-  updateOptions({ chat, api }) {
+  updateOptions(chat: ChatOptions, api: ApiOptions) {
     this.chat.updateOptions(chat)
     this.api.updateOptions(api)
   }
 }
 
-export { Chat, ChatConstants }
+export { ChatConstants }
 export default TwitchJs

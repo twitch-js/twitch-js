@@ -4,11 +4,11 @@
  * @see {@link https://github.com/primus/eventemitter3 EventEmitter3}
  */
 
-import { EventEmitter } from 'eventemitter3'
+import EventEmitter from 'eventemitter3'
 
-import { get } from 'lodash'
+import get from 'lodash/get'
 
-import createLogger from '../utils/logger/create'
+import createLogger, { Logger } from '../utils/logger/create'
 
 import * as utils from '../utils'
 import * as chatUtils from './utils'
@@ -21,6 +21,9 @@ import * as commands from './utils/commands'
 import * as parsers from './utils/parsers'
 import * as sanitizers from './utils/sanitizers'
 import * as validators from './utils/validators'
+
+import * as types from './types'
+export * from './types'
 
 /**
  * @class
@@ -78,30 +81,25 @@ import * as validators from './utils/validators'
  * })
  */
 class Chat extends EventEmitter {
-  /** @private */
-  _options
+  private _options: types.Options
 
-  /** @private */
-  _log
+  private _log: Logger
 
-  /** @private */
-  _readyState = 0
+  private _client: Client
 
-  /** @private */
-  _connectionAttempts = 0
-  /** @private */
-  _connectionInProgress = null
+  private _readyState = 0
 
-  /** @private */
-  _userState = {}
-  /** @private */
-  _channelState = {}
+  private _connectionAttempts = 0
+  private _connectionInProgress: Promise<GlobalUserStateMessage>
+
+  private _userState: UserStateMessage
+  private _channelState: types.ChannelStates = {}
 
   /**
    * Chat constructor.
    * @param {ChatOptions} options
    */
-  constructor(maybeOptions) {
+  constructor(maybeOptions: types.Options) {
     super()
 
     this.options = maybeOptions
@@ -117,30 +115,21 @@ class Chat extends EventEmitter {
   }
 
   /**
-   * @function Chat#getOptions
-   * @public
-   * @desc Retrieves the current [ChatOptions]{@link Chat#ChatOptions}
-   * @return {ChatOptions} Options of the client
+   * Retrieves the current
    */
   get options() {
     return this._options
   }
 
   /**
-   * @function Chat#setOptions
-   * @public
-   * @desc Validates the passed options before changing `_options`
-   * @param {ChatOptions} options
+   * Validates the passed options before changing `_options`
    */
   set options(maybeOptions) {
     this._options = validators.chatOptions(maybeOptions)
   }
 
   /**
-   * @function Chat#connect
-   * @public
-   * @desc Connect to Twitch.
-   * @return {Promise<?GlobalUserStateMessage, string>} Global user state message
+   * Connect to Twitch.
    */
   connect = () => {
     if (this._connectionInProgress) {
@@ -161,40 +150,29 @@ class Chat extends EventEmitter {
   }
 
   /**
-   * @function Chat#updateOptions
-   * @public
-   * @desc Updates the clients options after first instantiation.
-   * @param {ApiOptions} options New client options. To update `token` or `username`, use [**api.reconnect()**]{@link Chat#reconnect}.
+   * Updates the clients options after first instantiation.
+   * To update `token` or `username`, use `reconnect()`.
    */
-  updateOptions(options) {
+  updateOptions(options: Partial<types.Options>) {
     const { token, username } = this.options
     this.options = { ...options, token, username }
   }
 
   /**
-   * @function Chat#send
-   * @public
-   * @desc Sends a raw message to Twitch.
-   * @param {string} message - Message to send.
-   * @return {Promise} Resolves on success, rejects on failure.
+   * Sends a raw message to Twitch.
    */
-  send = (message, options) => this._client.send(message, options)
+  send: Client['send'] = (message, options) =>
+    this._client.send(message, options)
 
   /**
-   * @function Chat#disconnect
-   * @public
-   * @desc Disconnected from Twitch.
+   * Disconnected from Twitch.
    */
   disconnect = () => this._client.disconnect()
 
   /**
-   * @function Chat#reconnect
-   * @public
-   * @desc Reconnect to Twitch.
-   * @param {object} newOptions Provide new options to client.
-   * @return {Promise<Array<ChannelState>, string>}
+   * Reconnect to Twitch, providing new options to client.
    */
-  reconnect = newOptions => {
+  reconnect = (newOptions?: types.Options) => {
     if (newOptions) {
       this.options = { ...this.options, ...newOptions }
     }
@@ -211,11 +189,7 @@ class Chat extends EventEmitter {
   }
 
   /**
-   * @function Chat#join
-   * @public
-   * @desc Join a channel.
-   * @param {string} channel
-   * @return {Promise<ChannelState, string>}
+   * Join a channel.
    *
    * @example <caption>Joining #dallas</caption>
    * const channel = '#dallas'
@@ -244,44 +218,36 @@ class Chat extends EventEmitter {
    *     })
    *   })
    */
-  join = maybeChannel => {
+  join = (maybeChannel: string) => {
     const channel = sanitizers.channel(maybeChannel)
 
-    this._log.info(`Joining ${channel}`)
-    const joinProfiler = this._log.startTimer()
+    const joinProfiler = this._log.startTimer(`Joining ${channel}`)
 
-    const promises = [
-      this.connect(),
-      utils.resolveOnEvent(this, `${constants.COMMANDS.ROOM_STATE}/${channel}`),
-    ]
-
-    if (!chatUtils.isUserAnonymous(this.options.username)) {
-      promises.push(
-        utils.resolveOnEvent(
+    const connect = this.connect()
+    const roomStateEvent = utils.resolveOnEvent<RoomStateMessage>(
+      this,
+      `${constants.COMMANDS.ROOM_STATE}/${channel}`,
+    )
+    const userStateEvent = !chatUtils.isUserAnonymous(this.options.username)
+      ? utils.resolveOnEvent<UserStateMessage>(
           this,
           `${constants.COMMANDS.USER_STATE}/${channel}`,
-        ),
-      )
-    }
+        )
+      : (Promise.resolve() as Promise<UserStateMessage | void>)
 
-    const join = Promise.all(promises).then(([, roomState, userState]) => {
-      /**
-       * @typedef {Object} ChannelState
-       * Channel state information
-       * @property {RoomStateTags} roomState
-       * @property {?UserStateTags} userState
-       */
+    const join = Promise.all([connect, roomStateEvent, userStateEvent]).then(
+      ([, roomState, userState]) => {
+        const channelState = {
+          roomState: roomState.tags,
+          userState: userState ? userState.tags : null,
+        }
 
-      const channelState = {
-        roomState: roomState.tags,
-        userState: get(userState, 'tags', null),
-      }
+        this._setChannelState(roomState.channel, channelState)
 
-      this._setChannelState(roomState.channel, channelState)
-
-      joinProfiler.done({ message: `Joined ${channel}` })
-      return channelState
-    })
+        joinProfiler.done(`Joined ${channel}`)
+        return channelState
+      },
+    )
 
     const send = this.send(`${constants.COMMANDS.JOIN} ${channel}`)
 
@@ -297,12 +263,9 @@ class Chat extends EventEmitter {
   }
 
   /**
-   * @function Chat#part
-   * @public
-   * @desc Depart from a channel.
-   * @param {string} channel
+   * Depart from a channel.
    */
-  part = maybeChannel => {
+  part = (maybeChannel: string) => {
     const channel = sanitizers.channel(maybeChannel)
     this._log.info(`Parting ${channel}`)
 
@@ -311,14 +274,9 @@ class Chat extends EventEmitter {
   }
 
   /**
-   * @function Chat#say
-   * @public
-   * @desc Send a message to a channel.
-   * @param {string} channel
-   * @param {string} message
-   * @return {Promise<?UserStateMessage, string>}
+   * Send a message to a channel.
    */
-  say = (maybeChannel, message, ...messageArgs) => {
+  say = (maybeChannel: string, message: string, ...messageArgs: string[]) => {
     const channel = sanitizers.channel(maybeChannel)
     const args = messageArgs.length ? ['', ...messageArgs].join(' ') : ''
 
@@ -328,14 +286,10 @@ class Chat extends EventEmitter {
 
     const timeout = utils.rejectAfter(
       this.options.joinTimeout,
-      constants.ERROR_SAY_TIMED_OUT,
+      new Errors.TimeoutError(constants.ERROR_SAY_TIMED_OUT),
     )
 
-    const commandResolvers = commands.resolvers(this)(
-      channel,
-      message,
-      ...messageArgs,
-    )
+    const commandResolvers = commands.resolvers(this)(channel, message)
 
     const resolvers = () => Promise.race([timeout, ...commandResolvers])
 
@@ -355,19 +309,14 @@ class Chat extends EventEmitter {
       })
       .catch(err => {
         this._log.error(info, err)
-        return Promise.reject(err)
+        throw err
       })
   }
 
   /**
-   * @function Chat#whisper
-   * @public
-   * @desc Whisper to another user.
-   * @param {string} user
-   * @param {string} message
-   * @return {Promise<undefined>}
+   * Whisper to another user.
    */
-  whisper = (user, message) =>
+  whisper = (user: string, message: string) =>
     utils.resolveInSequence([
       this._isUserAuthenticated.bind(this),
       this.send.bind(
@@ -377,13 +326,9 @@ class Chat extends EventEmitter {
     ])
 
   /**
-   * @function Chat#broadcast
-   * @public
-   * @desc Broadcast message to all connected channels.
-   * @param {string} message
-   * @return {Promise<Array<UserStateMessage>>}
+   * Broadcast message to all connected channels.
    */
-  broadcast = message =>
+  broadcast = (message: string) =>
     utils.resolveInSequence([
       this._isUserAuthenticated.bind(this),
       () =>
@@ -392,11 +337,9 @@ class Chat extends EventEmitter {
         ),
     ])
 
-  _handleConnectionAttempt() {
+  _handleConnectionAttempt(): Promise<GlobalUserStateMessage> {
     return new Promise((resolve, reject) => {
-      const connectProfiler = this._log.startTimer({
-        message: 'Connecting ...',
-      })
+      const connectProfiler = this._log.startTimer('Connecting ...')
 
       // Connect ...
       this._readyState = 1
@@ -430,13 +373,13 @@ class Chat extends EventEmitter {
 
       // Once the client is connected, resolve ...
       this._client.once(constants.EVENTS.CONNECTED, e => {
-        connectProfiler.done({ message: 'Connected' })
+        connectProfiler.done('Connected')
         resolve(e)
       })
     })
   }
 
-  _handleConnectSuccess(globalUserState) {
+  _handleConnectSuccess(globalUserState: GlobalUserStateMessage) {
     this._readyState = 3
     this._connectionAttempts = 0
 
@@ -542,14 +485,14 @@ class Chat extends EventEmitter {
 
     switch (preMessage.command) {
       case constants.EVENTS.JOIN: {
-        message = parsers.joinOrPartMessage(preMessage)
+        message = parsers.joinMessage(preMessage)
         message.isSelf = true
         eventName = `${message.command}/${channel}`
         break
       }
 
       case constants.EVENTS.PART: {
-        message = parsers.joinOrPartMessage(preMessage)
+        message = parsers.partMessage(preMessage)
         message.isSelf = true
         eventName = `${message.command}/${channel}`
         break

@@ -1,87 +1,99 @@
-import { parse } from 'irc-message'
+import { parse, Message } from 'irc-message'
 import camelcaseKeys from 'camelcase-keys'
 
-import { has, isEmpty, isFinite, toNumber, toUpper } from 'lodash'
+import gt from 'lodash/gt'
+import isEmpty from 'lodash/isEmpty'
+import isFinite from 'lodash/isFinite'
+import toNumber from 'lodash/toNumber'
+import toUpper from 'lodash/toUpper'
 
 import * as constants from '../../constants'
 import * as utils from '../'
-import * as typeParsers from './types'
+import * as helpers from './helpers'
 import * as tagParsers from './tags'
 
-const base = rawMessages => {
+export const base = (rawMessages: string): BaseMessage[] => {
   const rawMessagesV = rawMessages.split(/\r?\n/g)
-  const messages = []
 
-  rawMessagesV.forEach(rawMessage => {
+  return rawMessagesV.reduce((messages, rawMessage) => {
     if (!rawMessage.length) {
-      return
+      return messages
     }
 
-    const { raw, tags, command, prefix, params: [channel, message] } = parse(
-      rawMessage,
-    )
+    const {
+      raw,
+      tags,
+      command,
+      prefix,
+      params: [channel, message],
+    } = parse(rawMessage)
 
-    /**
-     * Base message parsed from Twitch
-     * @mixin BaseMessage
-     * @property {string} _raw Un-parsed message
-     * @property {Date} timestamp Timestamp
-     * @property {string} username Username
-     * @property {string} command Command
-     * @property {string} [channel] Channel
-     * @property {(ClearChatTags|GlobalUserStateTags|PrivateMessageTags|RoomStateTags|UserNoticeTags|UserStateTags)} tags Twitch tags
-     * @property {string} [message] Message
-     */
-    messages.push({
+    const baseMessage = {
       _raw: raw,
-      timestamp: typeParsers.generalTimestamp(
-        parseInt(tags['tmi-sent-ts'], 10),
-      ),
-      username: typeParsers.usernameFromPrefix(prefix),
+      timestamp: helpers.generalTimestamp(tags['tmi-sent-ts']),
+      username: helpers.usernameFromPrefix(prefix),
       command,
       channel: channel !== '*' ? channel : '',
-      tags: isEmpty(tags) ? {} : camelcaseKeys(tags),
+      tags: isEmpty(tags)
+        ? {}
+        : (camelcaseKeys(tags) as { [key: string]: string }),
       message,
-    })
-  })
+    }
 
-  return messages
+    return [...messages, baseMessage]
+  }, [] as BaseMessage[])
 }
 
-const joinOrPartMessage = baseMessage => {
+/**
+ * Join a channel.
+ * @see https://dev.twitch.tv/docs/irc/membership/#join-twitch-membership
+ */
+export const joinMessage = (baseMessage: BaseMessage): JoinMessage => {
   const [
     ,
     username,
     ,
     ,
-    command,
     channel,
-  ] = /:(.+)!(.+)@(.+).tmi.twitch.tv (JOIN|PART) (#.+)/g.exec(baseMessage._raw)
+  ] = /:(.+)!(.+)@(.+).tmi.twitch.tv JOIN (#.+)/g.exec(baseMessage._raw)
 
-  /**
-   * Join a channel.
-   * @event Chat#JOIN
-   * @mixes BaseMessage JoinOrPartMessage
-   * @property {string} username Username (lower-case)
-   * @see https://dev.twitch.tv/docs/irc/membership/#join-twitch-membership
-   */
-  /**
-   * Depart from a channel.
-   * @event Chat#PART
-   * @mixes BaseMessage JoinOrPartMessage
-   * @property {string} username Username (lower-case)
-   * @see https://dev.twitch.tv/docs/irc/membership/#part-twitch-membership
-   */
   return {
     ...baseMessage,
     channel,
-    command,
+    command: Commands.JOIN,
+    event: Commands.JOIN,
     username,
-    message: undefined,
   }
 }
 
-const modeMessage = baseMessage => {
+/**
+ * Join or depart from a channel.
+ * @see https://dev.twitch.tv/docs/irc/membership/#join-twitch-membership
+ * @see https://dev.twitch.tv/docs/irc/membership/#part-twitch-membership
+ */
+export const partMessage = (baseMessage: BaseMessage): PartMessage => {
+  const [
+    ,
+    username,
+    ,
+    ,
+    channel,
+  ] = /:(.+)!(.+)@(.+).tmi.twitch.tv PART (#.+)/g.exec(baseMessage._raw)
+
+  return {
+    ...baseMessage,
+    channel,
+    command: Commands.PART,
+    event: Commands.PART,
+    username,
+  }
+}
+
+/**
+ * Gain/lose moderator (operator) status in a channel.
+ * @see https://dev.twitch.tv/docs/irc/membership/#mode-twitch-membership
+ */
+export const modeMessage = (baseMessage: BaseMessage): ModeMessage => {
   const [
     ,
     channel,
@@ -91,28 +103,22 @@ const modeMessage = baseMessage => {
 
   const isModerator = mode === '+'
 
-  /**
-   * Gain/lose moderator (operator) status in a channel.
-   * @event Chat#MODE
-   * @mixes BaseMessage ModeMessage
-   * @property {string} event
-   * @property {string} username
-   * @property {boolean} isModerator
-   * @see https://dev.twitch.tv/docs/irc/membership/#mode-twitch-membership
-   */
   return {
     ...baseMessage,
-    event: isModerator
-      ? constants.EVENTS.MOD_GAINED
-      : constants.EVENTS.MOD_LOST,
+    command: Commands.MODE,
+    event: isModerator ? ChatEvents.MOD_GAINED : ChatEvents.MOD_LOST,
     channel,
     username,
-    message: `${mode}o`,
+    message: isModerator ? `+o` : '-o',
     isModerator,
   }
 }
 
-const namesMessage = baseMessage => {
+/**
+ * List current chatters in a channel.
+ * @see https://dev.twitch.tv/docs/irc/membership/#names-twitch-membership
+ */
+export const namesMessage = (baseMessage: BaseMessage): NamesMessage => {
   const [
     ,
     ,
@@ -123,23 +129,20 @@ const namesMessage = baseMessage => {
 
   const namesV = names.split(' ')
 
-  /**
-   * List current chatters in a channel.
-   * @event Chat#NAMES
-   * @mixes BaseMessage NamesMessage
-   * @property {Array<string>} usernames Array of usernames present in channel
-   * @see https://dev.twitch.tv/docs/irc/membership/#names-twitch-membership
-   */
   return {
     ...baseMessage,
     channel,
-    event: constants.EVENTS.NAMES,
+    command: Commands.NAMES,
+    event: Commands.NAMES,
     usernames: namesV,
-    message: undefined,
   }
 }
 
-const namesEndMessage = baseMessage => {
+/**
+ * End of list current chatters in a channel.
+ * @see https://dev.twitch.tv/docs/irc/membership/#names-twitch-membership
+ */
+export const namesEndMessage = (baseMessage: BaseMessage): NamesEndMessage => {
   const [
     ,
     username,
@@ -148,79 +151,71 @@ const namesEndMessage = baseMessage => {
     message,
   ] = /:(.+).tmi.twitch.tv 366 (.+) (#.+) :(.+)/g.exec(baseMessage._raw)
 
-  /**
-   * End of list current chatters in a channel.
-   * @event Chat#NAMES_END
-   * @mixes BaseMessage NamesEndMessage
-   * @see https://dev.twitch.tv/docs/irc/membership/#names-twitch-membership
-   */
   return {
     ...baseMessage,
     channel,
-    event: constants.EVENTS.NAMES_END,
+    command: Commands.NAMES_END,
+    event: Commands.NAMES_END,
     username,
-    message,
   }
 }
 
-const globalUserStateMessage = baseMessage => {
+/**
+ * GLOBALUSERSTATE message
+ */
+export const globalUserStateMessage = (
+  baseMessage: BaseMessage,
+): GlobalUserStateMessage => {
   const { tags, ...other } = baseMessage
 
-  /**
-   * GLOBALUSERSTATE message
-   * @mixin GlobalUserStateMessage
-   * @mixes BaseMessage
-   * @property {GlobalUserStateTags} tags
-   */
-  /**
-   * On successful login.
-   * @event Chat#GLOBALUSERSTATE
-   * @mixes GlobalUserStateMessage
-   */
   return {
-    tags: tagParsers.globalUserState(tags),
     ...other,
+    command: Commands.GLOBAL_USER_STATE,
+    event: Commands.GLOBAL_USER_STATE,
+    tags: tagParsers.globalUserState(tags),
   }
 }
 
-const clearChatMessage = baseMessage => {
+/**
+ * Temporary or permanent ban on a channel.
+ * @see https://dev.twitch.tv/docs/irc/commands/#clearchat-twitch-commands
+ *
+ * All chat is cleared (deleted).
+ * @see https://dev.twitch.tv/docs/irc/tags/#clearchat-twitch-tags
+ */
+export const clearChatMessage = (
+  baseMessage: BaseMessage,
+): ClearChatMessage => {
   const { tags, message: username, ...other } = baseMessage
 
   if (typeof username !== 'undefined') {
-    /**
-     * Temporary or permanent ban on a channel.
-     * @event Chat#CLEARCHAT/USER_BANNED
-     * @mixes BaseMessage ClearChatUserBannedMessage
-     * @property {ClearChatTags} tags
-     * @property {string} username
-     * @see https://dev.twitch.tv/docs/irc/commands/#clearchat-twitch-commands
-     * @see https://dev.twitch.tv/docs/irc/tags/#clearchat-twitch-tags
-     */
     return {
       ...other,
       tags: {
         ...tags,
-        banReason: typeParsers.generalString(tags.banReason),
-        banDuration: typeParsers.generalNumber(tags.banDuration),
+        banReason: helpers.generalString(tags.banReason),
+        banDuration: helpers.generalNumber(tags.banDuration),
       },
-      event: constants.EVENTS.USER_BANNED,
+      command: Commands.CLEAR_CHAT,
+      event: ChatEvents.USER_BANNED,
       username,
     }
   }
 
-  /**
-   * All chat is cleared (deleted).
-   * @event Chat#CLEARCHAT
-   * @mixes BaseMessage ClearChatMessage
-   * @see https://dev.twitch.tv/docs/irc/commands/#clearchat-twitch-commands
-   * @see https://dev.twitch.tv/docs/irc/tags/#clearchat-twitch-tags
-   */
   return {
     ...other,
+    command: Commands.CLEAR_CHAT,
+    event: Commands.CLEAR_CHAT,
   }
 }
 
-const hostTargetMessage = baseMessage => {
+/**
+ * Host starts or stops a message.
+ * @see https://dev.twitch.tv/docs/irc/commands/#hosttarget-twitch-commands
+ */
+export const hostTargetMessage = (
+  baseMessage: BaseMessage,
+): HostTargetMessage => {
   const [
     ,
     channel,
@@ -231,22 +226,12 @@ const hostTargetMessage = baseMessage => {
   )
   const isStopped = username === '-'
 
-  /**
-   * Host starts or stops a message.
-   * @event Chat#HOSTTARGET
-   * @mixes BaseMessage HostTargetMessage
-   * @property {number} [numberOfViewers] Number of viewers
-   * @see https://dev.twitch.tv/docs/irc/commands/#hosttarget-twitch-commands
-   */
   return {
     ...baseMessage,
     channel,
     username,
-    event: toUpper(
-      isStopped
-        ? constants.NOTICE_MESSAGE_IDS.HOST_OFF
-        : constants.NOTICE_MESSAGE_IDS.HOST_ON,
-    ),
+    command: Commands.HOST_TARGET,
+    event: isStopped ? ChatEvents.HOST_OFF : ChatEvents.HOST_ON,
     numberOfViewers: isFinite(toNumber(numberOfViewers))
       ? parseInt(numberOfViewers, 10)
       : undefined,
@@ -254,98 +239,86 @@ const hostTargetMessage = baseMessage => {
   }
 }
 
-const roomStateMessage = baseMessage => {
+/**
+ * When a user joins a channel or a room setting is changed.
+ */
+export const roomStateMessage = (
+  baseMessage: BaseMessage,
+): RoomStateMessage => {
   const { tags, ...other } = baseMessage
 
-  /**
-   * When a user joins a channel or a room setting is changed.
-   * @event Chat#ROOMSTATE
-   * @mixes BaseMessage RoomStateMessage
-   * @property {RoomStateTags} tags
-   */
   return {
+    ...other,
+    command: Commands.ROOM_STATE,
+    event: Commands.ROOM_STATE,
     tags: tagParsers.roomState(tags),
-    ...other,
-  }
-}
-
-const noticeMessage = baseMessage => {
-  const { tags: baseTags, ...other } = baseMessage
-
-  const tags = utils.isAuthenticationFailedMessage(baseMessage)
-    ? { ...baseTags, msgId: constants.EVENTS.AUTHENTICATION_FAILED }
-    : baseTags
-
-  const event = toUpper(tags.msgId)
-
-  switch (tags.msgId) {
-    case constants.NOTICE_MESSAGE_IDS.ROOM_MODS:
-      /**
-       * NOTICE/ROOM_MODS message
-       * @event Chat#NOTICE/ROOM_MODS
-       * @mixes NoticeMessage NoticeMessage
-       * @property {'ROOM_MODS'} event
-       * @property {Array<string>} mods
-       */
-      return { event, tags, mods: typeParsers.mods(other.message), ...other }
-    default:
-      /**
-       * @event Chat#NOTICE
-       * @mixes NoticeMessage
-       * @property {string} event `msg-id` tag (snake uppercase)
-       * @property {Object} tags
-       * @see https://dev.twitch.tv/docs/irc/commands/#msg-id-tags-for-the-notice-commands-capability
-       */
-
-      /**
-       * NOTICE message
-       * @mixin NoticeMessage
-       * @property {string} event `msg-id` tag (snake uppercase)
-       * @property {Object} tags
-       */
-      return { event, tags, ...other }
-  }
-}
-
-const userStateMessage = baseMessage => {
-  const { tags, ...other } = baseMessage
-
-  /**
-   * USERSTATE message
-   * @mixin UserStateMessage
-   * @mixes BaseMessage
-   * @property {UserStateTags} tags
-   */
-  /**
-   * When a user joins a channel or sends a PRIVMSG to a channel.
-   * @event Chat#USERSTATE
-   * @mixes UserStateMessage UserStateMessage
-   */
-  return {
-    tags: tagParsers.userState(tags),
-    ...other,
   }
 }
 
 /**
- * When a user joins a channel or sends a PRIVMSG to a channel.
- * @event Chat#PRIVMSG
- * @mixes UserStateMessage PrivateMessage
+ * NOTICE/ROOM_MODS message
+ * @see https://dev.twitch.tv/docs/irc/commands/#msg-id-tags-for-the-notice-commands-capability
  */
-const privateMessage = baseMessage => {
+export const noticeMessage = (baseMessage: BaseMessage): NoticeMessage => {
+  const { tags: baseTags, ...other } = baseMessage
+
+  const tags = utils.isAuthenticationFailedMessage(baseMessage)
+    ? { ...baseTags, msgId: constants.EVENTS.AUTHENTICATION_FAILED }
+    : (baseTags as UserNoticeTags)
+
+  const event = toUpper(tags.msgId) as KnownNoticeMessageIds
+
+  switch (tags.msgId) {
+    case KnownNoticeMessageIds.ROOM_MODS:
+      return {
+        ...other,
+        command: Commands.NOTICE,
+        event: event as KnownNoticeMessageIds.ROOM_MODS,
+        tags,
+        mods: helpers.mods(other.message),
+      }
+    default:
+      return {
+        ...other,
+        command: Commands.NOTICE,
+        event,
+        tags,
+      }
+  }
+}
+
+/**
+ * USERSTATE message
+ * When a user joins a channel or sends a PRIVMSG to a channel.
+ */
+export const userStateMessage = (
+  baseMessage: BaseMessage,
+): UserStateMessage => {
+  const { tags, ...other } = baseMessage
+
+  return {
+    ...other,
+    command: Commands.USER_STATE,
+    event: Commands.USER_STATE,
+    tags: tagParsers.userState(tags),
+  }
+}
+
+/**
+ * PRIVMSG message
+ * When a user joins a channel or sends a PRIVMSG to a channel.
+ * When a user cheers a channel.
+ * When a user hosts your channel while connected as broadcaster.
+ */
+export const privateMessage = (baseMessage: BaseMessage): PrivateMessage => {
   const { _raw, tags } = baseMessage
 
-  if (has(baseMessage, 'tags.bits')) {
-    /**
-     * When a user cheers a channel.
-     * @event Chat#PRIVMSG/CHEER
-     * @mixes UserStateMessage PrivateMessage
-     * @property {'CHEER'} event
-     * @property {number} bits
-     */
+  if (gt(tags.bits, 0)) {
     return {
       ...userStateMessage(baseMessage),
-      ...tagParsers.privateMessageCheerEvent(tags),
+      command: Commands.PRIVATE_MESSAGE,
+      event: ChatEvents.CHEER,
+      bits: helpers.generalNumber(tags.bits),
     }
   }
 
@@ -355,167 +328,179 @@ const privateMessage = baseMessage => {
     displayName,
     isAuto,
     numberOfViewers,
-  ] =
-    constants.PRIVATE_MESSAGE_HOSTED_RE.exec(_raw) || []
+  ] = constants.PRIVATE_MESSAGE_HOSTED_RE.exec(_raw) || []
 
   if (isHostingPrivateMessage) {
-    /**
-     * When a user hosts your channel while connected as broadcaster.
-     * @event Chat#PRIVMSG/HOSTED
-     * @mixes UserStateMessage PrivateMessage
-     * @property {'HOSTED/WITH_VIEWERS'|'HOSTED/WITHOUT_VIEWERS'|'HOSTED/AUTO'} event
-     * @property {Object} tags
-     * @property {string} tags.displayName
-     * @property {number} [numberOfViewers]
-     */
+    if (isAuto) {
+      return {
+        ...baseMessage,
+        tags: { displayName },
+        channel: `#${channel}`,
+        command: Commands.PRIVATE_MESSAGE,
+        event: ChatEvents.HOSTED_AUTO,
+        numberOfViewers: helpers.generalNumber(numberOfViewers),
+      }
+    }
+
+    if (numberOfViewers) {
+      return {
+        ...baseMessage,
+        tags: { displayName },
+        channel: `#${channel}`,
+        command: Commands.PRIVATE_MESSAGE,
+        event: ChatEvents.HOSTED_WITH_VIEWERS,
+        numberOfViewers: helpers.generalNumber(numberOfViewers),
+      }
+    }
 
     return {
       ...baseMessage,
       tags: { displayName },
+      command: Commands.PRIVATE_MESSAGE,
       channel: `#${channel}`,
-      event: isAuto
-        ? constants.EVENTS.HOSTED_AUTO
-        : numberOfViewers
-          ? constants.EVENTS.HOSTED_WITH_VIEWERS
-          : constants.EVENTS.HOSTED_WITHOUT_VIEWERS,
-      numberOfViewers: typeParsers.generalNumber(numberOfViewers),
+      event: ChatEvents.HOSTED_WITHOUT_VIEWERS,
     }
   }
 
-  return userStateMessage(baseMessage)
+  return {
+    ...userStateMessage(baseMessage),
+    command: Commands.PRIVATE_MESSAGE,
+    event: Commands.PRIVATE_MESSAGE,
+  }
 }
 
 /**
  * USERNOTICE message
- * @mixin UserNoticeMessage
- * @mixes BaseMessage
- * @property {string} event
- * @property {Object} parameters
- * @property {string} systemMessage
  */
-const userNoticeMessage = baseMessage => {
-  const tags = tagParsers.userNotice(baseMessage.tags)
+export const userNoticeMessage = (
+  baseMessage: BaseMessage,
+): UserNoticeMessage => {
+  const command = Commands.USER_NOTICE
+  const tags = {
+    ...tagParsers.userNotice(baseMessage.tags),
+    systemMsg: helpers.generalString(baseMessage.tags.systemMsg),
+  } as UserNoticeTags
+  const systemMessage = helpers.generalString(baseMessage.tags.systemMsg)
+  const parameters = tagParsers.userNoticeMessageParameters(tags)
 
-  /* eslint-disable no-fallthrough */
   switch (tags.msgId) {
     /**
      * On anonymous gifted subscription paid upgrade to a channel.
-     * @event Chat#USERNOTICE/ANON_GIFT_PAID_UPGRADE
-     * @mixes UserStateMessage AnonGiftPaidUpgradeMessage
-     * @property {'ANON_GIFT_PAID_UPGRADE'} event
      */
-    case constants.USER_NOTICE_MESSAGE_IDS.ANON_GIFT_PAID_UPGRADE:
+    case KnownUserNoticeMessageIds.ANON_GIFT_PAID_UPGRADE:
+      return {
+        ...baseMessage,
+        command,
+        event: ChatEvents.ANON_GIFT_PAID_UPGRADE,
+        parameters,
+        tags,
+        systemMessage,
+      }
 
     /**
      * On gifted subscription paid upgrade to a channel.
-     * @event Chat#USERNOTICE/GIFT_PAID_UPGRADE
-     * @mixes UserStateMessage GiftPaidUpgradeMessage
-     * @property {'GIFT_PAID_UPGRADE'} event
-     * @property {Object} parameters
-     * @property {number} parameters.promoGiftTotal
-     * @property {string} parameters.promoName
-     * @property {string} parameters.senderLogin
-     * @property {string} parameters.senderName
      */
-    case constants.USER_NOTICE_MESSAGE_IDS.GIFT_PAID_UPGRADE:
+    case KnownUserNoticeMessageIds.GIFT_PAID_UPGRADE:
+      return {
+        ...baseMessage,
+        command,
+        event: ChatEvents.GIFT_PAID_UPGRADE,
+        parameters,
+        tags,
+        systemMessage,
+      }
 
     /**
      * On channel raid.
-     * @event Chat#USERNOTICE/RAID
-     * @mixes UserStateMessage
-     * @property {'RAID'} event
-     * @property {Object} parameters
-     * @property {string} parameters.displayName
-     * @property {string} parameters.login
-     * @property {number} parameters.viewerCount
      */
-    case constants.USER_NOTICE_MESSAGE_IDS.RAID:
+    case KnownUserNoticeMessageIds.RAID:
+      return {
+        ...baseMessage,
+        command,
+        event: ChatEvents.RAID,
+        parameters,
+        tags,
+        systemMessage,
+      }
 
     /**
      * On resubscription (subsequent months) to a channel.
-     * @event Chat#USERNOTICE/RESUBSCRIPTION
-     * @mixes UserStateMessage
-     * @property {'RESUBSCRIPTION'} event
-     * @property {Object} parameters
-     * @property {number} parameters.months
-     * @property {string} parameters.subPlan
-     * @property {string} parameters.subPlanName
      */
-    case constants.USER_NOTICE_MESSAGE_IDS.RESUBSCRIPTION:
+    case KnownUserNoticeMessageIds.RESUBSCRIPTION:
+      return {
+        ...baseMessage,
+        command,
+        event: ChatEvents.RESUBSCRIPTION,
+        parameters,
+        tags,
+        systemMessage,
+      }
 
     /**
      * On channel ritual.
-     * @event Chat#USERNOTICE/RITUAL
-     * @mixes UserStateMessage
-     * @property {'RITUAL'} event
-     * @property {Object} parameters
-     * @property {string} parameters.ritualName
      */
-    case constants.USER_NOTICE_MESSAGE_IDS.RITUAL:
+    case KnownUserNoticeMessageIds.RITUAL:
+      return {
+        ...baseMessage,
+        command,
+        event: ChatEvents.RITUAL,
+        parameters,
+        tags,
+        systemMessage,
+      }
 
     /**
      * On subscription gift to a channel community.
-     * @event Chat#USERNOTICE/SUBSCRIPTION_GIFT_COMMUNITY
-     * @mixes UserStateMessage
-     * @property {'SUBSCRIPTION_GIFT_COMMUNITY'} event
-     * @property {Object} parameters
-     * @property {number} parameters.massGiftCount
-     * @property {number} parameters.senderCount
-     * @property {string} parameters.subPlan
      */
-    case constants.USER_NOTICE_MESSAGE_IDS.SUBSCRIPTION_GIFT_COMMUNITY:
+    case KnownUserNoticeMessageIds.SUBSCRIPTION_GIFT_COMMUNITY:
+      return {
+        ...baseMessage,
+        command,
+        event: ChatEvents.SUBSCRIPTION_GIFT_COMMUNITY,
+        parameters,
+        tags,
+        systemMessage,
+      }
 
     /**
      * On subscription gift to a channel.
-     * @event Chat#USERNOTICE/SUBSCRIPTION_GIFT
-     * @mixes UserStateMessage
-     * @property {'SUBSCRIPTION_GIFT'} event
-     * @property {Object} parameters
-     * @property {number} parameters.months
-     * @property {string} parameters.subPlan
-     * @property {string} parameters.subPlanName
-     * @property {string} parameters.recipientDisplayName
-     * @property {string} parameters.recipientId
-     * @property {string} parameters.recipientName
      */
-    case constants.USER_NOTICE_MESSAGE_IDS.SUBSCRIPTION_GIFT:
+    case KnownUserNoticeMessageIds.SUBSCRIPTION_GIFT:
+      return {
+        ...baseMessage,
+        command,
+        event: ChatEvents.SUBSCRIPTION_GIFT,
+        parameters,
+        tags,
+        systemMessage,
+      }
 
     /**
      * On subscription (first month) to a channel.
-     * @event Chat#USERNOTICE/SUBSCRIPTION
-     * @mixes UserStateMessage
-     * @property {'SUBSCRIPTION'} event
-     * @property {Object} parameters
-     * @property {1} parameters.months
-     * @property {string} parameters.subPlan
-     * @property {string} parameters.subPlanName
      */
-    case constants.USER_NOTICE_MESSAGE_IDS.SUBSCRIPTION:
+    case KnownUserNoticeMessageIds.SUBSCRIPTION:
+      return {
+        ...baseMessage,
+        command,
+        event: ChatEvents.SUBSCRIPTION,
+        parameters,
+        tags,
+        systemMessage,
+      }
 
+    /**
+     * Unknown USERNOTICE event.
+     */
     default:
       return {
         ...baseMessage,
-        tags: { ...tags, systemMsg: typeParsers.generalString(tags.systemMsg) },
+        command,
+        event: toUpper(tags.msgId),
+        tags,
         parameters: tagParsers.userNoticeMessageParameters(tags),
-        event: tagParsers.userNoticeEvent(tags),
-        systemMessage: typeParsers.generalString(tags.systemMsg),
+        systemMessage,
       }
   }
-  /* eslint-enable no-fallthrough */
 }
 
-export {
-  modeMessage,
-  hostTargetMessage,
-  joinOrPartMessage,
-  namesMessage,
-  namesEndMessage,
-  clearChatMessage,
-  globalUserStateMessage,
-  userStateMessage,
-  roomStateMessage,
-  noticeMessage,
-  userNoticeMessage,
-  privateMessage,
-}
 export default base

@@ -3,29 +3,38 @@
  * @external consola
  * @see {@link https://github.com/nuxt/consola#readme consola}
  */
-import consola from 'consola'
+import consola, { ConsolaOptions, Consola } from 'consola'
 
-const createLogger = ({ scope, ...options } = {}) => {
+type Options = ConsolaOptions & { scope?: string }
+
+const createLogger = ({ scope, ...options }: Options = {}) => {
   const label = ['twitch-js'].concat(scope || []).join('/')
 
   const logger = consola.create(options).withScope(label)
 
-  logger.startTimer = startProps => {
-    const now = new Date()
+  const startTimer = (startMessage: string) => {
+    const now = Date.now()
 
-    if (startProps && startProps.message) {
-      logger.info(startProps)
-    }
+    logger.info(startMessage)
 
     return {
-      done: doneProps => {
-        const elapsed = new Date() - now
-        logger.success({ message: `${doneProps.message} (${elapsed}ms)` })
+      done: (endMessage: string, error?: any) => {
+        const elapsed = Date.now() - now
+
+        if (error) {
+          logger.error(error, `${endMessage} (${elapsed}ms)`)
+        } else {
+          logger.success({ message: `${endMessage} (${elapsed}ms)` })
+        }
       },
     }
   }
 
-  return logger
+  return { ...logger, startTimer } as Consola & {
+    startTimer: typeof startTimer
+  }
 }
+
+export type Logger = ReturnType<typeof createLogger>
 
 export default createLogger

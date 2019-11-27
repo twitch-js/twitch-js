@@ -1,13 +1,15 @@
 class BaseError extends Error {
-  constructor(message, ...params) {
-    super(message, ...params)
+  timestamp: Date = new Date()
+
+  constructor(message: string) {
+    super(message)
 
     if (Error.captureStackTrace) {
       Error.captureStackTrace(this, BaseError)
     }
 
     this.message = `${message} [TwitchJS]`
-    this.timestamp = new Date()
+    this.timestamp
   }
 }
 

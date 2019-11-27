@@ -2,41 +2,49 @@ import BaseError from '../utils/BaseError'
 import * as constants from './constants'
 
 class ChatError extends BaseError {
-  constructor(message, ...other) {
-    super(`${message} [Chat]`, ...other)
+  command: Commands | Events
+
+  constructor(error: Error | string, message?: BaseMessage | string) {
+    const errorMessage = error instanceof Error ? error.message : error
+    super(`${errorMessage} [Chat]`)
+
+    if (typeof message !== 'string') {
+      this.command = message.command
+    }
   }
 }
 
-class AuthenticationError extends ChatError {
-  constructor(error, ...other) {
-    super('Authentication error encountered', ...other)
+export class AuthenticationError extends ChatError {
+  constructor(error: Error, message?: BaseMessage) {
+    super('Authentication error encountered', message)
 
     Object.assign(this, error)
   }
 }
 
-class ParseError extends ChatError {
-  constructor(error, rawMessage, ...other) {
-    super('Parse error encountered', ...other)
+export class ParseError extends ChatError {
+  _raw: string
+
+  constructor(error: Error, rawMessage: string) {
+    super('Parse error encountered')
+
+    Object.assign(this, error)
 
     this._raw = rawMessage
-    this.command = constants.EVENTS.PARSE_ERROR_ENCOUNTERED
-    this.message = error
-    this.stack = error.stack
+    this.command = ChatEvents.PARSE_ERROR_ENCOUNTERED
   }
 }
 
-class JoinError extends ChatError {
-  constructor(message, ...other) {
-    super('Join error encountered', ...other)
+export class JoinError extends ChatError {
+  constructor(message = 'Error: join') {
+    super(message)
   }
 }
 
-class TimeoutError extends ChatError {
-  constructor(message, ...other) {
-    super('Timeout error encountered', ...other)
+export class TimeoutError extends ChatError {
+  constructor(message = 'Error: timeout') {
+    super(message)
   }
 }
 
-export { AuthenticationError, ParseError, JoinError, TimeoutError }
 export default ChatError

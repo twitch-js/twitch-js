@@ -1,26 +1,22 @@
-import fetch from 'node-fetch'
+import fetch, { RequestInit, RequestInfo } from 'node-fetch'
 import FormData from 'form-data'
-import { stringify } from 'qs'
+import { stringify, IStringifyOptions } from 'qs'
 
 import parser from './parser'
 
-/**
- * Fetch options
- * @typedef {Object} FetchOptions
- * @property {string} [options.method=get] The request method, e.g., `get`, `post`.
- * @property {Object} [options.headers] Any headers you want to add to your request.
- * @property {Object} [options.search] Any query parameters you want to add to your request.
- * @property {Object|FormData} [options.body] Any body that you want to add to your request.
- */
+export type Options = RequestInit & {
+  /** Any query parameters you want to add to your request. */
+  search: { [key: string]: any }
+}
 
 /**
  * Fetches URL
- * @param {string} url
- * @param {FetchOptions} [options]
- * @param {Object} [qsOptions]
- * @return {Promise<Object, Object>}
  */
-const fetchUtil = (url, options = {}, qsOptions = {}) => {
+const fetchUtil = async <T = any>(
+  url: RequestInfo,
+  options?: Options,
+  qsOptions?: IStringifyOptions,
+) => {
   const isBodyJson =
     options.body &&
     !(options.body instanceof FormData) &&
@@ -37,13 +33,14 @@ const fetchUtil = (url, options = {}, qsOptions = {}) => {
       ? `?${stringify(options.search, qsOptions)}`
       : ''
 
-  return fetch(`${url}${search}`, {
+  const response = await fetch(`${url}${search}`, {
     ...options,
     method: options.method || 'get',
-    search: undefined,
     headers,
     body,
-  }).then(parser)
+  })
+
+  return parser<T>(response)
 }
 
 export default fetchUtil

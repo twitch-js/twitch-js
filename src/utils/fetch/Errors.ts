@@ -1,8 +1,16 @@
+import { Response } from 'node-fetch'
+
 import BaseError from '../BaseError'
 
 class FetchError extends BaseError {
-  constructor(response, body, ...params) {
-    super(`${response.url} ${response.statusText}`, ...params)
+  ok: Response['ok']
+  status: Response['status']
+  statusText: Response['statusText']
+  url: Response['url']
+  body: any
+
+  constructor(response: Response, body: any) {
+    super(`${response.url} ${response.statusText}`)
 
     this.ok = false
     this.status = response.status
@@ -12,9 +20,9 @@ class FetchError extends BaseError {
   }
 }
 
-class AuthenticationError extends FetchError {}
+class AuthenticationError extends FetchError { }
 
-function ErrorFactory(response, body) {
+function ErrorFactory(response: Response, body: any) {
   if (response.status === 401) {
     return new AuthenticationError(response, body)
   }

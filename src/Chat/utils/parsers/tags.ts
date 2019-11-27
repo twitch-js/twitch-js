@@ -1,87 +1,49 @@
 import { camelCase, gt, toLower, toUpper } from 'lodash'
 
 import * as constants from '../../constants'
-import * as types from './types'
+import * as helpers from './helpers'
 
-/**
- * CLEARCHAT tags
- * @typedef {Object} ClearChatTags
- * @property {string} [banReason]
- * @property {number} [banDuration]
- * @see https://dev.twitch.tv/docs/irc/tags#clearchat-twitch-tags
- */
-const clearChat = tags => ({
+export const clearChat = (tags: BaseTags): ClearChatTags => ({
   ...tags,
-  banReason: types.generalString(tags.banReason),
-  banDuration: types.generalNumber(tags.banDuration),
+  banReason: helpers.generalString(tags.banReason),
+  banDuration: helpers.generalNumber(tags.banDuration),
 })
 
-/**
- * GLOBALUSERSTATE tags
- * @typedef {Object} GlobalUserStateTags
- * @property {Array<string>} emoteSets
- * @property {string} userType
- * @property {string} username
- * @see https://dev.twitch.tv/docs/irc/tags#globaluserstate-twitch-tags
- */
-const globalUserState = tags => ({
+export const globalUserState = (tags: BaseTags): GlobalUserStateTags => ({
   ...tags,
-  emoteSets: types.emoteSets(tags.emoteSets),
-  userType: types.userType(tags.userType),
+  emoteSets: helpers.emoteSets(tags.emoteSets),
+  userType: helpers.userType(tags.userType),
   username: toLower(tags.displayName),
 })
 
-/** PRIVMSG tags
- * @typedef {UserStateTags} PrivateMessageTags
- * @see https://dev.twitch.tv/docs/irc/tags#privmsg-twitch-tags
- */
-const privateMessage = (...args) => userState(...args)
-
-const privateMessageCheerEvent = tags => {
+export const privateMessageCheerEvent = (tags: BaseTags) => {
   return gt(tags.bits, 0)
-    ? { event: constants.EVENTS.CHEER, bits: parseInt(tags.bits, 10) }
-    : {}
+    ? { event: ChatEvents.CHEER, bits: parseInt(tags.bits, 10) }
+    : { event: Commands.PRIVATE_MESSAGE }
 }
 
-/**
- * ROOMSTATE Tag
- * @typedef {Object} RoomStateTags
- * @property {string} [broadcasterLang]
- * @property {booelan} emoteOnly
- * @property {boolean|number} followersOnly
- * @property {boolean} r9k
- * @property {number} slow
- * @property {boolean} subsOnly
- * @see https://dev.twitch.tv/docs/irc/tags#roomstate-twitch-tags
- */
-const roomState = roomStateTags =>
+export const roomState = (roomStateTags: BaseTags): RoomStateTags =>
   Object.entries(roomStateTags).reduce((tags, [tag, value]) => {
     switch (tag) {
       case 'followersOnly':
-        return { ...tags, [tag]: types.followersOnly(value) }
+        return { ...tags, [tag]: helpers.followersOnly(value) }
       // Strings
       case 'broadcasterLang':
-        return { ...tags, [tag]: types.generalString(value) }
+        return { ...tags, [tag]: helpers.generalString(value) }
       // Numbers
       case 'slow':
-        return { ...tags, [tag]: types.generalNumber(value) }
+        return { ...tags, [tag]: helpers.generalNumber(value) }
       // Booleans
       case 'emoteOnly':
       case 'r9k':
       case 'subsOnly':
-        return { ...tags, [tag]: types.generalBoolean(value) }
+        return { ...tags, [tag]: helpers.generalBoolean(value) }
       default:
         return { ...tags, [tag]: value }
     }
   }, {})
 
-/** USERNOTICE tags
- * @typedef {UserStateTags} UserNoticeTags
- * @see https://dev.twitch.tv/docs/irc/tags#usernotice-twitch-tags
- */
-const userNotice = (...args) => userState(...args)
-
-const userNoticeMessageParameters = tags =>
+export const userNoticeMessageParameters = (tags: BaseTags) =>
   Object.entries(tags).reduce((parameters, [tag, value]) => {
     const [, param] = constants.MESSAGE_PARAMETER_PREFIX_RE.exec(tag) || []
 
@@ -92,17 +54,23 @@ const userNoticeMessageParameters = tags =>
       case 'PromoGiftTotal':
       case 'SenderCount':
       case 'ViewerCount':
-        return { ...parameters, [camelCase(param)]: types.generalNumber(value) }
+        return {
+          ...parameters,
+          [camelCase(param)]: helpers.generalNumber(value),
+        }
       // Not a msgParam.
       case undefined:
         return parameters
       // Strings
       default:
-        return { ...parameters, [camelCase(param)]: types.generalString(value) }
+        return {
+          ...parameters,
+          [camelCase(param)]: helpers.generalString(value),
+        }
     }
-  }, {})
+  }, {} as UserNoticeMessageParameterTags)
 
-const userNoticeEvent = tags => {
+export const userNoticeEvent = (tags: BaseTags) => {
   switch (tags.msgId) {
     case constants.USER_NOTICE_MESSAGE_IDS.ANON_GIFT_PAID_UPGRADE:
       return constants.EVENTS.ANON_GIFT_PAID_UPGRADE
@@ -125,32 +93,17 @@ const userNoticeEvent = tags => {
   }
 }
 
-/**
- * USERSTATE tags
- * @typedef {Object} UserStateTags
- * @property {BadgesTag} badges
- * @property {Array<EmoteTag>} emotes
- * @property {Array<string>} emoteSets
- * @property {number} [bits]
- * @see https://dev.twitch.tv/docs/irc/tags#userstate-twitch-tags
- */
-const userState = tags => ({
+export const userState = (tags: BaseTags): UserStateTags => ({
   ...tags,
-  badges: types.badges(tags.badges),
-  bits: types.generalNumber(tags.bits),
-  emotes: types.emotes(tags.emotes),
-  emoteSets: types.emoteSets(tags.emoteSets),
-  userType: types.userType(tags.userType),
+  badges: helpers.badges(tags.badges),
+  bits: helpers.generalNumber(tags.bits),
+  color: tags.color,
+  displayName: tags.displayName,
+  emotes: helpers.emotes(tags.emotes),
+  emoteSets: helpers.emoteSets(tags.emoteSets),
+  userType: helpers.userType(tags.userType),
 })
 
-export {
-  clearChat,
-  globalUserState,
-  privateMessage,
-  privateMessageCheerEvent,
-  roomState,
-  userNotice,
-  userNoticeMessageParameters,
-  userNoticeEvent,
-  userState,
-}
+export const privateMessage = userState
+
+export const userNotice = userState

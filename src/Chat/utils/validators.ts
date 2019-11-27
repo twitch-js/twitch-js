@@ -1,34 +1,22 @@
 import invariant from 'invariant'
 
-import {
-  conformsTo,
-  defaults,
-  isString,
-  isFinite,
-  isFunction,
-  isBoolean,
-  isNil,
-} from 'lodash'
+import conformsTo from 'lodash/conformsTo'
+import defaults from 'lodash/defaults'
+import isString from 'lodash/isString'
+import isFinite from 'lodash/isFinite'
+import isFunction from 'lodash/isFunction'
+import isBoolean from 'lodash/isBoolean'
+import isNil from 'lodash/isNil'
+
+import * as types from '../types'
 
 import * as constants from '../constants'
 import * as sanitizers from './sanitizers'
 
-const chatOptions = maybeOptions => {
-  /**
-   * Chat options
-   * @typedef {Object} ChatOptions
-   * @property {string} [username]
-   * @property {string} [token] OAuth token (use {@link https://twitchtokengenerator.com/} to generate one)
-   * @property {boolean} [isKnown] bot is known (see {@link https://dev.twitch.tv/docs/irc/guide/#known-and-verified-bots} for more information)
-   * @property {boolean} [isVerified] bot is verified (see {@link https://dev.twitch.tv/docs/irc/guide/#known-and-verified-bots} for more information)
-   * @property {number} [connectionTimeout=CONNECTION_TIMEOUT]
-   * @property {number} [joinTimeout=JOIN_TIMEOUT]
-   * @property {Object} [log]
-   * @property {Function} [onAuthenticationFailure]
-   */
+export const chatOptions = (maybeOptions: types.Options): types.Options => {
   const shape = {
     username: isString,
-    token: value => isNil(value) || isString(value),
+    token: (value: any) => isNil(value) || isString(value),
     isKnown: isBoolean,
     isVerified: isBoolean,
     connectionTimeout: isFinite,
@@ -36,7 +24,7 @@ const chatOptions = maybeOptions => {
     onAuthenticationFailure: isFunction,
   }
 
-  const options = defaults(
+  const options: types.Options = defaults(
     {
       ...maybeOptions,
       username: sanitizers.username(maybeOptions.username),
@@ -59,7 +47,9 @@ const chatOptions = maybeOptions => {
   return options
 }
 
-const clientOptions = maybeOptions => {
+export const clientOptions = (
+  maybeOptions: types.ClientOptions,
+): types.ClientOptions => {
   const shape = {
     username: isString,
     token: isString,
@@ -70,7 +60,7 @@ const clientOptions = maybeOptions => {
     isVerified: isBoolean,
   }
 
-  const options = defaults(
+  const options: types.ClientOptions = defaults(
     {
       ...maybeOptions,
       username: sanitizers.username(maybeOptions.username),
@@ -92,5 +82,3 @@ const clientOptions = maybeOptions => {
 
   return options
 }
-
-export { chatOptions, clientOptions }

@@ -1,16 +1,21 @@
 {
   "compilerOptions": {
-    "lib": ["es5", "dom"],
-      "outDir": "lib",
-      "allowJs": true,
-      "target": "es5",
-      "declaration": true,
-      "sourceMap": true
+    "declaration": true,
+    "esModuleInterop": true,
+    "lib": [
+      "dom",
+      "dom.iterable",
+      "esnext"
+    ],
+    "outDir": "lib",
+    "sourceMap": true,
+    "target": "es5"
   },
   "include": [
-      "src"
+    "src"
   ],
   "exclude": [
-    "**/__tests__"
+    "**/__tests__",
+    "**/__mocks__"
   ]
 }

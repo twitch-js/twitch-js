@@ -1,7 +1,7 @@
 import { random, toLower } from 'lodash'
 import { ANONYMOUS_USERNAME } from '../constants'
 
-function channel(value) {
+export const channel = (value: any): string => {
   if (value == null) {
     return '#'
   }
@@ -13,7 +13,7 @@ function channel(value) {
   return toLower(`#${value}`)
 }
 
-function token(value) {
+export const token = (value: any): string => {
   if (value == null) {
     return 'TWITCHJS'
   }
@@ -25,12 +25,10 @@ function token(value) {
   return `oauth:${value}`
 }
 
-function username(value) {
+export const username = (value: any): string => {
   if (value == null || value === 'justinfan') {
     return `${ANONYMOUS_USERNAME}${random(80000, 81000)}`
   }
 
   return value
 }
-
-export { channel, token, username }

@@ -1,255 +1,216 @@
-import { camelCase } from 'lodash'
+import camelCase from 'lodash/camelCase'
+import toUpper from 'lodash/toUpper'
 
 import * as utils from '../../utils'
-import * as constants from '../constants'
 
-const factory = chatInstance => {
-  Object.entries(constants.CHAT_COMMANDS).forEach(([key, command]) => {
-    chatInstance[camelCase(key)] = (channel, ...args) =>
+export const factory = (chatInstance: any) => {
+  Object.entries(ChatCommands).forEach(([key, command]) => {
+    chatInstance[camelCase(key)] = (channel: string, ...args: string[]) =>
       chatInstance.say(channel, `/${command}`, ...args)
   })
 }
 
-const resolvers = chatInstance => (channel, commandOrMessage) => {
+export const resolvers = (chatInstance: any) => (
+  channel: string,
+  commandOrMessage: string,
+) => {
   const [, command] = /^\/(.+)/.exec(commandOrMessage) || []
 
+  const notices = Object.entries(KnownNoticeMessageIds).reduce(
+    (uppercase, [key, value]) => ({ ...uppercase, [key]: toUpper(value) }),
+    {} as Record<keyof typeof KnownNoticeMessageIds, string>,
+  )
+
   switch (command) {
-    case constants.CHAT_COMMANDS.BAN:
+    case ChatCommands.BAN:
       return [
+        utils.resolveOnEvent(chatInstance, `${notices.BAN_SUCCESS}/${channel}`),
         utils.resolveOnEvent(
           chatInstance,
-          `${constants.EVENTS.BAN_SUCCESS}/${channel}`,
-        ),
-        utils.resolveOnEvent(
-          chatInstance,
-          `${constants.EVENTS.ALREADY_BANNED}/${channel}`,
+          `${notices.ALREADY_BANNED}/${channel}`,
         ),
       ]
 
-    case constants.CHAT_COMMANDS.CLEAR:
+    case ChatCommands.CLEAR:
+      return [
+        utils.resolveOnEvent(chatInstance, `${Commands.CLEAR_CHAT}/${channel}`),
+      ]
+
+    case ChatCommands.COLOR:
       return [
         utils.resolveOnEvent(
           chatInstance,
-          `${constants.EVENTS.CLEAR_CHAT}/${channel}`,
+          `${notices.COLOR_CHANGED}/${channel}`,
         ),
       ]
 
-    case constants.CHAT_COMMANDS.COLOR:
+    case ChatCommands.COMMERCIAL:
       return [
         utils.resolveOnEvent(
           chatInstance,
-          `${constants.EVENTS.COLOR_CHANGED}/${channel}`,
+          `${notices.COMMERCIAL_SUCCESS}/${channel}`,
         ),
       ]
 
-    case constants.CHAT_COMMANDS.COMMERCIAL:
+    case ChatCommands.EMOTE_ONLY:
       return [
         utils.resolveOnEvent(
           chatInstance,
-          `${constants.EVENTS.COMMERCIAL_SUCCESS}/${channel}`,
+          `${notices.EMOTE_ONLY_ON}/${channel}`,
+        ),
+        utils.resolveOnEvent(
+          chatInstance,
+          `${notices.ALREADY_EMOTE_ONLY_ON}/${channel}`,
+        ),
+      ]
+    case ChatCommands.EMOTE_ONLY_OFF:
+      return [
+        utils.resolveOnEvent(
+          chatInstance,
+          `${notices.EMOTE_ONLY_OFF}/${channel}`,
+        ),
+        utils.resolveOnEvent(
+          chatInstance,
+          `${notices.ALREADY_EMOTE_ONLY_OFF}/${channel}`,
         ),
       ]
 
-    case constants.CHAT_COMMANDS.EMOTE_ONLY:
+    case ChatCommands.FOLLOWERS_ONLY:
       return [
         utils.resolveOnEvent(
           chatInstance,
-          `${constants.EVENTS.EMOTE_ONLY_ON}/${channel}`,
+          `${notices.FOLLOWERS_ON_ZERO}/${channel}`,
         ),
         utils.resolveOnEvent(
           chatInstance,
-          `${constants.EVENTS.ALREADY_EMOTE_ONLY_ON}/${channel}`,
+          `${notices.FOLLOWERS_ON}/${channel}`,
         ),
       ]
-    case constants.CHAT_COMMANDS.EMOTE_ONLY_OFF:
+    case ChatCommands.FOLLOWERS_ONLY_OFF:
       return [
         utils.resolveOnEvent(
           chatInstance,
-          `${constants.EVENTS.EMOTE_ONLY_OFF}/${channel}`,
-        ),
-        utils.resolveOnEvent(
-          chatInstance,
-          `${constants.EVENTS.ALREADY_EMOTE_ONLY_OFF}/${channel}`,
+          `${notices.FOLLOWERS_OFF}/${channel}`,
         ),
       ]
 
-    case constants.CHAT_COMMANDS.FOLLOWERS_ONLY:
+    case ChatCommands.HELP:
       return [
         utils.resolveOnEvent(
           chatInstance,
-          `${constants.EVENTS.FOLLOWERS_ON_ZERO}/${channel}`,
-        ),
-        utils.resolveOnEvent(
-          chatInstance,
-          `${constants.EVENTS.FOLLOWERS_ON}/${channel}`,
-        ),
-      ]
-    case constants.CHAT_COMMANDS.FOLLOWERS_ONLY_OFF:
-      return [
-        utils.resolveOnEvent(
-          chatInstance,
-          `${constants.EVENTS.FOLLOWERS_OFF}/${channel}`,
+          `${notices.CMDS_AVAILABLE}/${channel}`,
         ),
       ]
 
-    case constants.CHAT_COMMANDS.HELP:
+    case ChatCommands.HOST:
       return [
-        utils.resolveOnEvent(
-          chatInstance,
-          `${constants.EVENTS.COMMANDS_AVAILABLE}/${channel}`,
-        ),
+        utils.resolveOnEvent(chatInstance, `${notices.HOST_ON}/${channel}`),
       ]
 
-    case constants.CHAT_COMMANDS.HOST:
-      return [
-        utils.resolveOnEvent(
-          chatInstance,
-          `${constants.EVENTS.HOST_ON}/${channel}`,
-        ),
-      ]
-
-    case constants.CHAT_COMMANDS.MARKER:
+    case ChatCommands.MARKER:
       return [Promise.resolve()]
 
-    // case constants.CHAT_COMMANDS.ME:
+    // case ChatCommands.ME:
     // Use resolver for private messages.
 
-    case constants.CHAT_COMMANDS.MOD:
+    case ChatCommands.MOD:
       return [
+        utils.resolveOnEvent(chatInstance, `${notices.MOD_SUCCESS}/${channel}`),
+        utils.resolveOnEvent(chatInstance, `${notices.BAD_MOD_MOD}/${channel}`),
+      ]
+    case ChatCommands.MODS:
+      return [
+        utils.resolveOnEvent(chatInstance, `${notices.ROOM_MODS}/${channel}`),
+      ]
+
+    case ChatCommands.R9K:
+      return [
+        utils.resolveOnEvent(chatInstance, `${notices.R9K_ON}/${channel}`),
         utils.resolveOnEvent(
           chatInstance,
-          `${constants.EVENTS.MOD_SUCCESS}/${channel}`,
-        ),
-        utils.resolveOnEvent(
-          chatInstance,
-          `${constants.EVENTS.BAD_MOD_MOD}/${channel}`,
+          `${notices.ALREADY_R9K_ON}/${channel}`,
         ),
       ]
-    case constants.CHAT_COMMANDS.MODS:
+    case ChatCommands.R9K_OFF:
       return [
+        utils.resolveOnEvent(chatInstance, `${notices.R9K_OFF}/${channel}`),
         utils.resolveOnEvent(
           chatInstance,
-          `${constants.EVENTS.ROOM_MODS}/${channel}`,
+          `${notices.ALREADY_R9K_OFF}/${channel}`,
         ),
       ]
 
-    case constants.CHAT_COMMANDS.R9K:
-      return [
-        utils.resolveOnEvent(
-          chatInstance,
-          `${constants.EVENTS.R9K_ON}/${channel}`,
-        ),
-        utils.resolveOnEvent(
-          chatInstance,
-          `${constants.EVENTS.ALREADY_R9K_ON}/${channel}`,
-        ),
-      ]
-    case constants.CHAT_COMMANDS.R9K_OFF:
-      return [
-        utils.resolveOnEvent(
-          chatInstance,
-          `${constants.EVENTS.R9K_OFF}/${channel}`,
-        ),
-        utils.resolveOnEvent(
-          chatInstance,
-          `${constants.EVENTS.ALREADY_R9K_OFF}/${channel}`,
-        ),
-      ]
-
-    case constants.CHAT_COMMANDS.RAID:
+    case ChatCommands.RAID:
       return [Promise.resolve()]
 
-    case constants.CHAT_COMMANDS.SLOW:
+    case ChatCommands.SLOW:
       return [
+        utils.resolveOnEvent(chatInstance, `${notices.SLOW_ON}/${channel}`),
+      ]
+    case ChatCommands.SLOW_OFF:
+      return [
+        utils.resolveOnEvent(chatInstance, `${notices.SLOW_OFF}/${channel}`),
+      ]
+
+    case ChatCommands.SUBSCRIBERS:
+      return [
+        utils.resolveOnEvent(chatInstance, `${notices.SUBS_ON}/${channel}`),
         utils.resolveOnEvent(
           chatInstance,
-          `${constants.EVENTS.SLOW_ON}/${channel}`,
+          `${notices.ALREADY_SUBS_ON}/${channel}`,
         ),
       ]
-    case constants.CHAT_COMMANDS.SLOW_OFF:
+    case ChatCommands.SUBSCRIBERS_OFF:
       return [
+        utils.resolveOnEvent(chatInstance, `${notices.SUBS_OFF}/${channel}`),
         utils.resolveOnEvent(
           chatInstance,
-          `${constants.EVENTS.SLOW_OFF}/${channel}`,
+          `${notices.ALREADY_SUBS_OFF}/${channel}`,
         ),
       ]
 
-    case constants.CHAT_COMMANDS.SUBSCRIBERS:
+    case ChatCommands.TIMEOUT:
       return [
         utils.resolveOnEvent(
           chatInstance,
-          `${constants.EVENTS.SUBS_ON}/${channel}`,
-        ),
-        utils.resolveOnEvent(
-          chatInstance,
-          `${constants.EVENTS.ALREADY_SUBS_ON}/${channel}`,
-        ),
-      ]
-    case constants.CHAT_COMMANDS.SUBSCRIBERS_OFF:
-      return [
-        utils.resolveOnEvent(
-          chatInstance,
-          `${constants.EVENTS.SUBS_OFF}/${channel}`,
-        ),
-        utils.resolveOnEvent(
-          chatInstance,
-          `${constants.EVENTS.ALREADY_SUBS_OFF}/${channel}`,
+          `${notices.TIMEOUT_SUCCESS}/${channel}`,
         ),
       ]
 
-    case constants.CHAT_COMMANDS.TIMEOUT:
+    case ChatCommands.UNBAN:
       return [
         utils.resolveOnEvent(
           chatInstance,
-          `${constants.EVENTS.TIMEOUT_SUCCESS}/${channel}`,
+          `${notices.UNBAN_SUCCESS}/${channel}`,
+        ),
+        utils.resolveOnEvent(
+          chatInstance,
+          `${notices.BAD_UNBAN_NO_BAN}/${channel}`,
         ),
       ]
 
-    case constants.CHAT_COMMANDS.UNBAN:
+    case ChatCommands.UNHOST:
       return [
-        utils.resolveOnEvent(
-          chatInstance,
-          `${constants.EVENTS.UNBAN_SUCCESS}/${channel}`,
-        ),
-        utils.resolveOnEvent(
-          chatInstance,
-          `${constants.EVENTS.BAD_UNBAN_NO_BAN}/${channel}`,
-        ),
+        utils.resolveOnEvent(chatInstance, `${notices.HOST_OFF}/${channel}`),
       ]
 
-    case constants.CHAT_COMMANDS.UNHOST:
+    case ChatCommands.UNMOD:
       return [
-        utils.resolveOnEvent(
-          chatInstance,
-          `${constants.EVENTS.HOST_OFF}/${channel}`,
-        ),
+        utils.resolveOnEvent(chatInstance, `${notices.HOST_OFF}/${channel}`),
       ]
 
-    case constants.CHAT_COMMANDS.UNMOD:
+    case ChatCommands.UNRAID:
       return [
         utils.resolveOnEvent(
           chatInstance,
-          `${constants.EVENTS.HOST_OFF}/${channel}`,
-        ),
-      ]
-
-    case constants.CHAT_COMMANDS.UNRAID:
-      return [
-        utils.resolveOnEvent(
-          chatInstance,
-          `${constants.EVENTS.UNRAID_SUCCESS}/${channel}`,
+          `${notices.UNRAID_SUCCESS}/${channel}`,
         ),
       ]
 
     // Resolver for private messages.
     default:
       return [
-        utils.resolveOnEvent(
-          chatInstance,
-          `${constants.COMMANDS.USER_STATE}/${channel}`,
-        ),
+        utils.resolveOnEvent(chatInstance, `${Commands.USER_STATE}/${channel}`),
       ]
   }
 }
-
-export { factory, resolvers }
