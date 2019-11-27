@@ -4,7 +4,7 @@
   "description": "Javascript library for the Twitch Messaging Interface.",
   "license": "MIT",
   "author": "Marc Andrews",
-  "homepage": "https://twitch-devs.github.io/twitch-js/",
+  "homepage": "https://twitch-js.github.io/twitch-js/",
   "keywords": [
     "bot",
     "broadcast",
@@ -21,10 +21,10 @@
   ],
   "repository": {
     "type": "git",
-    "url": "git://github.com/twitch-devs/twitch-js.git"
+    "url": "git://github.com/twitch-js/twitch-js.git"
   },
   "bugs": {
-    "url": "https://github.com/twitch-devs/twitch-js/issues"
+    "url": "https://github.com/twitch-js/twitch-js/issues"
   },
   "engines": {
     "node": ">=8",

@@ -174,7 +174,7 @@ class Client extends EventEmitter {
       const query = stringify({ title, body: rawMessage })
       this._log.error(
         'Parsing error encountered. Please create an issue: %s',
-        `https://github.com/twitch-devs/twitch-js/issues/new?${query}`,
+        `https://github.com/twitch-js/twitch-js/issues/new?${query}`,
         error,
       )
 

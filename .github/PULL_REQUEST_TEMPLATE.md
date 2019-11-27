@@ -24,10 +24,10 @@ help! This is simply a reminder of what we are going to look for before merging
 your code._
 
 * [ ] I have read the
-      [CONTRIBUTING.md](https://github.com/twitch-devs/twitch-js/blob/master/CONTRIBUTING.md)
+      [CONTRIBUTING.md](https://github.com/twitch-js/twitch-js/blob/master/CONTRIBUTING.md)
       doc
 * [ ] My PR is named according to
-      [CONTRIBUTING.md](https://github.com/twitch-devs/twitch-js/blob/master/CONTRIBUTING.md)
+      [CONTRIBUTING.md](https://github.com/twitch-js/twitch-js/blob/master/CONTRIBUTING.md)
       doc
 * [ ] End-to-end tests pass locally with my changes
 * [ ] I have added tests that prove my fix is effective or that my feature works
