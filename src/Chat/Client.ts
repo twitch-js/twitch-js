@@ -1,5 +1,5 @@
-import { EventEmitter } from 'eventemitter3'
-import { get } from 'lodash'
+import EventEmitter from 'eventemitter3'
+import get from 'lodash-es/get'
 import { stringify } from 'qs'
 import WebSocket from 'ws'
 

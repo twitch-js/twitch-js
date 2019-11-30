@@ -1,5 +1,9 @@
 import invariant from 'invariant'
-import { conformsTo, defaultsDeep, isFunction, isString } from 'lodash'
+
+import conformsTo from 'lodash-es/conformsTo'
+import defaultsDeep from 'lodash-es/defaultsDeep'
+import isFunction from 'lodash-es/isFunction'
+import isString from 'lodash-es/isString'
 
 import { Options } from '../types'
 

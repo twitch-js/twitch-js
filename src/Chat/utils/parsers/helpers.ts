@@ -1,6 +1,6 @@
-import isFinite from 'lodash/isFinite'
-import replace from 'lodash/replace'
-import camelCase from 'lodash/camelCase'
+import isFinite from 'lodash-es/isFinite'
+import replace from 'lodash-es/replace'
+import camelCase from 'lodash-es/camelCase'
 
 import * as types from '../../types'
 

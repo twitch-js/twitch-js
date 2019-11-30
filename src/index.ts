@@ -16,9 +16,7 @@ type Options = {
 }
 
 /**
- * @class
- * @public
- * @classdesc TwitchJs client
+ * TwitchJs client
  * @example <caption>Instantiating TwitchJS</caption>
  * const token = 'cfabdegwdoklmawdzdo98xt2fo512y'
  * const username = 'ronni'

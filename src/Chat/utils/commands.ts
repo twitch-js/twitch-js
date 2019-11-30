@@ -1,5 +1,5 @@
-import camelCase from 'lodash/camelCase'
-import toUpper from 'lodash/toUpper'
+import camelCase from 'lodash-es/camelCase'
+import toUpper from 'lodash-es/toUpper'
 
 import * as utils from '../../utils'
 

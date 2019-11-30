@@ -1,5 +1,5 @@
-import includes from 'lodash/includes'
-import toLower from 'lodash/toLower'
+import includes from 'lodash-es/includes'
+import toLower from 'lodash-es/toLower'
 
 import createLogger, { Logger } from '../utils/logger/create'
 

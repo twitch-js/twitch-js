@@ -6,7 +6,7 @@
 
 import EventEmitter from 'eventemitter3'
 
-import get from 'lodash/get'
+import get from 'lodash-es/get'
 
 import createLogger, { Logger } from '../utils/logger/create'
 

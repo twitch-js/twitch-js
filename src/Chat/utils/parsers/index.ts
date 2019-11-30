@@ -1,11 +1,11 @@
-import { parse, Message } from 'irc-message'
+import { parse } from 'tekko/dist/parse'
 import camelcaseKeys from 'camelcase-keys'
 
-import gt from 'lodash/gt'
-import isEmpty from 'lodash/isEmpty'
-import isFinite from 'lodash/isFinite'
-import toNumber from 'lodash/toNumber'
-import toUpper from 'lodash/toUpper'
+import gt from 'lodash-es/gt'
+import isEmpty from 'lodash-es/isEmpty'
+import isFinite from 'lodash-es/isFinite'
+import toNumber from 'lodash-es/toNumber'
+import toUpper from 'lodash-es/toUpper'
 
 import * as constants from '../../constants'
 import * as utils from '../'
@@ -21,18 +21,17 @@ export const base = (rawMessages: string): BaseMessage[] => {
     }
 
     const {
-      raw,
-      tags,
       command,
-      prefix,
+      tags,
+      prefix: { user },
       params: [channel, message],
     } = parse(rawMessage)
 
     const baseMessage = {
-      _raw: raw,
-      timestamp: helpers.generalTimestamp(tags['tmi-sent-ts']),
-      username: helpers.usernameFromPrefix(prefix),
-      command,
+      _raw: rawMessage,
+      timestamp: helpers.generalTimestamp(tags['tmi-sent-ts'] as string),
+      username: user,
+      command: command as Commands,
       channel: channel !== '*' ? channel : '',
       tags: isEmpty(tags)
         ? {}

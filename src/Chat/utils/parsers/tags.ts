@@ -1,4 +1,7 @@
-import { camelCase, gt, toLower, toUpper } from 'lodash'
+import camelCase from 'lodash-es/camelCase'
+import gt from 'lodash-es/gt'
+import toLower from 'lodash-es/toLower'
+import toUpper from 'lodash-es/toUpper'
 
 import * as constants from '../../constants'
 import * as helpers from './helpers'

@@ -1,6 +1,4 @@
-import BetterQueue from 'better-queue'
-import MemoryStore from 'better-queue-memory'
-import setImmediate from 'core-js-pure/stable/set-immediate'
+import { default as PQueue } from 'p-queue'
 
 import * as constants from './constants'
 
@@ -13,7 +11,7 @@ type Options = {
 }
 
 class Queue {
-  private _q: BetterQueue
+  private _q: PQueue
 
   private _maxLength: number
   private _length = 0
@@ -40,70 +38,11 @@ class Queue {
 
     this._callbacks = { onTaskQueued, onTaskFinished, onQueueDrained }
 
-    this._q = new BetterQueue(
-      ({ fn }, cb) => {
-        fn()
-        cb()
-      },
-      {
-        store: new MemoryStore(),
-        // @ts-ignore this is an option.
-        setImmediate,
-        priority: this._handlePriority,
-        precondition: this._handlePrecondition,
-        preconditionRetryTimeout: constants.QUEUE_TICK_RATE,
-      },
-    )
-
-    this._q.on('drain', this._handleQueueDrained)
+    this._q = new PQueue({ concurrency: 1 })
   }
 
   push = ({ fn, priority }) => {
-    return this._q
-      .push({ fn, priority })
-      .on(
-        // @ts-ignore this is an event.
-        'accepted',
-        this._handleTaskQueued,
-      )
-      .on('finish', this._handleTaskFinished)
-  }
-
-  private _handlePriority: BetterQueue.QueueOptions<any, any>['priority'] = (
-    { priority = 1 },
-    cb,
-  ) => cb(null, priority)
-
-  private _handlePrecondition: BetterQueue.QueueOptions<
-    any,
-    any
-  >['precondition'] = cb => {
-    const now = Date.now()
-    if (now - this._timestamp > this._tickInterval) {
-      this._timestamp = now
-      this._length = Math.max(0, this._length - this._maxLength)
-    }
-
-    cb(null, this._length < this._maxLength)
-  }
-
-  private _handleTaskQueued: Options['onTaskQueued'] = (taskId, task) => {
-    this._callbacks.onTaskQueued(taskId, task)
-  }
-
-  private _handleTaskFinished: Options['onTaskFinished'] = (taskId, result) => {
-    const now = Date.now()
-    if (now - this._timestamp > this._tickInterval) {
-      this._timestamp = Date.now()
-    }
-
-    this._length = this._length + 1
-
-    this._callbacks.onTaskFinished(taskId, result)
-  }
-
-  private _handleQueueDrained = () => {
-    this._callbacks.onQueueDrained()
+    return this._q.add(fn, { priority })
   }
 }
 

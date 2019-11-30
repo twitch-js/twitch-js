@@ -1,13 +1,18 @@
 {
   "compilerOptions": {
+    "allowSyntheticDefaultImports": true,
     "declaration": true,
     "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
     "lib": [
       "dom",
       "dom.iterable",
       "esnext"
     ],
+    "module": "commonjs",
+    "moduleResolution": "node",
     "outDir": "lib",
+    "skipLibCheck": true,
     "sourceMap": true,
     "target": "es5"
   },
@@ -15,6 +20,7 @@
     "src"
   ],
   "exclude": [
+    "**/node_modules",
     "**/__tests__",
     "**/__mocks__"
   ]
