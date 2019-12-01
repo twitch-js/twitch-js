@@ -12,17 +12,12 @@ import path from 'path'
 import pkg from './package.json'
 
 const aliasPlugin = alias({
-  entries: [
-    {
-      find: 'form-data',
-      replacement: path.resolve(__dirname, 'shims/form-data.js'),
-    },
-    {
-      find: 'node-fetch',
-      replacement: path.resolve(__dirname, 'shims/node-fetch.js'),
-    },
-    { find: 'ws', replacement: path.resolve(__dirname, 'shims/ws.js') },
-  ],
+  entries: Object.entries(pkg.browser).map(([find, replacement]) => ({
+    find,
+    replacement: replacement.startsWith('.')
+      ? path.resolve(__dirname, replacement)
+      : path.resolve(__dirname, 'node_modules', replacement),
+  })),
 })
 
 const commonPlugins = [
