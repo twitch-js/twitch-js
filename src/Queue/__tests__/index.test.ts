@@ -26,7 +26,7 @@ describe('Chat/Queue', () => {
 
   describe('rate-limiting', () => {
     const NativeDate = Date
-    let d = new Date()
+    const d = new Date()
 
     beforeAll(() => {
       Object.assign(Date, NativeDate)
@@ -58,7 +58,7 @@ describe('Chat/Queue', () => {
         tickInterval,
       })
 
-      let calls = []
+      const calls = []
 
       for (let i = 1; i <= totalCalls; i++) {
         calls.push(queue.push({ fn }))

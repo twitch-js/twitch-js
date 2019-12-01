@@ -107,16 +107,16 @@ describe('Api', () => {
     })
   })
 
-  describe('hasScope', () => {
+  describe('hasScope', async () => {
     test('should reject if instance is uninitialized', () => {
       const api = new Api(options)
-      const actual = api.hasScope('user_read')
+      const actual = await api.hasScope('user_read')
       expect(actual).rejects.toBe(false)
     })
 
-    test('should reject if scope is absent', () => {
+    test('should reject if scope is absent', async () => {
       const api = new Api(options)
-      const actual = api.hasScope('channel_read')
+      const actual = await api.hasScope('channel_read')
       expect(actual).rejects.toBe(false)
     })
 
@@ -124,7 +124,7 @@ describe('Api', () => {
       const api = new Api(options)
       await api.initialize()
 
-      const actual = api.hasScope('user_read')
+      const actual = await api.hasScope('user_read')
 
       expect(actual).resolves.toBe(true)
     })

@@ -4,7 +4,7 @@ const mockFetch = jest.fn(url => {
   return Promise.resolve({
     status: 200,
     ok: true,
-    url: 'URL',
+    url,
     statusText: 'OK',
     json: mockJson,
   })

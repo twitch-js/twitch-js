@@ -171,7 +171,7 @@ export const namesEndMessage = (baseMessage: BaseMessage): NamesEndMessage => {
     username,
     ,
     channel,
-    message,
+    // message,
   ] = /:(.+).tmi.twitch.tv 366 (.+) (#.+) :(.+)/g.exec(baseMessage._raw)
 
   return {

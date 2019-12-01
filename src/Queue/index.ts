@@ -1,7 +1,5 @@
 import { default as PQueue } from 'p-queue'
 
-import * as constants from './constants'
-
 type Options = {
   maxLength?: number
   tickInterval?: number

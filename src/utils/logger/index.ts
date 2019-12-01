@@ -2,17 +2,15 @@ import pino, { LoggerOptions } from 'pino'
 
 export type Options = LoggerOptions
 
-type Timer = (message: string) => { done: (message: string) => void }
-
-const createLogger = ({
-  name,
-  prettyPrint = true,
-  level = 'error',
-  ...options
-}: LoggerOptions = {}) => {
+const createLogger = ({ name, ...options }: LoggerOptions = {}) => {
   const scope = ['TwitchJS'].concat(name || []).join('/')
 
-  const logger = pino({ name: scope, ...options })
+  const logger = pino({
+    name: scope,
+    prettyPrint: true,
+    level: 'info',
+    ...options,
+  })
 
   const startTimer = (startMessage: string) => {
     const now = Date.now()
@@ -33,6 +31,7 @@ const createLogger = ({
     }
   }
 
+  // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
   // @ts-ignore
   logger.startTimer = startTimer
 

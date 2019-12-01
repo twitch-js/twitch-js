@@ -134,7 +134,8 @@
   "eslintConfig": {
     "parser": "@typescript-eslint/parser",
     "plugins": [
-      "@typescript-eslint"
+      "@typescript-eslint",
+      "jest"
     ],
     "env": {
       "es6": true,
@@ -145,13 +146,14 @@
     "extends": [
       "plugin:@typescript-eslint/recommended",
       "prettier",
-      "prettier/@typescript-eslint",
-      "plugin:jest/recommended"
+      "prettier/@typescript-eslint"
     ],
     "rules": {
       "no-alert": 2,
       "no-debugger": 2,
       "no-console": 2,
+      "@typescript-eslint/no-explicit-any": 0,
+      "@typescript-eslint/explicit-function-return-type": 0,
       "jest/no-disabled-tests": 2
     }
   },

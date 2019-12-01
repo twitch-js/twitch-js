@@ -19,15 +19,15 @@ describe('parser', () => {
     json: () => Promise.resolve(mockJsonResponseError),
   }
 
-  test('should return response on successful response', () => {
-    const actual = parser(mockResponse)
+  test('should return response on successful response', async () => {
+    const actual = await parser(mockResponse)
     const expected = mockJsonResponse
 
     expect(actual).resolves.toEqual(expected)
   })
 
-  test('should throw on unsuccessful response', () => {
-    const actual = parser(mockResponseError)
+  test('should throw on unsuccessful response', async () => {
+    const actual = await parser(mockResponseError)
 
     expect(actual).rejects.toBeInstanceOf(Error)
     expect(actual).rejects.toMatchObject({ body: mockJsonResponseError })

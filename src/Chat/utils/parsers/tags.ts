@@ -1,7 +1,6 @@
 import camelCase from 'lodash/camelCase'
 import gt from 'lodash/gt'
 import toLower from 'lodash/toLower'
-import toUpper from 'lodash/toUpper'
 
 import {
   BaseTags,

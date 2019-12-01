@@ -168,7 +168,7 @@ class Api {
   }
 
   private async _handleFetch<T = any>(
-    maybeUrl: string = '',
+    maybeUrl = '',
     options: types.FetchOptions = {},
   ) {
     const { version = twitchTypes.ApiVersions.Helix, ...fetchOptions } = options

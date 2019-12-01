@@ -10,10 +10,10 @@ describe('Api/utils/validators', () => {
       expect(actual).toMatchSnapshot()
     })
 
-    test('default onAuthenticationFailure should reject', done => {
+    test('default onAuthenticationFailure should reject', () => {
       const { onAuthenticationFailure } = validators.apiOptions(options)
 
-      onAuthenticationFailure().catch(() => done())
+      expect(() => onAuthenticationFailure()).toThrow()
     })
   })
 })
