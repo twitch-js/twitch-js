@@ -1,4 +1,5 @@
-import { ConsolaOptions } from 'consola'
+import { UserStateTags, RoomStateTags } from '../twitch'
+import { Options as LoggerOptions } from '../utils/logger'
 
 export type Options = {
   username?: string
@@ -19,7 +20,7 @@ export type Options = {
   isVerified?: boolean
   connectionTimeout?: number
   joinTimeout?: number
-  log?: ConsolaOptions
+  log?: LoggerOptions
   onAuthenticationFailure?: () => Promise<string>
 }
 
@@ -31,7 +32,7 @@ export type ClientOptions = {
   server?: string
   port?: number
   ssl?: boolean
-  log?: ConsolaOptions
+  log?: LoggerOptions
 }
 
 export type ChannelStates = Record<

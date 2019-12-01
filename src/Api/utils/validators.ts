@@ -1,46 +1,33 @@
 import invariant from 'invariant'
 
-import conformsTo from 'lodash-es/conformsTo'
-import defaultsDeep from 'lodash-es/defaultsDeep'
-import isFunction from 'lodash-es/isFunction'
-import isString from 'lodash-es/isString'
+import conformsTo from 'lodash/conformsTo'
+import defaults from 'lodash/defaults'
+import isFunction from 'lodash/isFunction'
+import isString from 'lodash/isString'
+import isUndefined from 'lodash/isUndefined'
 
 import { Options } from '../types'
 
 export const apiOptions = (maybeOptions: any): Options | never => {
-  /**
-   * API options
-   * @typedef {Object} ApiOptions
-   * @property {string} [clientId] Optional if token is defined.
-   * @property {string} [token] Optional if clientId is defined.
-   * @property {Object} [log] Log options
-   * @property {function} [onAuthenticationFailure]
-   */
   const shape = {
+    clientId: isString,
+    token: (token: unknown) => isUndefined(token) || isString(token),
     onAuthenticationFailure: isFunction,
   }
 
-  const shapeWithClientId = {
-    ...shape,
-    clientId: isString,
-  }
-
-  const shapeWithToken = {
-    ...shape,
-    token: isString,
-  }
-
-  const options = defaultsDeep(
-    {},
+  const options = defaults<
+    Options,
+    Pick<Options, 'token' | 'onAuthenticationFailure'>
+  >(
     { ...maybeOptions },
     {
+      token: undefined,
       onAuthenticationFailure: () => Promise.reject(),
     },
   )
 
   invariant(
-    conformsTo(options, shapeWithClientId) ||
-      conformsTo(options, shapeWithToken),
+    conformsTo(options, shape),
     '[twitch-js/Api] options: Expected valid options',
   )
 

@@ -1,5 +1,7 @@
-import camelCase from 'lodash-es/camelCase'
-import toUpper from 'lodash-es/toUpper'
+import camelCase from 'lodash/camelCase'
+import toUpper from 'lodash/toUpper'
+
+import { ChatCommands, KnownNoticeMessageIds, Commands } from '../../twitch'
 
 import * as utils from '../../utils'
 

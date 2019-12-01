@@ -37,7 +37,7 @@ export default [
     input: 'src/index.ts',
     output: {
       name: 'TwitchJS',
-      file: pkg.browser,
+      file: 'dist/twitch-js.umd.js',
       format: 'umd',
       exports: 'named',
       sourcemap: true,

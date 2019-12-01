@@ -2,8 +2,8 @@
 
 exports[`Api/utils/validators apiOptions should return default chat options 1`] = `
 Object {
+  "clientId": "CLIENT_ID",
   "onAuthenticationFailure": [Function],
-  "token": "TOKEN",
-  "username": "USERNAME",
+  "token": undefined,
 }
 `;

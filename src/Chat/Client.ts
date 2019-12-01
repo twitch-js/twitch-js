@@ -1,11 +1,13 @@
 import EventEmitter from 'eventemitter3'
-import get from 'lodash-es/get'
+import get from 'lodash/get'
 import { stringify } from 'qs'
 import WebSocket from 'ws'
 
+import { ChatEvents, Commands } from '../twitch'
+
 import Queue from '../Queue'
 
-import createLogger, { Logger } from '../utils/logger/create'
+import createLogger, { Logger } from '../utils/logger'
 
 import * as constants from './constants'
 import baseParser from './utils/parsers'
@@ -15,6 +17,8 @@ import * as utils from './utils'
 import * as Errors from './Errors'
 
 import * as types from './types'
+
+type SendOptions = { priority?: number; isModerator?: boolean }
 
 const priority = constants.CLIENT_PRIORITY
 
@@ -37,7 +41,7 @@ class Client extends EventEmitter {
     this._options = validators.clientOptions(maybeOptions)
     const { ssl, server, port, log } = this._options
 
-    this._log = createLogger({ scope: 'Chat/Client', ...log })
+    this._log = createLogger({ name: 'Chat/Client', ...log })
 
     // Instantiate WebSocket.
     const protocol = ssl ? 'wss' : 'ws'
@@ -60,31 +64,20 @@ class Client extends EventEmitter {
   /**
    * Send message to Twitch
    */
-  send = (
+  send = async (
     message: string,
-    { priority, isModerator }: { priority?: number; isModerator?: boolean } = {
-      priority: 1,
-      isModerator: false,
-    },
+    { priority = 1, isModerator = false }: SendOptions = {},
   ) => {
-    const fn = this._ws.send.bind(this._ws, message)
+    try {
+      const fn = this._ws.send.bind(this._ws, message)
 
-    const queue = isModerator ? this._moderatorQueue : this._queue
+      const queue = isModerator ? this._moderatorQueue : this._queue
 
-    const task = queue.push({ fn, priority })
-
-    return new Promise((resolve, reject) =>
-      task
-        // @ts-ignore
-        .on('accepted', () => {
-          resolve()
-          this._log.debug('<', message)
-        })
-        .on('failed', () => {
-          reject()
-          this._log.error('<', message)
-        }),
-    )
+      await queue.push({ fn, priority })
+      this._log.debug('<', message)
+    } catch (error) {
+      this._log.error('<', message)
+    }
   }
 
   disconnect = () => {

@@ -6,9 +6,15 @@
 
 import EventEmitter from 'eventemitter3'
 
-import get from 'lodash-es/get'
+import get from 'lodash/get'
 
-import createLogger, { Logger } from '../utils/logger/create'
+import {
+  GlobalUserStateMessage,
+  UserStateMessage,
+  RoomStateMessage,
+} from '../twitch'
+
+import createLogger, { Logger } from '../utils/logger'
 
 import * as utils from '../utils'
 import * as chatUtils from './utils'
@@ -108,7 +114,7 @@ class Chat extends EventEmitter {
      * @type {any}
      * @private
      */
-    this._log = createLogger({ scope: 'Chat', ...this.options.log })
+    this._log = createLogger({ name: 'Chat', ...this.options.log })
 
     // Create commands.
     Object.assign(this, commands.factory(this))
@@ -284,14 +290,14 @@ class Chat extends EventEmitter {
 
     const isModerator = get(this, ['_channelState', channel, 'isModerator'])
 
-    const timeout = utils.rejectAfter(
-      this.options.joinTimeout,
-      new Errors.TimeoutError(constants.ERROR_SAY_TIMED_OUT),
-    )
+    // const timeout = utils.rejectAfter(
+    //   this.options.joinTimeout,
+    //   new Errors.TimeoutError(constants.ERROR_SAY_TIMED_OUT),
+    // )
 
     const commandResolvers = commands.resolvers(this)(channel, message)
 
-    const resolvers = () => Promise.race([timeout, ...commandResolvers])
+    const resolvers = () => Promise.race([...commandResolvers])
 
     return utils
       .resolveInSequence([

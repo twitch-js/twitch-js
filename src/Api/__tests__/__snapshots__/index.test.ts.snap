@@ -1,12 +1,13 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Api headers should create headers for Helix 1`] = `
+exports[`Api headers should create headers for Kraken 1`] = `
 Array [
   Array [
-    "https://api.twitch.tv/helix/",
+    "https://api.twitch.tv/kraken/",
     Object {
       "headers": Object {
-        "Authorization": "Bearer TOKEN",
+        "Accept": "application/vnd.twitchtv.v5+json",
+        "Authorization": "OAuth TOKEN",
         "Client-ID": "CLIENT_ID",
       },
     },
@@ -17,10 +18,9 @@ Array [
 exports[`Api headers should create headers with clientId 1`] = `
 Array [
   Array [
-    "https://api.twitch.tv/kraken/",
+    "https://api.twitch.tv/helix/",
     Object {
       "headers": Object {
-        "Accept": "application/vnd.twitchtv.v5+json",
         "Client-ID": "CLIENT_ID",
       },
     },
@@ -31,26 +31,11 @@ Array [
 exports[`Api headers should create headers with clientId and token 1`] = `
 Array [
   Array [
-    "https://api.twitch.tv/kraken/",
+    "https://api.twitch.tv/helix/",
     Object {
       "headers": Object {
-        "Accept": "application/vnd.twitchtv.v5+json",
-        "Authorization": "OAuth TOKEN",
+        "Authorization": "Bearer TOKEN",
         "Client-ID": "CLIENT_ID",
-      },
-    },
-  ],
-]
-`;
-
-exports[`Api headers should create headers with token 1`] = `
-Array [
-  Array [
-    "https://api.twitch.tv/kraken/",
-    Object {
-      "headers": Object {
-        "Accept": "application/vnd.twitchtv.v5+json",
-        "Authorization": "OAuth TOKEN",
       },
     },
   ],
@@ -77,16 +62,16 @@ Object {
 }
 `;
 
-exports[`Api methods should throw on failure 1`] = `[Error: undefined undefined [TwitchJS]]`;
+exports[`Api methods should throw on failure 1`] = `[Error: [TwitchJS] https://api.twitch.tv/helix/404 Not Found]`;
 
 exports[`Api versions should call the Helix endpoint 1`] = `
 Object {
-  "a": Object {
-    "b": "c ",
-  },
   "headers": Object {
     "Authorization": "Bearer TOKEN",
     "Client-ID": "CLIENT_ID",
+  },
+  "search": Object {
+    "a": "b",
   },
 }
 `;

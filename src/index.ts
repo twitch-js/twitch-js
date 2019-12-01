@@ -1,15 +1,16 @@
-import { ConsolaOptions } from 'consola'
 import Chat, {
   constants as ChatConstants,
   Options as ChatOptions,
 } from './Chat'
 import Api, { Options as ApiOptions } from './Api'
 
+import { Options as LoggerOptions } from './utils/logger'
+
 type Options = {
   clientId?: string
   token?: string
   username?: string
-  log?: ConsolaOptions
+  log?: LoggerOptions
   onAuthenticationFailure?: () => Promise<string>
   chat?: ChatOptions
   api?: ApiOptions
@@ -68,9 +69,20 @@ class TwitchJs {
   /**
    * Update client options.
    */
-  updateOptions(chat: ChatOptions, api: ApiOptions) {
-    this.chat.updateOptions(chat)
-    this.api.updateOptions(api)
+  updateOptions({
+    chat,
+    api,
+  }: {
+    chat: Options['chat']
+    api: Partial<Options['api']>
+  }) {
+    if (chat) {
+      this.chat.updateOptions(chat)
+    }
+
+    if (api) {
+      this.api.updateOptions(api)
+    }
   }
 }
 

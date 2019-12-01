@@ -1,4 +1,4 @@
-import createLogger from '../create'
+import createLogger from '../'
 
 describe('logger', () => {
   test('should create logger', () => {
@@ -11,21 +11,11 @@ describe('logger', () => {
   })
 
   test('should create logger without any arguments', () => {
-    const level = process.env.CONSOLA_LEVEL
+    const level = 'info'
     const logger = createLogger()
 
-    const actual = String(logger.level)
+    const actual = logger.level
 
     expect(actual).toEqual(level)
-  })
-
-  test('should create logger with scope', () => {
-    const scope = 'SCOPE'
-    const logger = createLogger({ scope })
-
-    const actual = logger._defaults.tag
-    const expected = `twitch-js/${scope}`
-
-    expect(actual).toEqual(expected)
   })
 })

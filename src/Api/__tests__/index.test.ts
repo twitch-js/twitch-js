@@ -1,9 +1,16 @@
-import Api from '../index'
-import * as constants from '../constants'
-import fetchUtil from '../../utils/fetch'
+import { mocked } from 'ts-jest/utils'
+
+import * as twitchTypes from '../../twitch'
+
+import originalFetchUtil from '../../utils/fetch'
 import * as Errors from '../../utils/fetch/Errors'
 
+import Api from '../'
+import { Settings } from '../types'
+
 jest.mock('../../utils/fetch')
+
+const fetchUtil = mocked(originalFetchUtil, true)
 
 describe('Api', () => {
   jest.setTimeout(500)
@@ -11,32 +18,42 @@ describe('Api', () => {
   const options = {
     token: 'TOKEN',
     clientId: 'CLIENT_ID',
+    log: { enabled: false },
   }
+
+  const fetchOptions = { search: { a: 'b' } }
+
+  const helixBaseUrl = Settings.helix.baseUrl
+  const krakenBaseUrl = Settings.kraken.baseUrl
 
   afterEach(() => {
     fetchUtil.mockClear()
   })
 
   describe('constructor', () => {
-    test('should instantiate with token', () => {
-      expect(() => new Api({ ...options, clientId: undefined })).not.toThrow()
-    })
-
     test('should instantiate with clientId', () => {
       expect(() => new Api({ ...options, token: undefined })).not.toThrow()
     })
 
-    test('should throw if token AND clientId are absent', () => {
-      expect(() => new Api({})).toThrow()
+    test('should throw if clientId is missing', () => {
+      expect(() => new Api({ ...options, clientId: undefined })).toThrow()
     })
   })
 
-  test('should allow options to be updated', () => {
+  test('should allow options to be updated without changing clientId or token', () => {
     const api = new Api(options)
-    api.updateOptions({ token: 'NEW_TOKEN', debug: true })
 
-    expect(api._options.token).toBe(options.token)
-    expect(api._options.debug).toBe(true)
+    const log = { level: 'info' }
+
+    const nextOptions = {
+      clientId: 'NEXT_CLIENT_ID',
+      token: 'NEXT_TOKEN',
+      log,
+    }
+
+    api.updateOptions(nextOptions)
+
+    expect(api.options).toMatchObject({ ...options, log })
   })
 
   describe('initialize', () => {
@@ -58,12 +75,12 @@ describe('Api', () => {
 
     test('should update client options', async () => {
       const api = new Api(options)
-      expect(api._options.token).toBe(options.token)
+      expect(api.options.token).toBe(options.token)
 
       const newToken = 'NEW_TOKEN'
       await api.initialize({ token: newToken })
 
-      expect(api._options.token).toBe(newToken)
+      expect(api.options.token).toBe(newToken)
     })
   })
 
@@ -82,16 +99,9 @@ describe('Api', () => {
       expect(fetchUtil.mock.calls).toMatchSnapshot()
     })
 
-    test('should create headers with token', async () => {
-      const api = new Api({ ...options, clientId: undefined })
-      await api.get()
-
-      expect(fetchUtil.mock.calls).toMatchSnapshot()
-    })
-
-    test('should create headers for Helix', async () => {
+    test('should create headers for Kraken', async () => {
       const api = new Api(options)
-      await api.get('', { version: 'helix' })
+      await api.get('', { version: twitchTypes.ApiVersions.Kraken })
 
       expect(fetchUtil.mock.calls).toMatchSnapshot()
     })
@@ -125,21 +135,19 @@ describe('Api', () => {
       const api = new Api(options)
 
       const endpoint = 'ENDPOINT'
-      const opts = { a: { b: 'c ' } }
-      await api.get(endpoint, opts)
+      await api.get(endpoint, fetchOptions)
 
       const [actualEndpoint, actualOpts] = fetchUtil.mock.calls[0]
 
       expect(actualEndpoint).toEqual(expect.stringContaining(endpoint))
-      expect(actualOpts).toMatchObject(opts)
+      expect(actualOpts).toMatchObject(fetchOptions)
     })
 
     test('post should call fetch with method=post', async () => {
       const api = new Api(options)
 
       const endpoint = 'ENDPOINT'
-      const opts = { a: { b: 'c ' } }
-      await api.post(endpoint, opts)
+      await api.post(endpoint, fetchOptions)
 
       const [, actualOpts] = fetchUtil.mock.calls[0]
 
@@ -150,36 +158,36 @@ describe('Api', () => {
       const api = new Api(options)
 
       const endpoint = 'ENDPOINT'
-      const opts = { a: { b: 'c ' } }
-      await api.put(endpoint, opts)
+      await api.put(endpoint, fetchOptions)
 
       const [, actualOpts] = fetchUtil.mock.calls[0]
 
       expect(actualOpts).toMatchObject({ method: 'put' })
     })
 
-    test('should throw on failure', done => {
+    test('should throw on failure', async () => {
       const api = new Api(options)
-      api.get('404').catch(error => {
+
+      try {
+        await api.get('404')
+      } catch (error) {
         expect(error).toBeInstanceOf(Errors.FetchError)
         expect(error).toMatchSnapshot()
-        done()
-      })
+      }
     })
   })
 
   describe('versions', () => {
-    test('should fallback to the Kraken endpoint', () => {
+    test('should fallback to the Helix endpoint', () => {
       const api = new Api(options)
 
       const endpoint = 'ENDPOINT'
-      const opts = { a: { b: 'c ' } }
 
-      return api.get(endpoint, opts).then(() => {
+      return api.get(endpoint, fetchOptions).then(() => {
         const [actualEndpoint, actualOpts] = fetchUtil.mock.calls[0]
 
-        expect(actualEndpoint).toBe(`${constants.KRAKEN_URL_ROOT}/ENDPOINT`)
-        expect(actualOpts).toMatchObject(opts)
+        expect(actualEndpoint).toBe(`${helixBaseUrl}/${endpoint}`)
+        expect(actualOpts).toMatchObject(fetchOptions)
       })
     })
 
@@ -187,33 +195,40 @@ describe('Api', () => {
       const api = new Api(options)
 
       const endpoint = 'ENDPOINT'
-      const opts = { a: { b: 'c ' } }
 
-      return api.get(endpoint, opts).then(() => {
-        const [actualEndpoint, actualOpts] = fetchUtil.mock.calls[0]
+      return api
+        .get(endpoint, {
+          ...fetchOptions,
+          version: twitchTypes.ApiVersions.Kraken,
+        })
+        .then(() => {
+          const [actualEndpoint, actualOpts] = fetchUtil.mock.calls[0]
 
-        expect(actualEndpoint).toBe(`${constants.KRAKEN_URL_ROOT}/ENDPOINT`)
-        expect(actualOpts).toMatchObject(opts)
-      })
+          expect(actualEndpoint).toBe(`${krakenBaseUrl}/${endpoint}`)
+          expect(actualOpts).toMatchObject(fetchOptions)
+        })
     })
 
     test('should call the Helix endpoint', () => {
       const api = new Api(options)
 
       const endpoint = 'ENDPOINT'
-      const opts = { version: 'helix', a: { b: 'c ' } }
+      const opts = {
+        ...fetchOptions,
+        version: twitchTypes.ApiVersions['Helix'],
+      }
 
       return api.get(endpoint, opts).then(() => {
         const [actualEndpoint, actualOpts] = fetchUtil.mock.calls[0]
 
-        expect(actualEndpoint).toBe(`${constants.HELIX_URL_ROOT}/ENDPOINT`)
+        expect(actualEndpoint).toBe(`${helixBaseUrl}/${endpoint}`)
         expect(actualOpts).toMatchSnapshot()
       })
     })
   })
 
   describe('onAuthenticationFailure', () => {
-    test('should call onAuthenticationFailure', done => {
+    test('should call onAuthenticationFailure', async () => {
       const onAuthenticationFailure = jest.fn(() => Promise.reject())
       const api = new Api({
         ...options,
@@ -221,13 +236,14 @@ describe('Api', () => {
         onAuthenticationFailure,
       })
 
-      api.get('401').catch(() => {
+      try {
+        await api.get('401')
+      } catch (error) {
         expect(onAuthenticationFailure).toHaveBeenCalled()
-        done()
-      })
+      }
     })
 
-    test('should update token', done => {
+    test('should update token', async () => {
       const onAuthenticationFailure = jest.fn(() => Promise.resolve('TOKEN'))
       const api = new Api({
         ...options,
@@ -235,11 +251,12 @@ describe('Api', () => {
         onAuthenticationFailure,
       })
 
-      api.get('401').catch(() => {
+      try {
+        await api.get('401')
+      } catch (error) {
         expect(onAuthenticationFailure).toHaveBeenCalled()
-        expect(api._options.token).toEqual('TOKEN')
-        done()
-      })
+        expect(api.options.token).toEqual('TOKEN')
+      }
     })
   })
 })

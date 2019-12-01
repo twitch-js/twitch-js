@@ -32,7 +32,6 @@
   },
   "main": "dist/twitch-js.cjs.js",
   "module": "dist/twitch-js.esm.js",
-  "browser": "dist/twitch-js.umd.js",
   "types": "dist/twitch-js.d.ts",
   "files": [
     "dist",
@@ -68,6 +67,7 @@
     "@types/invariant": "^2.2.30",
     "@types/lodash-es": "^4.17.3",
     "@types/node-fetch": "^2.5.4",
+    "@types/pino": "^5.8.13",
     "@types/qs": "^6.9.0",
     "@types/ws": "^6.0.4",
     "camelcase-keys": "^6.1.1",
@@ -75,15 +75,18 @@
     "eventemitter3": "^4.0.0",
     "form-data": "^3.0.0",
     "invariant": "^2.2.4",
-    "lodash-es": "^4.17.15",
+    "lodash": "^4.17.15",
     "node-fetch": "^2.2.0",
     "p-queue": "^6.2.1",
+    "pino": "^5.14.0",
+    "pino-pretty": "^3.4.0",
     "qs": "^6.5.2",
     "tekko": "2.4.0",
     "whatwg-fetch": "^3.0.0",
     "ws": "^7.2.0"
   },
   "devDependencies": {
+    "@babel/preset-typescript": "^7.7.4",
     "@rollup/plugin-alias": "^2.2.0",
     "@types/jest": "^24.0.23",
     "@typescript-eslint/eslint-plugin": "^2.9.0",
@@ -123,6 +126,11 @@
     "tslib": "^1.10.0",
     "typescript": "^3.7.2"
   },
+  "browser": {
+    "form-data": "./shims/form-data.js",
+    "node-fetch": "./shims/node-fetch.js",
+    "ws": "./shims/ws.js"
+  },
   "eslintConfig": {
     "parser": "@typescript-eslint/parser",
     "plugins": [
@@ -158,7 +166,6 @@
     "bracketSpacing": true,
     "useTabs": false,
     "semi": false,
-    "parser": "typescript",
     "singleQuote": true,
     "trailingComma": "all",
     "proseWrap": "always",
@@ -166,8 +173,7 @@
       {
         "files": [
           "examples/*",
-          "shims/*",
-          "webpack.config.js"
+          "shims/*"
         ],
         "options": {
           "semi": true
@@ -180,6 +186,11 @@
     "setupFiles": [
       "<rootDir>/jest.setup.js"
     ],
+    "globals": {
+      "ts-jest": {
+        "diagnostics": false
+      }
+    },
     "testPathIgnorePatterns": [
       "<rootDir>/__mocks__",
       "<rootDir>/dist",
@@ -188,7 +199,7 @@
       "<rootDir>/shims"
     ],
     "collectCoverageFrom": [
-      "src/**/*.js"
+      "src/**/*.ts"
     ],
     "coverageDirectory": "./coverage/"
   },

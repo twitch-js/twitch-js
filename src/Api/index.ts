@@ -1,7 +1,10 @@
-import includes from 'lodash-es/includes'
-import toLower from 'lodash-es/toLower'
+import includes from 'lodash/includes'
+import toLower from 'lodash/toLower'
+import toUpper from 'lodash/toUpper'
 
-import createLogger, { Logger } from '../utils/logger/create'
+import * as twitchTypes from '../twitch'
+
+import createLogger, { Logger } from '../utils/logger'
 
 import fetchUtil from '../utils/fetch'
 import * as Errors from '../utils/fetch/Errors'
@@ -29,7 +32,7 @@ class Api {
 
   private _readyState = 1
 
-  private _status: ApiRootResponse
+  private _status: twitchTypes.ApiRootResponse
 
   constructor(maybeOptions: types.Options) {
     /**
@@ -38,7 +41,7 @@ class Api {
      */
     this.options = maybeOptions
 
-    this._log = createLogger({ scope: 'Api', ...this.options.log })
+    this._log = createLogger({ name: 'Api', ...this.options.log })
   }
 
   set options(maybeOptions) {
@@ -60,7 +63,7 @@ class Api {
   /**
    * New client options. To update `token` or `clientId`, use [**api.initialize()**]{@link Api#initialize}.
    */
-  updateOptions(options: types.Options) {
+  updateOptions(options: Partial<types.Options>) {
     const { clientId, token } = this.options
     this.options = { ...options, clientId, token }
   }
@@ -69,7 +72,7 @@ class Api {
    * Initialize API client and retrieve status.
    * @see https://dev.twitch.tv/docs/v5/#root-url
    */
-  async initialize(newOptions: Partial<types.Options>) {
+  async initialize(newOptions?: Partial<types.Options>) {
     if (newOptions) {
       this.options = { ...this.options, ...newOptions }
     }
@@ -78,7 +81,7 @@ class Api {
       return Promise.resolve()
     }
 
-    const statusResponse = await this.get<ApiRootResponse>()
+    const statusResponse = await this.get<twitchTypes.ApiRootResponse>()
 
     this._readyState = 2
     this._status = statusResponse
@@ -137,15 +140,15 @@ class Api {
     return this._handleFetch<T>(endpoint, { ...options, method: 'put' })
   }
 
-  private _isVersionHelix(version: ApiVersions) {
-    return toLower(version) === ApiVersions.Helix
+  private _isVersionHelix(version: twitchTypes.ApiVersions) {
+    return toLower(version) === twitchTypes.ApiVersions.Helix
   }
 
-  private _getBaseUrl(version: ApiVersions) {
+  private _getBaseUrl(version: twitchTypes.ApiVersions) {
     return types.Settings[version].baseUrl
   }
 
-  private _getHeaders(version: ApiVersions): types.Headers {
+  private _getHeaders(version: twitchTypes.ApiVersions): types.Headers {
     const { clientId, token } = this.options
 
     const isHelix = this._isVersionHelix(version)
@@ -166,15 +169,15 @@ class Api {
 
   private async _handleFetch<T = any>(
     maybeUrl: string = '',
-    options: types.FetchOptions,
+    options: types.FetchOptions = {},
   ) {
-    const { version = ApiVersions.Helix, ...fetchOptions } = options
+    const { version = twitchTypes.ApiVersions.Helix, ...fetchOptions } = options
 
     const baseUrl = this._getBaseUrl(version)
 
     const url = `${baseUrl}/${maybeUrl}`
 
-    const message = `${fetchOptions.method || 'GET'} ${baseUrl}`
+    const message = `${toUpper(fetchOptions.method) || 'GET'} ${url}`
 
     const fetchProfiler = this._log.startTimer(message)
 
@@ -193,12 +196,16 @@ class Api {
       if (error instanceof Errors.AuthenticationError) {
         const token = await this.options.onAuthenticationFailure()
 
-        await this.initialize({ token })
-
-        this._log.info('Retrying (with new credentials)')
+        if (token) {
+          await this.initialize({ token })
+          this._log.info(`${message} ... retrying with new token`)
+        } else {
+          this._log.info(`${message} ... retrying`)
+        }
 
         return await performRequest()
       }
+      throw new Errors.FetchError(error, message)
     } finally {
       fetchProfiler.done(message)
     }

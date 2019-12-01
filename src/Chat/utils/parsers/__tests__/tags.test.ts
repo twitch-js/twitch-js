@@ -1,10 +1,11 @@
 import * as tags from '../tags'
+import { Commands } from '../../../../twitch'
 
 describe('Chat/utils/parsers/tags', () => {
   describe('privateMessageCheerEvent', () => {
     test('should return empty object for non-bits message', () => {
       const actual = tags.privateMessageCheerEvent({ bits: 0 })
-      const expected = {}
+      const expected = { event: Commands.PRIVATE_MESSAGE }
 
       expect(actual).toEqual(expected)
     })

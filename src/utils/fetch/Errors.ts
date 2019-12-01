@@ -12,6 +12,8 @@ class FetchError extends BaseError {
   constructor(response: Response, body: any) {
     super(`${response.url} ${response.statusText}`)
 
+    Object.setPrototypeOf(this, FetchError.prototype)
+
     this.ok = false
     this.status = response.status
     this.statusText = response.statusText
@@ -20,15 +22,11 @@ class FetchError extends BaseError {
   }
 }
 
-class AuthenticationError extends FetchError { }
-
-function ErrorFactory(response: Response, body: any) {
-  if (response.status === 401) {
-    return new AuthenticationError(response, body)
+class AuthenticationError extends FetchError {
+  constructor(response: Response, body: any) {
+    super(response, body)
+    Object.setPrototypeOf(this, AuthenticationError.prototype)
   }
-
-  return new FetchError(response, body)
 }
 
-export { FetchError, AuthenticationError }
-export default ErrorFactory
+export { BaseError, FetchError, AuthenticationError }

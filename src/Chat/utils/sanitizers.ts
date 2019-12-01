@@ -1,5 +1,5 @@
-import random from 'lodash-es/random'
-import toLower from 'lodash-es/toLower'
+import random from 'lodash/random'
+import toLower from 'lodash/toLower'
 import { ANONYMOUS_USERNAME } from '../constants'
 
 export const channel = (value: any): string => {

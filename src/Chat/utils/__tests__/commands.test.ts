@@ -1,4 +1,4 @@
-import camelCase from 'lodash-es/camelCase'
+import camelCase from 'lodash/camelCase'
 
 import * as commands from '../commands'
 import * as constants from '../../constants'

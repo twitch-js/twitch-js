@@ -1,11 +1,33 @@
 import { parse } from 'tekko/dist/parse'
 import camelcaseKeys from 'camelcase-keys'
 
-import gt from 'lodash-es/gt'
-import isEmpty from 'lodash-es/isEmpty'
-import isFinite from 'lodash-es/isFinite'
-import toNumber from 'lodash-es/toNumber'
-import toUpper from 'lodash-es/toUpper'
+import gt from 'lodash/gt'
+import isEmpty from 'lodash/isEmpty'
+import isFinite from 'lodash/isFinite'
+import toNumber from 'lodash/toNumber'
+import toUpper from 'lodash/toUpper'
+
+import {
+  BaseMessage,
+  Commands,
+  JoinMessage,
+  PartMessage,
+  ModeMessage,
+  ChatEvents,
+  NamesMessage,
+  NamesEndMessage,
+  GlobalUserStateMessage,
+  ClearChatMessage,
+  HostTargetMessage,
+  RoomStateMessage,
+  NoticeMessage,
+  UserNoticeTags,
+  KnownNoticeMessageIds,
+  UserStateMessage,
+  PrivateMessage,
+  UserNoticeMessage,
+  KnownUserNoticeMessageIds,
+} from '../../../twitch'
 
 import * as constants from '../../constants'
 import * as utils from '../'
@@ -22,14 +44,16 @@ export const base = (rawMessages: string): BaseMessage[] => {
 
     const {
       command,
-      tags,
-      prefix: { user },
+      tags = {},
+      prefix: { user } = { user: 'tmi.twitch.tv' },
       params: [channel, message],
     } = parse(rawMessage)
 
+    const timestamp = String(tags['tmi-sent-ts']) || Date.now().toString()
+
     const baseMessage = {
       _raw: rawMessage,
-      timestamp: helpers.generalTimestamp(tags['tmi-sent-ts'] as string),
+      timestamp: helpers.generalTimestamp(timestamp),
       username: user,
       command: command as Commands,
       channel: channel !== '*' ? channel : '',

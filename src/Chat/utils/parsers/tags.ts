@@ -1,7 +1,18 @@
-import camelCase from 'lodash-es/camelCase'
-import gt from 'lodash-es/gt'
-import toLower from 'lodash-es/toLower'
-import toUpper from 'lodash-es/toUpper'
+import camelCase from 'lodash/camelCase'
+import gt from 'lodash/gt'
+import toLower from 'lodash/toLower'
+import toUpper from 'lodash/toUpper'
+
+import {
+  BaseTags,
+  ClearChatTags,
+  GlobalUserStateTags,
+  ChatEvents,
+  Commands,
+  RoomStateTags,
+  UserNoticeMessageParameterTags,
+  UserStateTags,
+} from '../../../twitch'
 
 import * as constants from '../../constants'
 import * as helpers from './helpers'
@@ -72,29 +83,6 @@ export const userNoticeMessageParameters = (tags: BaseTags) =>
         }
     }
   }, {} as UserNoticeMessageParameterTags)
-
-export const userNoticeEvent = (tags: BaseTags) => {
-  switch (tags.msgId) {
-    case constants.USER_NOTICE_MESSAGE_IDS.ANON_GIFT_PAID_UPGRADE:
-      return constants.EVENTS.ANON_GIFT_PAID_UPGRADE
-    case constants.USER_NOTICE_MESSAGE_IDS.GIFT_PAID_UPGRADE:
-      return constants.EVENTS.GIFT_PAID_UPGRADE
-    case constants.USER_NOTICE_MESSAGE_IDS.RESUBSCRIPTION:
-      return constants.EVENTS.RESUBSCRIPTION
-    case constants.USER_NOTICE_MESSAGE_IDS.RAID:
-      return constants.EVENTS.RAID
-    case constants.USER_NOTICE_MESSAGE_IDS.RITUAL:
-      return constants.EVENTS.RITUAL
-    case constants.USER_NOTICE_MESSAGE_IDS.SUBSCRIPTION:
-      return constants.EVENTS.SUBSCRIPTION
-    case constants.USER_NOTICE_MESSAGE_IDS.SUBSCRIPTION_GIFT:
-      return constants.EVENTS.SUBSCRIPTION_GIFT
-    case constants.USER_NOTICE_MESSAGE_IDS.SUBSCRIPTION_GIFT_COMMUNITY:
-      return constants.EVENTS.SUBSCRIPTION_GIFT_COMMUNITY
-    default:
-      return toUpper(tags.msgId)
-  }
-}
 
 export const userState = (tags: BaseTags): UserStateTags => ({
   ...tags,

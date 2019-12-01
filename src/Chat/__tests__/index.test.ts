@@ -9,7 +9,7 @@ import { resolveOnEvent } from '../../utils'
 import Chat, { constants } from '../index'
 import parser from '../utils/parsers'
 
-jest.mock('ws', () => require('ws'))
+jest.mock('ws')
 
 const emitHelper = (emitter, rawMessages) =>
   parser(rawMessages).forEach(message =>
@@ -23,11 +23,17 @@ describe('Chat', () => {
     token: 'TOKEN',
     username: 'USERNAME',
     ssl: false,
+    isVerified: true,
+    log: { enabled: false },
   }
 
   describe('connect', () => {
     test('should connect as anonymous', async () => {
-      const chat = new Chat({})
+      const chat = new Chat({
+        ...options,
+        token: undefined,
+        username: undefined,
+      })
       const actual = await chat.connect()
 
       expect(actual).toMatchSnapshot()
@@ -126,7 +132,7 @@ describe('Chat', () => {
   })
 
   test('should throw when sending a message as anonymous', async () => {
-    const chat = new Chat({})
+    const chat = new Chat({ log: { enabled: false } })
     await chat.connect()
 
     await chat
@@ -408,7 +414,9 @@ describe('Chat', () => {
           const chat = new Chat(options)
           await chat.connect()
 
-          chat.once(constants.EVENTS.NOTICE, message => {
+          const eventName = `${constants.EVENTS.NOTICE}/${name}`
+
+          chat.once(eventName, message => {
             expect(message).toMatchSnapshot({
               timestamp: expect.any(Date),
             })
@@ -468,7 +476,7 @@ describe('Chat', () => {
       })
 
       test('whisper when anonymous', async () => {
-        const chat = new Chat({})
+        const chat = new Chat({ log: { enabled: false } })
         await chat.connect()
 
         await expect(
@@ -501,7 +509,7 @@ describe('Chat', () => {
     // test('should broadcast message to all channels', () => {})
 
     test('should deny message broadcasting when anonymous', async () => {
-      const chat = new Chat({})
+      const chat = new Chat({ log: { enabled: false } })
       await chat.connect()
 
       await expect(

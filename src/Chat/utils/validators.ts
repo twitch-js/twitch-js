@@ -1,12 +1,12 @@
 import invariant from 'invariant'
 
-import conformsTo from 'lodash-es/conformsTo'
-import defaults from 'lodash-es/defaults'
-import isString from 'lodash-es/isString'
-import isFinite from 'lodash-es/isFinite'
-import isFunction from 'lodash-es/isFunction'
-import isBoolean from 'lodash-es/isBoolean'
-import isNil from 'lodash-es/isNil'
+import conformsTo from 'lodash/conformsTo'
+import defaults from 'lodash/defaults'
+import isString from 'lodash/isString'
+import isFinite from 'lodash/isFinite'
+import isFunction from 'lodash/isFunction'
+import isBoolean from 'lodash/isBoolean'
+import isNil from 'lodash/isNil'
 
 import * as types from '../types'
 

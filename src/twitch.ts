@@ -1,4 +1,4 @@
-declare enum ApiVersions {
+export enum ApiVersions {
   Helix = 'helix',
   Kraken = 'kraken',
 }
@@ -7,7 +7,7 @@ declare enum ApiVersions {
  * Root URL response
  * @see https://dev.twitch.tv/docs/v5#root-url
  */
-declare type ApiRootResponse = {
+export type ApiRootResponse = {
   token: {
     authorization: {
       createdAt: Date
@@ -24,7 +24,7 @@ declare type ApiRootResponse = {
 /**
  * @see https://dev.twitch.tv/docs/irc/membership
  */
-declare enum MembershipCommands {
+export enum MembershipCommands {
   JOIN = 'JOIN',
   MODE = 'MODE',
   PART = 'PART',
@@ -35,7 +35,7 @@ declare enum MembershipCommands {
 /**
  * @see https://dev.twitch.tv/docs/irc/tags
  */
-declare enum TagCommands {
+export enum TagCommands {
   CLEAR_CHAT = 'CLEARCHAT',
   GLOBAL_USER_STATE = 'GLOBALUSERSTATE',
   PRIVATE_MESSAGE = 'PRIVMSG',
@@ -44,7 +44,7 @@ declare enum TagCommands {
   USER_STATE = 'USERSTATE',
 }
 
-declare enum OtherCommands {
+export enum OtherCommands {
   WELCOME = '001',
   PING = 'PING',
   PONG = 'PONG',
@@ -54,7 +54,7 @@ declare enum OtherCommands {
 /**
  * @see https://dev.twitch.tv/docs/irc/commands
  */
-declare enum BaseCommands {
+export enum BaseCommands {
   CLEAR_CHAT = 'CLEARCHAT',
   HOST_TARGET = 'HOSTTARGET',
   NOTICE = 'NOTICE',
@@ -64,7 +64,7 @@ declare enum BaseCommands {
   USER_STATE = 'USERSTATE',
 }
 
-declare enum Commands {
+export enum Commands {
   WELCOME = '001',
 
   PING = 'PING',
@@ -89,7 +89,7 @@ declare enum Commands {
   USER_STATE = 'USERSTATE',
 }
 
-declare enum ChatEvents {
+export enum ChatEvents {
   RAW = 'RAW',
 
   ALL = '*',
@@ -126,7 +126,7 @@ declare enum ChatEvents {
   HOSTED_AUTO = 'HOSTED/AUTO',
 }
 
-declare type Events =
+export type Events =
   | MembershipCommands
   | TagCommands
   | OtherCommands
@@ -136,7 +136,7 @@ declare type Events =
 /**
  * @see https://help.twitch.tv/customer/en/portal/articles/659095-chat-moderation-commands
  */
-declare enum ChatCommands {
+export enum ChatCommands {
   BAN = 'ban',
   CLEAR = 'clear',
   COLOR = 'color',
@@ -168,7 +168,7 @@ declare enum ChatCommands {
   // WHISPER = 'w',
 }
 
-declare enum KnownNoticeMessageIds {
+export enum KnownNoticeMessageIds {
   ALREADY_BANNED = 'already_banned',
   ALREADY_EMOTE_ONLY_OFF = 'already_emote_only_off',
   ALREADY_EMOTE_ONLY_ON = 'already_emote_only_on',
@@ -205,12 +205,12 @@ declare enum KnownNoticeMessageIds {
   UNRAID_SUCCESS = 'unraid_success',
   UNRECOGNIZED_CMD = 'unrecognized_cmd',
 }
-declare type NoticeMessageIds = KnownNoticeMessageIds | string
+export type NoticeMessageIds = KnownNoticeMessageIds | string
 
 /**
  * @see https://dev.twitch.tv/docs/irc/tags#usernotice-twitch-tags
  */
-declare enum KnownUserNoticeMessageIds {
+export enum KnownUserNoticeMessageIds {
   ANON_GIFT_PAID_UPGRADE = 'anongiftpaidupgrade',
   GIFT_PAID_UPGRADE = 'giftpaidupgrade',
   RAID = 'raid',
@@ -221,9 +221,9 @@ declare enum KnownUserNoticeMessageIds {
   SUBSCRIPTION_GIFT_COMMUNITY = 'submysterygift',
 }
 
-declare type UserNoticeMessageIds = KnownUserNoticeMessageIds | string
+export type UserNoticeMessageIds = KnownUserNoticeMessageIds | string
 
-declare enum BooleanBadges {
+export enum BooleanBadges {
   'admin',
   'broadcaster',
   'globalMod',
@@ -236,13 +236,13 @@ declare enum BooleanBadges {
   'vip',
 }
 
-declare enum NumberBadges {
+export enum NumberBadges {
   'bits',
   'bitsLeader',
   'subscriber',
 }
 
-declare type Badges =
+export type Badges =
   | {
       // Booleans
       admin: boolean
@@ -264,13 +264,13 @@ declare type Badges =
       [key: string]: string
     }
 
-declare type EmoteTag = {
+export type EmoteTag = {
   id: string
   start: number
   end: number
 }
 
-declare interface BaseTags {
+export interface BaseTags {
   [key: string]: any
 }
 
@@ -278,7 +278,7 @@ declare interface BaseTags {
  * CLEARCHAT tags
  * @see https://dev.twitch.tv/docs/irc/tags#clearchat-twitch-tags
  */
-declare interface ClearChatTags extends BaseTags {
+export interface ClearChatTags extends BaseTags {
   banReason: string
   banDuration: number
 }
@@ -287,7 +287,7 @@ declare interface ClearChatTags extends BaseTags {
  * GLOBALUSERSTATE tags
  * @see https://dev.twitch.tv/docs/irc/tags#globaluserstate-twitch-tags
  */
-declare interface GlobalUserStateTags extends BaseTags {
+export interface GlobalUserStateTags extends BaseTags {
   emoteSets: string[]
   userType: string
   username: string
@@ -297,7 +297,7 @@ declare interface GlobalUserStateTags extends BaseTags {
  * ROOMSTATE Tag
  * @see https://dev.twitch.tv/docs/irc/tags#roomstate-twitch-tags
  */
-declare interface RoomStateTags extends BaseTags {
+export interface RoomStateTags extends BaseTags {
   followersOnly?: number | boolean
   broadcasterLang?: string
   slow?: number
@@ -306,7 +306,7 @@ declare interface RoomStateTags extends BaseTags {
   subsOnly?: boolean
 }
 
-declare interface UserNoticeMessageParameterTags extends BaseTags {
+export interface UserNoticeMessageParameterTags extends BaseTags {
   months: number
   massGiftCount: number
   promoGiftTotal: number
@@ -318,7 +318,7 @@ declare interface UserNoticeMessageParameterTags extends BaseTags {
  * USERSTATE tags
  * @see https://dev.twitch.tv/docs/irc/tags#userstate-twitch-tags
  */
-declare interface UserStateTags extends BaseTags {
+export interface UserStateTags extends BaseTags {
   badges: Partial<Badges>
   color: string
   displayName: string
@@ -334,7 +334,7 @@ declare interface UserStateTags extends BaseTags {
  * PRIVMSG tags
  * @see https://dev.twitch.tv/docs/irc/tags#privmsg-twitch-tags
  */
-declare interface PrivateMessageTags extends UserStateTags {
+export interface PrivateMessageTags extends UserStateTags {
   bits?: string
 }
 
@@ -342,7 +342,7 @@ declare interface PrivateMessageTags extends UserStateTags {
  * USERNOTICE tags
  * @see https://dev.twitch.tv/docs/irc/tags#usernotice-twitch-tags
  */
-declare interface UserNoticeTags extends UserStateTags {
+export interface UserNoticeTags extends UserStateTags {
   id: string
   login: string
   msgId: UserNoticeMessageIds
@@ -351,7 +351,7 @@ declare interface UserNoticeTags extends UserStateTags {
   tmiSentTs: string
 }
 
-declare type Tags =
+export type Tags =
   | ClearChatTags
   | GlobalUserStateTags
   | RoomStateTags
@@ -361,7 +361,7 @@ declare type Tags =
   | UserNoticeTags
 
 /* Base message parsed from Twitch */
-declare interface BaseMessage {
+export interface BaseMessage {
   _raw: string
   timestamp: Date
   channel: string
@@ -377,7 +377,7 @@ declare interface BaseMessage {
  * Join a channel.
  * @see https://dev.twitch.tv/docs/irc/membership/#join-twitch-membership
  */
-declare interface JoinMessage extends Omit<BaseMessage, 'message'> {
+export interface JoinMessage extends Omit<BaseMessage, 'message'> {
   command: Commands.JOIN
   event: Commands.JOIN
 }
@@ -386,7 +386,7 @@ declare interface JoinMessage extends Omit<BaseMessage, 'message'> {
  * Depart from a channel.
  * @see https://dev.twitch.tv/docs/irc/membership/#part-twitch-membership
  */
-declare interface PartMessage extends Omit<BaseMessage, 'message'> {
+export interface PartMessage extends Omit<BaseMessage, 'message'> {
   command: Commands.PART
   event: Commands.PART
 }
@@ -395,7 +395,7 @@ declare interface PartMessage extends Omit<BaseMessage, 'message'> {
  * Gain/lose moderator (operator) status in a channel.
  * @see https://dev.twitch.tv/docs/irc/membership/#mode-twitch-membership
  */
-declare interface ModeMessage extends Omit<BaseMessage, 'message'> {
+export interface ModeMessage extends Omit<BaseMessage, 'message'> {
   command: Commands.MODE
   event: ChatEvents.MOD_GAINED | ChatEvents.MOD_LOST
   message: '+o' | '-o'
@@ -406,7 +406,7 @@ declare interface ModeMessage extends Omit<BaseMessage, 'message'> {
  * List current chatters in a channel.
  * @see https://dev.twitch.tv/docs/irc/membership/#names-twitch-membership
  */
-declare interface NamesMessage extends Omit<BaseMessage, 'message'> {
+export interface NamesMessage extends Omit<BaseMessage, 'message'> {
   command: Commands.NAMES
   event: Commands.NAMES
   usernames: string[]
@@ -416,7 +416,7 @@ declare interface NamesMessage extends Omit<BaseMessage, 'message'> {
  * End of list current chatters in a channel.
  * @see https://dev.twitch.tv/docs/irc/membership/#names-twitch-membership
  */
-declare interface NamesEndMessage extends Omit<BaseMessage, 'message'> {
+export interface NamesEndMessage extends Omit<BaseMessage, 'message'> {
   command: Commands.NAMES_END
   event: Commands.NAMES_END
 }
@@ -425,7 +425,7 @@ declare interface NamesEndMessage extends Omit<BaseMessage, 'message'> {
  * GLOBALUSERSTATE message
  * @see https://dev.twitch.tv/docs/irc/tags#globaluserstate-twitch-tags
  */
-declare interface GlobalUserStateMessage extends BaseMessage {
+export interface GlobalUserStateMessage extends BaseMessage {
   command: Commands.GLOBAL_USER_STATE
   event: Commands.GLOBAL_USER_STATE
   tags: GlobalUserStateTags
@@ -436,7 +436,7 @@ declare interface GlobalUserStateMessage extends BaseMessage {
  * @see https://dev.twitch.tv/docs/irc/commands/#clearchat-twitch-commands
  * @see https://dev.twitch.tv/docs/irc/tags/#clearchat-twitch-tags
  */
-declare interface ClearChatUserBannedMessage
+export interface ClearChatUserBannedMessage
   extends Omit<BaseMessage, 'message'> {
   command: Commands.CLEAR_CHAT
   event: ChatEvents.USER_BANNED
@@ -448,13 +448,13 @@ declare interface ClearChatUserBannedMessage
  * @see https://dev.twitch.tv/docs/irc/commands/#clearchat-twitch-commands
  * @see https://dev.twitch.tv/docs/irc/tags/#clearchat-twitch-tags
  */
-declare interface ClearChatNormalMessage
+export interface ClearChatNormalMessage
   extends Omit<BaseMessage, 'tags' | 'username' | 'message'> {
   command: Commands.CLEAR_CHAT
   event: Commands.CLEAR_CHAT
 }
 
-declare type ClearChatMessage =
+export type ClearChatMessage =
   | ClearChatUserBannedMessage
   | ClearChatNormalMessage
 
@@ -462,7 +462,7 @@ declare type ClearChatMessage =
  * Host starts or stops a message.
  * @see https://dev.twitch.tv/docs/irc/commands/#hosttarget-twitch-commands
  */
-declare interface HostTargetMessage extends BaseMessage {
+export interface HostTargetMessage extends BaseMessage {
   command: Commands.HOST_TARGET
   event: ChatEvents.HOST_ON | ChatEvents.HOST_OFF
   numberOfViewers?: number
@@ -472,7 +472,7 @@ declare interface HostTargetMessage extends BaseMessage {
  * When a user joins a channel or a room setting is changed.
  * @see https://dev.twitch.tv/docs/irc/tags#roomstate-twitch-tags
  */
-declare interface RoomStateMessage extends BaseMessage {
+export interface RoomStateMessage extends BaseMessage {
   command: Commands.ROOM_STATE
   event: Commands.ROOM_STATE
   tags: RoomStateTags
@@ -481,7 +481,7 @@ declare interface RoomStateMessage extends BaseMessage {
 /**
  * Base NOTICE message
  */
-declare interface BaseNoticeMessage extends BaseMessage {
+export interface BaseNoticeMessage extends BaseMessage {
   command: Commands.NOTICE
   event: Exclude<keyof typeof KnownNoticeMessageIds, 'ROOM_MODS'> | string
   tags: { msgId: NoticeMessageIds }
@@ -491,7 +491,7 @@ declare interface BaseNoticeMessage extends BaseMessage {
 /**
  * NOTICE/ROOM_MODS message
  */
-declare interface NoticeRoomModsMessage extends BaseNoticeMessage {
+export interface NoticeRoomModsMessage extends BaseNoticeMessage {
   event: KnownNoticeMessageIds.ROOM_MODS
   mods: string[]
 }
@@ -500,12 +500,12 @@ declare interface NoticeRoomModsMessage extends BaseNoticeMessage {
  * NOTICE message
  * @see https://dev.twitch.tv/docs/irc/commands/#msg-id-tags-for-the-notice-commands-capability
  */
-declare type NoticeMessage = NoticeRoomModsMessage | BaseNoticeMessage
+export type NoticeMessage = NoticeRoomModsMessage | BaseNoticeMessage
 
 /**
  * USERSTATE message
  */
-declare interface UserStateMessage extends BaseMessage {
+export interface UserStateMessage extends BaseMessage {
   command: Commands.USER_STATE
   event: Commands.USER_STATE
   tags: UserStateTags
@@ -514,13 +514,13 @@ declare interface UserStateMessage extends BaseMessage {
 /**
  * When a user joins a channel or sends a PRIVMSG to a channel.
  */
-declare interface BasePrivateMessage
+export interface BasePrivateMessage
   extends Omit<UserStateMessage, 'command' | 'event'> {
   command: Commands.PRIVATE_MESSAGE
   event: Commands.PRIVATE_MESSAGE
 }
 
-declare interface PrivateMessageWithBits
+export interface PrivateMessageWithBits
   extends Omit<BasePrivateMessage, 'event'> {
   event: ChatEvents.CHEER
   bits: number
@@ -529,33 +529,33 @@ declare interface PrivateMessageWithBits
 /**
  * When a user hosts your channel while connected as broadcaster.
  */
-declare interface HostingPrivateMessage
+export interface HostingPrivateMessage
   extends Omit<BasePrivateMessage, 'event' | 'tags'> {
   event: ChatEvents.HOSTED_WITHOUT_VIEWERS
   tags: { displayName: string }
 }
 
-declare interface HostingWithViewersPrivateMessage
+export interface HostingWithViewersPrivateMessage
   extends Omit<HostingPrivateMessage, 'event'> {
   event: ChatEvents.HOSTED_WITH_VIEWERS
   numberOfViewers: number
 }
 
-declare interface HostingAutoPrivateMessage
+export interface HostingAutoPrivateMessage
   extends Omit<HostingWithViewersPrivateMessage, 'event'> {
   event: ChatEvents.HOSTED_AUTO
   tags: { displayName: string }
   numberOfViewers: number
 }
 
-declare type PrivateMessage =
+export type PrivateMessage =
   | BasePrivateMessage
   | PrivateMessageWithBits
   | HostingPrivateMessage
   | HostingWithViewersPrivateMessage
   | HostingAutoPrivateMessage
 
-declare interface UserNoticeBaseMessage extends BaseMessage {
+export interface UserNoticeBaseMessage extends BaseMessage {
   command: Commands.USER_NOTICE
   event: string
   tags: UserNoticeTags
@@ -566,7 +566,7 @@ declare interface UserNoticeBaseMessage extends BaseMessage {
 /**
  * On anonymous gifted subscription paid upgrade to a channel.
  */
-declare interface UserNoticeAnonymousGiftPaidUpgradeMessage
+export interface UserNoticeAnonymousGiftPaidUpgradeMessage
   extends UserNoticeBaseMessage {
   event: ChatEvents.ANON_GIFT_PAID_UPGRADE
 }
@@ -574,7 +574,7 @@ declare interface UserNoticeAnonymousGiftPaidUpgradeMessage
 /**
  * On gifted subscription paid upgrade to a channel.
  */
-declare interface UserNoticeGiftPaidUpgradeMessage
+export interface UserNoticeGiftPaidUpgradeMessage
   extends Omit<UserNoticeBaseMessage, 'parameters'> {
   event: ChatEvents.GIFT_PAID_UPGRADE
   parameters: {
@@ -588,7 +588,7 @@ declare interface UserNoticeGiftPaidUpgradeMessage
 /**
  * On channel raid.
  */
-declare interface UserNoticeRaidMessage
+export interface UserNoticeRaidMessage
   extends Omit<UserNoticeBaseMessage, 'parameters'> {
   event: ChatEvents.RAID
   parameters: {
@@ -601,7 +601,7 @@ declare interface UserNoticeRaidMessage
 /**
  * On resubscription (subsequent months) to a channel.
  */
-declare interface UserNoticeResubscriptionMessage
+export interface UserNoticeResubscriptionMessage
   extends Omit<UserNoticeBaseMessage, 'parameters'> {
   event: ChatEvents.RESUBSCRIPTION
   parameters: {
@@ -614,7 +614,7 @@ declare interface UserNoticeResubscriptionMessage
 /**
  * On channel ritual.
  */
-declare interface UserNoticeRitualMessage
+export interface UserNoticeRitualMessage
   extends Omit<UserNoticeBaseMessage, 'parameters'> {
   event: ChatEvents.RITUAL
   parameters: {
@@ -625,7 +625,7 @@ declare interface UserNoticeRitualMessage
 /**
  * On subscription gift to a channel community.
  */
-declare interface UserNoticeSubscriptionGiftCommunityMessage
+export interface UserNoticeSubscriptionGiftCommunityMessage
   extends Omit<UserNoticeBaseMessage, 'parameters'> {
   event: ChatEvents.SUBSCRIPTION_GIFT_COMMUNITY
   parameters: {
@@ -638,7 +638,7 @@ declare interface UserNoticeSubscriptionGiftCommunityMessage
 /**
  * On subscription gift to a channel.
  */
-declare interface UserNoticeSubscriptionGiftMessage
+export interface UserNoticeSubscriptionGiftMessage
   extends Omit<UserNoticeBaseMessage, 'parameters'> {
   event: ChatEvents.SUBSCRIPTION_GIFT
   parameters: {
@@ -654,7 +654,7 @@ declare interface UserNoticeSubscriptionGiftMessage
 /**
  * On subscription (first month) to a channel.
  */
-declare interface UserNoticeSubscriptionMessage
+export interface UserNoticeSubscriptionMessage
   extends Omit<UserNoticeBaseMessage, 'parameters'> {
   event: ChatEvents.SUBSCRIPTION
   parameters: {
@@ -664,7 +664,7 @@ declare interface UserNoticeSubscriptionMessage
   }
 }
 
-declare type UserNoticeMessage =
+export type UserNoticeMessage =
   | UserNoticeBaseMessage
   | UserNoticeAnonymousGiftPaidUpgradeMessage
   | UserNoticeGiftPaidUpgradeMessage

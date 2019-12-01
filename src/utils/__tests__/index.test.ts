@@ -16,13 +16,13 @@ describe('utils', () => {
 
     test('should call setTimeout', done => {
       const ms = 123
-      const reason = 'MESSAGE'
+      const error = new Error('REJECT_MESSAGE')
 
-      utils.rejectAfter(ms, reason).catch(() => {
+      utils.rejectAfter(ms, error).catch(() => {
         expect(setTimeout).toHaveBeenLastCalledWith(
           expect.any(Function),
           ms,
-          reason,
+          error,
         )
         done()
       })
@@ -32,10 +32,10 @@ describe('utils', () => {
 
     test('should reject after specified time with reason', done => {
       const ms = 456
-      const reason = 'timeout'
+      const error = new Error('REJECT_MESSAGE')
 
-      utils.rejectAfter(ms, reason).catch(rejectedReason => {
-        expect(rejectedReason).toEqual(reason)
+      utils.rejectAfter(ms, error).catch(rejectedReason => {
+        expect(rejectedReason).toEqual(error)
         done()
       })
 

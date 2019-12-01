@@ -1,11 +1,12 @@
-import { ConsolaOptions } from 'consola'
+import * as twitchTypes from '../twitch'
 
 import { Options as BaseFetchOptions } from '../utils/fetch'
+import { Options as LoggerOptions } from '../utils/logger'
 
 export type Options = {
   clientId: string
   token?: string
-  log?: ConsolaOptions
+  log?: LoggerOptions
   onAuthenticationFailure?: () => Promise<string>
 }
 
@@ -20,12 +21,12 @@ export type ApiSettings = {
   authorizationHeader: string
 }
 
-export const Settings: Record<ApiVersions, ApiSettings> = {
-  [ApiVersions.Helix]: {
+export const Settings: Record<twitchTypes.ApiVersions, ApiSettings> = {
+  [twitchTypes.ApiVersions.Helix]: {
     baseUrl: 'https://api.twitch.tv/helix',
     authorizationHeader: 'Bearer',
   },
-  [ApiVersions.Kraken]: {
+  [twitchTypes.ApiVersions.Kraken]: {
     baseUrl: 'https://api.twitch.tv/kraken',
     authorizationHeader: 'OAuth',
   },
@@ -37,4 +38,6 @@ export type Headers = {
   Authorization?: string
 }
 
-export type FetchOptions = BaseFetchOptions & { version?: ApiVersions }
+export type FetchOptions = BaseFetchOptions & {
+  version?: twitchTypes.ApiVersions
+}

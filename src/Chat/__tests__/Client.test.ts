@@ -5,7 +5,7 @@ import membership from '../../../__mocks__/ws/__fixtures__/membership'
 import Client from '../Client'
 import * as constants from '../constants'
 
-jest.mock('ws', () => require('ws'))
+jest.mock('ws')
 
 describe('Chat/Client', () => {
   const options = {
@@ -14,6 +14,7 @@ describe('Chat/Client', () => {
     token: 'TOKEN',
     username: 'USERNAME',
     ssl: false,
+    log: { enabled: false },
   }
 
   test('should receive CONNECTED event', done => {
@@ -96,7 +97,7 @@ describe('Chat/Client', () => {
 
       await client.send('MESSAGE', { isModerator: true })
 
-      expect(queueSpy).toHaveBeenCalledTimes(3)
+      expect(queueSpy).toHaveBeenCalledTimes(0)
       expect(moderatorQueueSpy).toHaveBeenCalledTimes(1)
     })
   })

@@ -6,7 +6,7 @@ import parser from './parser'
 
 export type Options = RequestInit & {
   /** Any query parameters you want to add to your request. */
-  search: { [key: string]: any }
+  search?: { [key: string]: any }
 }
 
 /**
@@ -14,7 +14,7 @@ export type Options = RequestInit & {
  */
 const fetchUtil = async <T = any>(
   url: RequestInfo,
-  options?: Options,
+  options: Options = {},
   qsOptions?: IStringifyOptions,
 ) => {
   const isBodyJson =

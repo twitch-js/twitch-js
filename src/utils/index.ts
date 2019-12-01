@@ -12,4 +12,4 @@ export const resolveInSequence = (tasks: (() => Promise<any>)[]) =>
   tasks.reduce((p, task) => p.then(task), Promise.resolve())
 
 export const rejectAfter = (ms: number, error: Error): Promise<never> =>
-  new Promise((r, reject) => setTimeout(reject, ms, error.message))
+  new Promise((r, reject) => setTimeout(reject, ms, error))

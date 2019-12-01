@@ -6,7 +6,7 @@ describe('Chat/Queue', () => {
     queue.push({ fn: done })
   })
 
-  test('should call multiple fn on push', done => {
+  test('should call multiple fn on push', async () => {
     expect.assertions(2)
 
     const fnOne = jest.fn()
@@ -14,14 +14,14 @@ describe('Chat/Queue', () => {
 
     const queue = new Queue()
 
-    queue._q.on('drain', () => {
-      expect(fnOne).toHaveBeenCalledTimes(1)
-      expect(fnTwo).toHaveBeenCalledTimes(1)
-      done()
-    })
+    await Promise.all([
+      queue._q.onEmpty,
+      queue.push({ fn: fnOne }),
+      queue.push({ fn: fnTwo }),
+    ])
 
-    queue.push({ fn: fnOne })
-    queue.push({ fn: fnTwo })
+    expect(fnOne).toHaveBeenCalledTimes(1)
+    expect(fnTwo).toHaveBeenCalledTimes(1)
   })
 
   describe('rate-limiting', () => {
@@ -31,68 +31,42 @@ describe('Chat/Queue', () => {
     beforeAll(() => {
       Object.assign(Date, NativeDate)
       global.Date = jest.fn(() => new NativeDate(d.toISOString()))
+      global.Date.now = () => d.getMilliseconds()
     })
 
     afterAll(() => {
       global.Date = NativeDate
     })
 
-    test('should retain timestamp within interval', () => {
-      const tickInterval = 2000
-      const queue = new Queue({ tickInterval })
-
-      const expected = queue._timestamp
-
-      // Pass time less than interval.
-      d.setMilliseconds(d.getMilliseconds() + 1)
-
-      queue._handleTaskFinished()
-      expect(queue._timestamp).toEqual(expected)
-    })
-
-    test('should reset timestamp after interval time has passed', () => {
-      const tickInterval = 2000
-      const queue = new Queue({ tickInterval })
-
-      // Pass time more than interval.
-      d.setMilliseconds(d.getMilliseconds() + tickInterval + 1)
-
-      const expected = d
-
-      queue._handleTaskFinished()
-      expect(queue._timestamp).toEqual(expected)
-    })
-
-    test('should limit rate of fn calls', done => {
-      const fn = jest.fn()
-
+    test('should limit rate of fn calls', async () => {
       const maxLength = 3
       const tickInterval = 2000
       const totalCalls = 10
 
       let numberOfTasksFinished = 0
-      const onTaskFinished = () => {
+
+      const fn = () => {
         numberOfTasksFinished++
-        expect(numberOfTasksFinished).toBe(numberOfTasksFinished)
 
         if (numberOfTasksFinished % maxLength === 0) {
           d.setMilliseconds(d.getMilliseconds() + tickInterval + 1)
-        }
-
-        if (numberOfTasksFinished === totalCalls) {
-          done()
         }
       }
 
       const queue = new Queue({
         maxLength,
         tickInterval,
-        onTaskFinished,
       })
 
+      let calls = []
+
       for (let i = 1; i <= totalCalls; i++) {
-        queue.push({ fn })
+        calls.push(queue.push({ fn }))
       }
+
+      await Promise.all([...calls, queue._q.onEmpty])
+
+      expect(numberOfTasksFinished).toEqual(totalCalls)
     })
   })
 })

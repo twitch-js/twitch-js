@@ -24,7 +24,7 @@ class Queue {
     'onTaskQueued' | 'onTaskFinished' | 'onQueueDrained'
   > = {}
 
-  constructor(options?: Options) {
+  constructor(options: Options = {}) {
     const {
       maxLength = 20,
       tickInterval = 30000,
@@ -41,8 +41,8 @@ class Queue {
     this._q = new PQueue({ concurrency: 1 })
   }
 
-  push = ({ fn, priority }) => {
-    return this._q.add(fn, { priority })
+  push = ({ fn, priority = 100 }) => {
+    return this._q.add<void>(fn, { priority })
   }
 }
 
