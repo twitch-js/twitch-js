@@ -96,7 +96,7 @@ class Api {
   hasScope(
     /** Scope to check */
     scope: string,
-  ) {
+  ): Promise<boolean> {
     return new Promise((resolve, reject) => {
       if (this.readyState !== 2 || !this.status) {
         return reject(false)

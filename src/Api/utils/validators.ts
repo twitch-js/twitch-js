@@ -22,7 +22,7 @@ export const apiOptions = (maybeOptions: any): Options | never => {
     { ...maybeOptions },
     {
       token: undefined,
-      onAuthenticationFailure: () => Promise.reject(),
+      onAuthenticationFailure: () => new Promise((_, reject) => reject()),
     },
   )
 

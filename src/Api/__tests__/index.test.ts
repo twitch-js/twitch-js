@@ -107,26 +107,22 @@ describe('Api', () => {
     })
   })
 
-  describe('hasScope', async () => {
-    test('should reject if instance is uninitialized', () => {
+  describe('hasScope', () => {
+    test('should reject if instance is uninitialized', async () => {
       const api = new Api(options)
-      const actual = await api.hasScope('user_read')
-      expect(actual).rejects.toBe(false)
+      await expect(api.hasScope('user_read')).rejects.toBe(false)
     })
 
     test('should reject if scope is absent', async () => {
       const api = new Api(options)
-      const actual = await api.hasScope('channel_read')
-      expect(actual).rejects.toBe(false)
+      await expect(api.hasScope('channel_read')).rejects.toBe(false)
     })
 
     test('should resolve if scope is present', async () => {
       const api = new Api(options)
       await api.initialize()
 
-      const actual = await api.hasScope('user_read')
-
-      expect(actual).resolves.toBe(true)
+      await expect(api.hasScope('user_read')).resolves.toBe(true)
     })
   })
 

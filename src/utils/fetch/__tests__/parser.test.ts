@@ -23,13 +23,14 @@ describe('parser', () => {
     const actual = await parser(mockResponse)
     const expected = mockJsonResponse
 
-    expect(actual).resolves.toEqual(expected)
+    expect(actual).toEqual(expected)
   })
 
   test('should throw on unsuccessful response', async () => {
-    const actual = await parser(mockResponseError)
+    const actual = parser(mockResponseError)
 
-    expect(actual).rejects.toBeInstanceOf(Error)
-    expect(actual).rejects.toMatchObject({ body: mockJsonResponseError })
+    await expect(actual).rejects.toThrow()
+    await expect(actual).rejects.toBeInstanceOf(Error)
+    await expect(actual).rejects.toMatchObject({ body: mockJsonResponseError })
   })
 })
