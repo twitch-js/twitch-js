@@ -9,11 +9,11 @@ request, be sure to link to that issue.
 What types of changes does your code introduce to TwitchJS? _Put an `x` in the
 boxes that apply and remove those that do not apply_
 
-* [ ] Bugfix (non-breaking change that fixes an issue)
-* [ ] New feature (non-breaking change that adds functionality)
-* [ ] Breaking change (fix or feature that would cause existing functionality to
+- [ ] Bugfix (non-breaking change that fixes an issue)
+- [ ] New feature (non-breaking change that adds functionality)
+- [ ] Breaking change (fix or feature that would cause existing functionality to
       not work as expected)
-* [ ] Chore (change that does not fix an issue or add functionality, but
+- [ ] Chore (change that does not fix an issue or add functionality, but
       improves TwitchJS in some other way)
 
 ## Checklist
@@ -23,16 +23,16 @@ the PR. If you're unsure about any of them, don't hesitate to ask. We're here to
 help! This is simply a reminder of what we are going to look for before merging
 your code._
 
-* [ ] I have read the
+- [ ] I have read the
       [CONTRIBUTING.md](https://github.com/twitch-js/twitch-js/blob/master/CONTRIBUTING.md)
       doc
-* [ ] My PR is named according to
+- [ ] My PR is named according to
       [CONTRIBUTING.md](https://github.com/twitch-js/twitch-js/blob/master/CONTRIBUTING.md)
       doc
-* [ ] End-to-end tests pass locally with my changes
-* [ ] I have added tests that prove my fix is effective or that my feature works
-* [ ] I have added necessary documentation (if appropriate)
-* [ ] Any dependent changes have been merged and published in downstream modules
+- [ ] End-to-end tests pass locally with my changes
+- [ ] I have added tests that prove my fix is effective or that my feature works
+- [ ] I have added necessary documentation (if appropriate)
+- [ ] Any dependent changes have been merged and published in downstream modules
 
 ## Further comments
 

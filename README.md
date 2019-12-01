@@ -18,14 +18,14 @@ accordingly to avoid regressions.
 
 ## Features
 
-* Aligns with official
+- Aligns with official
   [Twitch IRC documentation](https://dev.twitch.tv/docs/irc/)
-* Forward-compatible, low-level, minimally-assertive architecture
-* Supports Node environments
-* Supports Browsers
-* Connect to multiple channels
-* Chat commands
-* Rate limiter
+- Forward-compatible, low-level, minimally-assertive architecture
+- Supports Node environments
+- Supports Browsers
+- Connect to multiple channels
+- Chat commands
+- Rate limiter
 
 ### In progress...
 

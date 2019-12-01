@@ -13,7 +13,7 @@ demo)
 
 ## Your environment
 
-* Operating system(s):
-* TwitchJS version:
-* NodeJS version:
-* Browser(s):
+- Operating system(s):
+- TwitchJS version:
+- NodeJS version:
+- Browser(s):
