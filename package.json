@@ -71,7 +71,6 @@
     "@types/qs": "^6.9.0",
     "@types/ws": "^6.0.4",
     "camelcase-keys": "^6.1.1",
-    "consola": "^2.11.0",
     "eventemitter3": "^4.0.0",
     "form-data": "^3.0.0",
     "invariant": "^2.2.4",
@@ -117,6 +116,7 @@
     "rollup-plugin-gzip": "^2.2.0",
     "rollup-plugin-json": "^4.0.0",
     "rollup-plugin-node-resolve": "^5.2.0",
+    "rollup-plugin-replace": "^2.2.0",
     "rollup-plugin-terser": "^5.1.2",
     "rollup-plugin-typescript": "^1.0.1",
     "semver": "^6.3.0",
@@ -185,15 +185,35 @@
     ]
   },
   "jest": {
-    "preset": "ts-jest",
-    "setupFiles": [
-      "<rootDir>/jest.setup.js"
-    ],
-    "globals": {
-      "ts-jest": {
-        "diagnostics": false
+    "projects": [
+      {
+        "displayName": "unit",
+        "rootDir": "<rootDir>",
+        "preset": "ts-jest",
+        "globals": {
+          "ts-jest": {
+            "diagnostics": false
+          }
+        }
+      },
+      {
+        "displayName": "e2e:browser",
+        "rootDir": "<rootDir>/__e2e__/browser",
+        "preset": "jest-puppeteer",
+        "testMatch": [
+          "**/?(*.)+(e2e).js"
+        ]
+      },
+      {
+        "displayName": "e2e:node",
+        "rootDir": "<rootDir>/__e2e__/node",
+        "preset": "ts-jest",
+        "testEnvironment": "node",
+        "testMatch": [
+          "**/?(*.)+(e2e).ts"
+        ]
       }
-    },
+    ],
     "testPathIgnorePatterns": [
       "<rootDir>/__mocks__",
       "<rootDir>/dist",

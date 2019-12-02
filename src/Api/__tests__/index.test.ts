@@ -35,8 +35,10 @@ describe('Api', () => {
       expect(() => new Api({ ...options, token: undefined })).not.toThrow()
     })
 
-    test('should throw if clientId is missing', () => {
-      expect(() => new Api({ ...options, clientId: undefined })).toThrow()
+    test('should throw if clientId and token are missing', () => {
+      expect(
+        () => new Api({ ...options, token: undefined, clientId: undefined }),
+      ).toThrow()
     })
   })
 

@@ -1,4 +1,5 @@
 import TwitchJs from '../../lib'
+import { ApiVersions } from '../../lib/twitch'
 
 describe('Node E2E', () => {
   if (!process.env.CI) {
@@ -12,11 +13,17 @@ describe('Node E2E', () => {
     ? `Travis CI E2E Build #${process.env.TRAVIS_BUILD_NUMBER}`
     : `Local E2E ${new Date()}`
 
-  afterAll(() => setTimeout(process.exit.bind(process), 1000))
+  const options = {
+    token,
+    username,
+    log: { enabled: false },
+  }
+
+  afterAll(() => setTimeout(process.exit.bind(process, 'Ran tests'), 1000))
 
   describe('Chat', () => {
     test('should connect and send message', async () => {
-      const { chat } = new TwitchJs({ token, username })
+      const { chat } = new TwitchJs(options)
 
       await chat.connect()
       await chat.join(channel)
@@ -28,9 +35,9 @@ describe('Node E2E', () => {
 
   describe('Api', () => {
     test('should get endpoint', async () => {
-      const { api } = new TwitchJs({ token, username })
+      const { api } = new TwitchJs(options)
 
-      await api.get('streams/featured')
+      await api.get('streams/featured', { version: ApiVersions.Kraken })
     })
   })
 })

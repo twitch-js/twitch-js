@@ -6,6 +6,7 @@ import typescript from 'rollup-plugin-typescript'
 import { terser } from 'rollup-plugin-terser'
 import filesize from 'rollup-plugin-filesize'
 import gzipPlugin from 'rollup-plugin-gzip'
+import replace from 'rollup-plugin-replace'
 
 import path from 'path'
 
@@ -25,16 +26,19 @@ const commonPlugins = [
   typescript(),
   terser(),
   filesize({ showMinifiedSize: false }),
+  replace({
+    'process.env.NODE_ENV': JSON.stringify('production'),
+  }),
 ]
 
 export default [
   {
     input: 'src/index.ts',
     output: {
-      name: 'TwitchJS',
-      file: 'dist/twitch-js.umd.js',
-      format: 'umd',
-      exports: 'named',
+      name: 'TwitchJs',
+      file: 'dist/twitch-js.js',
+      format: 'iife',
+      exports: 'default',
       sourcemap: true,
     },
     plugins: [

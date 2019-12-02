@@ -5,15 +5,21 @@ import defaults from 'lodash/defaults'
 import isFunction from 'lodash/isFunction'
 import isString from 'lodash/isString'
 import isUndefined from 'lodash/isUndefined'
+import isEmpty from 'lodash/isUndefined'
 
 import { Options } from '../types'
 
 export const apiOptions = (maybeOptions: any): Options | never => {
   const shape = {
-    clientId: isString,
+    clientId: (token: unknown) => isUndefined(token) || isString(token),
     token: (token: unknown) => isUndefined(token) || isString(token),
     onAuthenticationFailure: isFunction,
   }
+
+  invariant(
+    !(isEmpty(maybeOptions.clientId) && isEmpty(maybeOptions.token)),
+    '[twitch-js/Api] Either a `clientId` or `token` must be provided',
+  )
 
   const options = defaults<
     Options,

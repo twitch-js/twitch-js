@@ -86,5 +86,4 @@ class TwitchJs {
   }
 }
 
-export { ChatConstants }
 export default TwitchJs
