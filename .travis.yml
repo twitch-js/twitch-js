@@ -1,11 +1,11 @@
 language: node_js
 node_js:
-  - "lts/*"
+  - 'lts/*'
 cache:
   yarn: true
   directories:
-    - "node_modules"
-    - "website/node_modules"
+    - 'node_modules'
+    - 'website/node_modules'
 
 before_install:
   - curl -o- -L https://yarnpkg.com/install.sh | bash -s -- --version 1.12.3
@@ -20,8 +20,6 @@ script:
   - yarn lint
   - yarn test:coverage:report
   - if [ "$TRAVIS_PULL_REQUEST" = "false" ]; then yarn test:e2e; fi
-
-  - yarn docs:build
 
 after_success:
   - yarn audit
@@ -66,13 +64,6 @@ before_deploy: |
     npm version $NEXT_VERSION --message "v$NEXT_VERSION [ci skip]"
   fi
 
-  # Build website.
-
-  # Retrieve website source.
-  curl -sL https://github.com/twitch-js/twitch-js-docs/archive/$DOCS_BRANCH.tar.gz | tar xz --wildcards --strip 1 */docs */website
-  (cd website && yarn install && yarn build)
-
-
 deploy:
   # Deploy v1.
   - provider: npm
@@ -87,14 +78,6 @@ deploy:
     api_key: $NPM_AUTH_TOKEN
     skip_cleanup: true
     tag: next
-    on:
-      branch: next
-  # Deploy website.
-  - provider: pages
-    skip-cleanup: true
-    github-token: $GITHUB_TOKEN
-    keep-history: true
-    local-dir: website/build/twitch-js
     on:
       branch: next
 
