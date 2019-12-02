@@ -32,10 +32,12 @@
   },
   "main": "dist/twitch-js.cjs.js",
   "module": "dist/twitch-js.esm.js",
-  "types": "dist/twitch-js.d.ts",
+  "types": "dist/types.d.ts",
   "files": [
     "dist",
-    "lib"
+    "lib",
+    "shims",
+    "types.d.ts"
   ],
   "runkitExampleFilename": "examples/runkit.js",
   "scripts": {
@@ -54,8 +56,9 @@
     "prebuild": "yarn clean",
     "build:lib": "tsc --project tsconfig.build.json",
     "build:dist": "rollup -c",
+    "build:types": "tsc --project tsconfig.build.json --emitDeclarationOnly --outFile dist/types.d.ts",
     "build": "run-p build:**",
-    "postbuild:dist": "tsc --project tsconfig.build.json --emitDeclarationOnly --outFile dist/twitch-js.d.ts",
+    "postbuild:dist": "yarn build:types",
     "start:example": "nodemon examples/runkit.js",
     "docs:build:watch": "nodemon --exec yarn docs:build",
     "docs:build": "node scripts/generateDocs",
@@ -159,9 +162,9 @@
     }
   },
   "eslintIgnore": [
+    "node_modules",
     "dist",
-    "lib",
-    "node_modules"
+    "lib"
   ],
   "prettier": {
     "printWidth": 80,
