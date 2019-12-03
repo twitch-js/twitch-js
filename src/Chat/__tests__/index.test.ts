@@ -37,7 +37,7 @@ describe('Chat', () => {
       })
       const actual = await chat.connect()
 
-      expect(actual).toMatchSnapshot()
+      expect(actual).toMatchSnapshot({ timestamp: expect.any(Date) })
       expect(chat._readyState).toBe(3)
     })
 
@@ -45,9 +45,7 @@ describe('Chat', () => {
       const chat = new Chat(options)
       const actual = await chat.connect()
 
-      expect(actual).toMatchSnapshot({
-        timestamp: expect.any(Date),
-      })
+      expect(actual).toMatchSnapshot({ timestamp: expect.any(Date) })
       expect(chat._readyState).toBe(3)
     })
 
