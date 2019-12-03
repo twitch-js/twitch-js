@@ -2,8 +2,8 @@
 
 exports[`Chat connect should connect as anonymous 1`] = `
 Object {
-  "_raw": ":tmi.twitch.tv 001 justinfan80253 :Welcome, GLHF!",
-  "channel": "justinfan80253",
+  "_raw": ":tmi.twitch.tv 001 justinfan12345 :Welcome, GLHF!",
+  "channel": "justinfan12345",
   "command": "GLOBALUSERSTATE",
   "event": "GLOBALUSERSTATE",
   "message": "Welcome, GLHF!",

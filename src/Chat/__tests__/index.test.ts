@@ -1,4 +1,5 @@
 import { server } from 'ws'
+import random from 'lodash/random'
 
 import commands from '../../../__mocks__/ws/__fixtures__/commands'
 import membership from '../../../__mocks__/ws/__fixtures__/membership'
@@ -11,6 +12,10 @@ import * as constants from '../constants'
 import parser from '../utils/parsers'
 
 jest.mock('ws')
+jest.mock('lodash/random', () => ({
+  __esModule: true,
+  default: jest.fn(() => '12345'),
+}))
 
 const emitHelper = (emitter, rawMessages) =>
   parser(rawMessages).forEach(message =>
