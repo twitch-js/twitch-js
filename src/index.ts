@@ -1,7 +1,11 @@
-import Chat, { Options as ChatOptions } from './Chat'
-import Api, { Options as ApiOptions } from './Api'
+import Chat, * as ChatTypes from './Chat'
+import Api, * as ApiTypes from './Api'
 
 import { Options as LoggerOptions } from './utils/logger'
+
+export { Chat, ChatTypes }
+export { Api, ApiTypes }
+export * from './twitch'
 
 type Options = {
   clientId?: string
@@ -9,8 +13,8 @@ type Options = {
   username?: string
   log?: LoggerOptions
   onAuthenticationFailure?: () => Promise<string>
-  chat?: ChatOptions
-  api?: ApiOptions
+  chat?: ChatTypes.Options
+  api?: ApiTypes.Options
 }
 
 /**
@@ -84,5 +88,4 @@ class TwitchJs {
   }
 }
 
-export { Chat, Api }
 export default TwitchJs

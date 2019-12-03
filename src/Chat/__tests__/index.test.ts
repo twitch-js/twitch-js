@@ -4,11 +4,21 @@ import rawCommands from '../../../__mocks__/ws/__fixtures__/commands'
 import membership from '../../../__mocks__/ws/__fixtures__/membership'
 import tags from '../../../__mocks__/ws/__fixtures__/tags'
 
-import { Events, Commands } from '../../twitch'
+import {
+  Events,
+  Commands,
+  KnownNoticeMessageIds,
+  KnownUserNoticeMessageIds,
+  PrivateMessageEvents,
+} from '../../twitch'
 
 import { resolveOnEvent } from '../../utils'
 
-import Chat from '../'
+import Chat, {
+  NoticeCompounds,
+  PrivateMessageCompounds,
+  UserNoticeCompounds,
+} from '../'
 import parser from '../utils/parsers'
 
 jest.mock('ws')
@@ -30,6 +40,26 @@ describe('Chat', () => {
     isVerified: true,
     log: { enabled: false },
   }
+
+  describe.only('event compounds', () => {
+    test('should include all NOTICE messages', () => {
+      Object.keys(KnownNoticeMessageIds).forEach(notice => {
+        expect(NoticeCompounds[notice]).toBe(`NOTICE/${notice}`)
+      })
+    })
+
+    test('should include all PRIVMSG messages', () => {
+      Object.keys(PrivateMessageEvents).forEach(notice => {
+        expect(PrivateMessageCompounds[notice]).toBe(`PRIVMSG/${notice}`)
+      })
+    })
+
+    test('should include all USERNOTICE messages', () => {
+      Object.keys(KnownUserNoticeMessageIds).forEach(notice => {
+        expect(UserNoticeCompounds[notice]).toBe(`USERNOTICE/${notice}`)
+      })
+    })
+  })
 
   describe('connect', () => {
     test('should connect as anonymous', async () => {

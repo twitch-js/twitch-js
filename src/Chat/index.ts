@@ -14,6 +14,7 @@ import {
   RoomStateMessage,
   Events,
   Commands,
+  Messages,
 } from '../twitch'
 
 import createLogger, { Logger } from '../utils/logger'
@@ -31,6 +32,7 @@ import * as sanitizers from './utils/sanitizers'
 import * as validators from './utils/validators'
 
 import * as types from './types'
+
 export * from './types'
 
 /**
@@ -392,10 +394,10 @@ class Chat extends EventEmitter<types.EventTypes> {
     })
   }
 
-  private _emit(eventName, message) {
+  private _emit(eventName: string, message: Messages) {
     if (eventName) {
       const displayName =
-        get(message, 'tags.displayName') || message.username || ''
+        get(message, 'tags.displayName') || get(message, 'username') || ''
       const info = get(message, 'message') || ''
       this._log.info(`${eventName}`, `${displayName}${info ? ':' : ''}`, info)
 
@@ -404,6 +406,9 @@ class Chat extends EventEmitter<types.EventTypes> {
         .filter(part => part !== '#')
         .reduce((parents, part) => {
           const eventParts = [...parents, part]
+          if (eventParts.length > 1) {
+            super.emit(part as keyof types.EventTypes, message)
+          }
           super.emit(eventParts.join('/') as keyof types.EventTypes, message)
           return eventParts
         }, [])

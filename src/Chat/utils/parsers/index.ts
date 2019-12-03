@@ -12,7 +12,7 @@ import {
   Commands,
   JoinMessage,
   PartMessage,
-  ModeMessage,
+  ModeMessages,
   ChatEvents,
   Events,
   NamesMessage,
@@ -129,7 +129,7 @@ export const partMessage = (baseMessage: BaseMessage): PartMessage => {
  * Gain/lose moderator (operator) status in a channel.
  * @see https://dev.twitch.tv/docs/irc/membership/#mode-twitch-membership
  */
-export const modeMessage = (baseMessage: BaseMessage): ModeMessage => {
+export const modeMessage = (baseMessage: BaseMessage): ModeMessages => {
   const [
     ,
     channel,
@@ -139,15 +139,26 @@ export const modeMessage = (baseMessage: BaseMessage): ModeMessage => {
 
   const isModerator = mode === '+'
 
-  return {
+  const baseModeMessage = {
     ...baseMessage,
-    command: Commands.MODE,
-    event: isModerator ? ChatEvents.MOD_GAINED : ChatEvents.MOD_LOST,
+    command: Commands.MODE as Commands.MODE,
     channel,
     username,
-    message: isModerator ? `+o` : '-o',
-    isModerator,
   }
+
+  return isModerator
+    ? {
+        ...baseModeMessage,
+        event: ChatEvents.MOD_GAINED,
+        message: `+o`,
+        isModerator: true,
+      }
+    : {
+        ...baseModeMessage,
+        event: ChatEvents.MOD_LOST,
+        message: '-o',
+        isModerator: false,
+      }
 }
 
 /**

@@ -211,10 +211,21 @@ export enum KnownNoticeMessageIds {
 }
 
 export const NoticeEvents = Object.keys(KnownNoticeMessageIds).reduce(
-  (events, event) => ({ ...events, [event]: event }),
+  (events, event) => ({
+    ...events,
+    [event]: event,
+    [`${Commands.NOTICE}/${event}`]: event,
+  }),
   {} as DistributeKeys<typeof KnownNoticeMessageIds>,
 )
 export type NoticeEvents = keyof typeof NoticeEvents
+
+export enum PrivateMessageEvents {
+  CHEER = 'CHEER',
+  HOSTED_WITHOUT_VIEWERS = 'HOSTED_WITHOUT_VIEWERS',
+  HOSTED_WITH_VIEWERS = 'HOSTED_WITH_VIEWERS',
+  HOSTED_AUTO = 'HOSTED_AUTO',
+}
 
 /**
  * @see https://dev.twitch.tv/docs/irc/tags#usernotice-twitch-tags
@@ -231,7 +242,11 @@ export enum KnownUserNoticeMessageIds {
 }
 
 export const UserNoticeEvents = Object.keys(KnownUserNoticeMessageIds).reduce(
-  (events, event) => ({ ...events, [event]: event }),
+  (events, event) => ({
+    ...events,
+    [event]: event,
+    [`${Commands.USER_NOTICE}/${event}`]: event,
+  }),
   {} as DistributeKeys<typeof KnownUserNoticeMessageIds>,
 )
 export type UserNoticeEvents = keyof typeof UserNoticeEvents
@@ -243,6 +258,7 @@ export const Events = {
   ...BaseCommands,
   ...ChatEvents,
   ...NoticeEvents,
+  ...PrivateMessageEvents,
   ...UserNoticeEvents,
 }
 
@@ -424,12 +440,21 @@ export interface PartMessage extends Omit<BaseMessage, 'message'> {
  * Gain/lose moderator (operator) status in a channel.
  * @see https://dev.twitch.tv/docs/irc/membership/#mode-twitch-membership
  */
-export interface ModeMessage extends Omit<BaseMessage, 'message'> {
+export interface ModeModGainedMessage extends BaseMessage {
   command: Commands.MODE
-  event: ChatEvents.MOD_GAINED | ChatEvents.MOD_LOST
-  message: '+o' | '-o'
-  isModerator: boolean
+  event: ChatEvents.MOD_GAINED
+  message: '+o'
+  isModerator: true
 }
+
+export interface ModeModLostMessage extends BaseMessage {
+  command: Commands.MODE
+  event: ChatEvents.MOD_LOST
+  message: '-o'
+  isModerator: false
+}
+
+export type ModeMessages = ModeModGainedMessage | ModeModLostMessage
 
 /**
  * List current chatters in a channel.
@@ -774,7 +799,7 @@ export type UserNoticeMessages =
 export type Messages =
   | JoinMessage
   | PartMessage
-  | ModeMessage
+  | ModeMessages
   | NamesMessage
   | NamesEndMessage
   | GlobalUserStateMessage
