@@ -17,7 +17,6 @@ import * as utils from './utils'
 import * as Errors from './Errors'
 
 import * as types from './types'
-import { globalUserStateMessage } from './utils/parsers'
 
 type SendOptions = { priority?: number; isModerator?: boolean }
 
