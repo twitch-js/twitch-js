@@ -1,8 +1,9 @@
 const path = require('path')
+const pkg = require('../../package.json')
 
 const { ApiVersions } = require('../../lib/twitch')
 
-const BUILD_PATH = path.join(__dirname, '../../dist/twitch-js.js')
+const BUILD_PATH = path.join(__dirname, `../../${pkg.unpkg}`)
 
 describe('Browser E2E', () => {
   if (!process.env.CI) {

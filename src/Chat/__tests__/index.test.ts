@@ -1,5 +1,4 @@
 import { server } from 'ws'
-import random from 'lodash/random'
 
 import rawCommands from '../../../__mocks__/ws/__fixtures__/commands'
 import membership from '../../../__mocks__/ws/__fixtures__/membership'
@@ -10,7 +9,6 @@ import { Events, Commands } from '../../twitch'
 import { resolveOnEvent } from '../../utils'
 
 import Chat from '../'
-import * as constants from '../constants'
 import parser from '../utils/parsers'
 
 jest.mock('ws')

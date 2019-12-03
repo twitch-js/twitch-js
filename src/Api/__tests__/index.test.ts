@@ -3,7 +3,6 @@ import nodeFetch from 'node-fetch'
 
 import * as twitchTypes from '../../twitch'
 
-import originalFetchUtil from '../../utils/fetch'
 import * as Errors from '../../utils/fetch/Errors'
 
 import Api from '../'
@@ -56,7 +55,7 @@ describe('Api', () => {
   describe('initialize', () => {
     test('should set readyState and status', async () => {
       const api = new Api(options)
-      const t = await api.initialize()
+      await api.initialize()
 
       expect(api.readyState).toBe(2)
       expect(api.status).toMatchSnapshot()
