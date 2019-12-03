@@ -2,8 +2,8 @@
 
 exports[`Chat connect should connect as anonymous 1`] = `
 Object {
-  "_raw": ":tmi.twitch.tv 001 justinfan80864 :Welcome, GLHF!",
-  "channel": "justinfan80864",
+  "_raw": ":tmi.twitch.tv 001 justinfan80253 :Welcome, GLHF!",
+  "channel": "justinfan80253",
   "command": "GLOBALUSERSTATE",
   "event": "GLOBALUSERSTATE",
   "message": "Welcome, GLHF!",
@@ -12,7 +12,7 @@ Object {
     "userType": undefined,
     "username": undefined,
   },
-  "timestamp": 2019-12-03T01:38:29.612Z,
+  "timestamp": Any<Date>,
   "username": undefined,
 }
 `;
