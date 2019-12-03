@@ -1,3 +1,5 @@
+type DistributeKeys<T> = { [P in keyof T]: P }
+
 export enum ApiVersions {
   Helix = 'helix',
   Kraken = 'kraken',
@@ -19,6 +21,15 @@ export type ApiRootResponse = {
     userName: string
     valid: boolean
   }
+}
+
+/**
+ * @see https://dev.twitch.tv/docs/irc/guide#twitch-irc-capabilities
+ */
+export enum Capabilities {
+  'twitch.tv/tags',
+  'twitch.tv/commands',
+  'twitch.tv/membership',
 }
 
 /**
@@ -126,13 +137,6 @@ export enum ChatEvents {
   HOSTED_AUTO = 'HOSTED/AUTO',
 }
 
-export type Events =
-  | MembershipCommands
-  | TagCommands
-  | OtherCommands
-  | BaseCommands
-  | ChatEvents
-
 /**
  * @see https://help.twitch.tv/customer/en/portal/articles/659095-chat-moderation-commands
  */
@@ -205,7 +209,12 @@ export enum KnownNoticeMessageIds {
   UNRAID_SUCCESS = 'unraid_success',
   UNRECOGNIZED_CMD = 'unrecognized_cmd',
 }
-export type NoticeMessageIds = KnownNoticeMessageIds | string
+
+export const NoticeEvents = Object.keys(KnownNoticeMessageIds).reduce(
+  (events, event) => ({ ...events, [event]: event }),
+  {} as DistributeKeys<typeof KnownNoticeMessageIds>,
+)
+export type NoticeEvents = keyof typeof NoticeEvents
 
 /**
  * @see https://dev.twitch.tv/docs/irc/tags#usernotice-twitch-tags
@@ -221,7 +230,23 @@ export enum KnownUserNoticeMessageIds {
   SUBSCRIPTION_GIFT_COMMUNITY = 'submysterygift',
 }
 
-export type UserNoticeMessageIds = KnownUserNoticeMessageIds | string
+export const UserNoticeEvents = Object.keys(KnownUserNoticeMessageIds).reduce(
+  (events, event) => ({ ...events, [event]: event }),
+  {} as DistributeKeys<typeof KnownUserNoticeMessageIds>,
+)
+export type UserNoticeEvents = keyof typeof UserNoticeEvents
+
+export const Events = {
+  ...MembershipCommands,
+  ...TagCommands,
+  ...OtherCommands,
+  ...BaseCommands,
+  ...ChatEvents,
+  ...NoticeEvents,
+  ...UserNoticeEvents,
+}
+
+export type Events = keyof DistributeKeys<typeof Events>
 
 export enum BooleanBadges {
   'admin',
@@ -270,6 +295,10 @@ export type EmoteTag = {
   end: number
 }
 
+/**
+ * Tags
+ */
+
 export interface BaseTags {
   [key: string]: any
 }
@@ -306,12 +335,8 @@ export interface RoomStateTags extends BaseTags {
   subsOnly?: boolean
 }
 
-export interface UserNoticeMessageParameterTags extends BaseTags {
-  months: number
-  massGiftCount: number
-  promoGiftTotal: number
-  senderCount: number
-  viewerCount: number
+export interface NoticeTags extends BaseTags {
+  msgId: KnownNoticeMessageIds
 }
 
 /**
@@ -345,7 +370,7 @@ export interface PrivateMessageTags extends UserStateTags {
 export interface UserNoticeTags extends UserStateTags {
   id: string
   login: string
-  msgId: UserNoticeMessageIds
+  msgId: KnownUserNoticeMessageIds
   roomId: string
   systemMsg: string
   tmiSentTs: string
@@ -355,10 +380,14 @@ export type Tags =
   | ClearChatTags
   | GlobalUserStateTags
   | RoomStateTags
-  | UserNoticeMessageParameterTags
   | UserStateTags
   | PrivateMessageTags
+  | NoticeTags
   | UserNoticeTags
+
+/**
+ * Messages
+ */
 
 /* Base message parsed from Twitch */
 export interface BaseMessage {
@@ -367,7 +396,7 @@ export interface BaseMessage {
   channel: string
   username: string
   command: Commands
-  event?: Events | string
+  event?: Commands | Events
   // isSelf: boolean
   message: string
   tags: { [key: string]: any }
@@ -448,15 +477,13 @@ export interface ClearChatUserBannedMessage
  * @see https://dev.twitch.tv/docs/irc/commands/#clearchat-twitch-commands
  * @see https://dev.twitch.tv/docs/irc/tags/#clearchat-twitch-tags
  */
-export interface ClearChatNormalMessage
+export interface ClearChatMessage
   extends Omit<BaseMessage, 'tags' | 'username' | 'message'> {
   command: Commands.CLEAR_CHAT
   event: Commands.CLEAR_CHAT
 }
 
-export type ClearChatMessage =
-  | ClearChatUserBannedMessage
-  | ClearChatNormalMessage
+export type ClearChatMessages = ClearChatMessage | ClearChatUserBannedMessage
 
 /**
  * Host starts or stops a message.
@@ -481,18 +508,19 @@ export interface RoomStateMessage extends BaseMessage {
 /**
  * Base NOTICE message
  */
-export interface BaseNoticeMessage extends BaseMessage {
+export interface NoticeMessage extends Omit<BaseMessage, 'event'> {
   command: Commands.NOTICE
-  event: Exclude<keyof typeof KnownNoticeMessageIds, 'ROOM_MODS'> | string
-  tags: { msgId: NoticeMessageIds }
+  event: Exclude<NoticeEvents, typeof NoticeEvents.ROOM_MODS>
+  tags: NoticeTags
   username: 'tmi.twitch.tv' | string
 }
 
 /**
  * NOTICE/ROOM_MODS message
  */
-export interface NoticeRoomModsMessage extends BaseNoticeMessage {
-  event: KnownNoticeMessageIds.ROOM_MODS
+export interface NoticeRoomModsMessage extends Omit<NoticeMessage, 'event'> {
+  event: typeof NoticeEvents.ROOM_MODS
+  /** The moderators of this channel. */
   mods: string[]
 }
 
@@ -500,7 +528,7 @@ export interface NoticeRoomModsMessage extends BaseNoticeMessage {
  * NOTICE message
  * @see https://dev.twitch.tv/docs/irc/commands/#msg-id-tags-for-the-notice-commands-capability
  */
-export type NoticeMessage = NoticeRoomModsMessage | BaseNoticeMessage
+export type NoticeMessages = NoticeMessage | NoticeRoomModsMessage
 
 /**
  * USERSTATE message
@@ -512,54 +540,121 @@ export interface UserStateMessage extends BaseMessage {
 }
 
 /**
- * When a user joins a channel or sends a PRIVMSG to a channel.
+ * PRIVMSG messages
  */
-export interface BasePrivateMessage
+
+interface BasePrivateMessage
   extends Omit<UserStateMessage, 'command' | 'event'> {
   command: Commands.PRIVATE_MESSAGE
+}
+
+/**
+ * When a user joins a channel or sends a PRIVMSG to a channel.
+ */
+export interface PrivateMessage extends BasePrivateMessage {
   event: Commands.PRIVATE_MESSAGE
 }
 
-export interface PrivateMessageWithBits
-  extends Omit<BasePrivateMessage, 'event'> {
+export interface PrivateMessageWithBits extends BasePrivateMessage {
   event: ChatEvents.CHEER
   bits: number
 }
 
+interface BaseHostingPrivateMessage extends Omit<BasePrivateMessage, 'tags'> {}
+
 /**
  * When a user hosts your channel while connected as broadcaster.
  */
-export interface HostingPrivateMessage
-  extends Omit<BasePrivateMessage, 'event' | 'tags'> {
+export interface HostingPrivateMessage extends BaseHostingPrivateMessage {
   event: ChatEvents.HOSTED_WITHOUT_VIEWERS
   tags: { displayName: string }
 }
 
 export interface HostingWithViewersPrivateMessage
-  extends Omit<HostingPrivateMessage, 'event'> {
+  extends BaseHostingPrivateMessage {
   event: ChatEvents.HOSTED_WITH_VIEWERS
   numberOfViewers: number
+  tags: { displayName: string }
 }
 
-export interface HostingAutoPrivateMessage
-  extends Omit<HostingWithViewersPrivateMessage, 'event'> {
+export interface HostingAutoPrivateMessage extends BaseHostingPrivateMessage {
   event: ChatEvents.HOSTED_AUTO
   tags: { displayName: string }
   numberOfViewers: number
 }
 
-export type PrivateMessage =
-  | BasePrivateMessage
+export type PrivateMessages =
+  | PrivateMessage
   | PrivateMessageWithBits
   | HostingPrivateMessage
   | HostingWithViewersPrivateMessage
   | HostingAutoPrivateMessage
 
-export interface UserNoticeBaseMessage extends BaseMessage {
+export interface MessageParameters {
+  [key: string]: string | number | boolean | Date
+}
+
+export interface AnonymousGiftPaidUpgradeParameters extends MessageParameters {}
+
+export interface GiftPaidUpgradeParameters extends MessageParameters {
+  promoGiftTotal: number
+  promoName: string
+  senderLogin: string
+  senderName: string
+}
+
+export interface RaidParameters extends MessageParameters {
+  displayName: string
+  login: string
+  viewerCount: number
+}
+
+export interface ResubscriptionParameters extends MessageParameters {
+  months: number
+  subPlan: string
+  subPlanName: string
+}
+
+export interface RitualParameters extends MessageParameters {
+  ritualName: string
+}
+
+export interface SubscriptionGiftCommunityParameters extends MessageParameters {
+  massGiftCount: number
+  senderCount: number
+  subPlan: number
+}
+
+export interface SubscriptionGiftParameters extends MessageParameters {
+  months: number
+  subPlan: string
+  subPlanName: string
+  recipientDisplayName: string
+  recipientId: string
+  recipientName: string
+}
+
+export interface SubscriptionParameters extends MessageParameters {
+  months: 1
+  subPlan: string
+  subPlanName: string
+}
+
+export type UserNoticeMessageParameters =
+  | AnonymousGiftPaidUpgradeParameters
+  | GiftPaidUpgradeParameters
+  | RaidParameters
+  | ResubscriptionParameters
+  | RitualParameters
+  | SubscriptionGiftCommunityParameters
+  | SubscriptionGiftParameters
+  | SubscriptionParameters
+
+export interface UserNoticeMessage extends Omit<BaseMessage, 'event'> {
   command: Commands.USER_NOTICE
-  event: string
+  event: UserNoticeEvents
   tags: UserNoticeTags
-  parameters: { [key: string]: string }
+  parameters: MessageParameters
   systemMessage: string
 }
 
@@ -567,16 +662,18 @@ export interface UserNoticeBaseMessage extends BaseMessage {
  * On anonymous gifted subscription paid upgrade to a channel.
  */
 export interface UserNoticeAnonymousGiftPaidUpgradeMessage
-  extends UserNoticeBaseMessage {
-  event: ChatEvents.ANON_GIFT_PAID_UPGRADE
+  extends UserNoticeMessage {
+  command: Commands.USER_NOTICE
+  event: typeof UserNoticeEvents.ANON_GIFT_PAID_UPGRADE
+  parameters: AnonymousGiftPaidUpgradeParameters
 }
 
 /**
  * On gifted subscription paid upgrade to a channel.
  */
 export interface UserNoticeGiftPaidUpgradeMessage
-  extends Omit<UserNoticeBaseMessage, 'parameters'> {
-  event: ChatEvents.GIFT_PAID_UPGRADE
+  extends Omit<UserNoticeMessage, 'parameters'> {
+  event: typeof UserNoticeEvents.GIFT_PAID_UPGRADE
   parameters: {
     promoGiftTotal: number
     promoName: string
@@ -589,8 +686,8 @@ export interface UserNoticeGiftPaidUpgradeMessage
  * On channel raid.
  */
 export interface UserNoticeRaidMessage
-  extends Omit<UserNoticeBaseMessage, 'parameters'> {
-  event: ChatEvents.RAID
+  extends Omit<UserNoticeMessage, 'parameters'> {
+  event: typeof UserNoticeEvents.RAID
   parameters: {
     displayName: string
     login: string
@@ -602,8 +699,8 @@ export interface UserNoticeRaidMessage
  * On resubscription (subsequent months) to a channel.
  */
 export interface UserNoticeResubscriptionMessage
-  extends Omit<UserNoticeBaseMessage, 'parameters'> {
-  event: ChatEvents.RESUBSCRIPTION
+  extends Omit<UserNoticeMessage, 'parameters'> {
+  event: typeof UserNoticeEvents.RESUBSCRIPTION
   parameters: {
     months: number
     subPlan: string
@@ -615,8 +712,8 @@ export interface UserNoticeResubscriptionMessage
  * On channel ritual.
  */
 export interface UserNoticeRitualMessage
-  extends Omit<UserNoticeBaseMessage, 'parameters'> {
-  event: ChatEvents.RITUAL
+  extends Omit<UserNoticeMessage, 'parameters'> {
+  event: typeof UserNoticeEvents.RITUAL
   parameters: {
     ritualName: string
   }
@@ -626,8 +723,8 @@ export interface UserNoticeRitualMessage
  * On subscription gift to a channel community.
  */
 export interface UserNoticeSubscriptionGiftCommunityMessage
-  extends Omit<UserNoticeBaseMessage, 'parameters'> {
-  event: ChatEvents.SUBSCRIPTION_GIFT_COMMUNITY
+  extends Omit<UserNoticeMessage, 'parameters'> {
+  event: typeof UserNoticeEvents.SUBSCRIPTION_GIFT_COMMUNITY
   parameters: {
     massGiftCount: number
     senderCount: number
@@ -639,8 +736,8 @@ export interface UserNoticeSubscriptionGiftCommunityMessage
  * On subscription gift to a channel.
  */
 export interface UserNoticeSubscriptionGiftMessage
-  extends Omit<UserNoticeBaseMessage, 'parameters'> {
-  event: ChatEvents.SUBSCRIPTION_GIFT
+  extends Omit<UserNoticeMessage, 'parameters'> {
+  event: typeof UserNoticeEvents.SUBSCRIPTION_GIFT
   parameters: {
     months: number
     subPlan: string
@@ -655,8 +752,8 @@ export interface UserNoticeSubscriptionGiftMessage
  * On subscription (first month) to a channel.
  */
 export interface UserNoticeSubscriptionMessage
-  extends Omit<UserNoticeBaseMessage, 'parameters'> {
-  event: ChatEvents.SUBSCRIPTION
+  extends Omit<UserNoticeMessage, 'event' | 'parameters'> {
+  event: typeof UserNoticeEvents.SUBSCRIPTION
   parameters: {
     months: 1
     subPlan: string
@@ -664,8 +761,7 @@ export interface UserNoticeSubscriptionMessage
   }
 }
 
-export type UserNoticeMessage =
-  | UserNoticeBaseMessage
+export type UserNoticeMessages =
   | UserNoticeAnonymousGiftPaidUpgradeMessage
   | UserNoticeGiftPaidUpgradeMessage
   | UserNoticeRaidMessage
@@ -674,3 +770,18 @@ export type UserNoticeMessage =
   | UserNoticeSubscriptionGiftCommunityMessage
   | UserNoticeSubscriptionGiftMessage
   | UserNoticeSubscriptionMessage
+
+export type Messages =
+  | JoinMessage
+  | PartMessage
+  | ModeMessage
+  | NamesMessage
+  | NamesEndMessage
+  | GlobalUserStateMessage
+  | ClearChatMessages
+  | HostTargetMessage
+  | RoomStateMessage
+  | NoticeMessages
+  | UserStateMessage
+  | PrivateMessages
+  | UserNoticeMessages

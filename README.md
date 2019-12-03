@@ -12,9 +12,8 @@ A community-centric, community-supported Twitch JavaScript SDK.
 ## Warning
 
 This branch is under active development; expect **breaking changes**. Please use
-[v1](https://github.com/twitch-js/twitch-js/tree/master) instead. If you still
-choose to use this branch, use version pinning, refer to the diffs, and update
-accordingly to avoid regressions.
+version pinning, refer to the diffs, and update accordingly to avoid
+regressions.
 
 ## Features
 
@@ -23,6 +22,7 @@ accordingly to avoid regressions.
 - Forward-compatible, low-level, minimally-assertive architecture
 - Supports Node environments
 - Supports Browsers
+- Supports TypeScript
 - Connect to multiple channels
 - Chat commands
 - Rate limiter
@@ -36,7 +36,7 @@ branch.
 
 ## Getting started
 
-### CommonJS
+### Module bundler (CJS/ESM)
 
 If you are using a module bundler, such [Webpack](https://webpack.js.org/),
 [Browserify](http://browserify.org/), or a in a Node environment:
@@ -55,7 +55,7 @@ If you are using a module bundler, such [Webpack](https://webpack.js.org/),
    var twitch = require('twitch-js')
    ```
 
-### UMD
+### Browser (IIFE)
 
 If you are not using a module bundler, precompiled builds are available in the
 [`dist` folder](https://unpkg.com/twitch-js@>2.0.0-beta/dist/):
@@ -67,7 +67,7 @@ If you are not using a module bundler, precompiled builds are available in the
 2. Consume the library:
    ```html
    <script type="javascript">
-     window.TwitchJS ...
+     const twitchJs = new window.TwitchJs ...
    </script>
    ```
 

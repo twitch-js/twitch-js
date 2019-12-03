@@ -1,7 +1,4 @@
-import Chat, {
-  constants as ChatConstants,
-  Options as ChatOptions,
-} from './Chat'
+import Chat, { Options as ChatOptions } from './Chat'
 import Api, { Options as ApiOptions } from './Api'
 
 import { Options as LoggerOptions } from './utils/logger'
@@ -19,6 +16,7 @@ type Options = {
 /**
  * TwitchJs client
  * @example <caption>Instantiating TwitchJS</caption>
+ * ```
  * const token = 'cfabdegwdoklmawdzdo98xt2fo512y'
  * const username = 'ronni'
  * const twitchJs = new TwitchJs({ token, username })
@@ -30,13 +28,15 @@ type Options = {
  * twitchJs.api.get('channel').then(response => {
  *   // Do stuff ...
  * })
+ * ```
  */
 
 class TwitchJs {
   chat: Chat
   api: Api
 
-  chatConstants: typeof ChatConstants
+  static Chat = Chat
+  static Api = Api
 
   constructor({
     token,
@@ -54,8 +54,6 @@ class TwitchJs {
       username,
       onAuthenticationFailure,
     })
-
-    this.chatConstants = ChatConstants
 
     this.api = new Api({
       log,

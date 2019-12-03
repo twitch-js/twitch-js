@@ -1,4 +1,11 @@
-import { UserStateTags, RoomStateTags } from '../twitch'
+import {
+  UserStateTags,
+  RoomStateTags,
+  PrivateMessage,
+  Messages,
+  ChatEvents,
+  Commands,
+} from '../twitch'
 import { Options as LoggerOptions } from '../utils/logger'
 
 export type Options = {
@@ -39,3 +46,10 @@ export type ChannelStates = Record<
   string,
   { userState: UserStateTags; roomState: RoomStateTags }
 >
+
+export type EventTypes = {
+  [ChatEvents.RAW]: [string]
+  [ChatEvents.RAW]: [string]
+  [ChatEvents.ALL]: [Messages]
+  [Commands.PRIVATE_MESSAGE]: [PrivateMessage]
+}

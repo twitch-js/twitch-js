@@ -14,25 +14,37 @@ import {
   PartMessage,
   ModeMessage,
   ChatEvents,
+  Events,
   NamesMessage,
   NamesEndMessage,
   GlobalUserStateMessage,
-  ClearChatMessage,
   HostTargetMessage,
   RoomStateMessage,
   NoticeMessage,
   UserNoticeTags,
   KnownNoticeMessageIds,
   UserStateMessage,
-  PrivateMessage,
-  UserNoticeMessage,
   KnownUserNoticeMessageIds,
+  ClearChatMessages,
+  NoticeMessages,
+  NoticeEvents,
+  PrivateMessages,
+  NoticeTags,
+  UserNoticeMessages,
+  GiftPaidUpgradeParameters,
+  RaidParameters,
+  ResubscriptionParameters,
+  RitualParameters,
+  SubscriptionGiftCommunityParameters,
+  SubscriptionGiftParameters,
+  SubscriptionParameters,
 } from '../../../twitch'
 
 import * as constants from '../../constants'
 import * as utils from '../'
 import * as helpers from './helpers'
 import * as tagParsers from './tags'
+import toLower from 'lodash/toLower'
 
 export const base = (rawMessages: string): BaseMessage[] => {
   const rawMessagesV = rawMessages.split(/\r?\n/g)
@@ -54,9 +66,10 @@ export const base = (rawMessages: string): BaseMessage[] => {
     const baseMessage = {
       _raw: rawMessage,
       timestamp: helpers.generalTimestamp(timestamp),
-      username: user,
       command: command as Commands,
+      event: command as Events,
       channel: channel !== '*' ? channel : '',
+      username: user,
       tags: isEmpty(tags)
         ? {}
         : (camelcaseKeys(tags) as { [key: string]: string }),
@@ -208,7 +221,7 @@ export const globalUserStateMessage = (
  */
 export const clearChatMessage = (
   baseMessage: BaseMessage,
-): ClearChatMessage => {
+): ClearChatMessages => {
   const { tags, message: username, ...other } = baseMessage
 
   if (typeof username !== 'undefined') {
@@ -282,21 +295,21 @@ export const roomStateMessage = (
  * NOTICE/ROOM_MODS message
  * @see https://dev.twitch.tv/docs/irc/commands/#msg-id-tags-for-the-notice-commands-capability
  */
-export const noticeMessage = (baseMessage: BaseMessage): NoticeMessage => {
+export const noticeMessage = (baseMessage: BaseMessage): NoticeMessages => {
   const { tags: baseTags, ...other } = baseMessage
 
-  const tags = utils.isAuthenticationFailedMessage(baseMessage)
-    ? { ...baseTags, msgId: constants.EVENTS.AUTHENTICATION_FAILED }
-    : (baseTags as UserNoticeTags)
+  const tags = (utils.isAuthenticationFailedMessage(baseMessage)
+    ? { ...baseTags, msgId: toLower(Events.AUTHENTICATION_FAILED) }
+    : baseTags) as NoticeTags
 
-  const event = toUpper(tags.msgId) as KnownNoticeMessageIds
+  const event = toUpper(tags.msgId) as NoticeEvents
 
   switch (tags.msgId) {
     case KnownNoticeMessageIds.ROOM_MODS:
       return {
         ...other,
         command: Commands.NOTICE,
-        event: event as KnownNoticeMessageIds.ROOM_MODS,
+        event: NoticeEvents.ROOM_MODS,
         tags,
         mods: helpers.mods(other.message),
       }
@@ -306,7 +319,7 @@ export const noticeMessage = (baseMessage: BaseMessage): NoticeMessage => {
         command: Commands.NOTICE,
         event,
         tags,
-      }
+      } as NoticeMessage
   }
 }
 
@@ -333,7 +346,7 @@ export const userStateMessage = (
  * When a user cheers a channel.
  * When a user hosts your channel while connected as broadcaster.
  */
-export const privateMessage = (baseMessage: BaseMessage): PrivateMessage => {
+export const privateMessage = (baseMessage: BaseMessage): PrivateMessages => {
   const { _raw, tags } = baseMessage
 
   if (gt(tags.bits, 0)) {
@@ -357,10 +370,10 @@ export const privateMessage = (baseMessage: BaseMessage): PrivateMessage => {
     if (isAuto) {
       return {
         ...baseMessage,
-        tags: { displayName },
-        channel: `#${channel}`,
         command: Commands.PRIVATE_MESSAGE,
         event: ChatEvents.HOSTED_AUTO,
+        channel: `#${channel}`,
+        tags: { displayName },
         numberOfViewers: helpers.generalNumber(numberOfViewers),
       }
     }
@@ -368,20 +381,20 @@ export const privateMessage = (baseMessage: BaseMessage): PrivateMessage => {
     if (numberOfViewers) {
       return {
         ...baseMessage,
-        tags: { displayName },
-        channel: `#${channel}`,
         command: Commands.PRIVATE_MESSAGE,
         event: ChatEvents.HOSTED_WITH_VIEWERS,
+        channel: `#${channel}`,
+        tags: { displayName },
         numberOfViewers: helpers.generalNumber(numberOfViewers),
       }
     }
 
     return {
       ...baseMessage,
-      tags: { displayName },
       command: Commands.PRIVATE_MESSAGE,
-      channel: `#${channel}`,
       event: ChatEvents.HOSTED_WITHOUT_VIEWERS,
+      channel: `#${channel}`,
+      tags: { displayName },
     }
   }
 
@@ -397,7 +410,7 @@ export const privateMessage = (baseMessage: BaseMessage): PrivateMessage => {
  */
 export const userNoticeMessage = (
   baseMessage: BaseMessage,
-): UserNoticeMessage => {
+): UserNoticeMessages => {
   const command = Commands.USER_NOTICE
   const tags = {
     ...tagParsers.userNotice(baseMessage.tags),
@@ -428,7 +441,7 @@ export const userNoticeMessage = (
         ...baseMessage,
         command,
         event: ChatEvents.GIFT_PAID_UPGRADE,
-        parameters,
+        parameters: parameters as GiftPaidUpgradeParameters,
         tags,
         systemMessage,
       }
@@ -441,7 +454,7 @@ export const userNoticeMessage = (
         ...baseMessage,
         command,
         event: ChatEvents.RAID,
-        parameters,
+        parameters: parameters as RaidParameters,
         tags,
         systemMessage,
       }
@@ -454,7 +467,7 @@ export const userNoticeMessage = (
         ...baseMessage,
         command,
         event: ChatEvents.RESUBSCRIPTION,
-        parameters,
+        parameters: parameters as ResubscriptionParameters,
         tags,
         systemMessage,
       }
@@ -467,7 +480,7 @@ export const userNoticeMessage = (
         ...baseMessage,
         command,
         event: ChatEvents.RITUAL,
-        parameters,
+        parameters: parameters as RitualParameters,
         tags,
         systemMessage,
       }
@@ -480,7 +493,7 @@ export const userNoticeMessage = (
         ...baseMessage,
         command,
         event: ChatEvents.SUBSCRIPTION_GIFT_COMMUNITY,
-        parameters,
+        parameters: parameters as SubscriptionGiftCommunityParameters,
         tags,
         systemMessage,
       }
@@ -493,7 +506,7 @@ export const userNoticeMessage = (
         ...baseMessage,
         command,
         event: ChatEvents.SUBSCRIPTION_GIFT,
-        parameters,
+        parameters: parameters as SubscriptionGiftParameters,
         tags,
         systemMessage,
       }
@@ -506,7 +519,7 @@ export const userNoticeMessage = (
         ...baseMessage,
         command,
         event: ChatEvents.SUBSCRIPTION,
-        parameters,
+        parameters: parameters as SubscriptionParameters,
         tags,
         systemMessage,
       }
@@ -520,9 +533,9 @@ export const userNoticeMessage = (
         command,
         event: toUpper(tags.msgId),
         tags,
-        parameters: tagParsers.userNoticeMessageParameters(tags),
+        parameters,
         systemMessage,
-      }
+      } as UserNoticeMessages
   }
 }
 

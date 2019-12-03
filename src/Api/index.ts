@@ -18,6 +18,7 @@ export * from './types'
  * @public
  *
  * @example <caption>Get Featured Streams</caption>
+ * ```
  * const token = 'cfabdegwdoklmawdzdo98xt2fo512y'
  * const username = 'ronni'
  * const { api } = new TwitchJs({ token, username })
@@ -25,6 +26,7 @@ export * from './types'
  * api.get('streams/featured').then(response => {
  *   // Do stuff ...
  * })
+ * ```
  */
 class Api {
   private _options: types.Options
@@ -111,16 +113,21 @@ class Api {
   /**
    * GET endpoint.
    *
-   * @example <caption>Get Live Overwatch Streams</caption>
-   * api.get('streams', { search: { game: 'Overwatch' } })
+   * @example <caption>Get Live Overwatch Streams (Kraken)</caption>
+   * ```
+   * api.get('streams', { version: 'kraken', search: { game: 'Overwatch' } })
    *   .then(response => {
    *     // Do stuff with response ...
    *   })
+   * ```
+   *
    * @example <caption>Get user follows (Helix)</caption>
-   * api.get('users/follows', { version: 'helix', search: { to_id: '23161357' } })
+   * ```
+   * api.get('users/follows', { search: { to_id: '23161357' } })
    *   .then(response => {
    *     // Do stuff with response ...
    *   })
+   * ```
    */
   get<T = any>(endpoint = '', options?: types.FetchOptions) {
     return this._handleFetch<T>(endpoint, options)

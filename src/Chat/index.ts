@@ -12,6 +12,8 @@ import {
   GlobalUserStateMessage,
   UserStateMessage,
   RoomStateMessage,
+  ChatEvents,
+  Commands,
 } from '../twitch'
 
 import createLogger, { Logger } from '../utils/logger'
@@ -63,6 +65,8 @@ export * from './types'
  * @emits Chat#USERSTATE
  *
  * @example <caption>Connecting to Twitch and joining #dallas</caption>
+ *
+ * ```
  * const token = 'cfabdegwdoklmawdzdo98xt2fo512y'
  * const username = 'ronni'
  * const channel = '#dallas'
@@ -85,8 +89,9 @@ export * from './types'
  *     // Do stuff with channelState...
  *   })
  * })
+ * ```
  */
-class Chat extends EventEmitter {
+class Chat extends EventEmitter<types.EventTypes> {
   private _options: types.Options
 
   private _log: Logger
@@ -103,7 +108,6 @@ class Chat extends EventEmitter {
 
   /**
    * Chat constructor.
-   * @param {ChatOptions} options
    */
   constructor(maybeOptions: types.Options) {
     super()
@@ -232,12 +236,12 @@ class Chat extends EventEmitter {
     const connect = this.connect()
     const roomStateEvent = utils.resolveOnEvent<RoomStateMessage>(
       this,
-      `${constants.COMMANDS.ROOM_STATE}/${channel}`,
+      `${Commands.ROOM_STATE}/${channel}`,
     )
     const userStateEvent = !chatUtils.isUserAnonymous(this.options.username)
       ? utils.resolveOnEvent<UserStateMessage>(
           this,
-          `${constants.COMMANDS.USER_STATE}/${channel}`,
+          `${Commands.USER_STATE}/${channel}`,
         )
       : (Promise.resolve() as Promise<UserStateMessage | void>)
 
@@ -255,7 +259,7 @@ class Chat extends EventEmitter {
       },
     )
 
-    const send = this.send(`${constants.COMMANDS.JOIN} ${channel}`)
+    const send = this.send(`${Commands.JOIN} ${channel}`)
 
     return send.then(() =>
       Promise.race([
@@ -276,7 +280,7 @@ class Chat extends EventEmitter {
     this._log.info(`Parting ${channel}`)
 
     this._removeChannelState(channel)
-    this.send(`${constants.COMMANDS.PART} ${channel}`)
+    this.send(`${Commands.PART} ${channel}`)
   }
 
   /**
@@ -304,7 +308,7 @@ class Chat extends EventEmitter {
         this._isUserAuthenticated.bind(this),
         this.send.bind(
           this,
-          `${constants.COMMANDS.PRIVATE_MESSAGE} ${channel} :${message}${args}`,
+          `${Commands.PRIVATE_MESSAGE} ${channel} :${message}${args}`,
           { isModerator },
         ),
         resolvers,
@@ -325,10 +329,7 @@ class Chat extends EventEmitter {
   whisper = (user: string, message: string) =>
     utils.resolveInSequence([
       this._isUserAuthenticated.bind(this),
-      this.send.bind(
-        this,
-        `${constants.COMMANDS.WHISPER} :/w ${user} ${message}`,
-      ),
+      this.send.bind(this, `${Commands.WHISPER} :/w ${user} ${message}`),
     ])
 
   /**
@@ -343,7 +344,7 @@ class Chat extends EventEmitter {
         ),
     ])
 
-  _handleConnectionAttempt(): Promise<GlobalUserStateMessage> {
+  private _handleConnectionAttempt(): Promise<GlobalUserStateMessage> {
     return new Promise((resolve, reject) => {
       const connectProfiler = this._log.startTimer('Connecting ...')
 
@@ -385,17 +386,17 @@ class Chat extends EventEmitter {
     })
   }
 
-  _handleConnectSuccess(globalUserState: GlobalUserStateMessage) {
+  private _handleConnectSuccess(globalUserState: GlobalUserStateMessage) {
     this._readyState = 3
     this._connectionAttempts = 0
 
     // Process GLOBALUSERSTATE message.
     this._handleMessage(globalUserState)
 
-    return globalUserState
+    return parsers.globalUserStateMessage(globalUserState)
   }
 
-  _handleConnectRetry(error) {
+  private _handleConnectRetry(error) {
     this._connectionInProgress = null
     this._readyState = 2
 
@@ -416,7 +417,7 @@ class Chat extends EventEmitter {
     return this.connect()
   }
 
-  _isUserAuthenticated() {
+  private _isUserAuthenticated() {
     return new Promise((resolve, reject) => {
       if (chatUtils.isUserAnonymous(this.options.username)) {
         reject(new Error('Not authenticated'))
@@ -426,7 +427,7 @@ class Chat extends EventEmitter {
     })
   }
 
-  _emit(eventName, message) {
+  private _emit(eventName, message) {
     if (eventName) {
       const displayName =
         get(message, 'tags.displayName') || message.username || ''
@@ -438,7 +439,7 @@ class Chat extends EventEmitter {
         .filter(part => part !== '#')
         .reduce((parents, part) => {
           const eventParts = [...parents, part]
-          super.emit(eventParts.join('/'), message)
+          super.emit(eventParts.join('/') as keyof types.EventTypes, message)
           return eventParts
         }, [])
     }
@@ -447,22 +448,22 @@ class Chat extends EventEmitter {
      * All events are also emitted with this event name.
      * @event Chat#*
      */
-    super.emit(constants.EVENTS.ALL, message)
+    super.emit(ChatEvents.ALL, message)
   }
 
-  _getChannels() {
+  private _getChannels() {
     return Object.keys(this._channelState)
   }
 
-  _getChannelState(channel) {
+  private _getChannelState(channel) {
     return this._channelState[channel]
   }
 
-  _setChannelState(channel, state) {
+  private _setChannelState(channel, state) {
     this._channelState[channel] = state
   }
 
-  _removeChannelState(channel) {
+  private _removeChannelState(channel) {
     this._channelState = Object.entries(this._channelState).reduce(
       (channelStates, [name, state]) => {
         return name === channel
@@ -473,11 +474,11 @@ class Chat extends EventEmitter {
     )
   }
 
-  _clearChannelState() {
+  private _clearChannelState() {
     this._channelState = {}
   }
 
-  _handleMessage(baseMessage) {
+  private _handleMessage(baseMessage) {
     const channel = sanitizers.channel(baseMessage.channel)
 
     const selfUsername = get(this, '_userState.username', '')
@@ -607,11 +608,11 @@ class Chat extends EventEmitter {
     this._emit(eventName, message)
   }
 
-  _handleDisconnect() {
+  private _handleDisconnect() {
     this._connectionInProgress = null
     this._readyState = 5
+    this._clearChannelState()
   }
 }
 
-export { constants }
 export default Chat

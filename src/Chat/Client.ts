@@ -17,6 +17,7 @@ import * as utils from './utils'
 import * as Errors from './Errors'
 
 import * as types from './types'
+import { globalUserStateMessage } from './utils/parsers'
 
 type SendOptions = { priority?: number; isModerator?: boolean }
 
@@ -153,14 +154,15 @@ class Client extends EventEmitter {
           if (this._isUserAnonymous()) {
             if (message.command === Commands.WELCOME) {
               this.emit(ChatEvents.CONNECTED, {
-                command: ChatEvents.CONNECTED,
+                ...message,
+                event: ChatEvents.CONNECTED,
               })
             }
           } else {
             if (message.command === Commands.GLOBAL_USER_STATE) {
               this.emit(ChatEvents.CONNECTED, {
                 ...message,
-                command: ChatEvents.CONNECTED,
+                event: ChatEvents.CONNECTED,
               })
             }
           }
@@ -169,7 +171,7 @@ class Client extends EventEmitter {
           if (message.command === Commands.RECONNECT) {
             this.emit(ChatEvents.RECONNECT, {
               ...message,
-              command: ChatEvents.RECONNECT,
+              event: ChatEvents.RECONNECT,
             })
           }
         }

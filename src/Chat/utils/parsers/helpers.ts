@@ -84,7 +84,11 @@ export const emotes = (maybeEmotes: string) => {
   }
 
   return maybeEmotes.split('/').reduce((emoteTag, emoteIndices) => {
-    const [id, indices = ''] = emoteIndices.split(':')
+    const [id, indices] = emoteIndices.split(':')
+
+    if (!id) {
+      return emoteTag
+    }
 
     return [
       ...emoteTag,

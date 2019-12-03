@@ -6,7 +6,8 @@ import tags from '../../../__mocks__/ws/__fixtures__/tags'
 
 import { resolveOnEvent } from '../../utils'
 
-import Chat, { constants } from '../index'
+import Chat from '../'
+import * as constants from '../constants'
 import parser from '../utils/parsers'
 
 jest.mock('ws')
@@ -205,7 +206,7 @@ describe('Chat', () => {
       const chat = new Chat(options)
       await chat.connect()
 
-      chat.once('CONNECTED', () => done())
+      chat.once('GLOBALUSERSTATE', () => done())
 
       chat._client.emit('RECONNECT')
     })

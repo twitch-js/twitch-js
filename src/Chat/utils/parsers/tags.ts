@@ -9,8 +9,8 @@ import {
   ChatEvents,
   Commands,
   RoomStateTags,
-  UserNoticeMessageParameterTags,
   UserStateTags,
+  MessageParameters,
 } from '../../../twitch'
 
 import * as constants from '../../constants'
@@ -26,7 +26,7 @@ export const globalUserState = (tags: BaseTags): GlobalUserStateTags => ({
   ...tags,
   emoteSets: helpers.emoteSets(tags.emoteSets),
   userType: helpers.userType(tags.userType),
-  username: toLower(tags.displayName),
+  username: tags.displayName ? toLower(tags.displayName) : undefined,
 })
 
 export const privateMessageCheerEvent = (tags: BaseTags) => {
@@ -81,7 +81,7 @@ export const userNoticeMessageParameters = (tags: BaseTags) =>
           [camelCase(param)]: helpers.generalString(value),
         }
     }
-  }, {} as UserNoticeMessageParameterTags)
+  }, {} as MessageParameters)
 
 export const userState = (tags: BaseTags): UserStateTags => ({
   ...tags,
