@@ -52,7 +52,6 @@
     "test:e2e:node": "jest __e2e__/node",
     "test:e2e": "jest __e2e__",
     "test": "jest",
-    "precommit": "lint-staged",
     "prebuild": "yarn clean",
     "build:lib": "tsc --project tsconfig.build.json",
     "build:dist": "rollup -c",
@@ -234,13 +233,14 @@
   },
   "husky": {
     "hooks": {
-      "pre-commit": "yarn lint-staged"
+      "pre-commit": "yarn lint-staged",
+      "pre-push": "yarn test  --onlyChanged"
     }
   },
   "lint-staged": {
     "*.ts": [
       "prettier --write",
-      "lint",
+      "yarn lint",
       "git add"
     ],
     "*.md": [

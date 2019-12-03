@@ -5,7 +5,6 @@ import defaults from 'lodash/defaults'
 import isFunction from 'lodash/isFunction'
 import isString from 'lodash/isString'
 import isUndefined from 'lodash/isUndefined'
-import isEmpty from 'lodash/isUndefined'
 
 import { Options } from '../types'
 
@@ -16,17 +15,13 @@ export const apiOptions = (maybeOptions: any): Options | never => {
     onAuthenticationFailure: isFunction,
   }
 
-  invariant(
-    !(isEmpty(maybeOptions.clientId) && isEmpty(maybeOptions.token)),
-    '[twitch-js/Api] Either a `clientId` or `token` must be provided',
-  )
-
   const options = defaults<
     Options,
     Pick<Options, 'token' | 'onAuthenticationFailure'>
   >(
     { ...maybeOptions },
     {
+      clientId: undefined,
       token: undefined,
       onAuthenticationFailure: () => new Promise((_, reject) => reject()),
     },

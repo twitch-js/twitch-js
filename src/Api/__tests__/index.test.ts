@@ -31,14 +31,8 @@ describe('Api', () => {
   })
 
   describe('constructor', () => {
-    test('should instantiate with clientId', () => {
-      expect(() => new Api({ ...options, token: undefined })).not.toThrow()
-    })
-
-    test('should throw if clientId and token are missing', () => {
-      expect(
-        () => new Api({ ...options, token: undefined, clientId: undefined }),
-      ).toThrow()
+    test('should instantiate with no options', () => {
+      expect(() => new Api({ log: { enabled: false } })).not.toThrow()
     })
   })
 
@@ -106,6 +100,21 @@ describe('Api', () => {
       await api.get('', { version: twitchTypes.ApiVersions.Kraken })
 
       expect(fetchUtil.mock.calls).toMatchSnapshot()
+    })
+
+    test('should create headers for Helix', async () => {
+      const api = new Api(options)
+      await api.get('', { version: twitchTypes.ApiVersions.Helix })
+
+      expect(fetchUtil.mock.calls).toMatchSnapshot()
+    })
+
+    test('should throw if clientId and token are absent when calling a Helix endpoint', async () => {
+      const api = new Api({ log: { enabled: false } })
+
+      await expect(
+        api.get('', { version: twitchTypes.ApiVersions.Helix }),
+      ).rejects.toMatchInlineSnapshot(`[Error: [TwitchJS] undefined undefined]`)
     })
   })
 

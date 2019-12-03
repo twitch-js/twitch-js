@@ -1,5 +1,19 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`Api headers should create headers for Helix 1`] = `
+Array [
+  Array [
+    "https://api.twitch.tv/helix/",
+    Object {
+      "headers": Object {
+        "Authorization": "Bearer TOKEN",
+        "Client-ID": "CLIENT_ID",
+      },
+    },
+  ],
+]
+`;
+
 exports[`Api headers should create headers for Kraken 1`] = `
 Array [
   Array [

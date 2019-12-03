@@ -4,7 +4,7 @@ import { Options as BaseFetchOptions } from '../utils/fetch'
 import { Options as LoggerOptions } from '../utils/logger'
 
 export type Options = {
-  clientId: string
+  clientId?: string
   token?: string
   log?: LoggerOptions
   onAuthenticationFailure?: () => Promise<string>

@@ -11,6 +11,8 @@ import * as Errors from '../utils/fetch/Errors'
 import * as validators from './utils/validators'
 
 import * as types from './types'
+import invariant from 'invariant'
+import isEmpty from 'lodash/isEmpty'
 export * from './types'
 
 /**
@@ -36,7 +38,7 @@ class Api {
 
   private _status: twitchTypes.ApiRootResponse
 
-  constructor(maybeOptions: types.Options) {
+  constructor(maybeOptions: types.Options = {}) {
     /**
      * @type {ApiOptions}
      * @private
@@ -159,6 +161,11 @@ class Api {
     const { clientId, token } = this.options
 
     const isHelix = this._isVersionHelix(version)
+
+    invariant(
+      !(isEmpty(clientId) && isEmpty(token)),
+      '[twitch-js/Api] To call a Helix endpoint, a `clientId` or `token` must be provided',
+    )
 
     const headers = isHelix
       ? { 'Client-ID': clientId }
