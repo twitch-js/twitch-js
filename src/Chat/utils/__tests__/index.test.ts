@@ -1,11 +1,12 @@
-import * as constants from '../../constants'
+import { Commands, Events } from '../../../twitch'
+
 import * as utils from '../index'
 
 describe('Chat/utils', () => {
   describe('isAuthenticationFailedMessage', () => {
     test('should return true for authentication failed messages', () => {
       const message = {
-        command: constants.EVENTS.NOTICE,
+        command: Commands.NOTICE,
         channel: '',
         message: 'Login authentication failed',
       }
@@ -37,9 +38,9 @@ describe('Chat/utils', () => {
       expect(actual).toEqual(expected)
     })
 
-    test('should return EVENTS.ALL by default', () => {
+    test('should return `*` by default', () => {
       const actual = utils.getEventNameFromMessage()
-      const expected = constants.EVENTS.ALL
+      const expected = Events.ALL
       expect(actual).toEqual(expected)
     })
   })

@@ -52,7 +52,9 @@ If you are using a module bundler, such [Webpack](https://webpack.js.org/),
    import Twitch from 'twitch-js'
 
    // OR ES5 syntax
-   var twitch = require('twitch-js')
+   var Twitch = require('twitch-js')
+
+   const twitch = new Twitch({ username, token })
    ```
 
 ### Browser (IIFE)
@@ -62,12 +64,12 @@ If you are not using a module bundler, precompiled builds are available in the
 
 1. Include a script tag in your HTML:
    ```html
-   <script src="//unpkg.com/twitch-js@>2.0.0-beta/dist/twitch-js.min.js"></script>
+   <script src="//unpkg.com/twitch-js@>2.0.0-beta/dist/index.js"></script>
    ```
 2. Consume the library:
    ```html
    <script type="javascript">
-     const twitchJs = new window.TwitchJs ...
+     const twitchJs = new window.TwitchJs({ username, token })
    </script>
    ```
 

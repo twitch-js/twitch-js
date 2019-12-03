@@ -1,4 +1,5 @@
 import { mocked } from 'ts-jest/utils'
+import nodeFetch from 'node-fetch'
 
 import * as twitchTypes from '../../twitch'
 
@@ -8,9 +9,9 @@ import * as Errors from '../../utils/fetch/Errors'
 import Api from '../'
 import { Settings } from '../types'
 
-jest.mock('../../utils/fetch')
+jest.mock('node-fetch')
 
-const fetchUtil = mocked(originalFetchUtil, true)
+const fetchUtil = mocked(nodeFetch, true)
 
 describe('Api', () => {
   jest.setTimeout(500)
@@ -55,7 +56,7 @@ describe('Api', () => {
   describe('initialize', () => {
     test('should set readyState and status', async () => {
       const api = new Api(options)
-      await api.initialize()
+      const t = await api.initialize()
 
       expect(api.readyState).toBe(2)
       expect(api.status).toMatchSnapshot()
@@ -198,7 +199,7 @@ describe('Api', () => {
       })
     })
 
-    test('should call the Kraken endpoint', () => {
+    test.only('should call the Kraken endpoint', () => {
       const api = new Api(options)
 
       const endpoint = 'ENDPOINT'
@@ -211,7 +212,7 @@ describe('Api', () => {
         .then(() => {
           const [actualEndpoint, actualOpts] = fetchUtil.mock.calls[0]
 
-          expect(actualEndpoint).toBe(`${krakenBaseUrl}/${endpoint}`)
+          expect(actualEndpoint).toBe(`${krakenBaseUrl}/${endpoint}?a=b`)
           expect(actualOpts).toMatchObject(fetchOptions)
         })
     })
@@ -228,7 +229,7 @@ describe('Api', () => {
       return api.get(endpoint, opts).then(() => {
         const [actualEndpoint, actualOpts] = fetchUtil.mock.calls[0]
 
-        expect(actualEndpoint).toBe(`${helixBaseUrl}/${endpoint}`)
+        expect(actualEndpoint).toBe(`${helixBaseUrl}/${endpoint}?a=b`)
         expect(actualOpts).toMatchSnapshot()
       })
     })

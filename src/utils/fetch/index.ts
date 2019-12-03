@@ -33,12 +33,20 @@ const fetchUtil = async <T = any>(
       ? `?${stringify(options.search, qsOptions)}`
       : ''
 
-  const response = await fetch(`${url}${search}`, {
-    ...options,
-    method: options.method || 'get',
-    headers,
-    body,
-  })
+  const fetchOptions = body
+    ? {
+        ...options,
+        method: options.method || 'get',
+        headers,
+        body,
+      }
+    : {
+        ...options,
+        method: options.method || 'get',
+        headers,
+      }
+
+  const response = await fetch(`${url}${search}`, fetchOptions)
 
   return parser<T>(response)
 }

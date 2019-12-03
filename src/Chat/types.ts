@@ -3,8 +3,7 @@ import {
   RoomStateTags,
   PrivateMessage,
   Messages,
-  ChatEvents,
-  Commands,
+  Events,
 } from '../twitch'
 import { Options as LoggerOptions } from '../utils/logger'
 
@@ -12,7 +11,7 @@ export type Options = {
   username?: string
   /**
    * OAuth token
-   * @see https://twitchtokengenerator.com/} to generate a token
+   * @see https://twitchtokengenerator.com/ to generate a token
    */
   token?: string
   /**
@@ -29,7 +28,7 @@ export type Options = {
   joinTimeout?: number
   log?: LoggerOptions
   onAuthenticationFailure?: () => Promise<string>
-}
+} & ClientOptions
 
 export type ClientOptions = {
   username?: string
@@ -48,8 +47,7 @@ export type ChannelStates = Record<
 >
 
 export type EventTypes = {
-  [ChatEvents.RAW]: [string]
-  [ChatEvents.RAW]: [string]
-  [ChatEvents.ALL]: [Messages]
-  [Commands.PRIVATE_MESSAGE]: [PrivateMessage]
+  [Events.RAW]: [string]
+  [Events.ALL]: [Messages]
+  [Events.PRIVATE_MESSAGE]: [PrivateMessage]
 }

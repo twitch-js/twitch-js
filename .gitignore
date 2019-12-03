@@ -2,12 +2,14 @@
 *.env
 
 # Builds
+/package
 dist
-lib
 docs
+es
+lib
+types
 website
 twitch-js-*.tgz
-/package
 
 # Logs
 logs

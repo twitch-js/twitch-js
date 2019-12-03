@@ -3,7 +3,7 @@ import get from 'lodash/get'
 import { stringify } from 'qs'
 import WebSocket from 'ws'
 
-import { ChatEvents, Commands } from '../twitch'
+import { ChatEvents, Commands, Capabilities } from '../twitch'
 
 import Queue from '../Queue'
 
@@ -110,7 +110,7 @@ class Client extends EventEmitter {
 
   private _handleOpen() {
     // Register for Twitch-specific capabilities.
-    this.send(`CAP REQ :${constants.CAPABILITIES.join(' ')}`, { priority })
+    this.send(`CAP REQ :${Object.values(Capabilities).join(' ')}`, { priority })
 
     // Authenticate.
     const { token, username } = this._options

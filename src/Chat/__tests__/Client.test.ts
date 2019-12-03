@@ -2,6 +2,8 @@ import { server } from 'ws'
 
 import membership from '../../../__mocks__/ws/__fixtures__/membership'
 
+import { Events, Commands } from '../../twitch'
+
 import Client from '../Client'
 import * as constants from '../constants'
 
@@ -20,7 +22,7 @@ describe('Chat/Client', () => {
   test('should receive CONNECTED event', done => {
     const client = new Client(options)
 
-    client.once(constants.EVENTS.CONNECTED, () => done())
+    client.once(Events.CONNECTED, () => done())
   })
 
   test('should send CAP, PASS and NICK', done => {
@@ -29,7 +31,7 @@ describe('Chat/Client', () => {
 
     const client = new Client(options)
 
-    client.once(constants.EVENTS.CONNECTED, () => {
+    client.once(Events.CONNECTED, () => {
       expect(listener.mock.calls).toContainEqual([membership.CAP])
       expect(listener.mock.calls).toContainEqual([
         `PASS oauth:${options.token}`,
@@ -111,7 +113,7 @@ describe('Chat/Client', () => {
       jest.useFakeTimers()
 
       server.on('message', message => {
-        if (message === constants.COMMANDS.PING) {
+        if (message === Commands.PING) {
           done()
           server.off('message')
         }
@@ -120,7 +122,7 @@ describe('Chat/Client', () => {
       const client = new Client(options)
       jest.advanceTimersByTime(1000)
 
-      client.on(constants.EVENTS.CONNECTED, () =>
+      client.on(Events.CONNECTED, () =>
         jest.advanceTimersByTime(constants.KEEP_ALIVE_PING_TIMEOUT),
       )
     })
@@ -131,9 +133,9 @@ describe('Chat/Client', () => {
       const client = new Client(options)
       jest.advanceTimersByTime(1000)
 
-      client.on(constants.EVENTS.RECONNECT, () => done())
+      client.on(Events.RECONNECT, () => done())
 
-      client.on(constants.EVENTS.CONNECTED, () =>
+      client.on(Events.CONNECTED, () =>
         jest.advanceTimersByTime(constants.KEEP_ALIVE_RECONNECT_TIMEOUT),
       )
     })

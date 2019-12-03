@@ -84,4 +84,5 @@ class TwitchJs {
   }
 }
 
+export { Chat, Api }
 export default TwitchJs

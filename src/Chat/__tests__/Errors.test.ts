@@ -1,4 +1,5 @@
-import * as constants from '../constants'
+import { Events } from '../../twitch'
+
 import * as Errors from '../Errors'
 
 describe('Chat/Errors', () => {
@@ -9,6 +10,6 @@ describe('Chat/Errors', () => {
 
     expect(actual.message).toEqual('[TwitchJS] Parse error encountered [Chat]')
     expect(actual._raw).toEqual(rawMessage)
-    expect(actual.command).toEqual(constants.EVENTS.PARSE_ERROR_ENCOUNTERED)
+    expect(actual.command).toEqual(Events.PARSE_ERROR_ENCOUNTERED)
   })
 })

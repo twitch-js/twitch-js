@@ -24,7 +24,7 @@ const aliasPlugin = alias({
 const commonPlugins = [
   json(),
   typescript(),
-  terser(),
+  terser({ output: { comments: false } }),
   filesize({ showMinifiedSize: false }),
   replace({
     'process.env.NODE_ENV': JSON.stringify('production'),
@@ -33,10 +33,10 @@ const commonPlugins = [
 
 export default [
   {
-    input: 'src/index.ts',
+    input: 'src/browser.ts',
     output: {
       name: 'TwitchJs',
-      file: 'dist/twitch-js.js',
+      file: pkg.unpkg,
       format: 'iife',
       exports: 'default',
       sourcemap: true,

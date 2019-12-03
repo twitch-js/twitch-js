@@ -27,9 +27,9 @@ export type ApiRootResponse = {
  * @see https://dev.twitch.tv/docs/irc/guide#twitch-irc-capabilities
  */
 export enum Capabilities {
-  'twitch.tv/tags',
-  'twitch.tv/commands',
-  'twitch.tv/membership',
+  'tags' = 'twitch.tv/tags',
+  'commands' = 'twitch.tv/commands',
+  'membership' = 'twitch.tv/membership',
 }
 
 /**

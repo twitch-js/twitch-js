@@ -31,6 +31,8 @@ describe('parser', () => {
 
     await expect(actual).rejects.toThrow()
     await expect(actual).rejects.toBeInstanceOf(Error)
-    await expect(actual).rejects.toMatchObject({ body: mockJsonResponseError })
+    await expect(actual).rejects.toMatchInlineSnapshot(
+      `[Error: [TwitchJS] URL NOT OK]`,
+    )
   })
 })

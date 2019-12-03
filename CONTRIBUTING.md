@@ -12,11 +12,11 @@ All pull requests must:
 
 1. Be titled in the following format: _Feature: feature description_, _Bugfix:
    bugfix description_ or _Chore: chore description_
-1. Pass lint tests
-1. Pass TravisCI tests
-1. Maintain current test coverage
-1. Receive at least one approval from an existing contributor
-1. ... more to follow
+2. Pass lint tests
+3. Pass TravisCI tests
+4. Maintain current test coverage
+5. Receive at least one approval from an existing contributor
+6. ... more to follow
 
 Anyone who submits a PR that is merged with relatively little-to-no assistance
 from an existing contributor **will receive merge rights**.

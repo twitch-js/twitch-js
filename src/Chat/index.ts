@@ -12,7 +12,7 @@ import {
   GlobalUserStateMessage,
   UserStateMessage,
   RoomStateMessage,
-  ChatEvents,
+  Events,
   Commands,
 } from '../twitch'
 
@@ -34,35 +34,7 @@ import * as types from './types'
 export * from './types'
 
 /**
- * @class
- * @public
- * @extends EventEmitter
- * @classdesc Twitch Chat Client
- *
- * @emits Chat#*
- * @emits Chat#CLEARCHAT
- * @emits Chat#CLEARCHAT/USER_BANNED
- * @emits Chat#GLOBALUSERSTATE
- * @emits Chat#HOSTTARGET
- * @emits Chat#JOIN
- * @emits Chat#MODE
- * @emits Chat#NAMES
- * @emits Chat#NAMES_END
- * @emits Chat#NOTICE
- * @emits Chat#NOTICE/ROOM_MODS
- * @emits Chat#PART
- * @emits Chat#PRIVMSG
- * @emits Chat#PRIVMSG/CHEER
- * @emits Chat#ROOMSTATE
- * @emits Chat#USERNOTICE
- * @emits Chat#USERNOTICE/ANON_GIFT_PAID_UPGRADE
- * @emits Chat#USERNOTICE/GIFT_PAID_UPGRADE
- * @emits Chat#USERNOTICE/RAID
- * @emits Chat#USERNOTICE/RESUBSCRIPTION
- * @emits Chat#USERNOTICE/RITUAL
- * @emits Chat#USERNOTICE/SUBSCRIPTION
- * @emits Chat#USERNOTICE/SUBSCRIPTION_GIFT
- * @emits Chat#USERSTATE
+ * Twitch Chat Client
  *
  * @example <caption>Connecting to Twitch and joining #dallas</caption>
  *
@@ -114,10 +86,7 @@ class Chat extends EventEmitter<types.EventTypes> {
 
     this.options = maybeOptions
 
-    /**
-     * @type {any}
-     * @private
-     */
+    // Create logger.
     this._log = createLogger({ name: 'Chat', ...this.options.log })
 
     // Create commands.
@@ -125,7 +94,7 @@ class Chat extends EventEmitter<types.EventTypes> {
   }
 
   /**
-   * Retrieves the current
+   * Retrieves the current options
    */
   get options() {
     return this._options
@@ -160,7 +129,7 @@ class Chat extends EventEmitter<types.EventTypes> {
   }
 
   /**
-   * Updates the clients options after first instantiation.
+   * Updates the client options after instantiation.
    * To update `token` or `username`, use `reconnect()`.
    */
   updateOptions(options: Partial<types.Options>) {
@@ -169,7 +138,7 @@ class Chat extends EventEmitter<types.EventTypes> {
   }
 
   /**
-   * Sends a raw message to Twitch.
+   * Send a raw message to Twitch.
    */
   send: Client['send'] = (message, options) =>
     this._client.send(message, options)
@@ -180,7 +149,7 @@ class Chat extends EventEmitter<types.EventTypes> {
   disconnect = () => this._client.disconnect()
 
   /**
-   * Reconnect to Twitch, providing new options to client.
+   * Reconnect to Twitch, providing new options to the client.
    */
   reconnect = (newOptions?: types.Options) => {
     if (newOptions) {
@@ -363,23 +332,19 @@ class Chat extends EventEmitter<types.EventTypes> {
       this._client = new Client(this.options)
 
       // Handle messages.
-      this._client.on(constants.EVENTS.ALL, this._handleMessage, this)
+      this._client.on(Events.ALL, this._handleMessage, this)
 
       // Handle disconnects.
-      this._client.on(
-        constants.EVENTS.DISCONNECTED,
-        this._handleDisconnect,
-        this,
-      )
+      this._client.on(Events.DISCONNECTED, this._handleDisconnect, this)
 
       // Listen for reconnects.
-      this._client.once(constants.EVENTS.RECONNECT, () => this.reconnect())
+      this._client.once(Events.RECONNECT, () => this.reconnect())
 
       // Listen for authentication failures.
-      this._client.once(constants.EVENTS.AUTHENTICATION_FAILED, reject)
+      this._client.once(Events.AUTHENTICATION_FAILED, reject)
 
       // Once the client is connected, resolve ...
-      this._client.once(constants.EVENTS.CONNECTED, e => {
+      this._client.once(Events.CONNECTED, e => {
         connectProfiler.done('Connected')
         resolve(e)
       })
@@ -402,7 +367,7 @@ class Chat extends EventEmitter<types.EventTypes> {
 
     this._log.info('Retrying ...')
 
-    if (error.event === constants.EVENTS.AUTHENTICATION_FAILED) {
+    if (error.event === Events.AUTHENTICATION_FAILED) {
       return this.options
         .onAuthenticationFailure()
         .then(token => (this.options = { ...this.options, token }))
@@ -448,7 +413,7 @@ class Chat extends EventEmitter<types.EventTypes> {
      * All events are also emitted with this event name.
      * @event Chat#*
      */
-    super.emit(ChatEvents.ALL, message)
+    super.emit(Events.ALL, message)
   }
 
   private _getChannels() {
@@ -491,35 +456,35 @@ class Chat extends EventEmitter<types.EventTypes> {
     let message = preMessage
 
     switch (preMessage.command) {
-      case constants.EVENTS.JOIN: {
+      case Events.JOIN: {
         message = parsers.joinMessage(preMessage)
         message.isSelf = true
         eventName = `${message.command}/${channel}`
         break
       }
 
-      case constants.EVENTS.PART: {
+      case Events.PART: {
         message = parsers.partMessage(preMessage)
         message.isSelf = true
         eventName = `${message.command}/${channel}`
         break
       }
 
-      case constants.EVENTS.NAMES: {
+      case Events.NAMES: {
         message = parsers.namesMessage(preMessage)
         message.isSelf = true
         eventName = `${message.command}/${channel}`
         break
       }
 
-      case constants.EVENTS.NAMES_END: {
+      case Events.NAMES_END: {
         message = parsers.namesEndMessage(preMessage)
         message.isSelf = true
         eventName = `${message.command}/${channel}`
         break
       }
 
-      case constants.EVENTS.CLEAR_CHAT: {
+      case Events.CLEAR_CHAT: {
         message = parsers.clearChatMessage(preMessage)
         eventName = message.event
           ? `${message.command}/${message.event}/${channel}`
@@ -527,13 +492,13 @@ class Chat extends EventEmitter<types.EventTypes> {
         break
       }
 
-      case constants.EVENTS.HOST_TARGET: {
+      case Events.HOST_TARGET: {
         message = parsers.hostTargetMessage(preMessage)
         eventName = `${message.command}/${channel}`
         break
       }
 
-      case constants.EVENTS.MODE: {
+      case Events.MODE: {
         message = parsers.modeMessage(preMessage)
         eventName = `${message.command}/${channel}`
 
@@ -551,13 +516,13 @@ class Chat extends EventEmitter<types.EventTypes> {
         break
       }
 
-      case constants.EVENTS.GLOBAL_USER_STATE: {
+      case Events.GLOBAL_USER_STATE: {
         message = parsers.globalUserStateMessage(preMessage)
         this._userState = message.tags
         break
       }
 
-      case constants.EVENTS.USER_STATE: {
+      case Events.USER_STATE: {
         message = parsers.userStateMessage(preMessage)
         eventName = `${message.command}/${channel}`
 
@@ -568,7 +533,7 @@ class Chat extends EventEmitter<types.EventTypes> {
         break
       }
 
-      case constants.EVENTS.ROOM_STATE: {
+      case Events.ROOM_STATE: {
         message = parsers.roomStateMessage(preMessage)
         eventName = `${message.command}/${channel}`
 
@@ -579,19 +544,19 @@ class Chat extends EventEmitter<types.EventTypes> {
         break
       }
 
-      case constants.EVENTS.NOTICE: {
+      case Events.NOTICE: {
         message = parsers.noticeMessage(preMessage)
         eventName = `${message.command}/${message.event}/${channel}`
         break
       }
 
-      case constants.EVENTS.USER_NOTICE: {
+      case Events.USER_NOTICE: {
         message = parsers.userNoticeMessage(preMessage)
         eventName = `${message.command}/${message.event}/${channel}`
         break
       }
 
-      case constants.EVENTS.PRIVATE_MESSAGE: {
+      case Events.PRIVATE_MESSAGE: {
         message = parsers.privateMessage(preMessage)
         eventName = message.event
           ? `${message.command}/${message.event}/${channel}`

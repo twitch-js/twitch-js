@@ -1,7 +1,8 @@
 import camelCase from 'lodash/camelCase'
 
+import { ChatCommands } from '../../../twitch'
+
 import * as commands from '../commands'
-import * as constants from '../../constants'
 
 describe('Chat/utils/commands', () => {
   const channel = 'CHANNEL'
@@ -16,7 +17,7 @@ describe('Chat/utils/commands', () => {
 
       commands.factory(chatInstance)
 
-      Object.entries(constants.CHAT_COMMANDS).forEach(([key, command]) => {
+      Object.entries(ChatCommands).forEach(([key, command]) => {
         chatInstance[camelCase(key)](channel, ...args)
 
         expect(chatInstance.say).toHaveBeenLastCalledWith(
@@ -35,7 +36,7 @@ describe('Chat/utils/commands', () => {
     }
 
     test('should return an array of promises', () => {
-      Object.values(constants.CHAT_COMMANDS).forEach(command => {
+      Object.values(ChatCommands).forEach(command => {
         const resolvers = commands.resolvers(chatInstance)(
           channel,
           `/${command}`,

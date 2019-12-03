@@ -85,7 +85,9 @@ class Api {
       return Promise.resolve()
     }
 
-    const statusResponse = await this.get<twitchTypes.ApiRootResponse>()
+    const statusResponse = await this.get<twitchTypes.ApiRootResponse>('', {
+      version: twitchTypes.ApiVersions.Kraken,
+    })
 
     this._readyState = 2
     this._status = statusResponse
@@ -163,7 +165,7 @@ class Api {
     const isHelix = this._isVersionHelix(version)
 
     invariant(
-      !(isEmpty(clientId) && isEmpty(token)),
+      isHelix ? !(isEmpty(clientId) && isEmpty(token)) : true,
       '[twitch-js/Api] To call a Helix endpoint, a `clientId` or `token` must be provided',
     )
 

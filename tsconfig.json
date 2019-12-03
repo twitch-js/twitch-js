@@ -12,6 +12,6 @@
     "sourceMap": true,
     "target": "es5"
   },
-  "include": ["src"],
+  "include": ["src", "__mocks__/node-fetch/index.ts"],
   "exclude": ["**/node_modules", "**/__tests__", "**/__mocks__"]
 }

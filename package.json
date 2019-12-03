@@ -30,18 +30,20 @@
     "node": ">=8",
     "yarn": "^1.9.2"
   },
-  "main": "dist/twitch-js.cjs.js",
-  "module": "dist/twitch-js.esm.js",
-  "types": "dist/types.d.ts",
+  "main": "lib/index.js",
+  "module": "es/index.js",
+  "unpkg": "dist/index.js",
+  "types": "types/types.d.ts",
   "files": [
     "dist",
+    "es",
     "lib",
     "shims",
-    "types.d.ts"
+    "types"
   ],
   "runkitExampleFilename": "examples/runkit.js",
   "scripts": {
-    "clean": "rimraf lib dist",
+    "clean": "rimraf dist lib es types",
     "prettier": "prettier --list-different \"**/*.{ts,md}\"",
     "lint": "eslint \"{__e2e__,__mocks__,examples,shims,src}/**/*.ts\"",
     "test:types": "tsc --noEmit",
@@ -55,7 +57,7 @@
     "prebuild": "yarn clean",
     "build:lib": "tsc --project tsconfig.build.json",
     "build:dist": "rollup -c",
-    "build:types": "tsc --project tsconfig.build.json --emitDeclarationOnly --outFile dist/types.d.ts",
+    "build:types": "tsc --project tsconfig.build.json --emitDeclarationOnly --outFile types/index.d.ts",
     "build": "run-p build:**",
     "postbuild:dist": "yarn build:types",
     "start:example": "nodemon examples/runkit.js",

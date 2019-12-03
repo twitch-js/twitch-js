@@ -1,9 +1,11 @@
 import { server } from 'ws'
 import random from 'lodash/random'
 
-import commands from '../../../__mocks__/ws/__fixtures__/commands'
+import rawCommands from '../../../__mocks__/ws/__fixtures__/commands'
 import membership from '../../../__mocks__/ws/__fixtures__/membership'
 import tags from '../../../__mocks__/ws/__fixtures__/tags'
+
+import { Events, Commands } from '../../twitch'
 
 import { resolveOnEvent } from '../../utils'
 
@@ -18,9 +20,7 @@ jest.mock('lodash/random', () => ({
 }))
 
 const emitHelper = (emitter, rawMessages) =>
-  parser(rawMessages).forEach(message =>
-    emitter.emit(constants.EVENTS.ALL, message),
-  )
+  parser(rawMessages).forEach(message => emitter.emit(Events.ALL, message))
 
 describe('Chat', () => {
   const options = {
@@ -168,7 +168,7 @@ describe('Chat', () => {
 
     expect.assertions(2)
 
-    chat.once(constants.EVENTS.DISCONNECTED, () => {
+    chat.once(Events.DISCONNECTED, () => {
       expect(chat._readyState).toBe(5)
       expect(chat._connectionInProgress).toBe(null)
       done()
@@ -230,7 +230,7 @@ describe('Chat', () => {
       const chat = new Chat(options)
       await chat.connect()
 
-      chat.once(constants.EVENTS.JOIN, message => {
+      chat.once(Events.JOIN, message => {
         expect(message).toMatchSnapshot({
           timestamp: expect.any(Date),
         })
@@ -244,7 +244,7 @@ describe('Chat', () => {
       const chat = new Chat(options)
       await chat.connect()
 
-      chat.once(constants.EVENTS.PART, message => {
+      chat.once(Events.PART, message => {
         expect(message).toMatchSnapshot({
           timestamp: expect.any(Date),
         })
@@ -259,9 +259,9 @@ describe('Chat', () => {
       await chat.connect()
 
       const emissions = Promise.all([
-        resolveOnEvent(chat, constants.COMMANDS.NAMES),
-        resolveOnEvent(chat, constants.COMMANDS.NAMES),
-        resolveOnEvent(chat, constants.COMMANDS.NAMES_END),
+        resolveOnEvent(chat, Commands.NAMES),
+        resolveOnEvent(chat, Commands.NAMES),
+        resolveOnEvent(chat, Commands.NAMES_END),
       ])
 
       emitHelper(chat._client, membership.NAMES)
@@ -284,7 +284,7 @@ describe('Chat', () => {
 
           chat._channelState['#dallas'].userState.isModerator = false
 
-          chat.once(constants.EVENTS.MODE, message => {
+          chat.once(Events.MODE, message => {
             expect(message).toMatchSnapshot({
               timestamp: expect.any(Date),
             })
@@ -305,7 +305,7 @@ describe('Chat', () => {
 
           chat._channelState['#dallas'].userState.isModerator = true
 
-          chat.once(constants.EVENTS.MODE, message => {
+          chat.once(Events.MODE, message => {
             expect(message).toMatchSnapshot({
               timestamp: expect.any(Date),
             })
@@ -330,7 +330,7 @@ describe('Chat', () => {
 
           const before = chat._channelState['#dallas'].userState.isModerator
 
-          chat.once(constants.EVENTS.MODE, message => {
+          chat.once(Events.MODE, message => {
             expect(message).toMatchSnapshot({
               timestamp: expect.any(Date),
             })
@@ -350,7 +350,7 @@ describe('Chat', () => {
 
           const before = chat._channelState['#dallas'].userState.isModerator
 
-          chat.once(constants.EVENTS.MODE, message => {
+          chat.once(Events.MODE, message => {
             expect(message).toMatchSnapshot({
               timestamp: expect.any(Date),
             })
@@ -369,38 +369,38 @@ describe('Chat', () => {
       const chat = new Chat(options)
       await chat.connect()
 
-      chat.once(constants.EVENTS.CLEAR_CHAT, message => {
+      chat.once(Events.CLEAR_CHAT, message => {
         expect(message).toMatchSnapshot({
           timestamp: expect.any(Date),
         })
         done()
       })
 
-      emitHelper(chat._client, commands.CLEARCHAT.CHANNEL)
+      emitHelper(chat._client, rawCommands.CLEARCHAT.CHANNEL)
     })
 
     test('CLEARCHAT user with reason', async done => {
       const chat = new Chat(options)
       await chat.connect()
 
-      chat.once(constants.EVENTS.CLEAR_CHAT, message => {
+      chat.once(Events.CLEAR_CHAT, message => {
         expect(message).toMatchSnapshot({
           timestamp: expect.any(Date),
         })
         done()
       })
 
-      emitHelper(chat._client, commands.CLEARCHAT.USER_WITH_REASON)
+      emitHelper(chat._client, rawCommands.CLEARCHAT.USER_WITH_REASON)
     })
 
     describe('HOSTTARGET', () => {
-      const table = Object.entries(commands.HOSTTARGET)
+      const table = Object.entries(rawCommands.HOSTTARGET)
 
       test.each(table)('%s', async (name, raw, done) => {
         const chat = new Chat(options)
         await chat.connect()
 
-        chat.once(constants.EVENTS.HOST_TARGET, message => {
+        chat.once(Events.HOST_TARGET, message => {
           expect(message).toMatchSnapshot({
             timestamp: expect.any(Date),
           })
@@ -412,13 +412,13 @@ describe('Chat', () => {
     })
 
     describe('NOTICE', () => {
-      test.each(Object.entries(commands.NOTICE))(
+      test.each(Object.entries(rawCommands.NOTICE))(
         '%s',
         async (name, raw, done) => {
           const chat = new Chat(options)
           await chat.connect()
 
-          const eventName = `${constants.EVENTS.NOTICE}/${name}`
+          const eventName = `${Events.NOTICE}/${name}`
 
           chat.once(eventName, message => {
             expect(message).toMatchSnapshot({
@@ -440,7 +440,7 @@ describe('Chat', () => {
           const chat = new Chat(options)
           await chat.connect()
 
-          chat.once(constants.COMMANDS.USER_NOTICE, message => {
+          chat.once(Commands.USER_NOTICE, message => {
             expect(message).toMatchSnapshot({
               timestamp: expect.any(Date),
             })
@@ -503,7 +503,7 @@ describe('Chat', () => {
           done()
         })
 
-        emitHelper(chat._client, commands.CLEARCHAT.DEVIATION_1)
+        emitHelper(chat._client, rawCommands.CLEARCHAT.DEVIATION_1)
       })
     })
   })
