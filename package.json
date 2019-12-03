@@ -238,9 +238,8 @@
   },
   "lint-staged": {
     "*.ts": [
-      "prettier --write",
+      "yarn prettier --write",
       "yarn lint",
-      "yarn test --onlyChanged",
       "git add"
     ],
     "*.md": [

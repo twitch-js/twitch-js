@@ -15,10 +15,7 @@ export const apiOptions = (maybeOptions: any): Options | never => {
     onAuthenticationFailure: isFunction,
   }
 
-  const options = defaults<
-    Options,
-    Pick<Options, 'token' | 'onAuthenticationFailure'>
-  >(
+  const options = defaults<Options, Options>(
     { ...maybeOptions },
     {
       clientId: undefined,
