@@ -4,7 +4,7 @@ export const resolveAfter = (ms: number) =>
   new Promise(resolve => setTimeout(resolve, ms))
 
 export const resolveOnEvent = <T>(
-  emitter: EventEmitter,
+  emitter: EventEmitter<any>,
   eventName: string,
 ): Promise<T> => new Promise(resolve => emitter.once(eventName, resolve))
 
