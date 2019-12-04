@@ -10,40 +10,89 @@ import fetchUtil from '../utils/fetch'
 import * as Errors from '../utils/fetch/Errors'
 import * as validators from './utils/validators'
 
-import * as types from './types'
+import {
+  ApiOptions,
+  ApiReadyStates,
+  ApiFetchOptions,
+  ApiHeaders,
+  Settings,
+} from './types'
 import invariant from 'invariant'
 import isEmpty from 'lodash/isEmpty'
 
 export * from './types'
 
 /**
- * @class
- * @public
+ * Make requests to Twitch API.
  *
- * @example <caption>Get Featured Streams</caption>
- * ```
+ * ## Initializing
+ *
+ * ```js
+ * // With a token ...
  * const token = 'cfabdegwdoklmawdzdo98xt2fo512y'
- * const username = 'ronni'
- * const { api } = new TwitchJs({ token, username })
+ * const { api } = new TwitchJs({ token })
  *
- * api.get('streams/featured').then(response => {
- *   // Do stuff ...
- * })
+ * // ... or with a client ID ...
+ * const clientId = 'uo6dggojyb8d6soh92zknwmi5ej1q2'
+ * const { api } = new TwitchJs({ clientId })
+ * ```
+ *
+ * **Note:** The recommended way to initialize the API client is with a token.
+ *
+ * ## Making requests
+ *
+ * By default, the API client makes requests to the
+ * [Helix API](https://dev.twitch.tv/docs/api), and exposes `get(endpoint,
+ * options)`, `post(endpoint, options)` and `put(endpoint, options)` methods.
+ * Query string parameters and body parameters are provided via
+ * `options.search` and `options.body` properties, respectively.
+ *
+ * To make requests to the [Kraken/V5 API](https://dev.twitch.tv/docs/v5), use
+ * `options.version = 'kraken'`
+ *
+ * ### Examples
+ *
+ * #### Get bits leaderboard
+ * ```js
+ * api
+ *   .get('bits/leaderboard', { search: { user_id: '44322889' } })
+ *   .then(response => {
+ *     // Do stuff with response ...
+ *   })
+ * ```
+ *
+ * #### Get the latest Overwatch live streams
+ * ```
+ * api
+ *   .get('streams', { version: 'kraken', search: { game: 'Overwatch' } })
+ *   .then(response => {
+ *     // Do stuff with response ...
+ *   })
+ * ```
+ *
+ * #### Start a channel commercial
+ * ```
+ * const channelId = '44322889'
+ * api
+ *   .post(`channels/${channelId}/commercial`, {
+ *     version: 'kraken',
+ *     body: { length: 30 },
+ *   })
+ *   .then(response => {
+ *     // Do stuff with response ...
+ *   })
  * ```
  */
+
 class Api {
-  private _options: types.Options
+  private _options: ApiOptions
   private _log: Logger
 
-  private _readyState = 1
+  private _readyState: ApiReadyStates = ApiReadyStates.READY
 
   private _status: twitchTypes.ApiRootResponse
 
-  constructor(maybeOptions: types.Options = {}) {
-    /**
-     * @type {ApiOptions}
-     * @private
-     */
+  constructor(maybeOptions: ApiOptions = {}) {
     this.options = maybeOptions
 
     this._log = createLogger({ name: 'Api', ...this.options.log })
@@ -68,7 +117,7 @@ class Api {
   /**
    * New client options. To update `token` or `clientId`, use [**api.initialize()**]{@link Api#initialize}.
    */
-  updateOptions(options: Partial<types.Options>) {
+  updateOptions(options: Partial<ApiOptions>) {
     const { clientId, token } = this.options
     this.options = { ...options, clientId, token }
   }
@@ -77,7 +126,7 @@ class Api {
    * Initialize API client and retrieve status.
    * @see https://dev.twitch.tv/docs/v5/#root-url
    */
-  async initialize(newOptions?: Partial<types.Options>) {
+  async initialize(newOptions?: Partial<ApiOptions>) {
     if (newOptions) {
       this.options = { ...this.options, ...newOptions }
     }
@@ -90,7 +139,7 @@ class Api {
       version: twitchTypes.ApiVersions.Kraken,
     })
 
-    this._readyState = 2
+    this._readyState = ApiReadyStates.INITIALIZED
     this._status = statusResponse
 
     return statusResponse
@@ -134,21 +183,21 @@ class Api {
    *   })
    * ```
    */
-  get<T = any>(endpoint = '', options?: types.FetchOptions) {
+  get<T = any>(endpoint = '', options?: ApiFetchOptions) {
     return this._handleFetch<T>(endpoint, options)
   }
 
   /**
    * POST endpoint.
    */
-  post<T = any>(endpoint: string, options?: types.FetchOptions) {
+  post<T = any>(endpoint: string, options?: ApiFetchOptions) {
     return this._handleFetch<T>(endpoint, { ...options, method: 'post' })
   }
 
   /**
    * PUT endpoint.
    */
-  put<T = any>(endpoint: string, options?: types.FetchOptions) {
+  put<T = any>(endpoint: string, options?: ApiFetchOptions) {
     return this._handleFetch<T>(endpoint, { ...options, method: 'put' })
   }
 
@@ -157,10 +206,10 @@ class Api {
   }
 
   private _getBaseUrl(version: twitchTypes.ApiVersions) {
-    return types.Settings[version].baseUrl
+    return Settings[version].baseUrl
   }
 
-  private _getHeaders(version: twitchTypes.ApiVersions): types.Headers {
+  private _getHeaders(version: twitchTypes.ApiVersions): ApiHeaders {
     const { clientId, token } = this.options
 
     const isHelix = this._isVersionHelix(version)
@@ -175,7 +224,7 @@ class Api {
       : { Accept: 'application/vnd.twitchtv.v5+json', 'Client-ID': clientId }
 
     if (token) {
-      const authorizationHeader = types.Settings[version].authorizationHeader
+      const authorizationHeader = Settings[version].authorizationHeader
       const authorization = `${authorizationHeader} ${token}`
 
       return { ...headers, Authorization: authorization }
@@ -186,7 +235,7 @@ class Api {
 
   private async _handleFetch<T = any>(
     maybeUrl = '',
-    options: types.FetchOptions = {},
+    options: ApiFetchOptions = {},
   ) {
     const { version = twitchTypes.ApiVersions.Helix, ...fetchOptions } = options
 

@@ -13,7 +13,9 @@ import * as types from '../types'
 import * as constants from '../constants'
 import * as sanitizers from './sanitizers'
 
-export const chatOptions = (maybeOptions: types.Options): types.Options => {
+export const chatOptions = (
+  maybeOptions: types.ChatOptions,
+): types.ChatOptions => {
   const shape = {
     username: isString,
     token: (value: any) => isNil(value) || isString(value),
@@ -24,7 +26,7 @@ export const chatOptions = (maybeOptions: types.Options): types.Options => {
     onAuthenticationFailure: isFunction,
   }
 
-  const options: types.Options = defaults(
+  const options: types.ChatOptions = defaults(
     {
       ...maybeOptions,
       username: sanitizers.username(maybeOptions.username),

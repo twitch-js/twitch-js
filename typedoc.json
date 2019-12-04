@@ -1,0 +1,17 @@
+{
+  "name": "TwitchJS",
+  "mode": "file",
+  "includes": ["src"],
+  "exclude": ["**/__tests__", "**/__mocks__"],
+  "media": "media",
+  "out": "docs",
+
+  "toc": [
+    "Chat",
+    "ChatOptions",
+    "Api",
+    "ApiOptions",
+    "fetchUtil",
+    "FetchOptions"
+  ]
+}

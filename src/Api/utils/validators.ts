@@ -6,16 +6,16 @@ import isFunction from 'lodash/isFunction'
 import isString from 'lodash/isString'
 import isUndefined from 'lodash/isUndefined'
 
-import { Options } from '../types'
+import { ApiOptions } from '../types'
 
-export const apiOptions = (maybeOptions: any): Options | never => {
+export const apiOptions = (maybeOptions: any): ApiOptions | never => {
   const shape = {
     clientId: (token: unknown) => isUndefined(token) || isString(token),
     token: (token: unknown) => isUndefined(token) || isString(token),
     onAuthenticationFailure: isFunction,
   }
 
-  const options = defaults<Options, Options>(
+  const options = defaults<ApiOptions, ApiOptions>(
     { ...maybeOptions },
     {
       clientId: undefined,
@@ -29,5 +29,5 @@ export const apiOptions = (maybeOptions: any): Options | never => {
     '[twitch-js/Api] options: Expected valid options',
   )
 
-  return options as Options
+  return options as ApiOptions
 }

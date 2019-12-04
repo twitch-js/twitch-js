@@ -1,9 +1,3 @@
-/**
- * EventEmitter3 is a high performance EventEmitter
- * @external EventEmitter3
- * @see {@link https://github.com/primus/eventemitter3 EventEmitter3}
- */
-
 import EventEmitter from 'eventemitter3'
 
 import get from 'lodash/get'
@@ -24,7 +18,7 @@ import * as utils from '../utils'
 import * as chatUtils from './utils'
 
 import Client from './Client'
-import ChatError, * as Errors from './Errors'
+import * as Errors from './Errors'
 
 import * as constants from './constants'
 import * as commands from './utils/commands'
@@ -32,61 +26,197 @@ import * as parsers from './utils/parsers'
 import * as sanitizers from './utils/sanitizers'
 import * as validators from './utils/validators'
 
-import * as types from './types'
+import {
+  ChatReadyStates,
+  EventTypes,
+  ChatOptions,
+  ChannelStates,
+  NoticeCompounds,
+  PrivateMessageCompounds,
+  UserNoticeCompounds,
+} from './types'
 
 export * from './types'
 
 /**
- * Twitch Chat Client
+ * Interact with Twitch chat.
  *
- * @example <caption>Connecting to Twitch and joining #dallas</caption>
+ * ## Connecting
  *
- * ```
+ * ```js
  * const token = 'cfabdegwdoklmawdzdo98xt2fo512y'
  * const username = 'ronni'
- * const channel = '#dallas'
  * const { chat } = new TwitchJs({ token, username })
  *
  * chat.connect().then(globalUserState => {
- *   // Listen to all messages
- *   chat.on('*', message => {
+ *   // Do stuff ...
+ * })
+ * ```
+ *
+ * **Note:** Connecting with a `token` and a `username` is optional.
+ *
+ * Once connected, `chat.userState` will contain
+ * [[GlobalUserStateTags|global user state information]].
+ *
+ * ## Joining a channel
+ *
+ * ```js
+ * const channel = '#dallas'
+ *
+ * chat.join(channel).then(channelState => {
+ *   // Do stuff with channelState...
+ * })
+ * ```
+ *
+ * After joining a channel, `chat.channels[channel]` will contain
+ * [[ChannelState|channel state information]].
+ *
+ * ## Listening for events
+ *
+ * ```js
+ * // Listen to all events
+ * chat.on('*', message => {
+ *   // Do stuff with message ...
+ * })
+ *
+ * // Listen to private messages
+ * chat.on('PRIVMSG', privateMessage => {
+ *   // Do stuff with privateMessage ...
+ * })
+ * ```
+ *
+ * Events are nested; for example:
+ *
+ * ```js
+ * // Listen to subscriptions only
+ * chat.on('USERNOTICE/SUBSCRIPTION', userStateMessage => {
+ *   // Do stuff with userStateMessage ...
+ * })
+ *
+ * // Listen to all user notices
+ * chat.on('USERNOTICE', userStateMessage => {
+ *   // Do stuff with userStateMessage ...
+ * })
+ * ```
+ *
+ * For added convenience, TwitchJS also exposes event constants.
+ *
+ * ```js
+ * const { chat } = new TwitchJs({ token, username })
+ *
+ * // Listen to all user notices
+ * chat.on(chat.events.USER_NOTICE, userStateMessage => {
+ *   // Do stuff with userStateMessage ...
+ * })
+ * ```
+ *
+ * ## Sending messages
+ *
+ * To send messages, [Chat] must be initialized with a `username` and a
+ * [`token`](../#authentication) with `chat_login` scope.
+ *
+ * All messages sent to Twitch are automatically rate-limited according to
+ * [Twitch Developer documentation](https://dev.twitch.tv/docs/irc/guide/#command--message-limits).
+ *
+ * ### Speak in channel
+ *
+ * ```js
+ * const channel = '#dallas'
+ *
+ * chat
+ *   .say(channel, 'Kappa Keepo Kappa')
+ *   // Optionally ...
+ *   .then(userStateMessage => {
+ *     // ... do stuff with userStateMessage on success ...
+ *   })
+ * ```
+ *
+ * ### Send command to channel
+ *
+ * All chat commands are currently supported and exposed as camel-case methods. For
+ * example:
+ *
+ * ```js
+ * const channel = '#dallas'
+ *
+ * // Enable followers-only for 1 week
+ * chat.followersOnly(channel, '1w')
+ *
+ * // Ban ronni
+ * chat.ban(channel, 'ronni')
+ * ```
+ *
+ * **Note:** `Promise`-resolves for each commands are
+ * [planned](https://github.com/twitch-devs/twitch-js/issues/87).
+ *
+ * ## Joining multiple channels
+ *
+ * ```js
+ * const channels = ['#dallas', '#ronni']
+ *
+ * Promise.all(channels.map(channel => chat.join(channel))).then(channelStates => {
+ *   // Listen to all messages from #dallas only
+ *   chat.on('#dallas', message => {
  *     // Do stuff with message ...
  *   })
  *
- *   // Listen to PRIVMSG
+ *   // Listen to private messages from #dallas and #ronni
  *   chat.on('PRIVMSG', privateMessage => {
  *     // Do stuff with privateMessage ...
  *   })
  *
- *   // Do other stuff ...
+ *   // Listen to private messages from #dallas only
+ *   chat.on('PRIVMSG/#dallas', privateMessage => {
+ *     // Do stuff with privateMessage ...
+ *   })
  *
- *   chat.join(channel).then(channelState => {
- *     // Do stuff with channelState...
+ *   // Listen to all private messages from #ronni only
+ *   chat.on('PRIVMSG/#ronni', privateMessage => {
+ *     // Do stuff with privateMessage ...
  *   })
  * })
  * ```
+ *
+ * ### Broadcasting to all channels
+ *
+ * ```js
+ * chat
+ *   .broadcast('Kappa Keepo Kappa')
+ *   // Optionally ...
+ *   .then(userStateMessages => {
+ *     // ... do stuff with userStateMessages on success ...
+ *   })
+ * ```
  */
-class Chat extends EventEmitter<types.EventTypes> {
-  private _options: types.Options
+class Chat extends EventEmitter<EventTypes> {
+  static events = Events
+
+  static compoundEvents = {
+    [Events.NOTICE]: NoticeCompounds,
+    [Events.PRIVATE_MESSAGE]: PrivateMessageCompounds,
+    [Events.USER_NOTICE]: UserNoticeCompounds,
+  }
+
+  private _options: ChatOptions
 
   private _log: Logger
 
   private _client: Client
 
-  private _readyState = 0
+  private _readyState: ChatReadyStates = ChatReadyStates.NOT_READY
 
   private _connectionAttempts = 0
   private _connectionInProgress: Promise<GlobalUserStateMessage>
 
   private _userState: UserStateMessage
-  private _channelState: types.ChannelStates = {}
+  private _channelState: ChannelStates = {}
 
   private _isDisconnecting = false
 
   /**
    * Chat constructor.
    */
-  constructor(maybeOptions: types.Options) {
+  constructor(maybeOptions: ChatOptions) {
     super()
 
     this.options = maybeOptions
@@ -139,7 +269,7 @@ class Chat extends EventEmitter<types.EventTypes> {
    * Updates the client options after instantiation.
    * To update `token` or `username`, use `reconnect()`.
    */
-  updateOptions(options: Partial<types.Options>) {
+  updateOptions(options: Partial<ChatOptions>) {
     const { token, username } = this.options
     this.options = { ...options, token, username }
   }
@@ -161,13 +291,13 @@ class Chat extends EventEmitter<types.EventTypes> {
   /**
    * Reconnect to Twitch, providing new options to the client.
    */
-  reconnect = (newOptions?: types.Options) => {
+  reconnect = (newOptions?: ChatOptions) => {
     if (newOptions) {
       this.options = { ...this.options, ...newOptions }
     }
 
     this._connectionInProgress = null
-    this._readyState = 2
+    this._readyState = ChatReadyStates.RECONNECTING
 
     const channels = this._getChannels()
     this.disconnect()
@@ -328,7 +458,7 @@ class Chat extends EventEmitter<types.EventTypes> {
       const connectProfiler = this._log.startTimer('Connecting ...')
 
       // Connect ...
-      this._readyState = 1
+      this._readyState = ChatReadyStates.CONNECTING
 
       // Increment connection attempts.
       this._connectionAttempts += 1
@@ -362,7 +492,7 @@ class Chat extends EventEmitter<types.EventTypes> {
   }
 
   private _handleConnectSuccess(globalUserState: GlobalUserStateMessage) {
-    this._readyState = 3
+    this._readyState = ChatReadyStates.CONNECTED
     this._connectionAttempts = 0
 
     // Process GLOBALUSERSTATE message.
@@ -379,7 +509,7 @@ class Chat extends EventEmitter<types.EventTypes> {
       return Promise.resolve()
     }
 
-    this._readyState = 2
+    this._readyState = ChatReadyStates.CONNECTING
 
     this._log.info('Retrying ...')
 
@@ -426,9 +556,9 @@ class Chat extends EventEmitter<types.EventTypes> {
         .reduce((parents, part) => {
           const eventParts = [...parents, part]
           if (eventParts.length > 1) {
-            super.emit(part as keyof types.EventTypes, message)
+            super.emit(part as keyof EventTypes, message)
           }
-          super.emit(eventParts.join('/') as keyof types.EventTypes, message)
+          super.emit(eventParts.join('/') as keyof EventTypes, message)
           return eventParts
         }, [])
     }
@@ -599,7 +729,7 @@ class Chat extends EventEmitter<types.EventTypes> {
 
   private _handleDisconnect() {
     this._connectionInProgress = null
-    this._readyState = 5
+    this._readyState = ChatReadyStates.DISCONNECTED
     this._clearChannelState()
   }
 }

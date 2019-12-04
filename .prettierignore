@@ -1,6 +1,6 @@
 coverage
 dist
-docs/reference
+docs
 es
 lib
 node_modules

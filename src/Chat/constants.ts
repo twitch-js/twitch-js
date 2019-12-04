@@ -42,12 +42,3 @@ export const PRIVATE_MESSAGE_HOSTED_RE = /:.+@jtv\.tmi\.twitch\.tv PRIVMSG #?(\w
 
 export const ANONYMOUS_USERNAME = 'justinfan'
 export const ANONYMOUS_USERNAME_RE = new RegExp(`^${ANONYMOUS_USERNAME}(\\d+)$`)
-
-export enum READY_STATES {
-  'NOT_READY',
-  'CONNECTING',
-  'RECONNECTING',
-  'CONNECTED',
-  'DISCONNECTING',
-  'DISCONNECTED',
-}

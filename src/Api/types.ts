@@ -3,14 +3,14 @@ import * as twitchTypes from '../twitch'
 import { Options as BaseFetchOptions } from '../utils/fetch'
 import { Options as LoggerOptions } from '../utils/logger'
 
-export type Options = {
+export type ApiOptions = {
   clientId?: string
   token?: string
   log?: LoggerOptions
   onAuthenticationFailure?: () => Promise<string>
 }
 
-export enum ReadyStates {
+export enum ApiReadyStates {
   'NOT_READY',
   'READY',
   'INITIALIZED',
@@ -32,12 +32,12 @@ export const Settings: Record<twitchTypes.ApiVersions, ApiSettings> = {
   },
 }
 
-export type Headers = {
+export type ApiHeaders = {
   'Client-ID': string
   Accept?: string
   Authorization?: string
 }
 
-export type FetchOptions = BaseFetchOptions & {
+export type ApiFetchOptions = BaseFetchOptions & {
   version?: twitchTypes.ApiVersions
 }

@@ -13,8 +13,8 @@ type Options = {
   username?: string
   log?: LoggerOptions
   onAuthenticationFailure?: () => Promise<string>
-  chat?: ChatTypes.Options
-  api?: ApiTypes.Options
+  chat?: ChatTypes.ChatOptions
+  api?: ApiTypes.ApiOptions
 }
 
 /**

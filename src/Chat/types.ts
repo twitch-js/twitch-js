@@ -15,7 +15,6 @@ import {
   NoticeMessages,
   NoticeRoomModsMessage,
   PartMessage,
-  PrivateMessage,
   PrivateMessages,
   PrivateMessageWithBits,
   RoomStateMessage,
@@ -34,7 +33,7 @@ import {
 
 import { Options as LoggerOptions } from '../utils/logger'
 
-export type Options = {
+type BaseChatOptions = {
   username?: string
   /**
    * OAuth token
@@ -55,7 +54,9 @@ export type Options = {
   joinTimeout?: number
   log?: LoggerOptions
   onAuthenticationFailure?: () => Promise<string>
-} & ClientOptions
+}
+
+export type ChatOptions = BaseChatOptions & ClientOptions
 
 export type ClientOptions = {
   username?: string
@@ -68,10 +69,21 @@ export type ClientOptions = {
   log?: LoggerOptions
 }
 
-export type ChannelStates = Record<
-  string,
-  { userState: UserStateTags; roomState: RoomStateTags }
->
+export enum ChatReadyStates {
+  'NOT_READY',
+  'CONNECTING',
+  'RECONNECTING',
+  'CONNECTED',
+  'DISCONNECTING',
+  'DISCONNECTED',
+}
+
+export type ChannelState = {
+  userState: UserStateTags
+  roomState: RoomStateTags
+}
+
+export type ChannelStates = Record<string, ChannelState>
 
 export enum NoticeCompounds {
   ALREADY_BANNED = 'NOTICE/ALREADY_BANNED',
