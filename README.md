@@ -28,7 +28,7 @@ A community-centric, community-supported Twitch JavaScript SDK.
 ### In progress...
 
 Here are the
-[planned features](https://github.com/twitch-js/twitch-js/milestone/1). If you
+[planned features](https://github.com/twitch-js/twitch-js/milestones). If you
 feel something is missing, create an issue or submit a PR against the next
 branch.
 
@@ -88,13 +88,14 @@ on behalf of your users.
 To quickly get started without a client ID, you may generate token using the
 following, community-maintained, sites:
 
-1. [Twitch Chat OAuth Password Generator](https://twitchapps.com/tmi) (v5)
+1. [Twitch Chat OAuth Password Generator](https://twitchapps.com/tmi)
+   (Kraken/v5)
 2. [Twitch Token Generator](https://twitchtokengenerator.com) (Helix)
 
 ### Refreshing tokens
 
-While, v5 tokens currently do not expire, Helix tokens expire and will need to
-be refreshed.
+While, Kraken/v5 tokens currently do not expire, Helix tokens expire and will
+need to be refreshed.
 
 To help with refreshing tokens, an `onAuthenticationFailure` function may be
 provided to the Messaging and API clients. `onAuthenticationFailure()` must

@@ -42,12 +42,12 @@ export * from './types'
  * ## Making requests
  *
  * By default, the API client makes requests to the
- * [Helix API](https://dev.twitch.tv/docs/api), and exposes `get(endpoint,
- * options)`, `post(endpoint, options)` and `put(endpoint, options)` methods.
- * Query string parameters and body parameters are provided via
- * `options.search` and `options.body` properties, respectively.
+ * [Helix API](https://dev.twitch.tv/docs/api), and exposes [[Api.get]],
+ * [[Api.post]] and [[Api.put]] methods. Query string parameters and body
+ * parameters are provided via `options.search` and `options.body` properties,
+ * respectively.
  *
- * To make requests to the [Kraken/V5 API](https://dev.twitch.tv/docs/v5), use
+ * To make requests to the [Kraken/v5 API](https://dev.twitch.tv/docs/v5), use
  * `options.version = 'kraken'`
  *
  * ### Examples

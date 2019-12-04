@@ -7,19 +7,25 @@ export { Chat, ChatTypes }
 export { Api, ApiTypes }
 export * from './twitch'
 
-type Options = {
+type BaseTwitchJsOptions = {
   clientId?: string
   token?: string
   username?: string
   log?: LoggerOptions
   onAuthenticationFailure?: () => Promise<string>
+}
+
+type IndividualClassOptions = {
   chat?: ChatTypes.ChatOptions
   api?: ApiTypes.ApiOptions
 }
 
+export type TwitchJsOptions = BaseTwitchJsOptions & IndividualClassOptions
+
 /**
- * TwitchJs client
- * @example <caption>Instantiating TwitchJS</caption>
+ * Interact with chat and make requests to Twitch API.
+ *
+ * ## Initializing
  * ```
  * const token = 'cfabdegwdoklmawdzdo98xt2fo512y'
  * const username = 'ronni'
@@ -42,15 +48,17 @@ class TwitchJs {
   static Chat = Chat
   static Api = Api
 
-  constructor({
-    token,
-    username,
-    clientId,
-    log,
-    onAuthenticationFailure,
-    chat,
-    api,
-  }: Options) {
+  constructor(options: TwitchJsOptions) {
+    const {
+      token,
+      username,
+      clientId,
+      log,
+      onAuthenticationFailure,
+      chat,
+      api,
+    } = options
+
     this.chat = new Chat({
       log,
       ...chat,
@@ -71,13 +79,9 @@ class TwitchJs {
   /**
    * Update client options.
    */
-  updateOptions({
-    chat,
-    api,
-  }: {
-    chat: Options['chat']
-    api: Partial<Options['api']>
-  }) {
+  updateOptions(options: IndividualClassOptions) {
+    const { chat, api } = options
+
     if (chat) {
       this.chat.updateOptions(chat)
     }

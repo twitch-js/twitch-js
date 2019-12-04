@@ -7,11 +7,14 @@
   "out": "docs",
 
   "toc": [
-    "Chat",
-    "ChatOptions",
     "Api",
     "ApiOptions",
+    "Chat",
+    "ChatOptions",
+    "FetchOptions",
     "fetchUtil",
-    "FetchOptions"
+    "Messages",
+    "TwitchJs",
+    "TwitchJsOptions"
   ]
 }

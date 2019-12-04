@@ -4,17 +4,19 @@ import { stringify, IStringifyOptions } from 'qs'
 
 import parser from './parser'
 
-export type Options = RequestInit & {
+type SearchOptions = {
   /** Any query parameters you want to add to your request. */
   search?: { [key: string]: any }
 }
+
+export type FetchOptions = RequestInit & SearchOptions
 
 /**
  * Fetches URL
  */
 const fetchUtil = async <T = any>(
   url: RequestInfo,
-  options: Options = {},
+  options: FetchOptions = {},
   qsOptions?: IStringifyOptions,
 ) => {
   const isBodyJson =

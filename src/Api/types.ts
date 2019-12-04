@@ -1,6 +1,6 @@
 import * as twitchTypes from '../twitch'
 
-import { Options as BaseFetchOptions } from '../utils/fetch'
+import { FetchOptions } from '../utils/fetch'
 import { Options as LoggerOptions } from '../utils/logger'
 
 export type ApiOptions = {
@@ -38,6 +38,8 @@ export type ApiHeaders = {
   Authorization?: string
 }
 
-export type ApiFetchOptions = BaseFetchOptions & {
+type ApiVersionOptions = {
   version?: twitchTypes.ApiVersions
 }
+
+export type ApiFetchOptions = FetchOptions & ApiVersionOptions
