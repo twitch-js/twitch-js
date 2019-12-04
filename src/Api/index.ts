@@ -215,10 +215,10 @@ class Api {
 
         if (token) {
           await this.initialize({ token })
-          this._log.info(`${message} ... retrying with new token`)
-        } else {
-          this._log.info(`${message} ... retrying`)
+          this._log.info(`${message} ... re-initializing with new token`)
         }
+
+        this._log.info(`${message} ... retrying`)
 
         return await performRequest()
       }

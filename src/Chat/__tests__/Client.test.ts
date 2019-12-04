@@ -57,7 +57,7 @@ describe('Chat/Client', () => {
     test('should create a queue', () => {
       const client = new Client(options)
 
-      const actual = client._queue._maxLength
+      const actual = client._queue._q._intervalCap
       const expected = constants.RATE_LIMIT_USER
 
       expect(actual).toEqual(expected)
@@ -66,7 +66,7 @@ describe('Chat/Client', () => {
     test('should create a moderator queue', () => {
       const client = new Client(options)
 
-      const actual = client._moderatorQueue._maxLength
+      const actual = client._moderatorQueue._q._intervalCap
       const expected = constants.RATE_LIMIT_MODERATOR
 
       expect(actual).toEqual(expected)
@@ -75,7 +75,7 @@ describe('Chat/Client', () => {
     test('should create a queue for known bots', () => {
       const client = new Client({ ...options, isKnown: true })
 
-      const actual = client._queue._maxLength
+      const actual = client._queue._q._intervalCap
       const expected = constants.RATE_LIMIT_KNOWN_BOT
 
       expect(actual).toEqual(expected)
@@ -84,7 +84,7 @@ describe('Chat/Client', () => {
     test('shoud create a queue for verified bots', () => {
       const client = new Client({ ...options, isVerified: true })
 
-      const actual = client._queue._maxLength
+      const actual = client._queue._q._intervalCap
       const expected = constants.RATE_LIMIT_VERIFIED_BOT
 
       expect(actual).toEqual(expected)

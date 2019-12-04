@@ -95,11 +95,11 @@ class Client extends EventEmitter {
     isKnown?: boolean
   }) {
     if (isModerator) {
-      return new Queue({ maxLength: constants.RATE_LIMIT_MODERATOR })
+      return new Queue({ intervalCap: constants.RATE_LIMIT_MODERATOR })
     } else if (isVerified) {
-      return new Queue({ maxLength: constants.RATE_LIMIT_VERIFIED_BOT })
+      return new Queue({ intervalCap: constants.RATE_LIMIT_VERIFIED_BOT })
     } else if (isKnown) {
-      return new Queue({ maxLength: constants.RATE_LIMIT_KNOWN_BOT })
+      return new Queue({ intervalCap: constants.RATE_LIMIT_KNOWN_BOT })
     }
     return new Queue()
   }

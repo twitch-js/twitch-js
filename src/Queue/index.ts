@@ -1,42 +1,18 @@
-import { default as PQueue } from 'p-queue'
+import PQueue from 'p-queue'
 
-type Options = {
-  maxLength?: number
-  tickInterval?: number
-  onTaskQueued?: (taskId: string, task: any) => void
-  onTaskFinished?: (taskId: string, result: any) => void
-  onQueueDrained?: () => void
-}
+type Options = ConstructorParameters<typeof PQueue>[0]
 
 class Queue {
   private _q: PQueue
 
-  private _maxLength: number
-  private _length = 0
-
-  private _timestamp: number = Date.now()
-  private _tickInterval: number
-
-  private _callbacks: Pick<
-    Options,
-    'onTaskQueued' | 'onTaskFinished' | 'onQueueDrained'
-  > = {}
-
   constructor(options: Options = {}) {
-    const {
-      maxLength = 20,
-      tickInterval = 30000,
-      onTaskQueued = () => {},
-      onTaskFinished = () => {},
-      onQueueDrained = () => {},
-    } = options
-
-    this._maxLength = maxLength
-    this._tickInterval = tickInterval
-
-    this._callbacks = { onTaskQueued, onTaskFinished, onQueueDrained }
-
-    this._q = new PQueue({ concurrency: 1 })
+    this._q = new PQueue({
+      intervalCap: 20,
+      interval: 30000,
+      carryoverConcurrencyCount: true,
+      concurrency: 1,
+      ...options,
+    })
   }
 
   push = ({ fn, priority = 100 }) => {
