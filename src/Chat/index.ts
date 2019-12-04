@@ -15,6 +15,7 @@ import {
   Events,
   Commands,
   Messages,
+  BaseMessage,
 } from '../twitch'
 
 import createLogger, { Logger } from '../utils/logger'
@@ -23,7 +24,7 @@ import * as utils from '../utils'
 import * as chatUtils from './utils'
 
 import Client from './Client'
-import * as Errors from './Errors'
+import ChatError, * as Errors from './Errors'
 
 import * as constants from './constants'
 import * as commands from './utils/commands'
@@ -363,22 +364,33 @@ class Chat extends EventEmitter<types.EventTypes> {
     return parsers.globalUserStateMessage(globalUserState)
   }
 
-  private _handleConnectRetry(error) {
+  private async _handleConnectRetry(errorMessage: BaseMessage) {
     this._connectionInProgress = null
+
+    if (this._readyState === 5) {
+      // .disconnect() was called; do not retry to connect.
+      return Promise.resolve()
+    }
+
     this._readyState = 2
 
     this._log.info('Retrying ...')
 
-    if (error.event === Events.AUTHENTICATION_FAILED) {
-      return this.options
-        .onAuthenticationFailure()
-        .then(token => (this.options = { ...this.options, token }))
-        .then(() => utils.resolveAfter(this.options.connectionTimeout))
-        .then(() => this.connect())
-        .catch(() => {
-          this._log.error('Connection failed')
-          throw new Errors.AuthenticationError(error)
-        })
+    if (errorMessage.event === Events.AUTHENTICATION_FAILED) {
+      try {
+        const token = await this.options.onAuthenticationFailure()
+
+        if (token) {
+          this.options = { ...this.options, token }
+
+          await utils.resolveAfter(this.options.connectionTimeout)
+
+          return this.connect()
+        }
+      } catch (error) {
+        this._log.error('Connection failed')
+        throw new Errors.AuthenticationError(error, errorMessage)
+      }
     }
 
     return this.connect()
