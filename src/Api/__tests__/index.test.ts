@@ -193,12 +193,12 @@ describe('Api', () => {
       return api.get(endpoint, fetchOptions).then(() => {
         const [actualEndpoint, actualOpts] = fetchUtil.mock.calls[0]
 
-        expect(actualEndpoint).toBe(`${helixBaseUrl}/${endpoint}`)
+        expect(actualEndpoint).toBe(`${helixBaseUrl}/${endpoint}?a=b`)
         expect(actualOpts).toMatchObject(fetchOptions)
       })
     })
 
-    test.only('should call the Kraken endpoint', () => {
+    test('should call the Kraken endpoint', () => {
       const api = new Api(options)
 
       const endpoint = 'ENDPOINT'

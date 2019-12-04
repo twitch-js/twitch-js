@@ -41,7 +41,7 @@ describe('Chat', () => {
     log: { enabled: false },
   }
 
-  describe.only('event compounds', () => {
+  describe('event compounds', () => {
     test('should include all NOTICE messages', () => {
       Object.keys(KnownNoticeMessageIds).forEach(notice => {
         expect(NoticeCompounds[notice]).toBe(`NOTICE/${notice}`)
@@ -515,6 +515,38 @@ describe('Chat', () => {
           chat.whisper('dallas', 'Kappa Keepo Kappa'),
         ).rejects.toMatchSnapshot()
       })
+    })
+
+    test('should emit multiple events for compound events', async done => {
+      const chat = new Chat({ log: { enabled: false } })
+      await chat.connect()
+
+      const events = [
+        Commands.USER_NOTICE,
+        Events.SUBSCRIPTION,
+        '#dallas',
+        UserNoticeCompounds.SUBSCRIPTION,
+        `${UserNoticeCompounds.SUBSCRIPTION}/#dallas`,
+      ]
+
+      Promise.all(events.map(event => resolveOnEvent(chat, event))).then(
+        messages => {
+          expect(messages[0]).toMatchSnapshot({
+            timestamp: expect.any(Date),
+          })
+
+          messages.forEach(message => expect(message).toEqual(messages[0]))
+          done()
+        },
+      )
+      chat.once(Commands.USER_NOTICE, message => {
+        expect(message).toMatchSnapshot({
+          timestamp: expect.any(Date),
+        })
+        done()
+      })
+
+      emitHelper(chat._client, tags.USERNOTICE.SUBSCRIPTION)
     })
 
     describe('deviations', () => {

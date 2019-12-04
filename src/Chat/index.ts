@@ -81,6 +81,8 @@ class Chat extends EventEmitter<types.EventTypes> {
   private _userState: UserStateMessage
   private _channelState: types.ChannelStates = {}
 
+  private _isDisconnecting = false
+
   /**
    * Chat constructor.
    */
@@ -114,6 +116,8 @@ class Chat extends EventEmitter<types.EventTypes> {
    * Connect to Twitch.
    */
   connect = () => {
+    this._isDisconnecting = false
+
     if (this._connectionInProgress) {
       return this._connectionInProgress
     }
@@ -149,7 +153,10 @@ class Chat extends EventEmitter<types.EventTypes> {
   /**
    * Disconnected from Twitch.
    */
-  disconnect = () => this._client.disconnect()
+  disconnect = () => {
+    this._isDisconnecting = true
+    this._client.disconnect()
+  }
 
   /**
    * Reconnect to Twitch, providing new options to the client.
@@ -367,7 +374,7 @@ class Chat extends EventEmitter<types.EventTypes> {
   private async _handleConnectRetry(errorMessage: BaseMessage) {
     this._connectionInProgress = null
 
-    if (this._readyState === 5) {
+    if (this._isDisconnecting) {
       // .disconnect() was called; do not retry to connect.
       return Promise.resolve()
     }

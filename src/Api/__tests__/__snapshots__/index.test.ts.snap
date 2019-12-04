@@ -9,6 +9,7 @@ Array [
         "Authorization": "Bearer TOKEN",
         "Client-ID": "CLIENT_ID",
       },
+      "method": "get",
     },
   ],
 ]
@@ -24,6 +25,7 @@ Array [
         "Authorization": "OAuth TOKEN",
         "Client-ID": "CLIENT_ID",
       },
+      "method": "get",
     },
   ],
 ]
@@ -37,6 +39,7 @@ Array [
       "headers": Object {
         "Client-ID": "CLIENT_ID",
       },
+      "method": "get",
     },
   ],
 ]
@@ -51,6 +54,7 @@ Array [
         "Authorization": "Bearer TOKEN",
         "Client-ID": "CLIENT_ID",
       },
+      "method": "get",
     },
   ],
 ]
@@ -84,6 +88,7 @@ Object {
     "Authorization": "Bearer TOKEN",
     "Client-ID": "CLIENT_ID",
   },
+  "method": "get",
   "search": Object {
     "a": "b",
   },
