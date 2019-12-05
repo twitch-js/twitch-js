@@ -1,4 +1,4 @@
-const TwitchJs = require('twitch-js').default;
+const TwitchJs = require('twitch-js');
 
 // Provide your token, username and channel. You can generate a token here:
 // https://twitchapps.com/tmi/
@@ -8,7 +8,7 @@ const username = process.env.TWITCH_USERNAME;
 const channel = 'twitchapis';
 
 // Instantiate clients.
-const { api, chat, chatConstants } = new TwitchJs({ token, username });
+const { api, chat } = new TwitchJs({ token, username });
 
 // Get featured streams.
 api.get('streams/featured').then(response => {
@@ -16,9 +16,13 @@ api.get('streams/featured').then(response => {
   // Do stuff ...
 });
 
-// Listen to all events.
-const log = msg => console.log(msg);
-chat.on(chatConstants.EVENTS.ALL, log);
+// console.log all events.
+const handleMessage = message => {
+  console.log(message);
+  // Do other stuff ...
+};
+
+chat.on(chat.events.ALL, handleMessage);
 
 // Connect ...
 chat.connect().then(() => {

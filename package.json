@@ -30,10 +30,6 @@
     "node": ">=8",
     "yarn": "^1.9.2"
   },
-  "main": "lib/index.js",
-  "module": "es/index.js",
-  "unpkg": "dist/index.js",
-  "types": "types/types.d.ts",
   "files": [
     "dist",
     "es",
@@ -41,7 +37,11 @@
     "shims",
     "types"
   ],
-  "runkitExampleFilename": "examples/runkit.js",
+  "main": "lib/index.js",
+  "module": "es/index.js",
+  "unpkg": "dist/index.js",
+  "types": "types/types.d.ts",
+  "runkitExampleFilename": "examples/node.js",
   "scripts": {
     "clean": "rimraf dist lib es types",
     "prettier": "prettier --list-different \"**/*.{ts,md}\"",

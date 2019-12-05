@@ -32,6 +32,15 @@ Here are the
 feel something is missing, create an issue or submit a PR against the next
 branch.
 
+## Documentation
+
+1. [Getting started](#getting-started)
+2. [Authentication](#authentication)
+3. [Interacting with Twitch chat](https://twitch-js.netlify.com/classes/chat.html)
+4. [Making requests to Twitch API](https://twitch-js.netlify.com/classes/api.html)
+5. Examples
+6. [Reference](https://twitch-js.netlify.com/globals.html)
+
 ## Getting started
 
 ### Module bundler (CJS/ESM)
