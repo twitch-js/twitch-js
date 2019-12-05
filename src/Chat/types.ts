@@ -29,7 +29,6 @@ import {
   UserNoticeSubscriptionMessage,
   UserStateMessage,
   UserStateTags,
-  BaseMessage,
 } from '../twitch'
 
 import { Options as LoggerOptions } from '../utils/logger'

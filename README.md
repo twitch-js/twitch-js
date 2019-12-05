@@ -36,9 +36,9 @@ branch.
 
 1. [Getting started](#getting-started)
 2. [Authentication](#authentication)
-3. [Interacting with Twitch chat](https://twitch-js.netlify.com/classes/chat.html)
-4. [Making requests to Twitch API](https://twitch-js.netlify.com/classes/api.html)
-5. Examples
+3. [Examples](#examples)
+4. [Interacting with Twitch chat](https://twitch-js.netlify.com/classes/chat.html)
+5. [Making requests to Twitch API](https://twitch-js.netlify.com/classes/api.html)
 6. [Reference](https://twitch-js.netlify.com/globals.html)
 
 ## Getting started
@@ -151,6 +151,10 @@ for more information.
 See the
 [Twitch Developers documentation](https://dev.twitch.tv/docs/authentication) for
 more information on authentication.
+
+## Examples
+
+Please see the `examples` folder for browser, Node and TypeScript examples.
 
 ## Contribution guidelines
 

@@ -29,9 +29,13 @@
           // Do stuff ...
         });
 
-        // Listen to all events.
-        const log = message => console.info(message);
-        chat.on(TwitchJs.Chat.events.ALL, log);
+        const handleMessage = message => {
+          console.log(message);
+          // Do other stuff ...
+        };
+
+        // Listen for all events.
+        chat.on(TwitchJs.Chat.events.ALL, handleMessage);
 
         // Connect ...
         chat.connect().then(() => {

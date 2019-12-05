@@ -16,12 +16,12 @@ api.get('streams/featured', { version: 'kraken' }).then(response => {
   // Do stuff ...
 });
 
-// console.log all events.
 const handleMessage = message => {
   console.log(message);
   // Do other stuff ...
 };
 
+// Listen for all events.
 chat.on(TwitchJs.Chat.events.ALL, handleMessage);
 
 // Connect ...
