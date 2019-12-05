@@ -407,13 +407,26 @@ export type Tags =
  */
 
 /* Base message parsed from Twitch */
-export interface BaseMessage {
+export interface Message {
+  _raw: string
+  timestamp: Date
+  channel: string
+  username: string
+  command: string
+  event: string
+  isSelf: boolean
+  message: string
+  tags: { [key: string]: any }
+  parameters?: { [key: string]: string | number | boolean }
+}
+
+export interface BaseMessage extends Message {
   _raw: string
   timestamp: Date
   channel: string
   username: string
   command: Commands
-  event?: Commands | Events
+  event: Commands | Events
   isSelf: boolean
   message: string
   tags: { [key: string]: any }
@@ -676,7 +689,8 @@ export type UserNoticeMessageParameters =
   | SubscriptionGiftParameters
   | SubscriptionParameters
 
-export interface UserNoticeMessage extends Omit<BaseMessage, 'event'> {
+export interface UserNoticeMessage
+  extends Omit<BaseMessage, 'event' | 'parameters'> {
   command: Commands.USER_NOTICE
   event: UserNoticeEvents
   tags: UserNoticeTags

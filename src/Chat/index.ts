@@ -191,9 +191,11 @@ export * from './types'
  * ```
  */
 class Chat extends EventEmitter<EventTypes> {
-  static events = Events
+  static Commands = Commands
 
-  static compoundEvents = {
+  static Events = Events
+
+  static CompoundEvents = {
     [Events.NOTICE]: NoticeCompounds,
     [Events.PRIVATE_MESSAGE]: PrivateMessageCompounds,
     [Events.USER_NOTICE]: UserNoticeCompounds,

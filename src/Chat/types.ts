@@ -7,6 +7,7 @@ import {
   HostingWithViewersPrivateMessage,
   HostTargetMessage,
   JoinMessage,
+  Message,
   Messages,
   ModeMessages,
   NamesEndMessage,
@@ -283,5 +284,5 @@ export type EventTypes = {
     UserNoticeSubscriptionGiftCommunityMessage,
   ]
 
-  [key: string]: [string | Messages | BaseMessage]
+  [key: string]: [string | Messages | Message]
 }
