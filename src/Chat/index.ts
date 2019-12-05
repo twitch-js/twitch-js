@@ -604,8 +604,6 @@ class Chat extends EventEmitter<EventTypes> {
   private _handleMessage(baseMessage) {
     const channel = sanitizers.channel(baseMessage.channel)
 
-    const messageUsername = get(baseMessage, 'username')
-
     const preMessage = baseMessage
 
     let eventName = preMessage.command

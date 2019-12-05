@@ -22,11 +22,6 @@ export const clearChat = (tags: BaseTags): ClearChatTags => ({
   banDuration: helpers.generalNumber(tags.banDuration),
 })
 
-export const globalUserState = (tags: BaseTags): GlobalUserStateTags => ({
-  ...tags,
-  ...userState(tags),
-})
-
 export const privateMessageCheerEvent = (tags: BaseTags) => {
   return gt(tags.bits, 0)
     ? { event: ChatEvents.CHEER, bits: parseInt(tags.bits, 10) }
@@ -91,6 +86,11 @@ export const userState = (tags: BaseTags): UserStateTags => ({
   emoteSets: helpers.emoteSets(tags.emoteSets),
   userType: helpers.userType(tags.userType),
   username: tags.displayName ? toLower(tags.displayName) : undefined,
+})
+
+export const globalUserState = (tags: BaseTags): GlobalUserStateTags => ({
+  ...tags,
+  ...userState(tags),
 })
 
 export const privateMessage = userState

@@ -187,8 +187,6 @@ class Client extends EventEmitter {
         error,
       )
 
-      console.log(error)
-
       const errorMessage = new Errors.ParseError(error, rawMessage)
 
       this.emit(errorMessage.command, errorMessage)
