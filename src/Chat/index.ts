@@ -1,6 +1,8 @@
 import EventEmitter from 'eventemitter3'
 
 import get from 'lodash/get'
+import toLower from 'lodash/toLower'
+import uniq from 'lodash/uniq'
 
 import {
   GlobalUserStateMessage,
@@ -340,7 +342,7 @@ class Chat extends EventEmitter<EventTypes> {
   join = (maybeChannel: string) => {
     const channel = sanitizers.channel(maybeChannel)
 
-    const joinProfiler = this._log.startTimer(`Joining ${channel}`)
+    const joinProfiler = this._log.profile(`Joining ${channel}`)
 
     const connect = this.connect()
     const roomStateEvent = utils.resolveOnEvent<RoomStateMessage>(
@@ -455,7 +457,7 @@ class Chat extends EventEmitter<EventTypes> {
 
   private _handleConnectionAttempt(): Promise<GlobalUserStateMessage> {
     return new Promise((resolve, reject) => {
-      const connectProfiler = this._log.startTimer('Connecting ...')
+      const connectProfiler = this._log.profile('Connecting ...')
 
       // Connect ...
       this._readyState = ChatReadyStates.CONNECTING
@@ -494,9 +496,6 @@ class Chat extends EventEmitter<EventTypes> {
   private _handleConnectSuccess(globalUserState: GlobalUserStateMessage) {
     this._readyState = ChatReadyStates.CONNECTED
     this._connectionAttempts = 0
-
-    // Process GLOBALUSERSTATE message.
-    this._handleMessage(globalUserState)
 
     return parsers.globalUserStateMessage(globalUserState)
   }
@@ -545,13 +544,18 @@ class Chat extends EventEmitter<EventTypes> {
 
   private _emit(eventName: string, message: Messages) {
     if (eventName) {
+      const events = uniq(eventName.split('/'))
+
       const displayName =
         get(message, 'tags.displayName') || get(message, 'username') || ''
       const info = get(message, 'message') || ''
-      this._log.info(`${eventName}`, `${displayName}${info ? ':' : ''}`, info)
+      this._log.info(
+        `${events.join('/')}`,
+        `${displayName}${info ? ':' : ''}`,
+        info,
+      )
 
-      eventName
-        .split('/')
+      events
         .filter(part => part !== '#')
         .reduce((parents, part) => {
           const eventParts = [...parents, part]
@@ -600,11 +604,9 @@ class Chat extends EventEmitter<EventTypes> {
   private _handleMessage(baseMessage) {
     const channel = sanitizers.channel(baseMessage.channel)
 
-    const selfUsername = get(this, '_userState.username', '')
     const messageUsername = get(baseMessage, 'username')
-    const isSelf = selfUsername === messageUsername
 
-    const preMessage = { ...baseMessage, isSelf }
+    const preMessage = baseMessage
 
     let eventName = preMessage.command
     let message = preMessage
@@ -612,28 +614,24 @@ class Chat extends EventEmitter<EventTypes> {
     switch (preMessage.command) {
       case Events.JOIN: {
         message = parsers.joinMessage(preMessage)
-        message.isSelf = true
         eventName = `${message.command}/${channel}`
         break
       }
 
       case Events.PART: {
         message = parsers.partMessage(preMessage)
-        message.isSelf = true
         eventName = `${message.command}/${channel}`
         break
       }
 
       case Events.NAMES: {
         message = parsers.namesMessage(preMessage)
-        message.isSelf = true
         eventName = `${message.command}/${channel}`
         break
       }
 
       case Events.NAMES_END: {
         message = parsers.namesEndMessage(preMessage)
-        message.isSelf = true
         eventName = `${message.command}/${channel}`
         break
       }
@@ -656,7 +654,7 @@ class Chat extends EventEmitter<EventTypes> {
         message = parsers.modeMessage(preMessage)
         eventName = `${message.command}/${channel}`
 
-        if (selfUsername === message.username) {
+        if (toLower(this.options.username) === toLower(message.username)) {
           const channelState = this._getChannelState(channel)
 
           this._setChannelState(channel, {

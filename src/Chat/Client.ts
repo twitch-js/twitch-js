@@ -16,14 +16,14 @@ import * as utils from './utils'
 
 import * as Errors from './Errors'
 
-import * as types from './types'
+import { ClientOptions } from './types'
 
 type SendOptions = { priority?: number; isModerator?: boolean }
 
 const priority = constants.CLIENT_PRIORITY
 
 class Client extends EventEmitter {
-  private _options: types.ClientOptions
+  private _options: ClientOptions
   private _log: Logger
 
   private _ws: WebSocket
@@ -34,7 +34,7 @@ class Client extends EventEmitter {
   private _pingTimeoutId: NodeJS.Timeout
   private _reconnectTimeoutId: NodeJS.Timeout
 
-  constructor(maybeOptions: types.ClientOptions) {
+  constructor(maybeOptions: ClientOptions) {
     super()
 
     // Validate options.
@@ -124,7 +124,7 @@ class Client extends EventEmitter {
     try {
       this._handleKeepAlive()
 
-      const messages = baseParser(rawMessage)
+      const messages = baseParser(rawMessage, this._options.username)
 
       messages.forEach(message => {
         const event = message.command || ''
@@ -186,6 +186,8 @@ class Client extends EventEmitter {
         `https://github.com/twitch-js/twitch-js/issues/new?${query}`,
         error,
       )
+
+      console.log(error)
 
       const errorMessage = new Errors.ParseError(error, rawMessage)
 

@@ -1,6 +1,7 @@
+import camelCase from 'lodash/camelCase'
 import isFinite from 'lodash/isFinite'
 import replace from 'lodash/replace'
-import camelCase from 'lodash/camelCase'
+import toLower from 'lodash/toLower'
 
 import { Badges, BooleanBadges, NumberBadges, EmoteTag } from '../../../twitch'
 
@@ -20,15 +21,6 @@ export const generalBoolean = (maybeBoolean: string) => maybeBoolean === '1'
 export const generalTimestamp = (maybeTimestamp: string) => {
   const timestamp = new Date(parseInt(maybeTimestamp, 10))
   return timestamp.toString() !== 'Invalid Date' ? timestamp : new Date()
-}
-
-export const usernameFromPrefix = (maybePrefix: string) => {
-  if (typeof maybePrefix !== 'string') {
-    return undefined
-  }
-
-  const [, username] = /([^!]+)/.exec(maybePrefix)
-  return username
 }
 
 export const userType = (maybeUserType: string) => {
@@ -101,12 +93,23 @@ export const emotes = (maybeEmotes: string) => {
 }
 
 export const emoteSets = (maybeEmoteSets: string) => {
-  return typeof maybeEmoteSets === 'string'
-    ? maybeEmoteSets.split(',')
-    : undefined
+  return typeof maybeEmoteSets === 'string' ? maybeEmoteSets.split(',') : []
 }
 
 export const mods = (message: string) => {
   const [, modList] = message.split(': ')
   return modList.split(', ')
 }
+
+export const username = (...maybeUsernames: any[]): string | undefined =>
+  maybeUsernames.reduce((maybeUsername, name) => {
+    if (typeof name !== 'string') {
+      return maybeUsername
+    }
+
+    if (name === 'tmi.twitch.tv') {
+      return 'tmi.twitch.tv'
+    }
+
+    return toLower(name).split('.')[0]
+  }, undefined)

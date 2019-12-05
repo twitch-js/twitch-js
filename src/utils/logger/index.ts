@@ -12,10 +12,12 @@ const createLogger = ({ name, ...options }: LoggerOptions = {}) => {
     ...options,
   })
 
-  const startTimer = (startMessage: string) => {
+  const profile = (startMessage?: string) => {
     const now = Date.now()
 
-    logger.info(startMessage)
+    if (startMessage) {
+      logger.info(startMessage)
+    }
 
     return {
       done: (endMessage: string, error?: any) => {
@@ -33,9 +35,9 @@ const createLogger = ({ name, ...options }: LoggerOptions = {}) => {
 
   // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
   // @ts-ignore
-  logger.startTimer = startTimer
+  logger.profile = profile
 
-  return logger as pino.Logger & { startTimer: typeof startTimer }
+  return logger as pino.Logger & { profile: typeof profile }
 }
 
 export type Logger = ReturnType<typeof createLogger>

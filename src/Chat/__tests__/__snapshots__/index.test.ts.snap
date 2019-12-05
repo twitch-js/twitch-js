@@ -6,14 +6,20 @@ Object {
   "channel": "justinfan12345",
   "command": "GLOBALUSERSTATE",
   "event": "GLOBALUSERSTATE",
+  "isSelf": false,
   "message": "Welcome, GLHF!",
   "tags": Object {
-    "emoteSets": undefined,
+    "badges": Object {},
+    "bits": undefined,
+    "color": undefined,
+    "displayName": undefined,
+    "emoteSets": Array [],
+    "emotes": Array [],
     "userType": undefined,
     "username": undefined,
   },
   "timestamp": Any<Date>,
-  "username": undefined,
+  "username": "tmi.twitch.tv",
 }
 `;
 
@@ -23,8 +29,11 @@ Object {
   "channel": undefined,
   "command": "GLOBALUSERSTATE",
   "event": "GLOBALUSERSTATE",
+  "isSelf": false,
   "message": undefined,
   "tags": Object {
+    "badges": Object {},
+    "bits": undefined,
     "color": "#0D4200",
     "displayName": "dallas",
     "emoteSets": Array [
@@ -41,13 +50,14 @@ Object {
       "10337",
       "12239",
     ],
+    "emotes": Array [],
     "turbo": "0",
     "userId": "1337",
     "userType": "admin",
     "username": "dallas",
   },
   "timestamp": Any<Date>,
-  "username": undefined,
+  "username": "dallas",
 }
 `;
 
@@ -77,7 +87,6 @@ Array [
 exports[`Chat reconnect should reconnect and rejoin channels 2`] = `
 Object {
   "event": "DISCONNECTED",
-  "isSelf": false,
   "messageEvent": Object {
     "data": undefined,
   },
@@ -95,7 +104,7 @@ Object {
   "message": "Welcome, GLHF!",
   "tags": Object {},
   "timestamp": Any<Date>,
-  "username": undefined,
+  "username": "tmi.twitch.tv",
 }
 `;
 
@@ -109,7 +118,7 @@ Object {
   "message": "Your host is tmi.twitch.tv",
   "tags": Object {},
   "timestamp": Any<Date>,
-  "username": undefined,
+  "username": "tmi.twitch.tv",
 }
 `;
 
@@ -123,7 +132,7 @@ Object {
   "message": "This server is rather new",
   "tags": Object {},
   "timestamp": Any<Date>,
-  "username": undefined,
+  "username": "tmi.twitch.tv",
 }
 `;
 
@@ -137,7 +146,7 @@ Object {
   "message": "-",
   "tags": Object {},
   "timestamp": Any<Date>,
-  "username": undefined,
+  "username": "tmi.twitch.tv",
 }
 `;
 
@@ -151,7 +160,7 @@ Object {
   "message": "-",
   "tags": Object {},
   "timestamp": Any<Date>,
-  "username": undefined,
+  "username": "tmi.twitch.tv",
 }
 `;
 
@@ -165,7 +174,7 @@ Object {
   "message": "You are in a maze of twisty passages.",
   "tags": Object {},
   "timestamp": Any<Date>,
-  "username": undefined,
+  "username": "tmi.twitch.tv",
 }
 `;
 
@@ -179,7 +188,7 @@ Object {
   "message": ">",
   "tags": Object {},
   "timestamp": Any<Date>,
-  "username": undefined,
+  "username": "tmi.twitch.tv",
 }
 `;
 
@@ -192,6 +201,8 @@ Object {
   "isSelf": false,
   "message": undefined,
   "tags": Object {
+    "badges": Object {},
+    "bits": undefined,
     "color": "#0D4200",
     "displayName": "dallas",
     "emoteSets": Array [
@@ -208,58 +219,24 @@ Object {
       "10337",
       "12239",
     ],
+    "emotes": Array [],
     "turbo": "0",
     "userId": "1337",
     "userType": "admin",
     "username": "dallas",
   },
   "timestamp": Any<Date>,
-  "username": undefined,
+  "username": "dallas",
 }
 `;
 
 exports[`Chat reconnect should reconnect and rejoin channels 11`] = `
 Object {
-  "_raw": "@color=#0D4200;display-name=dallas;emote-sets=0,33,50,237,793,2126,3517,4578,5569,9400,10337,12239;turbo=0;user-id=1337;user-type=admin :tmi.twitch.tv GLOBALUSERSTATE",
-  "channel": undefined,
-  "command": "GLOBALUSERSTATE",
-  "event": "GLOBALUSERSTATE",
-  "isSelf": false,
-  "message": undefined,
-  "tags": Object {
-    "color": "#0D4200",
-    "displayName": "dallas",
-    "emoteSets": Array [
-      "0",
-      "33",
-      "50",
-      "237",
-      "793",
-      "2126",
-      "3517",
-      "4578",
-      "5569",
-      "9400",
-      "10337",
-      "12239",
-    ],
-    "turbo": "0",
-    "userId": "1337",
-    "userType": "admin",
-    "username": "dallas",
-  },
-  "timestamp": Any<Date>,
-  "username": undefined,
-}
-`;
-
-exports[`Chat reconnect should reconnect and rejoin channels 12`] = `
-Object {
   "_raw": ":ronni!ronni@ronni.tmi.twitch.tv JOIN #dallas",
   "channel": "#dallas",
   "command": "JOIN",
   "event": "JOIN",
-  "isSelf": true,
+  "isSelf": false,
   "message": undefined,
   "tags": Object {},
   "timestamp": Any<Date>,
@@ -267,7 +244,7 @@ Object {
 }
 `;
 
-exports[`Chat reconnect should reconnect and rejoin channels 13`] = `
+exports[`Chat reconnect should reconnect and rejoin channels 12`] = `
 Object {
   "_raw": "@broadcaster-lang=en;r9k=0;slow=0;subs-only=0 :tmi.twitch.tv ROOMSTATE #dallas",
   "channel": "#dallas",
@@ -282,11 +259,11 @@ Object {
     "subsOnly": false,
   },
   "timestamp": Any<Date>,
-  "username": undefined,
+  "username": "tmi.twitch.tv",
 }
 `;
 
-exports[`Chat reconnect should reconnect and rejoin channels 14`] = `
+exports[`Chat reconnect should reconnect and rejoin channels 13`] = `
 Object {
   "_raw": "@color=#0D4200;display-name=ronni;emote-sets=0,33,50,237,793,2126,3517,4578,5569,9400,10337,12239;mod=1;subscriber=1;turbo=1;user-type=staff :tmi.twitch.tv USERSTATE #dallas",
   "channel": "#dallas",
@@ -318,9 +295,10 @@ Object {
     "subscriber": "1",
     "turbo": "1",
     "userType": "staff",
+    "username": "ronni",
   },
   "timestamp": Any<Date>,
-  "username": undefined,
+  "username": "ronni",
 }
 `;
 
@@ -356,9 +334,10 @@ Object {
     "subscriber": "1",
     "turbo": "1",
     "userType": "staff",
+    "username": "ronni",
   },
   "timestamp": Any<Date>,
-  "username": undefined,
+  "username": "ronni",
 }
 `;
 
@@ -370,7 +349,7 @@ Object {
   "event": "CLEARCHAT",
   "isSelf": false,
   "timestamp": Any<Date>,
-  "username": undefined,
+  "username": "tmi.twitch.tv",
 }
 `;
 
@@ -456,7 +435,7 @@ Object {
   "channel": "#dallas",
   "command": "JOIN",
   "event": "JOIN",
-  "isSelf": true,
+  "isSelf": false,
   "message": undefined,
   "tags": Object {},
   "timestamp": Any<Date>,
@@ -530,11 +509,11 @@ Object {
   "channel": "#dallas",
   "command": "353",
   "event": "353",
-  "isSelf": true,
+  "isSelf": false,
   "message": "=",
   "tags": Object {},
   "timestamp": Any<Date>,
-  "username": undefined,
+  "username": "ronni",
   "usernames": Array [
     "ronni",
     "fred",
@@ -549,11 +528,11 @@ Object {
   "channel": "#dallas",
   "command": "353",
   "event": "353",
-  "isSelf": true,
+  "isSelf": false,
   "message": "=",
   "tags": Object {},
   "timestamp": Any<Date>,
-  "username": undefined,
+  "username": "ronni",
   "usernames": Array [
     "ronni",
     "fred",
@@ -568,7 +547,7 @@ Object {
   "channel": "#dallas",
   "command": "366",
   "event": "366",
-  "isSelf": true,
+  "isSelf": false,
   "message": "#dallas",
   "tags": Object {},
   "timestamp": Any<Date>,
@@ -588,7 +567,7 @@ Object {
     "msgId": "already_banned",
   },
   "timestamp": Any<Date>,
-  "username": undefined,
+  "username": "tmi.twitch.tv",
 }
 `;
 
@@ -604,7 +583,7 @@ Object {
     "msgId": "already_emote_only_off",
   },
   "timestamp": Any<Date>,
-  "username": undefined,
+  "username": "tmi.twitch.tv",
 }
 `;
 
@@ -620,7 +599,7 @@ Object {
     "msgId": "already_emote_only_on",
   },
   "timestamp": Any<Date>,
-  "username": undefined,
+  "username": "tmi.twitch.tv",
 }
 `;
 
@@ -636,7 +615,7 @@ Object {
     "msgId": "already_r9k_off",
   },
   "timestamp": Any<Date>,
-  "username": undefined,
+  "username": "tmi.twitch.tv",
 }
 `;
 
@@ -652,7 +631,7 @@ Object {
     "msgId": "already_r9k_on",
   },
   "timestamp": Any<Date>,
-  "username": undefined,
+  "username": "tmi.twitch.tv",
 }
 `;
 
@@ -668,7 +647,7 @@ Object {
     "msgId": "already_subs_off",
   },
   "timestamp": Any<Date>,
-  "username": undefined,
+  "username": "tmi.twitch.tv",
 }
 `;
 
@@ -684,7 +663,7 @@ Object {
     "msgId": "already_subs_on",
   },
   "timestamp": Any<Date>,
-  "username": undefined,
+  "username": "tmi.twitch.tv",
 }
 `;
 
@@ -700,7 +679,7 @@ Object {
     "msgId": "authentication_failed",
   },
   "timestamp": Any<Date>,
-  "username": undefined,
+  "username": "tmi.twitch.tv",
 }
 `;
 
@@ -716,7 +695,7 @@ Object {
     "msgId": "bad_host_hosting",
   },
   "timestamp": Any<Date>,
-  "username": undefined,
+  "username": "tmi.twitch.tv",
 }
 `;
 
@@ -732,7 +711,7 @@ Object {
     "msgId": "bad_unban_no_ban",
   },
   "timestamp": Any<Date>,
-  "username": undefined,
+  "username": "tmi.twitch.tv",
 }
 `;
 
@@ -748,7 +727,7 @@ Object {
     "msgId": "ban_success",
   },
   "timestamp": Any<Date>,
-  "username": undefined,
+  "username": "tmi.twitch.tv",
 }
 `;
 
@@ -764,7 +743,7 @@ Object {
     "msgId": "emote_only_off",
   },
   "timestamp": Any<Date>,
-  "username": undefined,
+  "username": "tmi.twitch.tv",
 }
 `;
 
@@ -780,7 +759,7 @@ Object {
     "msgId": "emote_only_on",
   },
   "timestamp": Any<Date>,
-  "username": undefined,
+  "username": "tmi.twitch.tv",
 }
 `;
 
@@ -796,7 +775,7 @@ Object {
     "msgId": "host_off",
   },
   "timestamp": Any<Date>,
-  "username": undefined,
+  "username": "tmi.twitch.tv",
 }
 `;
 
@@ -812,7 +791,7 @@ Object {
     "msgId": "host_on",
   },
   "timestamp": Any<Date>,
-  "username": undefined,
+  "username": "tmi.twitch.tv",
 }
 `;
 
@@ -828,7 +807,7 @@ Object {
     "msgId": "hosts_remaining",
   },
   "timestamp": Any<Date>,
-  "username": undefined,
+  "username": "tmi.twitch.tv",
 }
 `;
 
@@ -844,7 +823,7 @@ Object {
     "msgId": "msg_channel_suspended",
   },
   "timestamp": Any<Date>,
-  "username": undefined,
+  "username": "tmi.twitch.tv",
 }
 `;
 
@@ -860,7 +839,7 @@ Object {
     "msgId": "r9k_off",
   },
   "timestamp": Any<Date>,
-  "username": undefined,
+  "username": "tmi.twitch.tv",
 }
 `;
 
@@ -876,7 +855,7 @@ Object {
     "msgId": "r9k_on",
   },
   "timestamp": Any<Date>,
-  "username": undefined,
+  "username": "tmi.twitch.tv",
 }
 `;
 
@@ -896,7 +875,7 @@ Object {
     "msgId": "room_mods",
   },
   "timestamp": Any<Date>,
-  "username": undefined,
+  "username": "tmi.twitch.tv",
 }
 `;
 
@@ -912,7 +891,7 @@ Object {
     "msgId": "slow_off",
   },
   "timestamp": Any<Date>,
-  "username": undefined,
+  "username": "tmi.twitch.tv",
 }
 `;
 
@@ -928,7 +907,7 @@ Object {
     "msgId": "slow_on",
   },
   "timestamp": Any<Date>,
-  "username": undefined,
+  "username": "tmi.twitch.tv",
 }
 `;
 
@@ -944,7 +923,7 @@ Object {
     "msgId": "subs_off",
   },
   "timestamp": Any<Date>,
-  "username": undefined,
+  "username": "tmi.twitch.tv",
 }
 `;
 
@@ -960,7 +939,7 @@ Object {
     "msgId": "subs_on",
   },
   "timestamp": Any<Date>,
-  "username": undefined,
+  "username": "tmi.twitch.tv",
 }
 `;
 
@@ -976,7 +955,7 @@ Object {
     "msgId": "timeout_success",
   },
   "timestamp": Any<Date>,
-  "username": undefined,
+  "username": "tmi.twitch.tv",
 }
 `;
 
@@ -992,7 +971,7 @@ Object {
     "msgId": "unban_success",
   },
   "timestamp": Any<Date>,
-  "username": undefined,
+  "username": "tmi.twitch.tv",
 }
 `;
 
@@ -1008,7 +987,7 @@ Object {
     "msgId": "unrecognized_cmd",
   },
   "timestamp": Any<Date>,
-  "username": undefined,
+  "username": "tmi.twitch.tv",
 }
 `;
 
@@ -1018,7 +997,7 @@ Object {
   "channel": "#dallas",
   "command": "PART",
   "event": "PART",
-  "isSelf": true,
+  "isSelf": false,
   "message": undefined,
   "tags": Object {},
   "timestamp": Any<Date>,
@@ -1043,7 +1022,7 @@ Object {
     "bits": 100,
     "color": "",
     "displayName": "dallas",
-    "emoteSets": undefined,
+    "emoteSets": Array [],
     "emotes": Array [],
     "id": "b34ccfc7-4977-403a-8a94-33c6bac34fb8",
     "mod": "0",
@@ -1053,9 +1032,10 @@ Object {
     "turbo": "1",
     "userId": "1337",
     "userType": "staff",
+    "username": "dallas",
   },
   "timestamp": Any<Date>,
-  "username": "ronni",
+  "username": "dallas",
 }
 `;
 
@@ -1125,7 +1105,7 @@ Object {
     "bits": undefined,
     "color": "#0D4200",
     "displayName": "dallas",
-    "emoteSets": undefined,
+    "emoteSets": Array [],
     "emotes": Array [
       Object {
         "end": 4,
@@ -1151,9 +1131,10 @@ Object {
     "turbo": "1",
     "userId": "1337",
     "userType": "global_mod",
+    "username": "dallas",
   },
   "timestamp": Any<Date>,
-  "username": "ronni",
+  "username": "dallas",
 }
 `;
 
@@ -1177,7 +1158,7 @@ Object {
     "bits": undefined,
     "color": "#8A2BE2",
     "displayName": "MrSquidzilla",
-    "emoteSets": undefined,
+    "emoteSets": Array [],
     "emotes": Array [],
     "flags": "",
     "id": "0717057c-510d-4da4-8d25-b592803bdeac",
@@ -1191,9 +1172,10 @@ Object {
     "turbo": "0",
     "userId": "43818429",
     "userType": "",
+    "username": "mrsquidzilla",
   },
   "timestamp": Any<Date>,
-  "username": undefined,
+  "username": "mrsquidzilla",
 }
 `;
 
@@ -1220,7 +1202,7 @@ Object {
     "bits": undefined,
     "color": "#8A2BE2",
     "displayName": "ElizabethSwann",
-    "emoteSets": undefined,
+    "emoteSets": Array [],
     "emotes": Array [],
     "id": "5bd3e064-c1e4-451b-9d7e-afe8cf5a44a2",
     "login": "elizabethswann",
@@ -1237,9 +1219,10 @@ Object {
     "turbo": "0",
     "userId": "85946347",
     "userType": "",
+    "username": "elizabethswann",
   },
   "timestamp": Any<Date>,
-  "username": undefined,
+  "username": "elizabethswann",
 }
 `;
 
@@ -1265,7 +1248,7 @@ Object {
     "bits": undefined,
     "color": "#9ACD32",
     "displayName": "TestChannel",
-    "emoteSets": undefined,
+    "emoteSets": Array [],
     "emotes": Array [],
     "id": "3d830f12-795c-447d-af3c-ea05e40fbddb",
     "login": "testchannel",
@@ -1282,9 +1265,10 @@ Object {
     "turbo": "1",
     "userId": "123456",
     "userType": "",
+    "username": "testchannel",
   },
   "timestamp": Any<Date>,
-  "username": undefined,
+  "username": "testchannel",
 }
 `;
 
@@ -1311,7 +1295,7 @@ Object {
     "bits": undefined,
     "color": "#008000",
     "displayName": "ronni",
-    "emoteSets": undefined,
+    "emoteSets": Array [],
     "emotes": Array [],
     "id": "db25007f-7a18-43eb-9379-80131e44d633",
     "login": "ronni",
@@ -1327,9 +1311,10 @@ Object {
     "turbo": "1",
     "userId": "1337",
     "userType": "staff",
+    "username": "ronni",
   },
   "timestamp": Any<Date>,
-  "username": undefined,
+  "username": "ronni",
 }
 `;
 
@@ -1352,7 +1337,7 @@ Object {
     "bits": undefined,
     "color": "",
     "displayName": "SevenTest1",
-    "emoteSets": undefined,
+    "emoteSets": Array [],
     "emotes": Array [
       Object {
         "end": 6,
@@ -1372,9 +1357,10 @@ Object {
     "turbo": "0",
     "userId": "131260580",
     "userType": "",
+    "username": "seventest1",
   },
   "timestamp": Any<Date>,
-  "username": undefined,
+  "username": "seventest1",
 }
 `;
 
@@ -1401,7 +1387,7 @@ Object {
     "bits": undefined,
     "color": "",
     "displayName": "Nefarious_Ned",
-    "emoteSets": undefined,
+    "emoteSets": Array [],
     "emotes": Array [],
     "id": "761a4698-b867-4668-9658-c3844c7b8637",
     "login": "nefarious_ned",
@@ -1417,9 +1403,10 @@ Object {
     "turbo": "0",
     "userId": "109667930",
     "userType": "",
+    "username": "nefarious_ned",
   },
   "timestamp": Any<Date>,
-  "username": undefined,
+  "username": "nefarious_ned",
 }
 `;
 
@@ -1446,7 +1433,7 @@ Object {
     "bits": undefined,
     "color": "#008000",
     "displayName": "ronni",
-    "emoteSets": undefined,
+    "emoteSets": Array [],
     "emotes": Array [],
     "id": "db25007f-7a18-43eb-9379-80131e44d633",
     "login": "ronni",
@@ -1462,9 +1449,10 @@ Object {
     "turbo": "1",
     "userId": "1337",
     "userType": "staff",
+    "username": "ronni",
   },
   "timestamp": Any<Date>,
-  "username": undefined,
+  "username": "ronni",
 }
 `;
 
@@ -1493,7 +1481,7 @@ Object {
     "bits": undefined,
     "color": "#0000FF",
     "displayName": "TWW2",
-    "emoteSets": undefined,
+    "emoteSets": Array [],
     "emotes": Array [],
     "id": "e9176cd8-5e22-4684-ad40-ce53c2561c5e",
     "login": "tww2",
@@ -1512,9 +1500,10 @@ Object {
     "turbo": "0",
     "userId": "13405587",
     "userType": "staff",
+    "username": "tww2",
   },
   "timestamp": Any<Date>,
-  "username": undefined,
+  "username": "tww2",
 }
 `;
 
@@ -1537,7 +1526,7 @@ Object {
     "bits": undefined,
     "color": "",
     "displayName": "SevenTest1",
-    "emoteSets": undefined,
+    "emoteSets": Array [],
     "emotes": Array [
       Object {
         "end": 6,
@@ -1557,9 +1546,10 @@ Object {
     "turbo": "0",
     "userId": "131260580",
     "userType": "",
+    "username": "seventest1",
   },
   "timestamp": Any<Date>,
-  "username": undefined,
+  "username": "seventest1",
 }
 `;
 
@@ -1605,7 +1595,7 @@ Object {
     "bits": undefined,
     "color": "#008000",
     "displayName": "ronni",
-    "emoteSets": undefined,
+    "emoteSets": Array [],
     "emotes": Array [],
     "id": "db25007f-7a18-43eb-9379-80131e44d633",
     "login": "ronni",
@@ -1621,9 +1611,10 @@ Object {
     "turbo": "1",
     "userId": "1337",
     "userType": "staff",
+    "username": "ronni",
   },
   "timestamp": Any<Date>,
-  "username": undefined,
+  "username": "ronni",
 }
 `;
 
@@ -1650,7 +1641,7 @@ Object {
     "bits": undefined,
     "color": "#008000",
     "displayName": "ronni",
-    "emoteSets": undefined,
+    "emoteSets": Array [],
     "emotes": Array [],
     "id": "db25007f-7a18-43eb-9379-80131e44d633",
     "login": "ronni",
@@ -1666,9 +1657,10 @@ Object {
     "turbo": "1",
     "userId": "1337",
     "userType": "staff",
+    "username": "ronni",
   },
   "timestamp": Any<Date>,
-  "username": undefined,
+  "username": "ronni",
 }
 `;
 
@@ -1706,6 +1698,7 @@ Object {
     "subscriber": "1",
     "turbo": "1",
     "userType": "staff",
+    "username": "ronni",
   },
 }
 `;

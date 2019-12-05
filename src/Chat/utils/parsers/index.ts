@@ -4,6 +4,7 @@ import camelcaseKeys from 'camelcase-keys'
 import gt from 'lodash/gt'
 import isEmpty from 'lodash/isEmpty'
 import isFinite from 'lodash/isFinite'
+import toLower from 'lodash/toLower'
 import toNumber from 'lodash/toNumber'
 import toUpper from 'lodash/toUpper'
 
@@ -44,9 +45,8 @@ import * as constants from '../../constants'
 import * as utils from '../'
 import * as helpers from './helpers'
 import * as tagParsers from './tags'
-import toLower from 'lodash/toLower'
 
-export const base = (rawMessages: string): BaseMessage[] => {
+export const base = (rawMessages: string, username: string): BaseMessage[] => {
   const rawMessagesV = rawMessages.split(/\r?\n/g)
 
   return rawMessagesV.reduce((messages, rawMessage) => {
@@ -57,11 +57,28 @@ export const base = (rawMessages: string): BaseMessage[] => {
     const {
       command,
       tags = {},
-      prefix: { user } = { user: 'tmi.twitch.tv' },
+      prefix: { name, user, host } = {
+        name: undefined,
+        user: undefined,
+        host: undefined,
+      },
       params: [channel, message],
     } = parse(rawMessage)
 
     const timestamp = String(tags['tmi-sent-ts']) || Date.now().toString()
+
+    const messageTags = isEmpty(tags)
+      ? {}
+      : (camelcaseKeys(tags) as { [key: string]: string })
+
+    const messageUsername = helpers.username(
+      host,
+      name,
+      user,
+      messageTags.login,
+      messageTags.username,
+      messageTags.displayName,
+    )
 
     const baseMessage = {
       _raw: rawMessage,
@@ -69,10 +86,11 @@ export const base = (rawMessages: string): BaseMessage[] => {
       command: command as Commands,
       event: command as Events,
       channel: channel !== '*' ? channel : '',
-      username: user,
-      tags: isEmpty(tags)
-        ? {}
-        : (camelcaseKeys(tags) as { [key: string]: string }),
+      username: messageUsername,
+      isSelf:
+        typeof messageUsername === 'string' &&
+        toLower(username) === messageUsername,
+      tags: messageTags,
       message,
     }
 

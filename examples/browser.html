@@ -10,7 +10,7 @@
     <h1>TwitchJS Example</h1>
     <p>Please see console</p>
 
-    <script src="https://unpkg.com/twitch-js@>2.0.0-beta/dist/twitch-js.js"></script>
+    <script src="https://unpkg.com/twitch-js@>2.0.0-beta/dist/index.js"></script>
     <script>
       (function() {
         // Provide your token, username and channel. You can generate a token
@@ -24,14 +24,14 @@
         const { api, chat } = new TwitchJs({ token, username });
 
         // Get featured streams.
-        api.get('streams/featured').then(response => {
+        api.get('streams/featured', { version: 'kraken' }).then(response => {
           console.log(response);
           // Do stuff ...
         });
 
         // Listen to all events.
-        const log = msg => console.log(msg);
-        chat.on(chat.events.ALL, log);
+        const log = message => console.info(message);
+        chat.on(TwitchJs.Chat.events.ALL, log);
 
         // Connect ...
         chat.connect().then(() => {

@@ -306,7 +306,7 @@ describe('Chat', () => {
     describe('MODE', () => {
       describe('current user', () => {
         test('+o', async done => {
-          const chat = new Chat(options)
+          const chat = new Chat({ ...options, username: 'dallas' })
           await chat.connect()
           await chat.join('#dallas')
 
@@ -327,7 +327,7 @@ describe('Chat', () => {
         })
 
         test('-o', async done => {
-          const chat = new Chat(options)
+          const chat = new Chat({ ...options, username: 'dallas' })
           await chat.connect()
           await chat.join('#dallas')
 

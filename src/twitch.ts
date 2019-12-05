@@ -369,6 +369,7 @@ export interface UserStateTags extends BaseTags {
   subscriber?: string
   turbo?: string
   userType: string
+  username: string
 }
 
 /**
@@ -413,7 +414,7 @@ export interface BaseMessage {
   username: string
   command: Commands
   event?: Commands | Events
-  // isSelf: boolean
+  isSelf: boolean
   message: string
   tags: { [key: string]: any }
 }

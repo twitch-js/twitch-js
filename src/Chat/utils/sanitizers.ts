@@ -1,5 +1,7 @@
+import isEmpty from 'lodash/isEmpty'
 import random from 'lodash/random'
 import toLower from 'lodash/toLower'
+
 import { ANONYMOUS_USERNAME } from '../constants'
 
 export const channel = (value: any): string => {
@@ -27,7 +29,7 @@ export const token = (value: any): string => {
 }
 
 export const username = (value: any): string => {
-  if (value == null || value === 'justinfan') {
+  if (isEmpty(value) || value === 'justinfan') {
     return `${ANONYMOUS_USERNAME}${random(80000, 81000)}`
   }
 

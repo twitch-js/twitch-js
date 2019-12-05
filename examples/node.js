@@ -11,7 +11,7 @@ const channel = 'twitchapis';
 const { api, chat } = new TwitchJs({ token, username });
 
 // Get featured streams.
-api.get('streams/featured').then(response => {
+api.get('streams/featured', { version: 'kraken' }).then(response => {
   console.log(response);
   // Do stuff ...
 });
@@ -22,7 +22,7 @@ const handleMessage = message => {
   // Do other stuff ...
 };
 
-chat.on(chat.events.ALL, handleMessage);
+chat.on(TwitchJs.Chat.events.ALL, handleMessage);
 
 // Connect ...
 chat.connect().then(() => {

@@ -245,7 +245,7 @@ class Api {
 
     const message = `${toUpper(fetchOptions.method) || 'GET'} ${url}`
 
-    const fetchProfiler = this._log.startTimer(message)
+    const fetchProfiler = this._log.profile()
 
     const performRequest = () =>
       fetchUtil<T>(url, {
