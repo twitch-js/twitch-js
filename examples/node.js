@@ -22,7 +22,7 @@ const handleMessage = message => {
 };
 
 // Listen for all events.
-chat.on(TwitchJs.Chat.events.ALL, handleMessage);
+chat.on(TwitchJs.Chat.Events.ALL, handleMessage);
 
 // Connect ...
 chat.connect().then(() => {
