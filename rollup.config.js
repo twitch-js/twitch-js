@@ -1,12 +1,12 @@
-import resolve from 'rollup-plugin-node-resolve'
 import alias from '@rollup/plugin-alias'
-import json from 'rollup-plugin-json'
+import json from '@rollup/plugin-json'
+import replace from '@rollup/plugin-replace'
 import commonjs from 'rollup-plugin-commonjs'
-import typescript from 'rollup-plugin-typescript'
-import { terser } from 'rollup-plugin-terser'
-import filesize from 'rollup-plugin-filesize'
+import fileSize from 'rollup-plugin-filesize'
 import gzipPlugin from 'rollup-plugin-gzip'
-import replace from 'rollup-plugin-replace'
+import resolve from 'rollup-plugin-node-resolve'
+import { terser } from 'rollup-plugin-terser'
+import typescript from 'rollup-plugin-typescript'
 
 import path from 'path'
 
@@ -25,7 +25,7 @@ const commonPlugins = [
   json(),
   typescript(),
   terser({ output: { comments: false } }),
-  filesize({ showMinifiedSize: false }),
+  fileSize({ showMinifiedSize: false }),
   replace({
     'process.env.NODE_ENV': JSON.stringify('production'),
   }),
