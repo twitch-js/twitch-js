@@ -289,6 +289,8 @@ class Chat extends EventEmitter<EventTypes> {
    */
   disconnect = () => {
     this._isDisconnecting = true
+    this._readyState = ChatReadyStates.DISCONNECTING
+    this._clearChannelState()
     this._client.disconnect()
   }
 
@@ -489,6 +491,7 @@ class Chat extends EventEmitter<EventTypes> {
 
       // Once the client is connected, resolve ...
       this._client.once(Events.CONNECTED, e => {
+        this._handleJoinsAfterConnect()
         connectProfiler.done('Connected')
         resolve(e)
       })
@@ -500,6 +503,11 @@ class Chat extends EventEmitter<EventTypes> {
     this._connectionAttempts = 0
 
     return parsers.globalUserStateMessage(globalUserState)
+  }
+
+  private async _handleJoinsAfterConnect() {
+    const channels = this._getChannels()
+    await Promise.all(channels.map(channel => this.join(channel)))
   }
 
   private async _handleConnectRetry(errorMessage: BaseMessage) {
@@ -728,7 +736,7 @@ class Chat extends EventEmitter<EventTypes> {
   private _handleDisconnect() {
     this._connectionInProgress = null
     this._readyState = ChatReadyStates.DISCONNECTED
-    this._clearChannelState()
+    this._isDisconnecting = false
   }
 }
 

@@ -2,19 +2,10 @@ export const CHAT_SERVER = 'irc-ws.chat.twitch.tv'
 export const CHAT_SERVER_PORT = 6667
 export const CHAT_SERVER_SSL_PORT = 443
 
-/**
- * @constant
- * @type {number}
- * @default 5000
- */
 export const CONNECTION_TIMEOUT = 5000
-export const KEEP_ALIVE_PING_TIMEOUT = 55000
-export const KEEP_ALIVE_RECONNECT_TIMEOUT = 60000
-/**
- * @constant
- * @type {number}
- * @default 1000
- */
+export const KEEP_ALIVE_PING_TIMEOUT = 150000
+export const KEEP_ALIVE_RECONNECT_TIMEOUT = 200000
+
 export const JOIN_TIMEOUT = 1000 // milliseconds.
 export const COMMAND_TIMEOUT = 1000 // milliseconds.
 
