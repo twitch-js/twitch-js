@@ -1,12 +1,12 @@
 {
   "compilerOptions": {
     "allowSyntheticDefaultImports": true,
+    "declaration": true,
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
     "lib": ["dom", "dom.iterable", "esnext"],
-    "module": "commonjs",
+    "module": "esnext",
     "moduleResolution": "node",
-    "noEmit": true,
     "resolveJsonModule": true,
     "skipLibCheck": true,
     "sourceMap": true,

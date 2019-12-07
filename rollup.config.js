@@ -6,7 +6,7 @@ import fileSize from 'rollup-plugin-filesize'
 import gzipPlugin from 'rollup-plugin-gzip'
 import resolve from 'rollup-plugin-node-resolve'
 import { terser } from 'rollup-plugin-terser'
-import typescript from 'rollup-plugin-typescript'
+import typescript from '@wessberg/rollup-plugin-ts'
 
 import path from 'path'
 
@@ -23,7 +23,6 @@ const aliasPlugin = alias({
 
 const commonPlugins = [
   json(),
-  typescript(),
   terser({ output: { comments: false } }),
   fileSize({ showMinifiedSize: false }),
   replace({
@@ -45,6 +44,12 @@ export default [
       aliasPlugin,
       resolve(),
       commonjs(),
+      typescript({
+        tsconfig: resolvedConfig => ({
+          ...resolvedConfig,
+          declaration: false,
+        }),
+      }),
       gzipPlugin(),
       ...commonPlugins,
     ],
@@ -53,10 +58,17 @@ export default [
   {
     input: 'src/index.ts',
     output: [
-      { file: pkg.main, format: 'cjs', exports: 'named', sourcemap: true },
       { file: pkg.module, format: 'es', exports: 'named', sourcemap: true },
     ],
-    plugins: [...commonPlugins],
+    plugins: [
+      typescript({
+        tsconfig: resolvedConfig => ({
+          ...resolvedConfig,
+          declarationDir: 'types',
+        }),
+      }),
+      ...commonPlugins,
+    ],
     external: id =>
       Object.keys(pkg.dependencies).some(dep => id.startsWith(dep)),
   },
