@@ -1,6 +1,9 @@
 const path = require('path')
+const pkg = require('../../package.json')
 
-const BUILD_PATH = path.join(__dirname, '../../dist/twitch-js.js')
+const { ApiVersions } = require('../../lib/twitch')
+
+const BUILD_PATH = path.join(__dirname, `../../${pkg.unpkg}`)
 
 describe('Browser E2E', () => {
   if (!process.env.CI) {
@@ -65,13 +68,14 @@ describe('Browser E2E', () => {
   describe('Api', () => {
     test('should get endpoint', async () => {
       await page.evaluate(
-        (token, username) => {
+        (token, username, ApiVersions) => {
           const { api } = new window.TwitchJs({ token, username })
 
-          return api.get('streams/featured')
+          return api.get('streams/featured', { version: ApiVersions.Kraken })
         },
         token,
         username,
+        ApiVersions,
       )
     })
   })
