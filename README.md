@@ -71,7 +71,7 @@ If you are not using a module bundler, precompiled builds are available in the
 
 1. Include a script tag in your HTML:
    ```html
-   <script src="//unpkg.com/twitch-js@>2.0.0-beta/dist/index.js"></script>
+   <script src="//unpkg.com/twitch-js@>2.0.0-beta.31"></script>
    ```
 2. Consume the library:
    ```html
