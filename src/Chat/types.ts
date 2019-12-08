@@ -25,7 +25,9 @@ import {
   UserNoticeMessages,
   UserNoticeRaidMessage,
   UserNoticeResubscriptionMessage,
+  UserNoticeRitualMessage,
   UserNoticeSubscriptionGiftCommunityMessage,
+  UserNoticeSubscriptionGiftMessage,
   UserNoticeSubscriptionMessage,
   UserStateMessage,
   UserStateTags,
@@ -261,9 +263,9 @@ export type EventTypes = {
   [Events.GIFT_PAID_UPGRADE]: [UserNoticeGiftPaidUpgradeMessage]
   [Events.RAID]: [UserNoticeRaidMessage]
   [Events.RESUBSCRIPTION]: [UserNoticeResubscriptionMessage]
-  [Events.RITUAL]: [UserNoticeAnonymousGiftPaidUpgradeMessage]
+  [Events.RITUAL]: [UserNoticeRitualMessage]
   [Events.SUBSCRIPTION]: [UserNoticeSubscriptionMessage]
-  [Events.SUBSCRIPTION_GIFT]: [UserNoticeSubscriptionGiftCommunityMessage]
+  [Events.SUBSCRIPTION_GIFT]: [UserNoticeSubscriptionGiftMessage]
   [Events.SUBSCRIPTION_GIFT_COMMUNITY]: [
     UserNoticeSubscriptionGiftCommunityMessage,
   ]
@@ -274,11 +276,9 @@ export type EventTypes = {
   [UserNoticeCompounds.GIFT_PAID_UPGRADE]: [UserNoticeGiftPaidUpgradeMessage]
   [UserNoticeCompounds.RAID]: [UserNoticeRaidMessage]
   [UserNoticeCompounds.RESUBSCRIPTION]: [UserNoticeResubscriptionMessage]
-  [UserNoticeCompounds.RITUAL]: [UserNoticeAnonymousGiftPaidUpgradeMessage]
+  [UserNoticeCompounds.RITUAL]: [UserNoticeRitualMessage]
   [UserNoticeCompounds.SUBSCRIPTION]: [UserNoticeSubscriptionMessage]
-  [UserNoticeCompounds.SUBSCRIPTION_GIFT]: [
-    UserNoticeSubscriptionGiftCommunityMessage,
-  ]
+  [UserNoticeCompounds.SUBSCRIPTION_GIFT]: [UserNoticeSubscriptionGiftMessage]
   [UserNoticeCompounds.SUBSCRIPTION_GIFT_COMMUNITY]: [
     UserNoticeSubscriptionGiftCommunityMessage,
   ]

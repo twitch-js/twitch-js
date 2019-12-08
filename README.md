@@ -131,7 +131,7 @@ const onAuthenticationFailure = () =>
       client_id: clientId,
       client_secret: clientSecret,
     },
-  }).then(response => response.access_token)
+  }).then(response => response.accessToken)
 
 const token = 'cfabdegwdoklmawdzdo98xt2fo512y'
 const username = 'ronni'
