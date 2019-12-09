@@ -33,7 +33,7 @@ import {
   UserStateTags,
 } from '../twitch'
 
-import { Options as LoggerOptions } from '../utils/logger'
+import { LoggerOptions } from '../utils/logger'
 
 type BaseChatOptions = {
   username?: string
