@@ -1,7 +1,7 @@
-import * as twitchTypes from '../twitch'
+import { ApiVersions } from '../twitch'
 
 import { FetchOptions } from '../utils/fetch'
-import { Options as LoggerOptions } from '../utils/logger'
+import { LoggerOptions } from '../utils/logger'
 
 export type ApiOptions = {
   clientId?: string
@@ -21,12 +21,12 @@ export type ApiSettings = {
   authorizationHeader: string
 }
 
-export const Settings: Record<twitchTypes.ApiVersions, ApiSettings> = {
-  [twitchTypes.ApiVersions.Helix]: {
+export const Settings: Record<ApiVersions, ApiSettings> = {
+  [ApiVersions.Helix]: {
     baseUrl: 'https://api.twitch.tv/helix',
     authorizationHeader: 'Bearer',
   },
-  [twitchTypes.ApiVersions.Kraken]: {
+  [ApiVersions.Kraken]: {
     baseUrl: 'https://api.twitch.tv/kraken',
     authorizationHeader: 'OAuth',
   },
@@ -39,7 +39,7 @@ export type ApiHeaders = {
 }
 
 type ApiVersionOptions = {
-  version?: twitchTypes.ApiVersions
+  version?: ApiVersions
 }
 
 export type ApiFetchOptions = FetchOptions & ApiVersionOptions

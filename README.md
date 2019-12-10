@@ -4,12 +4,13 @@
 
 # [TwitchJS](https://twitch-js.github.io/twitch-js)
 
-[![Travis branch](https://img.shields.io/travis/twitch-js/twitch-js/master.svg?longCache=true&style=flat-square)](https://travis-ci.org/twitch-js/twitch-js)
-[![npm](https://img.shields.io/npm/v/twitch-js.svg?longCache=true&style=flat-square)](https://www.npmjs.com/package/twitch-js)
-[![npm](https://img.shields.io/npm/v/twitch-js/next.svg?longCache=true&style=flat-square)](https://www.npmjs.com/package/twitch-js/v/next)
-[![npm](https://img.shields.io/npm/dm/twitch-js.svg?longCache=true&style=flat-square)](https://www.npmjs.com/package/twitch-js)
-[![GitHub issues](https://img.shields.io/github/issues/twitch-js/twitch-js.svg?longCache=true&style=flat-square)](https://github.com/twitch-js/twitch-js/issues)
+[![Travis branch](https://img.shields.io/travis/com/twitch-js/twitch-js?longCache=true&style=flat-square)](https://travis-ci.org/twitch-js/twitch-js)
 [![Coverage Status](https://img.shields.io/codecov/c/github/twitch-js/twitch-js/next.svg?longCache=true&style=flat-square)](https://codecov.io/gh/twitch-js/twitch-js/branch/next)
+[![NPM version](https://img.shields.io/npm/v/twitch-js.svg?longCache=true&style=flat-square)](https://www.npmjs.com/package/twitch-js)
+[![NPM version@next](https://img.shields.io/npm/v/twitch-js/next.svg?longCache=true&style=flat-square)](https://www.npmjs.com/package/twitch-js/v/next)
+[![NPM downloads](https://img.shields.io/npm/dm/twitch-js.svg?longCache=true&style=flat-square)](https://www.npmjs.com/package/twitch-js)
+[![GitHub issues](https://img.shields.io/github/issues-raw/twitch-js/twitch-js.svg?longCache=true&style=flat-square)](https://github.com/twitch-js/twitch-js/issues)
+[![GitHub bug issues](https://img.shields.io/github/issues-raw/twitch-js/twitch-js/bug?style=flat-square)](https://github.com/twitch-js/twitch-js/issues?q=is%3Aopen+is%3Aissue+label%3Abug)
 
 A community-centric, community-supported Twitch JavaScript SDK.
 
@@ -56,12 +57,12 @@ If you are using a module bundler, such [Webpack](https://webpack.js.org/),
 
    ```js
    // ES2015 syntax
-   import Twitch from 'twitch-js'
+   import TwitchJs from 'twitch-js'
 
    // OR ES5 syntax
-   var Twitch = require('twitch-js')
+   var TwitchJs = require('twitch-js')
 
-   const twitch = new Twitch({ username, token })
+   const twitchJs = new TwitchJs({ username, token })
    ```
 
 ### Browser (IIFE)

@@ -1,7 +1,7 @@
 import Chat, * as ChatTypes from './Chat'
 import Api, * as ApiTypes from './Api'
 
-import { Options as LoggerOptions } from './utils/logger'
+import { LoggerOptions } from './utils/logger'
 
 export { Chat, ChatTypes }
 export { Api, ApiTypes }

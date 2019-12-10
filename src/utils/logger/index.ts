@@ -1,15 +1,17 @@
-import pino, { LoggerOptions } from 'pino'
+import pino, { LoggerOptions as PinoLoggerOptions } from 'pino'
 
-export type Options = LoggerOptions
+export type LoggerOptions = PinoLoggerOptions
 
-const createLogger = ({ name, ...options }: LoggerOptions = {}) => {
+const createLogger = (options: LoggerOptions = {}) => {
+  const { name, ...other } = options
+
   const scope = ['TwitchJS'].concat(name || []).join('/')
 
   const logger = pino({
     name: scope,
     prettyPrint: true,
     level: 'info',
-    ...options,
+    ...other,
   })
 
   const profile = (startMessage?: string) => {

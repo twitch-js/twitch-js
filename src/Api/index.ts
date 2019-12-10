@@ -2,7 +2,7 @@ import includes from 'lodash/includes'
 import toLower from 'lodash/toLower'
 import toUpper from 'lodash/toUpper'
 
-import * as twitchTypes from '../twitch'
+import { ApiRootResponse, ApiVersions } from '../twitch'
 
 import createLogger, { Logger } from '../utils/logger'
 
@@ -90,7 +90,7 @@ class Api {
 
   private _readyState: ApiReadyStates = ApiReadyStates.READY
 
-  private _status: twitchTypes.ApiRootResponse
+  private _status: ApiRootResponse
 
   constructor(maybeOptions: ApiOptions = {}) {
     this.options = maybeOptions
@@ -135,8 +135,8 @@ class Api {
       return Promise.resolve()
     }
 
-    const statusResponse = await this.get<twitchTypes.ApiRootResponse>('', {
-      version: twitchTypes.ApiVersions.Kraken,
+    const statusResponse = await this.get<ApiRootResponse>('', {
+      version: ApiVersions.Kraken,
     })
 
     this._readyState = ApiReadyStates.INITIALIZED
@@ -201,15 +201,15 @@ class Api {
     return this._handleFetch<T>(endpoint, { ...options, method: 'put' })
   }
 
-  private _isVersionHelix(version: twitchTypes.ApiVersions) {
-    return toLower(version) === twitchTypes.ApiVersions.Helix
+  private _isVersionHelix(version: ApiVersions) {
+    return toLower(version) === ApiVersions.Helix
   }
 
-  private _getBaseUrl(version: twitchTypes.ApiVersions) {
+  private _getBaseUrl(version: ApiVersions) {
     return Settings[version].baseUrl
   }
 
-  private _getHeaders(version: twitchTypes.ApiVersions): ApiHeaders {
+  private _getHeaders(version: ApiVersions): ApiHeaders {
     const { clientId, token } = this.options
 
     const isHelix = this._isVersionHelix(version)
@@ -237,7 +237,7 @@ class Api {
     maybeUrl = '',
     options: ApiFetchOptions = {},
   ) {
-    const { version = twitchTypes.ApiVersions.Helix, ...fetchOptions } = options
+    const { version = ApiVersions.Helix, ...fetchOptions } = options
 
     const baseUrl = this._getBaseUrl(version)
 
