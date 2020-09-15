@@ -1,6 +1,5 @@
 import * as utils from '../'
 import EventEmitter from 'eventemitter3'
-import { GlobalFunction } from 'lodash/common/lang'
 
 describe('utils', () => {
   describe('resolveAfter', () => {
