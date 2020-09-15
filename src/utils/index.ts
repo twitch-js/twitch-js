@@ -6,7 +6,17 @@ export const resolveAfter = (ms: number) =>
 export const resolveOnEvent = <T>(
   emitter: EventEmitter<any>,
   eventName: string,
-): Promise<T> => new Promise(resolve => emitter.once(eventName, resolve))
+  timeout = 0,
+): Promise<T> =>
+  new Promise((resolve, reject) => {
+    emitter.once(eventName, resolve)
+
+    if (timeout)
+      setTimeout(() => {
+        emitter.removeListener(eventName, resolve)
+        reject(new Error('no event emitted, timed out'))
+      }, timeout)
+  })
 
 export const resolveInSequence = (tasks: (() => Promise<any>)[]) =>
   tasks.reduce((p, task) => p.then(task), Promise.resolve())

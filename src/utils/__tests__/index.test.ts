@@ -1,4 +1,6 @@
 import * as utils from '../'
+import EventEmitter from 'eventemitter3'
+import { GlobalFunction } from 'lodash/common/lang'
 
 describe('utils', () => {
   describe('resolveAfter', () => {
@@ -6,6 +8,63 @@ describe('utils', () => {
       jest.useFakeTimers()
       utils.resolveAfter(100).then(() => done())
       jest.runOnlyPendingTimers()
+    })
+  })
+
+  describe('resolveOnEvent', () => {
+    const emitter = new EventEmitter()
+
+    beforeEach(jest.useFakeTimers)
+    afterEach(jest.restoreAllMocks)
+    afterEach(() => emitter.removeAllListeners())
+
+    it('should resolve promise on event', done => {
+      utils
+        .resolveOnEvent(emitter, 'event')
+        .then(result => expect(result).toEqual('value'))
+        .then(done)
+
+      emitter.emit('event', 'value')
+    })
+
+    it('should never reject if no timeout is passed', () => {
+      const resolveSpy = jest.fn()
+      const rejectSpy = jest.fn()
+
+      jest
+        .spyOn(global, 'Promise')
+        .mockImplementation(callback => callback(resolveSpy, rejectSpy))
+
+      utils.resolveOnEvent(emitter, 'event')
+      jest.runOnlyPendingTimers()
+
+      expect(resolveSpy).toBeCalledTimes(0)
+      expect(rejectSpy).toBeCalledTimes(0)
+    })
+
+    it('should reject with timemout', done => {
+      utils.resolveOnEvent(emitter, 'event', 10000).catch(error => {
+        expect(error).toEqual(new Error('no event emitted, timed out'))
+        done()
+      })
+
+      jest.runOnlyPendingTimers()
+    })
+
+    it('should only expire instance of timed out listener', async () => {
+      expect.assertions(2)
+
+      const firstPromise = utils.resolveOnEvent(emitter, 'event')
+      const secondPromise = utils.resolveOnEvent(emitter, 'event', 10000)
+
+      jest.advanceTimersByTime(10000)
+
+      emitter.emit('event', 'value')
+
+      await secondPromise.catch(error => expect(error).toBeTruthy())
+
+      const result = await firstPromise
+      expect(result).toEqual('value')
     })
   })
 
