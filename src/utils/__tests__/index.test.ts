@@ -11,13 +11,13 @@ describe('utils', () => {
   })
 
   describe('resolveOnEvent', () => {
-    const emitter = new EventEmitter()
-
     beforeEach(jest.useFakeTimers)
+
     afterEach(jest.restoreAllMocks)
-    afterEach(() => emitter.removeAllListeners())
 
     it('should resolve promise on event', done => {
+      const emitter = new EventEmitter()
+
       utils
         .resolveOnEvent(emitter, 'event')
         .then(result => expect(result).toEqual('value'))
@@ -27,6 +27,7 @@ describe('utils', () => {
     })
 
     it('should never reject if no timeout is passed', () => {
+      const emitter = new EventEmitter()
       const resolveSpy = jest.fn()
       const rejectSpy = jest.fn()
 
@@ -42,6 +43,8 @@ describe('utils', () => {
     })
 
     it('should reject with timemout', done => {
+      const emitter = new EventEmitter()
+
       utils.resolveOnEvent(emitter, 'event', 10000).catch(error => {
         expect(error).toEqual(new Error('no event emitted, timed out'))
         done()
@@ -52,6 +55,7 @@ describe('utils', () => {
 
     it('should only expire instance of timed out listener', async () => {
       expect.assertions(2)
+      const emitter = new EventEmitter()
 
       const firstPromise = utils.resolveOnEvent(emitter, 'event')
       const secondPromise = utils.resolveOnEvent(emitter, 'event', 10000)
