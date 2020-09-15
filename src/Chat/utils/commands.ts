@@ -2,10 +2,9 @@ import camelCase from 'lodash/camelCase'
 import toUpper from 'lodash/toUpper'
 
 import { ChatCommands, KnownNoticeMessageIds, Commands } from '../../twitch'
+import { COMMAND_TIMEOUT } from '../constants'
 
 import * as utils from '../../utils'
-
-const EVENT_TIMEOUT_LIMIT = 10000
 
 export const factory = (chatInstance: any) => {
   Object.entries(ChatCommands).forEach(([key, command]) => {
@@ -178,7 +177,7 @@ export const resolvers = (chatInstance: any) => (
         utils.resolveOnEvent(
           chatInstance,
           `${notices.TIMEOUT_SUCCESS}/${channel}`,
-          EVENT_TIMEOUT_LIMIT,
+          COMMAND_TIMEOUT,
         ),
       ]
 
