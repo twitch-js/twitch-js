@@ -1,13 +1,10 @@
-name: CI
+name: ci
 
 on:
   push:
     branches: [next]
   pull_request:
     branches: [next]
-
-env:
-  CODECOV_TOKEN: d812df45-0029-4c01-9a11-8aabd8b1a04b
 
 jobs:
   integrity:
