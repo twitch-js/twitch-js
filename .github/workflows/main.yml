@@ -11,6 +11,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
+      - name: Install dependencies
+        run: yarn install
       - name: Check integrity
         run: yarn check --integrity
 
@@ -18,6 +20,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
+      - name: Install dependencies
+        run: yarn install
       - name: Check style
         run: yarn prettier
       - name: Lint codebase
@@ -27,6 +31,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
+      - name: Install dependencies
+        run: yarn install
       - name: Run unit tests
         run: yarn test:coverage:report
       - name: Report coverage
@@ -36,6 +42,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
+      - name: Install dependencies
+        run: yarn install
       - name: Build
         run: yarn build
 
@@ -43,5 +51,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
+      - name: Install dependencies
+        run: yarn install
       - name: Audit dependencies
         run: yarn audit
