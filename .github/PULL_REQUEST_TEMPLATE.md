@@ -9,8 +9,8 @@
 ## Types of changes
 
 <!--
-  What types of changes does your code introduce to TwitchJS? _Put an `x` in the
-  boxes that apply and remove those that do not apply_
+  What types of changes does your code introduce to TwitchJS? Put an `x` in the
+  boxes that apply and remove those that do not apply.
 -->
 
 - [ ] Bugfix (non-breaking change that fixes an issue)
@@ -23,18 +23,14 @@
 ## Checklist
 
 <!--
-  _Put an `x` in the boxes that apply. You can also fill these out after creating
+  Put an `x` in the boxes that apply. You can also fill these out after creating
   the PR. If you're unsure about any of them, don't hesitate to ask. We're here to
   help! This is simply a reminder of what we are going to look for before merging
-  your code._
+  your code.
 -->
 
-- [ ] I have read the
-      [CONTRIBUTING.md](https://github.com/twitch-js/twitch-js/blob/master/CONTRIBUTING.md)
-      doc
-- [ ] My PR is named according to
-      [CONTRIBUTING.md](https://github.com/twitch-js/twitch-js/blob/master/CONTRIBUTING.md)
-      doc
+- [ ] I have read the [CONTRIBUTING.md] doc
+- [ ] My PR is named according to [CONTRIBUTING.md] doc
 - [ ] End-to-end tests pass locally with my changes
 - [ ] I have added tests that prove my fix is effective or that my feature works
 - [ ] I have added necessary documentation (if appropriate)
@@ -47,3 +43,12 @@
   explaining why you chose the solution you did and what alternatives you
   considered, etc.
 -->
+
+No comments.
+
+<!--
+  Do not make any modifications below this comment.
+-->
+
+[contributing.md]:
+  https://github.com/twitch-js/twitch-js/blob/master/CONTRIBUTING.md
