@@ -1,11 +1,11 @@
-# This file
-CODEOWNERS    @marcandrews
-
-# Documentation
-/docs         @marcandrews
+# Repository settings
+/.github      @marcandrews
 
 # Root files
 /*.*          @marcandrews
+
+# Documentation
+/docs         @marcandrews
 
 # Wesbite
 /website      @marcandrews
