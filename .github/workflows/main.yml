@@ -36,8 +36,10 @@ jobs:
       - uses: actions/checkout@v2
       - name: Install dependencies
         run: yarn install
-      - name: Run unit tests and report coverage
-        run: yarn test:coverage:report
+      - name: Run unit tests
+        run: yarn test:coverage
+      - name: Report coverage
+        uses: codecov/codecov-action@v1
 
   build:
     runs-on: ubuntu-latest
