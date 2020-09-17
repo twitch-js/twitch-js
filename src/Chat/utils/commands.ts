@@ -2,6 +2,7 @@ import camelCase from 'lodash/camelCase'
 import toUpper from 'lodash/toUpper'
 
 import { ChatCommands, KnownNoticeMessageIds, Commands } from '../../twitch'
+import { COMMAND_TIMEOUT } from '../constants'
 
 import * as utils from '../../utils'
 
@@ -176,6 +177,7 @@ export const resolvers = (chatInstance: any) => (
         utils.resolveOnEvent(
           chatInstance,
           `${notices.TIMEOUT_SUCCESS}/${channel}`,
+          COMMAND_TIMEOUT,
         ),
       ]
 
