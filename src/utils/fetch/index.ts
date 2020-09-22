@@ -1,4 +1,4 @@
-import fetch, { RequestInit, RequestInfo } from 'node-fetch'
+import fetch from 'cross-fetch'
 import FormData from 'form-data'
 import { stringify, IStringifyOptions } from 'qs'
 

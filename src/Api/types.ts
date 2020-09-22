@@ -32,8 +32,8 @@ export const Settings: Record<ApiVersions, ApiSettings> = {
   },
 }
 
-export type ApiHeaders = {
-  'Client-ID': string
+export type ApiHeaders = Headers & {
+  'Client-ID'?: string
   Accept?: string
   Authorization?: string
 }

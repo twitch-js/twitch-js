@@ -1,3 +1,5 @@
+import invariant from 'invariant'
+import isEmpty from 'lodash/isEmpty'
 import includes from 'lodash/includes'
 import toLower from 'lodash/toLower'
 import toUpper from 'lodash/toUpper'
@@ -17,8 +19,6 @@ import {
   ApiHeaders,
   Settings,
 } from './types'
-import invariant from 'invariant'
-import isEmpty from 'lodash/isEmpty'
 
 export * from './types'
 
@@ -85,12 +85,12 @@ export * from './types'
  */
 
 class Api {
-  private _options: ApiOptions
+  private _options!: ApiOptions
   private _log: Logger
 
   private _readyState: ApiReadyStates = ApiReadyStates.READY
 
-  private _status: ApiRootResponse
+  private _status!: ApiRootResponse
 
   constructor(maybeOptions: ApiOptions = {}) {
     this.options = maybeOptions
@@ -209,7 +209,7 @@ class Api {
     return Settings[version].baseUrl
   }
 
-  private _getHeaders(version: ApiVersions): ApiHeaders {
+  private _getHeaders(version: ApiVersions): Headers {
     const { clientId, token } = this.options
 
     const isHelix = this._isVersionHelix(version)
@@ -219,15 +219,21 @@ class Api {
       '[twitch-js/Api] To call a Helix endpoint, a `clientId` or `token` must be provided',
     )
 
-    const headers = isHelix
-      ? { 'Client-ID': clientId }
-      : { Accept: 'application/vnd.twitchtv.v5+json', 'Client-ID': clientId }
+    const headers = new Headers()
+
+    if (!isHelix) {
+      headers.set('Accept', 'application/vnd.twitchtv.v5+json')
+    }
+
+    if (clientId) {
+      headers.set('Client-ID', clientId)
+    }
 
     if (token) {
-      const authorizationHeader = Settings[version].authorizationHeader
-      const authorization = `${authorizationHeader} ${token}`
-
-      return { ...headers, Authorization: authorization }
+      headers.set(
+        'Authorization',
+        `${Settings[version].authorizationHeader} ${token}`,
+      )
     }
 
     return headers
@@ -247,19 +253,30 @@ class Api {
 
     const fetchProfiler = this._log.profile()
 
+    const headers = this._getHeaders(version)
+
+    const optionHeaders =
+      fetchOptions.headers instanceof Headers
+        ? fetchOptions.headers.entries()
+        : Object.entries(fetchOptions.headers || {})
+
+    for (const [name, value] of optionHeaders) {
+      headers.append(String(name), value)
+    }
+
     const performRequest = () =>
       fetchUtil<T>(url, {
         ...fetchOptions,
-        headers: {
-          ...fetchOptions.headers,
-          ...this._getHeaders(version),
-        },
+        headers,
       })
 
     try {
       return await performRequest()
     } catch (error) {
-      if (error instanceof Errors.AuthenticationError) {
+      if (
+        error instanceof Errors.AuthenticationError &&
+        typeof this.options.onAuthenticationFailure === 'function'
+      ) {
         const token = await this.options.onAuthenticationFailure()
 
         if (token) {
