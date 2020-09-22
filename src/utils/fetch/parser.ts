@@ -1,5 +1,4 @@
 import camelcaseKeys from 'camelcase-keys'
-import { Response } from 'node-fetch'
 
 import * as Errors from './Errors'
 
