@@ -27,6 +27,15 @@ jobs:
       - name: Lint codebase
         run: yarn lint
 
+  types:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Install dependencies
+        run: yarn install
+      - name: Check types
+        run: yarn test:types
+
   test:
     runs-on: ubuntu-latest
     steps:
