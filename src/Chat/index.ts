@@ -309,7 +309,7 @@ class Chat extends EventEmitter<EventTypes> {
     this.disconnect()
 
     return this.connect().then(() =>
-      Promise.all(channels.map(channel => this.join(channel))),
+      Promise.all(channels.map((channel) => this.join(channel))),
     )
   }
 
@@ -428,11 +428,11 @@ class Chat extends EventEmitter<EventTypes> {
         ),
         resolvers,
       ])
-      .then(resolvedEvent => {
+      .then((resolvedEvent) => {
         this._log.info(info)
         return resolvedEvent
       })
-      .catch(err => {
+      .catch((err) => {
         this._log.error(info, err)
         throw err
       })
@@ -455,7 +455,7 @@ class Chat extends EventEmitter<EventTypes> {
       this._isUserAuthenticated.bind(this),
       () =>
         Promise.all(
-          this._getChannels().map(channel => this.say(channel, message)),
+          this._getChannels().map((channel) => this.say(channel, message)),
         ),
     ])
 
@@ -490,7 +490,7 @@ class Chat extends EventEmitter<EventTypes> {
       this._client.once(Events.AUTHENTICATION_FAILED, reject)
 
       // Once the client is connected, resolve ...
-      this._client.once(Events.CONNECTED, e => {
+      this._client.once(Events.CONNECTED, (e) => {
         this._handleJoinsAfterConnect()
         connectProfiler.done('Connected')
         resolve(e)
@@ -507,7 +507,7 @@ class Chat extends EventEmitter<EventTypes> {
 
   private async _handleJoinsAfterConnect() {
     const channels = this._getChannels()
-    await Promise.all(channels.map(channel => this.join(channel)))
+    await Promise.all(channels.map((channel) => this.join(channel)))
   }
 
   private async _handleConnectRetry(errorMessage: BaseMessage) {
@@ -566,7 +566,7 @@ class Chat extends EventEmitter<EventTypes> {
       )
 
       events
-        .filter(part => part !== '#')
+        .filter((part) => part !== '#')
         .reduce((parents, part) => {
           const eventParts = [...parents, part]
           if (eventParts.length > 1) {

@@ -19,13 +19,13 @@ describe('Chat/Client', () => {
     log: { enabled: false },
   }
 
-  test('should receive CONNECTED event', done => {
+  test('should receive CONNECTED event', (done) => {
     const client = new Client(options)
 
     client.once(Events.CONNECTED, () => done())
   })
 
-  test('should send CAP, PASS and NICK', done => {
+  test('should send CAP, PASS and NICK', (done) => {
     const listener = jest.fn()
     server.on('message', listener)
 
@@ -42,10 +42,10 @@ describe('Chat/Client', () => {
     })
   })
 
-  test('should handle PING/PONG', done => {
+  test('should handle PING/PONG', (done) => {
     new Client(options)
 
-    server.once('message', message => {
+    server.once('message', (message) => {
       expect(message).toEqual(membership.PONG)
       done()
     })
@@ -109,10 +109,10 @@ describe('Chat/Client', () => {
       jest.useRealTimers()
     })
 
-    test('should send PING after keep alive delay', done => {
+    test('should send PING after keep alive delay', (done) => {
       jest.useFakeTimers()
 
-      server.on('message', message => {
+      server.on('message', (message) => {
         if (message === Commands.PING) {
           done()
           server.off('message')
@@ -127,7 +127,7 @@ describe('Chat/Client', () => {
       )
     })
 
-    test('should emit RECONNECT after keep alive expires', done => {
+    test('should emit RECONNECT after keep alive expires', (done) => {
       jest.useFakeTimers()
 
       const client = new Client(options)

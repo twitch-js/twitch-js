@@ -36,14 +36,14 @@ describe('Chat/utils/commands', () => {
     }
 
     test('should return an array of promises', () => {
-      Object.values(ChatCommands).forEach(command => {
+      Object.values(ChatCommands).forEach((command) => {
         const resolvers = commands.resolvers(chatInstance)(
           channel,
           `/${command}`,
         )
 
         const actual = resolvers.every(
-          resolver => typeof resolver.then === 'function',
+          (resolver) => typeof resolver.then === 'function',
         )
 
         expect(actual).toBeTruthy()

@@ -1,7 +1,7 @@
 import EventEmitter from 'eventemitter3'
 
 export const resolveAfter = (ms: number) =>
-  new Promise(resolve => setTimeout(resolve, ms))
+  new Promise((resolve) => setTimeout(resolve, ms))
 
 export const resolveOnEvent = <T>(
   emitter: EventEmitter<any>,

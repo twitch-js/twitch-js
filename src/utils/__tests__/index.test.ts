@@ -3,7 +3,7 @@ import EventEmitter from 'eventemitter3'
 
 describe('utils', () => {
   describe('resolveAfter', () => {
-    test('should resolve after specified time', done => {
+    test('should resolve after specified time', (done) => {
       jest.useFakeTimers()
       utils.resolveAfter(100).then(() => done())
       jest.runOnlyPendingTimers()
@@ -15,12 +15,12 @@ describe('utils', () => {
 
     afterEach(jest.restoreAllMocks)
 
-    it('should resolve promise on event', done => {
+    it('should resolve promise on event', (done) => {
       const emitter = new EventEmitter()
 
       utils
         .resolveOnEvent(emitter, 'event')
-        .then(result => expect(result).toEqual('value'))
+        .then((result) => expect(result).toEqual('value'))
         .then(done)
 
       emitter.emit('event', 'value')
@@ -33,7 +33,7 @@ describe('utils', () => {
 
       jest
         .spyOn(global, 'Promise')
-        .mockImplementation(callback => callback(resolveSpy, rejectSpy))
+        .mockImplementation((callback) => callback(resolveSpy, rejectSpy))
 
       utils.resolveOnEvent(emitter, 'event')
       jest.runOnlyPendingTimers()
@@ -42,10 +42,10 @@ describe('utils', () => {
       expect(rejectSpy).toBeCalledTimes(0)
     })
 
-    it('should reject with timemout', done => {
+    it('should reject with timemout', (done) => {
       const emitter = new EventEmitter()
 
-      utils.resolveOnEvent(emitter, 'event', 10000).catch(error => {
+      utils.resolveOnEvent(emitter, 'event', 10000).catch((error) => {
         expect(error).toEqual(new Error('no event emitted, timed out'))
         done()
       })
@@ -64,7 +64,7 @@ describe('utils', () => {
 
       emitter.emit('event', 'value')
 
-      await secondPromise.catch(error => expect(error).toBeTruthy())
+      await secondPromise.catch((error) => expect(error).toBeTruthy())
 
       const result = await firstPromise
       expect(result).toEqual('value')
@@ -76,7 +76,7 @@ describe('utils', () => {
       jest.useFakeTimers()
     })
 
-    test('should call setTimeout', done => {
+    test('should call setTimeout', (done) => {
       const ms = 123
       const error = new Error('REJECT_MESSAGE')
 
@@ -92,11 +92,11 @@ describe('utils', () => {
       jest.runOnlyPendingTimers()
     })
 
-    test('should reject after specified time with reason', done => {
+    test('should reject after specified time with reason', (done) => {
       const ms = 456
       const error = new Error('REJECT_MESSAGE')
 
-      utils.rejectAfter(ms, error).catch(rejectedReason => {
+      utils.rejectAfter(ms, error).catch((rejectedReason) => {
         expect(rejectedReason).toEqual(error)
         done()
       })
@@ -107,7 +107,7 @@ describe('utils', () => {
 
   test('resolveInSequence', async () => {
     const cb = jest.fn()
-    const p = n => new Promise(resolve => resolve(cb(n)))
+    const p = (n) => new Promise((resolve) => resolve(cb(n)))
 
     await utils.resolveInSequence([
       p.bind(null, 1),

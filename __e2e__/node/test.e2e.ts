@@ -3,6 +3,7 @@ import { ApiVersions } from '../../lib/twitch'
 
 describe('Node E2E', () => {
   if (!process.env.CI) {
+    // eslint-disable-next-line @typescript-eslint/no-var-requires
     require('dotenv').config()
   }
 

@@ -5,7 +5,7 @@ import membership from './__fixtures__/membership'
 import tags from './__fixtures__/tags'
 
 const server = new EventEmitter()
-server.sendMessageToClient = data => server.emit('emit', { data })
+server.sendMessageToClient = (data) => server.emit('emit', { data })
 
 class WebSocket extends EventEmitter {
   readyState = 0

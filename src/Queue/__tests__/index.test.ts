@@ -1,7 +1,7 @@
 import Queue from '../index'
 
 describe('Chat/Queue', () => {
-  test('should call fn on push', done => {
+  test('should call fn on push', (done) => {
     const queue = new Queue()
     queue.push({ fn: done })
   })

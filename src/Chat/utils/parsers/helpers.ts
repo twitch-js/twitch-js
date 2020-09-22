@@ -84,7 +84,7 @@ export const emotes = (maybeEmotes: string) => {
 
     return [
       ...emoteTag,
-      ...indices.split(',').map(index => {
+      ...indices.split(',').map((index) => {
         const [start, end] = index.split('-')
         return { id, start: parseInt(start, 10), end: parseInt(end, 10) }
       }),

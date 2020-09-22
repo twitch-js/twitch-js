@@ -11,13 +11,15 @@ const channel = 'twitchapis';
 const { api, chat } = new TwitchJs({ token, username });
 
 // Get featured streams.
-api.get('streams/featured', { version: ApiVersions.Kraken }).then(response => {
-  console.log(response);
-  // Do stuff ...
-});
+api
+  .get('streams/featured', { version: ApiVersions.Kraken })
+  .then((response) => {
+    console.log(response);
+    // Do stuff ...
+  });
 
 // Listen for all messages.
-chat.on(TwitchJs.Chat.Events.ALL, message => {
+chat.on(TwitchJs.Chat.Events.ALL, (message) => {
   // Use discriminated unions on `message.command` and `message.event` to
   // determine the type of `message`.
   if (
@@ -30,7 +32,7 @@ chat.on(TwitchJs.Chat.Events.ALL, message => {
 });
 
 // ... or just listen for subscription messages only.
-chat.on(TwitchJs.Chat.Events.SUBSCRIPTION, message => {
+chat.on(TwitchJs.Chat.Events.SUBSCRIPTION, (message) => {
   console.log(message.parameters.subPlan);
   // Do stuff with subscription message ...
 });

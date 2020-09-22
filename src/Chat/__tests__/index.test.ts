@@ -28,7 +28,7 @@ jest.mock('lodash/random', () => ({
 }))
 
 const emitHelper = (emitter, rawMessages) =>
-  parser(rawMessages).forEach(message => emitter.emit(Events.ALL, message))
+  parser(rawMessages).forEach((message) => emitter.emit(Events.ALL, message))
 
 describe('Chat', () => {
   const options = {
@@ -43,19 +43,19 @@ describe('Chat', () => {
 
   describe('event compounds', () => {
     test('should include all NOTICE messages', () => {
-      Object.keys(KnownNoticeMessageIds).forEach(notice => {
+      Object.keys(KnownNoticeMessageIds).forEach((notice) => {
         expect(NoticeCompounds[notice]).toBe(`NOTICE/${notice}`)
       })
     })
 
     test('should include all PRIVMSG messages', () => {
-      Object.keys(PrivateMessageEvents).forEach(notice => {
+      Object.keys(PrivateMessageEvents).forEach((notice) => {
         expect(PrivateMessageCompounds[notice]).toBe(`PRIVMSG/${notice}`)
       })
     })
 
     test('should include all USERNOTICE messages', () => {
-      Object.keys(KnownUserNoticeMessageIds).forEach(notice => {
+      Object.keys(KnownUserNoticeMessageIds).forEach((notice) => {
         expect(UserNoticeCompounds[notice]).toBe(`USERNOTICE/${notice}`)
       })
     })
@@ -82,7 +82,7 @@ describe('Chat', () => {
       expect(chat._readyState).toBe(3)
     })
 
-    test('should call onAuthenticationFailure', done => {
+    test('should call onAuthenticationFailure', (done) => {
       const onAuthenticationFailure = jest.fn(() => Promise.reject())
 
       const chat = new Chat({
@@ -97,7 +97,7 @@ describe('Chat', () => {
       })
     })
 
-    test('should update token and successfully connect', done => {
+    test('should update token and successfully connect', (done) => {
       const onAuthenticationFailure = jest.fn(() => Promise.resolve('TOKEN'))
 
       const chat = new Chat({
@@ -141,13 +141,13 @@ describe('Chat', () => {
     expect(chat._getChannelState('#dallas')).toEqual(actual)
   })
 
-  test('should send message to channel', async done => {
+  test('should send message to channel', async (done) => {
     const chat = new Chat(options)
     await chat.connect()
 
     expect.assertions(1)
 
-    server.once('message', message => {
+    server.once('message', (message) => {
       expect(message).toEqual('PRIVMSG #dallas :Kappa Keepo Kappa')
       done()
     })
@@ -169,10 +169,10 @@ describe('Chat', () => {
 
     await chat
       .say('#dallas', 'Kappa Keepo Kappa')
-      .catch(err => expect(err).toMatchSnapshot())
+      .catch((err) => expect(err).toMatchSnapshot())
   })
 
-  test('should part a channel', async done => {
+  test('should part a channel', async (done) => {
     const chat = new Chat(options)
     await chat.connect()
     await chat.join('#dallas')
@@ -181,7 +181,7 @@ describe('Chat', () => {
 
     expect(chat._channelState['#dallas']).toBeDefined()
 
-    server.once('message', message => {
+    server.once('message', (message) => {
       expect(message).toEqual('PART #dallas')
       expect(chat._channelState['#dallas']).not.toBeDefined()
       done()
@@ -190,7 +190,7 @@ describe('Chat', () => {
     chat.part('#dallas')
   })
 
-  test('should disconnect', async done => {
+  test('should disconnect', async (done) => {
     const chat = new Chat(options)
     await chat.connect()
 
@@ -221,7 +221,7 @@ describe('Chat', () => {
       await chat.reconnect()
 
       expect(serverListener.mock.calls).toMatchSnapshot()
-      chatListener.mock.calls.forEach(call => {
+      chatListener.mock.calls.forEach((call) => {
         const actual = call[0]
         expect(actual).toMatchSnapshot({
           timestamp: expect.any(Date),
@@ -233,7 +233,7 @@ describe('Chat', () => {
       server.removeListener('message')
     })
 
-    test('should reconnect on RECONNECT event', async done => {
+    test('should reconnect on RECONNECT event', async (done) => {
       const chat = new Chat(options)
       await chat.connect()
 
@@ -254,11 +254,11 @@ describe('Chat', () => {
   })
 
   describe('should handle messages', () => {
-    test('JOIN', async done => {
+    test('JOIN', async (done) => {
       const chat = new Chat(options)
       await chat.connect()
 
-      chat.once(Events.JOIN, message => {
+      chat.once(Events.JOIN, (message) => {
         expect(message).toMatchSnapshot({
           timestamp: expect.any(Date),
         })
@@ -268,11 +268,11 @@ describe('Chat', () => {
       emitHelper(chat._client, membership.JOIN)
     })
 
-    test('PART', async done => {
+    test('PART', async (done) => {
       const chat = new Chat(options)
       await chat.connect()
 
-      chat.once(Events.PART, message => {
+      chat.once(Events.PART, (message) => {
         expect(message).toMatchSnapshot({
           timestamp: expect.any(Date),
         })
@@ -294,8 +294,8 @@ describe('Chat', () => {
 
       emitHelper(chat._client, membership.NAMES)
 
-      return emissions.then(emission => {
-        emission.forEach(actual =>
+      return emissions.then((emission) => {
+        emission.forEach((actual) =>
           expect(actual).toMatchSnapshot({
             timestamp: expect.any(Date),
           }),
@@ -305,14 +305,14 @@ describe('Chat', () => {
 
     describe('MODE', () => {
       describe('current user', () => {
-        test('+o', async done => {
+        test('+o', async (done) => {
           const chat = new Chat({ ...options, username: 'dallas' })
           await chat.connect()
           await chat.join('#dallas')
 
           chat._channelState['#dallas'].userState.isModerator = false
 
-          chat.once(Events.MODE, message => {
+          chat.once(Events.MODE, (message) => {
             expect(message).toMatchSnapshot({
               timestamp: expect.any(Date),
             })
@@ -326,14 +326,14 @@ describe('Chat', () => {
           emitHelper(chat._client, membership.MODE.OPERATOR_PLUS_DALLAS)
         })
 
-        test('-o', async done => {
+        test('-o', async (done) => {
           const chat = new Chat({ ...options, username: 'dallas' })
           await chat.connect()
           await chat.join('#dallas')
 
           chat._channelState['#dallas'].userState.isModerator = true
 
-          chat.once(Events.MODE, message => {
+          chat.once(Events.MODE, (message) => {
             expect(message).toMatchSnapshot({
               timestamp: expect.any(Date),
             })
@@ -351,14 +351,14 @@ describe('Chat', () => {
       })
 
       describe('another user', () => {
-        test('+o', async done => {
+        test('+o', async (done) => {
           const chat = new Chat(options)
           await chat.connect()
           await chat.join('#dallas')
 
           const before = chat._channelState['#dallas'].userState.isModerator
 
-          chat.once(Events.MODE, message => {
+          chat.once(Events.MODE, (message) => {
             expect(message).toMatchSnapshot({
               timestamp: expect.any(Date),
             })
@@ -371,14 +371,14 @@ describe('Chat', () => {
           emitHelper(chat._client, membership.MODE.OPERATOR_PLUS_RONNI)
         })
 
-        test('-o', async done => {
+        test('-o', async (done) => {
           const chat = new Chat(options)
           await chat.connect()
           await chat.join('#dallas')
 
           const before = chat._channelState['#dallas'].userState.isModerator
 
-          chat.once(Events.MODE, message => {
+          chat.once(Events.MODE, (message) => {
             expect(message).toMatchSnapshot({
               timestamp: expect.any(Date),
             })
@@ -393,11 +393,11 @@ describe('Chat', () => {
       })
     })
 
-    test('CLEARCHAT', async done => {
+    test('CLEARCHAT', async (done) => {
       const chat = new Chat(options)
       await chat.connect()
 
-      chat.once(Events.CLEAR_CHAT, message => {
+      chat.once(Events.CLEAR_CHAT, (message) => {
         expect(message).toMatchSnapshot({
           timestamp: expect.any(Date),
         })
@@ -407,11 +407,11 @@ describe('Chat', () => {
       emitHelper(chat._client, rawCommands.CLEARCHAT.CHANNEL)
     })
 
-    test('CLEARCHAT user with reason', async done => {
+    test('CLEARCHAT user with reason', async (done) => {
       const chat = new Chat(options)
       await chat.connect()
 
-      chat.once(Events.CLEAR_CHAT, message => {
+      chat.once(Events.CLEAR_CHAT, (message) => {
         expect(message).toMatchSnapshot({
           timestamp: expect.any(Date),
         })
@@ -428,7 +428,7 @@ describe('Chat', () => {
         const chat = new Chat(options)
         await chat.connect()
 
-        chat.once(Events.HOST_TARGET, message => {
+        chat.once(Events.HOST_TARGET, (message) => {
           expect(message).toMatchSnapshot({
             timestamp: expect.any(Date),
           })
@@ -448,7 +448,7 @@ describe('Chat', () => {
 
           const eventName = `${Events.NOTICE}/${name}`
 
-          chat.once(eventName, message => {
+          chat.once(eventName, (message) => {
             expect(message).toMatchSnapshot({
               timestamp: expect.any(Date),
             })
@@ -468,7 +468,7 @@ describe('Chat', () => {
           const chat = new Chat(options)
           await chat.connect()
 
-          chat.once(Commands.USER_NOTICE, message => {
+          chat.once(Commands.USER_NOTICE, (message) => {
             expect(message).toMatchSnapshot({
               timestamp: expect.any(Date),
             })
@@ -485,7 +485,7 @@ describe('Chat', () => {
         const chat = new Chat(options)
         await chat.connect()
 
-        chat.once('PRIVMSG', message => {
+        chat.once('PRIVMSG', (message) => {
           expect(message).toMatchSnapshot({
             timestamp: expect.any(Date),
           })
@@ -495,11 +495,11 @@ describe('Chat', () => {
         emitHelper(chat._client, raw)
       })
 
-      test('whisper', async done => {
+      test('whisper', async (done) => {
         const chat = new Chat(options)
         await chat.connect()
 
-        server.once('message', message => {
+        server.once('message', (message) => {
           expect(message).toEqual('PRIVMSG #jtv :/w dallas Kappa Keepo Kappa')
           done()
         })
@@ -517,7 +517,7 @@ describe('Chat', () => {
       })
     })
 
-    test('should emit multiple events for compound events', async done => {
+    test('should emit multiple events for compound events', async (done) => {
       const chat = new Chat({ log: { enabled: false } })
       await chat.connect()
 
@@ -529,17 +529,17 @@ describe('Chat', () => {
         `${UserNoticeCompounds.SUBSCRIPTION}/#dallas`,
       ]
 
-      Promise.all(events.map(event => resolveOnEvent(chat, event))).then(
-        messages => {
+      Promise.all(events.map((event) => resolveOnEvent(chat, event))).then(
+        (messages) => {
           expect(messages[0]).toMatchSnapshot({
             timestamp: expect.any(Date),
           })
 
-          messages.forEach(message => expect(message).toEqual(messages[0]))
+          messages.forEach((message) => expect(message).toEqual(messages[0]))
           done()
         },
       )
-      chat.once(Commands.USER_NOTICE, message => {
+      chat.once(Commands.USER_NOTICE, (message) => {
         expect(message).toMatchSnapshot({
           timestamp: expect.any(Date),
         })
@@ -550,13 +550,13 @@ describe('Chat', () => {
     })
 
     describe('deviations', () => {
-      test('CLEARCHAT deviation 1', async done => {
+      test('CLEARCHAT deviation 1', async (done) => {
         const chat = new Chat(options)
         await chat.connect()
 
         expect.assertions(1)
 
-        chat.on('CLEARCHAT', actual => {
+        chat.on('CLEARCHAT', (actual) => {
           expect(actual).toMatchSnapshot({
             timestamp: expect.any(Date),
           })

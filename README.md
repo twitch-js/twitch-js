@@ -132,13 +132,13 @@ const onAuthenticationFailure = () =>
       client_id: clientId,
       client_secret: clientSecret,
     },
-  }).then(response => response.accessToken)
+  }).then((response) => response.accessToken)
 
 const token = 'cfabdegwdoklmawdzdo98xt2fo512y'
 const username = 'ronni'
 const twitchJs = new TwitchJs({ token, username, onAuthenticationFailure })
 
-twitchJs.chat.connect().then(globalUserState => {
+twitchJs.chat.connect().then((globalUserState) => {
   // Do stuff ...
 })
 ```
