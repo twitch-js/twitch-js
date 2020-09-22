@@ -12,13 +12,7 @@ import fetchUtil from '../utils/fetch'
 import * as Errors from '../utils/fetch/Errors'
 import * as validators from './utils/validators'
 
-import {
-  ApiOptions,
-  ApiReadyStates,
-  ApiFetchOptions,
-  ApiHeaders,
-  Settings,
-} from './types'
+import { ApiOptions, ApiReadyStates, ApiFetchOptions, Settings } from './types'
 
 export * from './types'
 
