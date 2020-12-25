@@ -12,7 +12,13 @@ import fetchUtil from '../utils/fetch'
 import * as Errors from '../utils/fetch/Errors'
 import * as validators from './utils/validators'
 
-import { ApiOptions, ApiReadyStates, ApiFetchOptions, Settings } from './types'
+import {
+  ApiOptions,
+  ApiReadyStates,
+  ApiFetchOptions,
+  Settings,
+  ApiHeaders,
+} from './types'
 
 /**
  * Make requests to Twitch API.
@@ -201,7 +207,7 @@ class Api {
     return Settings[version].baseUrl
   }
 
-  private _getHeaders(version: ApiVersions): Headers {
+  private _getHeaders(version: ApiVersions): ApiHeaders {
     const { clientId, token } = this.options
 
     const isHelix = this._isVersionHelix(version)
@@ -211,21 +217,20 @@ class Api {
       '[twitch-js/Api] To call a Helix endpoint, a `clientId` or `token` must be provided',
     )
 
-    const headers = new Headers()
+    const headers: ApiHeaders = {}
 
     if (!isHelix) {
-      headers.set('Accept', 'application/vnd.twitchtv.v5+json')
+      headers['Accept'] = 'application/vnd.twitchtv.v5+json'
     }
 
     if (clientId) {
-      headers.set('Client-ID', clientId)
+      headers['Client-ID'] = clientId
     }
 
     if (token) {
-      headers.set(
-        'Authorization',
-        `${Settings[version].authorizationHeader} ${token}`,
-      )
+      headers[
+        'Authorization'
+      ] = `${Settings[version].authorizationHeader} ${token}`
     }
 
     return headers
