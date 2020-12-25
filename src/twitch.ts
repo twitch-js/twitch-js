@@ -48,7 +48,7 @@ export enum MembershipCommands {
  */
 export enum TagCommands {
   CLEAR_CHAT = 'CLEARCHAT',
-  GLOBAL_USER_STATE = 'GLOBALUSERSTATE',
+  GLOBALUSERSTATE = 'GLOBALUSERSTATE',
   PRIVATE_MESSAGE = 'PRIVMSG',
   ROOM_STATE = 'ROOMSTATE',
   USER_NOTICE = 'USERNOTICE',
@@ -91,7 +91,7 @@ export enum Commands {
   NAMES_END = '366',
 
   CLEAR_CHAT = 'CLEARCHAT',
-  GLOBAL_USER_STATE = 'GLOBALUSERSTATE',
+  GLOBALUSERSTATE = 'GLOBALUSERSTATE',
   HOST_TARGET = 'HOSTTARGET',
   NOTICE = 'NOTICE',
   PRIVATE_MESSAGE = 'PRIVMSG',
@@ -107,7 +107,9 @@ export enum ChatEvents {
   CONNECTED = 'CONNECTED',
   DISCONNECTED = 'DISCONNECTED',
   RECONNECT = 'RECONNECT',
+  AUTHENTICATED = 'AUTHENTICATED',
   AUTHENTICATION_FAILED = 'AUTHENTICATION_FAILED',
+  GLOBALUSERSTATE = 'GLOBALUSERSTATE',
   ERROR_ENCOUNTERED = 'ERROR_ENCOUNTERED',
   PARSE_ERROR_ENCOUNTERED = 'PARSE_ERROR_ENCOUNTERED',
 
@@ -324,8 +326,8 @@ export interface BaseTags {
  * @see https://dev.twitch.tv/docs/irc/tags#clearchat-twitch-tags
  */
 export interface ClearChatTags extends BaseTags {
-  banReason: string
-  banDuration: number
+  banReason?: string
+  banDuration?: number
 }
 
 /**
@@ -334,7 +336,7 @@ export interface ClearChatTags extends BaseTags {
  */
 export interface GlobalUserStateTags extends BaseTags {
   emoteSets: string[]
-  userType: string
+  userType?: string
   username: string
 }
 
@@ -368,7 +370,7 @@ export interface UserStateTags extends BaseTags {
   mod?: string
   subscriber?: string
   turbo?: string
-  userType: string
+  userType?: string
   username: string
 }
 
@@ -425,8 +427,8 @@ export interface BaseMessage extends Message {
   timestamp: Date
   channel: string
   username: string
-  command: Commands
-  event: Commands | Events
+  command: string
+  event: string
   isSelf: boolean
   message: string
   tags: { [key: string]: any }
@@ -494,8 +496,8 @@ export interface NamesEndMessage extends Omit<BaseMessage, 'message'> {
  * @see https://dev.twitch.tv/docs/irc/tags#globaluserstate-twitch-tags
  */
 export interface GlobalUserStateMessage extends BaseMessage {
-  command: Commands.GLOBAL_USER_STATE
-  event: Commands.GLOBAL_USER_STATE
+  command: Commands.GLOBALUSERSTATE
+  event: Commands.GLOBALUSERSTATE
   tags: GlobalUserStateTags
 }
 
@@ -528,7 +530,7 @@ export type ClearChatMessages = ClearChatMessage | ClearChatUserBannedMessage
  * Host starts or stops a message.
  * @see https://dev.twitch.tv/docs/irc/commands/#hosttarget-twitch-commands
  */
-export interface HostTargetMessage extends BaseMessage {
+export interface HostTargetMessage extends Omit<BaseMessage, 'message'> {
   command: Commands.HOST_TARGET
   event: ChatEvents.HOST_ON | ChatEvents.HOST_OFF
   numberOfViewers?: number
@@ -612,14 +614,14 @@ export interface HostingPrivateMessage extends BaseHostingPrivateMessage {
 export interface HostingWithViewersPrivateMessage
   extends BaseHostingPrivateMessage {
   event: ChatEvents.HOSTED_WITH_VIEWERS
-  numberOfViewers: number
   tags: { displayName: string }
+  numberOfViewers?: number
 }
 
 export interface HostingAutoPrivateMessage extends BaseHostingPrivateMessage {
   event: ChatEvents.HOSTED_AUTO
   tags: { displayName: string }
-  numberOfViewers: number
+  numberOfViewers?: number
 }
 
 export type PrivateMessages =
@@ -630,7 +632,7 @@ export type PrivateMessages =
   | HostingAutoPrivateMessage
 
 export interface MessageParameters {
-  [key: string]: string | number | boolean | Date
+  [key: string]: string | number | boolean | Date | undefined
 }
 
 export interface AnonymousGiftPaidUpgradeParameters extends MessageParameters {}
@@ -812,6 +814,7 @@ export type UserNoticeMessages =
   | UserNoticeSubscriptionMessage
 
 export type Messages =
+  | BaseMessage
   | JoinMessage
   | PartMessage
   | ModeMessages
@@ -825,3 +828,4 @@ export type Messages =
   | UserStateMessage
   | PrivateMessages
   | UserNoticeMessages
+  | Error

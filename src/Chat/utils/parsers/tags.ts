@@ -85,7 +85,7 @@ export const userState = (tags: BaseTags): UserStateTags => ({
   emotes: helpers.emotes(tags.emotes),
   emoteSets: helpers.emoteSets(tags.emoteSets),
   userType: helpers.userType(tags.userType),
-  username: tags.displayName ? toLower(tags.displayName) : undefined,
+  username: tags.displayName ? toLower(tags.displayName) : tags.username,
 })
 
 export const globalUserState = (tags: BaseTags): GlobalUserStateTags => ({

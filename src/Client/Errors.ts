@@ -1,13 +1,13 @@
-import { Commands, Events, BaseMessage, ChatEvents } from '../twitch'
+import { BaseMessage, ChatEvents } from '../twitch'
 
 import BaseError from '../utils/BaseError'
 
-export class ChatError extends BaseError {
+export class ClientError extends BaseError {
   command?: string
 
   constructor(error: Error | string, message?: BaseMessage | string) {
     super(`${error instanceof Error ? error.message : error} [Chat]`)
-    Object.setPrototypeOf(this, ChatError.prototype)
+    Object.setPrototypeOf(this, ClientError.prototype)
 
     if (typeof message !== 'undefined' && typeof message !== 'string') {
       this.command = message.command
@@ -15,7 +15,7 @@ export class ChatError extends BaseError {
   }
 }
 
-export class AuthenticationError extends ChatError {
+export class AuthenticationError extends ClientError {
   constructor(error: Error, message?: BaseMessage) {
     super('Authentication error encountered', message)
     Object.setPrototypeOf(this, AuthenticationError.prototype)
@@ -25,7 +25,7 @@ export class AuthenticationError extends ChatError {
   }
 }
 
-export class ParseError extends ChatError {
+export class ParseError extends ClientError {
   _raw: string
 
   constructor(error: Error, rawMessage: string) {
@@ -36,19 +36,5 @@ export class ParseError extends ChatError {
 
     this._raw = rawMessage
     this.command = ChatEvents.PARSE_ERROR_ENCOUNTERED
-  }
-}
-
-export class JoinError extends ChatError {
-  constructor(message = 'Error: join') {
-    super(message)
-    Object.setPrototypeOf(this, JoinError.prototype)
-  }
-}
-
-export class TimeoutError extends ChatError {
-  constructor(message = 'Error: timeout') {
-    super(message)
-    Object.setPrototypeOf(this, TimeoutError.prototype)
   }
 }

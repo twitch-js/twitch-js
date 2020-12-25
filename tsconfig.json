@@ -15,5 +15,5 @@
     "target": "es5"
   },
   "include": ["src", "__e2e__/node"],
-  "exclude": ["**/node_modules"]
+  "exclude": ["**/node_modules", "**/__e2e__", "**/__tests__"]
 }

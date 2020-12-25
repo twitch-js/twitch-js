@@ -1,0 +1,20 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Chat/utils/parsers/tags ROOMSTATE tags should parse ROOMSTATE tags 1`] = `
+Object {
+  "broadcasterLang": "en",
+  "emoteOnly": true,
+  "followersOnly": 30,
+  "r9k": true,
+  "slow": 5,
+  "subsOnly": true,
+  "unknownTag": "unknownTagValue",
+}
+`;
+
+exports[`Chat/utils/parsers/tags privateMessageCheerEvent should return cheer event object 1`] = `
+Object {
+  "bits": 100,
+  "event": "CHEER",
+}
+`;
