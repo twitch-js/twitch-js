@@ -62,18 +62,20 @@ class Client extends EventEmitter<Record<ClientEvents, BaseMessage>> {
     this._moderatorQueue = new Queue({ intervalCap: 100, interval: 30000 })
   }
 
-  isReady = () => this._ws.readyState === 1
+  isReady() {
+    return this._ws.readyState === 1
+  }
 
   /**
    * Send message to Twitch
    */
-  send = async (
+  async send(
     message: string,
     options?: Partial<{
       priority: number
       isModerator: boolean
     }>,
-  ) => {
+  ) {
     try {
       const { priority, isModerator } = {
         priority: 0,
@@ -96,7 +98,7 @@ class Client extends EventEmitter<Record<ClientEvents, BaseMessage>> {
     }
   }
 
-  disconnect = () => {
+  disconnect() {
     this._handleHeartbeatReset()
     this._ws.close()
   }
@@ -208,7 +210,7 @@ class Client extends EventEmitter<Record<ClientEvents, BaseMessage>> {
     this.emit(ClientEvents.DISCONNECTED, closeEvent)
   }
 
-  private _handleHeartbeat = () => {
+  private _handleHeartbeat() {
     this._handleHeartbeatReset()
 
     const priority = this._clientPriority
@@ -218,7 +220,7 @@ class Client extends EventEmitter<Record<ClientEvents, BaseMessage>> {
     }, constants.KEEP_ALIVE_PING_TIMEOUT)
   }
 
-  private _handleHeartbeatReset = () => {
+  private _handleHeartbeatReset() {
     if (this._heartbeatTimeoutId) {
       clearTimeout(this._heartbeatTimeoutId)
     }

@@ -18,7 +18,7 @@ import Chat, {
   NoticeCompounds,
   PrivateMessageCompounds,
   UserNoticeCompounds,
-} from '../'
+} from '..'
 import parser from '../utils/parsers'
 
 jest.mock('ws')

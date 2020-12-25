@@ -2,24 +2,20 @@ import EventEmitter from 'eventemitter3'
 import delay from 'delay'
 import pEvent from 'p-event'
 
-import toLower from 'lodash/toLower'
 import uniq from 'lodash/uniq'
 
 import {
-  GlobalUserStateMessage,
   UserStateMessage,
   RoomStateMessage,
   Events,
   Commands,
   Messages,
   BaseMessage,
-  UserStateTags,
   GlobalUserStateTags,
 } from '../twitch'
 
 import createLogger, { Logger } from '../utils/logger'
 
-import * as utils from '../utils'
 import * as chatUtils from './utils'
 
 import Client, { ClientEvents } from '../Client'
@@ -237,7 +233,7 @@ class Chat extends EventEmitter<EventTypes> {
   /**
    * Connect to Twitch.
    */
-  connect = async (): Promise<void> => {
+  async connect(): Promise<void> {
     try {
       this._readyState = ChatReadyStates.CONNECTING
 
@@ -273,7 +269,10 @@ class Chat extends EventEmitter<EventTypes> {
   /**
    * Send a raw message to Twitch.
    */
-  send: Client['send'] = (message, options) => {
+  send(
+    message: string,
+    options?: Partial<{ priority: number; isModerator: boolean }>,
+  ): Promise<void> {
     if (!this._client) {
       throw new Errors.ChatError('Not connected')
     }
@@ -284,14 +283,14 @@ class Chat extends EventEmitter<EventTypes> {
   /**
    * Disconnected from Twitch.
    */
-  disconnect = () => {
+  disconnect() {
     this._client?.disconnect()
   }
 
   /**
    * Reconnect to Twitch, providing new options to the client.
    */
-  reconnect = async (options?: ChatOptions) => {
+  async reconnect(options?: ChatOptions) {
     if (options) {
       this._options = { ...this._options, ...options }
     }
@@ -337,7 +336,7 @@ class Chat extends EventEmitter<EventTypes> {
    *     })
    *   })
    */
-  join = async (channel: string) => {
+  async join(channel: string) {
     const sanitizedChannel = sanitizers.channel(channel)
 
     const joinProfiler = this._log.profile(`Joining ${sanitizedChannel}`)
@@ -382,7 +381,7 @@ class Chat extends EventEmitter<EventTypes> {
   /**
    * Depart from a channel.
    */
-  part = (maybeChannel: string) => {
+  part(maybeChannel: string) {
     const channel = sanitizers.channel(maybeChannel)
     this._log.info(`Parting ${channel}`)
 
@@ -393,11 +392,7 @@ class Chat extends EventEmitter<EventTypes> {
   /**
    * Send a message to a channel.
    */
-  say = async (
-    channel: string,
-    message: string,
-    options?: { priority: number },
-  ) => {
+  async say(channel: string, message: string, options?: { priority: number }) {
     if (!this._isAuthenticated) {
       throw new Errors.ChatError(
         'To whisper, please provide a token and username',
@@ -426,7 +421,7 @@ class Chat extends EventEmitter<EventTypes> {
   /**
    * Whisper to another user.
    */
-  whisper = (user: string, message: string) => {
+  whisper(user: string, message: string) {
     if (!this._isAuthenticated) {
       throw new Errors.ChatError(
         'To whisper, please provide a token and username',
@@ -439,7 +434,7 @@ class Chat extends EventEmitter<EventTypes> {
   /**
    * Broadcast message to all connected channels.
    */
-  broadcast = (message: string) => {
+  broadcast(message: string) {
     if (!this._isAuthenticated) {
       throw new Errors.ChatError(
         'To broadcast, please provide a token and username',
@@ -449,8 +444,8 @@ class Chat extends EventEmitter<EventTypes> {
     return this._getChannels().map((channel) => this.say(channel, message))
   }
 
-  private _handleConnectionAttempt = (): Promise<void> =>
-    new Promise((resolve, reject) => {
+  private _handleConnectionAttempt(): Promise<void> {
+    return new Promise((resolve, reject) => {
       const connectProfiler = this._log.profile('Connecting ...')
 
       // Connect ...
@@ -494,6 +489,7 @@ class Chat extends EventEmitter<EventTypes> {
         resolve()
       })
     })
+  }
 
   private _handleDisconnect() {
     this._log.info('Disconnecting ...')
@@ -505,12 +501,12 @@ class Chat extends EventEmitter<EventTypes> {
     this._log.info('Disconnected')
   }
 
-  private _handleAuthenticated = (message: BaseMessage) => {
+  private _handleAuthenticated(message: BaseMessage) {
     this._globalUserState = parsers.globalUserStateMessage(message).tags
     this._isAuthenticated = true
   }
 
-  private _handleAuthenticationFailure = async (message: BaseMessage) => {
+  private async _handleAuthenticationFailure(message: BaseMessage) {
     this.disconnect()
 
     try {
