@@ -1,12 +1,12 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Chat/utils/validators chatOptions should return default chat options 1`] = `
+exports[`Chat/utils/validators clientOptions should return default client options 1`] = `
 Object {
-  "connectionTimeout": 5000,
   "isKnown": false,
   "isVerified": false,
-  "joinTimeout": 1000,
-  "onAuthenticationFailure": [Function],
+  "port": 443,
+  "server": "irc-ws.chat.twitch.tv",
+  "ssl": true,
   "token": "oauth:TOKEN",
   "username": "USERNAME",
 }

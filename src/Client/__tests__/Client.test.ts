@@ -2,9 +2,7 @@ import { server } from 'ws'
 
 import membership from '../../../__mocks__/ws/__fixtures__/membership'
 
-import { Events, Commands } from '../../twitch'
-
-import Client from '../Client'
+import Client, { ClientEvents } from '../'
 import * as constants from '../constants'
 
 jest.mock('ws')
@@ -22,7 +20,7 @@ describe('Chat/Client', () => {
   test('should receive CONNECTED event', (done) => {
     const client = new Client(options)
 
-    client.once(Events.CONNECTED, () => done())
+    client.once(ClientEvents.CONNECTED, () => done())
   })
 
   test('should send CAP, PASS and NICK', (done) => {
@@ -31,7 +29,7 @@ describe('Chat/Client', () => {
 
     const client = new Client(options)
 
-    client.once(Events.CONNECTED, () => {
+    client.once(ClientEvents.CONNECTED, () => {
       expect(listener.mock.calls).toContainEqual([membership.CAP])
       expect(listener.mock.calls).toContainEqual([
         `PASS oauth:${options.token}`,
@@ -53,57 +51,6 @@ describe('Chat/Client', () => {
     server.sendMessageToClient(membership.PING)
   })
 
-  describe('queue', () => {
-    test('should create a queue', () => {
-      const client = new Client(options)
-
-      const actual = client._queue._q._intervalCap
-      const expected = constants.RATE_LIMIT_USER
-
-      expect(actual).toEqual(expected)
-    })
-
-    test('should create a moderator queue', () => {
-      const client = new Client(options)
-
-      const actual = client._moderatorQueue._q._intervalCap
-      const expected = constants.RATE_LIMIT_MODERATOR
-
-      expect(actual).toEqual(expected)
-    })
-
-    test('should create a queue for known bots', () => {
-      const client = new Client({ ...options, isKnown: true })
-
-      const actual = client._queue._q._intervalCap
-      const expected = constants.RATE_LIMIT_KNOWN_BOT
-
-      expect(actual).toEqual(expected)
-    })
-
-    test('shoud create a queue for verified bots', () => {
-      const client = new Client({ ...options, isVerified: true })
-
-      const actual = client._queue._q._intervalCap
-      const expected = constants.RATE_LIMIT_VERIFIED_BOT
-
-      expect(actual).toEqual(expected)
-      expect(client._queue).toEqual(client._moderatorQueue)
-    })
-
-    test('should use moderator queue', async () => {
-      const client = new Client({ ...options })
-
-      const queueSpy = jest.spyOn(client._queue, 'push')
-      const moderatorQueueSpy = jest.spyOn(client._moderatorQueue, 'push')
-
-      await client.send('MESSAGE', { isModerator: true })
-
-      expect(queueSpy).toHaveBeenCalledTimes(0)
-      expect(moderatorQueueSpy).toHaveBeenCalledTimes(1)
-    })
-  })
-
   describe('keep alive', () => {
     afterAll(() => {
       jest.useRealTimers()
@@ -113,31 +60,33 @@ describe('Chat/Client', () => {
       jest.useFakeTimers()
 
       server.on('message', (message) => {
-        if (message === Commands.PING) {
+        if (message === ClientEvents.PING) {
           done()
           server.off('message')
         }
       })
 
       const client = new Client(options)
-      jest.advanceTimersByTime(1000)
 
-      client.on(Events.CONNECTED, () =>
-        jest.advanceTimersByTime(constants.KEEP_ALIVE_PING_TIMEOUT),
-      )
+      client.on(ClientEvents.CONNECTED, (m) => {
+        jest.advanceTimersByTime(constants.KEEP_ALIVE_PING_TIMEOUT)
+      })
+
+      jest.advanceTimersByTime(1000)
     })
 
     test('should emit RECONNECT after keep alive expires', (done) => {
       jest.useFakeTimers()
 
       const client = new Client(options)
+
+      client.on(ClientEvents.RECONNECT, () => done())
+
+      client.on(ClientEvents.CONNECTED, () => {
+        jest.advanceTimersByTime(constants.KEEP_ALIVE_RECONNECT_TIMEOUT)
+      })
+
       jest.advanceTimersByTime(1000)
-
-      client.on(Events.RECONNECT, () => done())
-
-      client.on(Events.CONNECTED, () =>
-        jest.advanceTimersByTime(constants.KEEP_ALIVE_RECONNECT_TIMEOUT),
-      )
     })
   })
 })

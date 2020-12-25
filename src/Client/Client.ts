@@ -29,6 +29,7 @@ class Client extends EventEmitter<Record<ClientEvents, BaseMessage>> {
   private _moderatorQueue?: Queue
 
   private _heartbeatTimeoutId?: NodeJS.Timeout
+  private _reconnectTimeoutId?: NodeJS.Timeout
 
   private _clientPriority = 100
 
@@ -215,14 +216,23 @@ class Client extends EventEmitter<Record<ClientEvents, BaseMessage>> {
 
     const priority = this._clientPriority
 
+    // Send PING ...
     this._heartbeatTimeoutId = setTimeout(() => {
       this.send(Commands.PING, { priority })
     }, constants.KEEP_ALIVE_PING_TIMEOUT)
+
+    // ... and if the heart beat fails, emit RECONNECT event.
+    this._reconnectTimeoutId = setTimeout(() => {
+      this.emit(ClientEvents.RECONNECT)
+    }, constants.KEEP_ALIVE_PING_TIMEOUT + 1000)
   }
 
   private _handleHeartbeatReset() {
     if (this._heartbeatTimeoutId) {
       clearTimeout(this._heartbeatTimeoutId)
+    }
+    if (this._reconnectTimeoutId) {
+      clearTimeout(this._reconnectTimeoutId)
     }
   }
 }
