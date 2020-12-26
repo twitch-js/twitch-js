@@ -1,17 +1,23 @@
 import TwitchJs from '../../lib'
 import { ApiVersions } from '../../lib/twitch'
 
+import { preflight } from '../utils'
+
 describe('Node E2E', () => {
   if (!process.env.CI) {
-    // eslint-disable-next-line @typescript-eslint/no-var-requires
+    /* eslint-disable-next-line @typescript-eslint/no-var-requires */
     require('dotenv').config()
   }
 
-  const token = process.env.TWITCH_TOKEN
-  const username = process.env.TWITCH_USERNAME
-  const channel = process.env.TWITCH_USERNAME
-  const message = process.env.TRAVIS_BUILD_NUMBER
-    ? `Travis CI E2E Build #${process.env.TRAVIS_BUILD_NUMBER}`
+  beforeAll(() => {
+    preflight()
+  })
+
+  const token = process.env.ACCESS_TOKEN
+  const username = process.env.USERNAME
+  const channel = process.env.USERNAME
+  const message = process.env.GITHUB_RUN_ID
+    ? `CI E2E Build #${process.env.GITHUB_RUN_ID}`
     : `Local E2E ${new Date()}`
 
   const options = {
@@ -19,8 +25,6 @@ describe('Node E2E', () => {
     username,
     log: { enabled: false },
   }
-
-  afterAll(() => setTimeout(process.exit.bind(process, 'Ran tests'), 1000))
 
   describe('Chat', () => {
     test('should connect and send message', async () => {

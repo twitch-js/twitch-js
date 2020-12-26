@@ -966,7 +966,7 @@ class Chat extends EventEmitter<EventTypes> {
       pEvent<string, UserStateMessage>(
         // @ts-expect-error pEvent does not recognize eventemitter3.
         this,
-        `${Commands.USER_STATE}/${channel}`,
+        `${Commands.USER_STATE}/${sanitizedChannel}`,
       ),
       this.send(`${Commands.PRIVATE_MESSAGE} ${sanitizedChannel} :${message}`, {
         isModerator,

@@ -100,6 +100,19 @@ class Client extends EventEmitter<Record<ClientEvents, BaseMessage>> {
   }
 
   disconnect() {
+    this._queueAuthenticate.pause()
+    this._queueJoin.pause()
+    this._queue.pause()
+    this._moderatorQueue?.pause()
+    // @ts-expect-error clean up p-queue
+    clearTimeout(this._queueAuthenticate._timeoutId)
+    // @ts-expect-error clean up p-queue
+    clearTimeout(this._queueJoin._timeoutId)
+    // @ts-expect-error clean up p-queue
+    clearTimeout(this._queue._timeoutId)
+    // @ts-expect-error clean up p-queue
+    clearTimeout(this._moderatorQueue?._timeoutId)
+
     this._handleHeartbeatReset()
     this._ws.close()
   }

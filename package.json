@@ -51,7 +51,7 @@
     "test:coverage": "jest --maxWorkers=4 --collectCoverage src",
     "test:e2e:browser": "jest __e2e__/browser",
     "test:e2e:node": "jest __e2e__/node",
-    "test:e2e": "jest __e2e__",
+    "test:e2e": "jest --runInBand __e2e__",
     "test": "jest",
     "prebuild": "yarn clean",
     "build:lib": "tsc --project tsconfig.build.json",
@@ -212,7 +212,12 @@
         "testEnvironment": "node",
         "testMatch": [
           "**/?(*.)+(e2e).ts"
-        ]
+        ],
+        "globals": {
+          "ts-jest": {
+            "diagnostics": false
+          }
+        }
       }
     ],
     "testPathIgnorePatterns": [
