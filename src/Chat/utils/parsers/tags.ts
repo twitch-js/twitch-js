@@ -86,6 +86,7 @@ export const userState = (tags: BaseTags): UserStateTags => ({
   emoteSets: helpers.emoteSets(tags.emoteSets),
   userType: helpers.userType(tags.userType),
   username: tags.displayName ? toLower(tags.displayName) : tags.username,
+  isModerator: tags.mod === '1',
 })
 
 export const globalUserState = (tags: BaseTags): GlobalUserStateTags => ({

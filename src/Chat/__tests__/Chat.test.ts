@@ -1,18 +1,19 @@
 import { server } from 'ws'
+import pEvent from 'p-event'
+import camelCase from 'lodash/camelCase'
 
 import rawCommands from '../../../__mocks__/ws/__fixtures__/commands'
 import membership from '../../../__mocks__/ws/__fixtures__/membership'
 import tags from '../../../__mocks__/ws/__fixtures__/tags'
 
 import {
-  Events,
+  ChatCommands,
   Commands,
+  Events,
   KnownNoticeMessageIds,
   KnownUserNoticeMessageIds,
   PrivateMessageEvents,
 } from '../../twitch'
-
-import { resolveOnEvent } from '../../utils'
 
 import Chat, {
   NoticeCompounds,
@@ -68,36 +69,34 @@ describe('Chat', () => {
         token: undefined,
         username: undefined,
       })
-      const actual = await chat.connect()
-
-      expect(actual).toMatchSnapshot({ timestamp: expect.any(Date) })
-      expect(chat._readyState).toBe(3)
+      await chat.connect()
     })
 
     test('should connect as authenticated', async () => {
       const chat = new Chat(options)
-      const actual = await chat.connect()
-
-      expect(actual).toMatchSnapshot({ timestamp: expect.any(Date) })
-      expect(chat._readyState).toBe(3)
+      await chat.connect()
     })
 
-    test('should call onAuthenticationFailure', (done) => {
-      const onAuthenticationFailure = jest.fn(() => Promise.reject())
+    test('should call onAuthenticationFailure', async () => {
+      const onAuthenticationFailure = jest.fn(() =>
+        Promise.reject('token fail'),
+      )
 
-      const chat = new Chat({
-        ...options,
-        token: 'INVALID_TOKEN',
-        onAuthenticationFailure,
-      })
+      try {
+        const chat = new Chat({
+          ...options,
+          token: 'INVALID_TOKEN',
+          connectionTimeout: 100,
+          onAuthenticationFailure,
+        })
 
-      chat.connect().catch(() => {
+        await chat.connect()
+      } catch (err) {
         expect(onAuthenticationFailure).toHaveBeenCalled()
-        done()
-      })
+      }
     })
 
-    test('should update token and successfully connect', (done) => {
+    test('should update token and successfully connect', async () => {
       const onAuthenticationFailure = jest.fn(() => Promise.resolve('TOKEN'))
 
       const chat = new Chat({
@@ -107,11 +106,9 @@ describe('Chat', () => {
         onAuthenticationFailure,
       })
 
-      chat.connect().then(() => {
-        expect(onAuthenticationFailure).toHaveBeenCalled()
-        expect(chat.options.token).toEqual('oauth:TOKEN')
-        done()
-      })
+      await chat.connect()
+
+      expect(onAuthenticationFailure).toHaveBeenCalled()
     })
 
     test('should return the same promise', async () => {
@@ -134,22 +131,21 @@ describe('Chat', () => {
 
   test('should join channel', async () => {
     const chat = new Chat(options)
+
     await chat.connect()
 
     const actual = await chat.join('#dallas')
     expect(actual).toMatchSnapshot()
-    expect(chat._getChannelState('#dallas')).toEqual(actual)
   })
 
   test('should send message to channel', async (done) => {
     const chat = new Chat(options)
     await chat.connect()
 
-    expect.assertions(1)
-
-    server.once('message', (message) => {
-      expect(message).toEqual('PRIVMSG #dallas :Kappa Keepo Kappa')
-      done()
+    server.on('message', (message) => {
+      if (message === 'PRIVMSG #dallas :Kappa Keepo Kappa') {
+        done()
+      }
     })
 
     chat.say('#dallas', 'Kappa Keepo Kappa')
@@ -172,6 +168,25 @@ describe('Chat', () => {
       .catch((err) => expect(err).toMatchSnapshot())
   })
 
+  test('commands should call say with args', async () => {
+    const chat = new Chat(options)
+    await chat.connect()
+
+    const channel = '#channel'
+    const args = ['arg1', 'arg2', 'arg3']
+
+    const spy = jest.spyOn(chat, 'say')
+
+    Object.entries(ChatCommands).forEach(([key, command]) => {
+      chat[camelCase(key)](channel, ...args)
+
+      expect(spy).toHaveBeenLastCalledWith(
+        channel,
+        `/${command} ${args.join(' ')}`,
+      )
+    })
+  })
+
   test('should part a channel', async (done) => {
     const chat = new Chat(options)
     await chat.connect()
@@ -190,19 +205,13 @@ describe('Chat', () => {
     chat.part('#dallas')
   })
 
-  test('should disconnect', async (done) => {
+  test('should disconnect', async () => {
     const chat = new Chat(options)
     await chat.connect()
 
-    expect.assertions(2)
-
-    chat.once(Events.DISCONNECTED, () => {
-      expect(chat._readyState).toBe(5)
-      expect(chat._connectionInProgress).toBe(null)
-      done()
-    })
-
     chat.disconnect()
+    expect(chat._readyState).toBe(5)
+    expect(chat._connectionInProgress).toBe(undefined)
   })
 
   describe('reconnect', () => {
@@ -287,9 +296,9 @@ describe('Chat', () => {
       await chat.connect()
 
       const emissions = Promise.all([
-        resolveOnEvent(chat, Commands.NAMES),
-        resolveOnEvent(chat, Commands.NAMES),
-        resolveOnEvent(chat, Commands.NAMES_END),
+        pEvent(chat, Commands.NAMES),
+        pEvent(chat, Commands.NAMES),
+        pEvent(chat, Commands.NAMES_END),
       ])
 
       emitHelper(chat._client, membership.NAMES)
@@ -504,7 +513,7 @@ describe('Chat', () => {
           done()
         })
 
-        chat.whisper('dallas', 'Kappa Keepo Kappa')
+        await chat.whisper('dallas', 'Kappa Keepo Kappa')
       })
 
       test('whisper when anonymous', async () => {
@@ -529,7 +538,7 @@ describe('Chat', () => {
         `${UserNoticeCompounds.SUBSCRIPTION}/#dallas`,
       ]
 
-      Promise.all(events.map((event) => resolveOnEvent(chat, event))).then(
+      Promise.all(events.map((event) => pEvent(chat, event))).then(
         (messages) => {
           expect(messages[0]).toMatchSnapshot({
             timestamp: expect.any(Date),

@@ -5,6 +5,7 @@ import defaults from 'lodash/defaults'
 import isString from 'lodash/isString'
 import isFinite from 'lodash/isFinite'
 import isBoolean from 'lodash/isBoolean'
+import isNil from 'lodash/isNil'
 
 import * as types from '../types'
 
@@ -15,8 +16,8 @@ export const clientOptions = (
   options: Partial<types.ClientOptions>,
 ): types.ClientOptions => {
   const shape = {
-    username: isString,
-    token: isString,
+    username: (value: any) => isNil(value) || isString(value),
+    token: (value: any) => isNil(value) || isString(value),
     server: isString,
     port: isFinite,
     ssl: isBoolean,
@@ -27,8 +28,10 @@ export const clientOptions = (
   const optionsWithDefaults: types.ClientOptions = defaults(
     {
       ...options,
-      username: sanitizers.username(options.username),
-      token: sanitizers.token(options.token),
+      username: options.username
+        ? sanitizers.username(options.username)
+        : undefined,
+      token: options.token ? sanitizers.token(options.token) : undefined,
     },
     {
       server: constants.CHAT_SERVER,

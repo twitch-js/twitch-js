@@ -32,7 +32,7 @@ export const Settings: Record<ApiVersions, ApiSettings> = {
   },
 }
 
-export type ApiHeaders = {
+export type ApiHeaders = Record<string, string> & {
   'Client-ID'?: string
   Accept?: string
   Authorization?: string

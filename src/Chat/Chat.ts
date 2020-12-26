@@ -5,13 +5,16 @@ import pEvent from 'p-event'
 import uniq from 'lodash/uniq'
 
 import {
-  UserStateMessage,
-  RoomStateMessage,
-  Events,
-  Commands,
-  Messages,
   BaseMessage,
+  ChatCommands,
+  Commands,
+  Events,
   GlobalUserStateTags,
+  KnownNoticeMessageIdsUpperCase as NoticeMessageIds,
+  Messages,
+  NoticeMessages,
+  RoomStateMessage,
+  UserStateMessage,
 } from '../twitch'
 
 import createLogger, { Logger } from '../utils/logger'
@@ -21,8 +24,6 @@ import * as chatUtils from './utils'
 import Client, { ClientEvents } from '../Client'
 import * as Errors from './Errors'
 
-import * as constants from './constants'
-import * as commands from './utils/commands'
 import * as parsers from './utils/parsers'
 import * as sanitizers from './utils/sanitizers'
 import * as validators from './utils/validators'
@@ -225,9 +226,6 @@ class Chat extends EventEmitter<EventTypes> {
 
     // Create logger.
     this._log = createLogger({ name: 'Chat', ...this._options.log })
-
-    // Create commands.
-    Object.assign(this, commands.factory(this))
   }
 
   /**
@@ -252,7 +250,11 @@ class Chat extends EventEmitter<EventTypes> {
       ) {
         this._log.info('Retrying ...')
         await delay(this._options.connectionTimeout)
+
+        await this._handleAuthenticationFailure()
         return this.connect()
+      } else {
+        throw err
       }
     }
   }
@@ -280,11 +282,448 @@ class Chat extends EventEmitter<EventTypes> {
     return this._client.send(message, options)
   }
 
+  async ban(channel: string, ...args: string[]): Promise<NoticeMessages> {
+    channel = sanitizers.channel(channel)
+    const message = `/${ChatCommands.BAN} ${args.join(' ')}`
+
+    const [notice] = await Promise.all([
+      pEvent<string, NoticeMessages>(
+        // @ts-expect-error
+        this,
+        [
+          `${NoticeMessageIds.BAN_SUCCESS}/${channel}`,
+          `${NoticeMessageIds.ALREADY_BANNED}/${channel}`,
+        ],
+        {},
+      ),
+      this.say(channel, message),
+    ])
+
+    return notice
+  }
+  async clear(channel: string, ...args: string[]): Promise<NoticeMessages> {
+    channel = sanitizers.channel(channel)
+    const message = `/${ChatCommands.CLEAR} ${args.join(' ')}`
+
+    const [notice] = await Promise.all([
+      pEvent<string, NoticeMessages>(
+        // @ts-expect-error
+        this,
+        [`${Commands.CLEAR_CHAT}/${channel}`],
+        {},
+      ),
+      this.say(channel, message),
+    ])
+
+    return notice
+  }
+  async color(channel: string, ...args: string[]): Promise<NoticeMessages> {
+    channel = sanitizers.channel(channel)
+    const message = `/${ChatCommands.COLOR} ${args.join(' ')}`
+
+    const [notice] = await Promise.all([
+      pEvent<string, NoticeMessages>(
+        // @ts-expect-error
+        this,
+        [`${NoticeMessageIds.COLOR_CHANGED}/${channel}`],
+        {},
+      ),
+      this.say(channel, message),
+    ])
+
+    return notice
+  }
+  async commercial(
+    channel: string,
+    ...args: string[]
+  ): Promise<NoticeMessages> {
+    channel = sanitizers.channel(channel)
+    const message = `/${ChatCommands.COMMERCIAL} ${args.join(' ')}`
+
+    const [notice] = await Promise.all([
+      pEvent<string, NoticeMessages>(
+        // @ts-expect-error
+        this,
+        [`${NoticeMessageIds.COMMERCIAL_SUCCESS}/${channel}`],
+        {},
+      ),
+      this.say(channel, message),
+    ])
+
+    return notice
+  }
+  async emoteOnly(channel: string, ...args: string[]): Promise<NoticeMessages> {
+    channel = sanitizers.channel(channel)
+    const message = `/${ChatCommands.EMOTE_ONLY} ${args.join(' ')}`
+
+    const [notice] = await Promise.all([
+      pEvent<string, NoticeMessages>(
+        // @ts-expect-error
+        this,
+        [
+          `${NoticeMessageIds.EMOTE_ONLY_ON}/${channel}`,
+          `${NoticeMessageIds.ALREADY_EMOTE_ONLY_ON}/${channel}`,
+        ],
+        {},
+      ),
+      this.say(channel, message),
+    ])
+
+    return notice
+  }
+  async emoteOnlyOff(
+    channel: string,
+    ...args: string[]
+  ): Promise<NoticeMessages> {
+    channel = sanitizers.channel(channel)
+    const message = `/${ChatCommands.EMOTE_ONLY_OFF} ${args.join(' ')}`
+
+    const [notice] = await Promise.all([
+      pEvent<string, NoticeMessages>(
+        // @ts-expect-error
+        this,
+        [
+          `${NoticeMessageIds.EMOTE_ONLY_OFF}/${channel}`,
+          `${NoticeMessageIds.ALREADY_EMOTE_ONLY_OFF}/${channel}`,
+        ],
+        {},
+      ),
+      this.say(channel, message),
+    ])
+
+    return notice
+  }
+  async followersOnly(
+    channel: string,
+    ...args: string[]
+  ): Promise<NoticeMessages> {
+    channel = sanitizers.channel(channel)
+    const message = `/${ChatCommands.FOLLOWERS_ONLY} ${args.join(' ')}`
+
+    const [notice] = await Promise.all([
+      pEvent<string, NoticeMessages>(
+        // @ts-expect-error
+        this,
+        [
+          `${NoticeMessageIds.FOLLOWERS_ON_ZERO}/${channel}`,
+          `${NoticeMessageIds.FOLLOWERS_ON}/${channel}`,
+        ],
+        {},
+      ),
+      this.say(channel, message),
+    ])
+
+    return notice
+  }
+  async followersOnlyOff(
+    channel: string,
+    ...args: string[]
+  ): Promise<NoticeMessages> {
+    channel = sanitizers.channel(channel)
+    const message = `/${ChatCommands.FOLLOWERS_ONLY_OFF} ${args.join(' ')}`
+
+    const [notice] = await Promise.all([
+      pEvent<string, NoticeMessages>(
+        // @ts-expect-error
+        this,
+        [`${NoticeMessageIds.FOLLOWERS_OFF}/${channel}`],
+        {},
+      ),
+      this.say(channel, message),
+    ])
+
+    return notice
+  }
+  async help(channel: string, ...args: string[]): Promise<NoticeMessages> {
+    channel = sanitizers.channel(channel)
+    const message = `/${ChatCommands.HELP} ${args.join(' ')}`
+
+    const [notice] = await Promise.all([
+      pEvent<string, NoticeMessages>(
+        // @ts-expect-error
+        this,
+        [`${NoticeMessageIds.CMDS_AVAILABLE}/${channel}`],
+        {},
+      ),
+      this.say(channel, message),
+    ])
+
+    return notice
+  }
+  async host(channel: string, ...args: string[]): Promise<NoticeMessages> {
+    channel = sanitizers.channel(channel)
+    const message = `/${ChatCommands.HOST} ${args.join(' ')}`
+
+    const [notice] = await Promise.all([
+      pEvent<string, NoticeMessages>(
+        // @ts-expect-error
+        this,
+        [`${NoticeMessageIds.HOST_ON}/${channel}`],
+        {},
+      ),
+      this.say(channel, message),
+    ])
+
+    return notice
+  }
+  async marker(channel: string, ...args: string[]): Promise<UserStateMessage> {
+    channel = sanitizers.channel(channel)
+    const message = `/${ChatCommands.MARKER} ${args.join(' ')}`
+
+    return this.say(channel, message)
+  }
+  async me(channel: string, ...args: string[]): Promise<UserStateMessage> {
+    channel = sanitizers.channel(channel)
+    const message = `/${ChatCommands.ME} ${args.join(' ')}`
+
+    return this.say(channel, message)
+  }
+  async mod(channel: string, ...args: string[]): Promise<NoticeMessages> {
+    channel = sanitizers.channel(channel)
+    const message = `/${ChatCommands.MOD} ${args.join(' ')}`
+
+    const [notice] = await Promise.all([
+      pEvent<string, NoticeMessages>(
+        // @ts-expect-error
+        this,
+        [
+          `${NoticeMessageIds.MOD_SUCCESS}/${channel}`,
+          `${NoticeMessageIds.BAD_MOD_MOD}/${channel}`,
+        ],
+        {},
+      ),
+      this.say(channel, message),
+    ])
+
+    return notice
+  }
+  async mods(channel: string, ...args: string[]): Promise<NoticeMessages> {
+    channel = sanitizers.channel(channel)
+    const message = `/${ChatCommands.MODS} ${args.join(' ')}`
+
+    const [notice] = await Promise.all([
+      pEvent<string, NoticeMessages>(
+        // @ts-expect-error
+        this,
+        [`${NoticeMessageIds.ROOM_MODS}/${channel}`],
+        {},
+      ),
+      this.say(channel, message),
+    ])
+
+    return notice
+  }
+  async r9K(channel: string, ...args: string[]): Promise<NoticeMessages> {
+    channel = sanitizers.channel(channel)
+    const message = `/${ChatCommands.R9K} ${args.join(' ')}`
+
+    const [notice] = await Promise.all([
+      pEvent<string, NoticeMessages>(
+        // @ts-expect-error
+        this,
+        [
+          `${NoticeMessageIds.R9K_ON}/${channel}`,
+          `${NoticeMessageIds.ALREADY_R9K_ON}/${channel}`,
+        ],
+        {},
+      ),
+      this.say(channel, message),
+    ])
+
+    return notice
+  }
+  async r9KOff(channel: string, ...args: string[]): Promise<NoticeMessages> {
+    channel = sanitizers.channel(channel)
+    const message = `/${ChatCommands.R9K_OFF} ${args.join(' ')}`
+
+    const [notice] = await Promise.all([
+      pEvent<string, NoticeMessages>(
+        // @ts-expect-error
+        this,
+        [
+          `${NoticeMessageIds.R9K_OFF}/${channel}`,
+          `${NoticeMessageIds.ALREADY_R9K_OFF}/${channel}`,
+        ],
+        {},
+      ),
+      this.say(channel, message),
+    ])
+
+    return notice
+  }
+  async raid(channel: string, ...args: string[]): Promise<UserStateMessage> {
+    channel = sanitizers.channel(channel)
+    const message = `/${ChatCommands.RAID} ${args.join(' ')}`
+
+    return this.say(channel, message)
+  }
+  async slow(channel: string, ...args: string[]): Promise<NoticeMessages> {
+    channel = sanitizers.channel(channel)
+    const message = `/${ChatCommands.SLOW} ${args.join(' ')}`
+
+    const [notice] = await Promise.all([
+      pEvent<string, NoticeMessages>(
+        // @ts-expect-error
+        this,
+        [`${NoticeMessageIds.SLOW_ON}/${channel}`],
+        {},
+      ),
+      this.say(channel, message),
+    ])
+
+    return notice
+  }
+  async slowOff(channel: string, ...args: string[]): Promise<NoticeMessages> {
+    channel = sanitizers.channel(channel)
+    const message = `/${ChatCommands.SLOW_OFF} ${args.join(' ')}`
+
+    const [notice] = await Promise.all([
+      pEvent<string, NoticeMessages>(
+        // @ts-expect-error
+        this,
+        [`${NoticeMessageIds.SLOW_OFF}/${channel}`],
+        {},
+      ),
+      this.say(channel, message),
+    ])
+
+    return notice
+  }
+  async subscribers(
+    channel: string,
+    ...args: string[]
+  ): Promise<NoticeMessages> {
+    channel = sanitizers.channel(channel)
+    const message = `/${ChatCommands.SUBSCRIBERS} ${args.join(' ')}`
+
+    const [notice] = await Promise.all([
+      pEvent<string, NoticeMessages>(
+        // @ts-expect-error
+        this,
+        [
+          `${NoticeMessageIds.SUBS_ON}/${channel}`,
+          `${NoticeMessageIds.ALREADY_SUBS_ON}/${channel}`,
+        ],
+        {},
+      ),
+      this.say(channel, message),
+    ])
+
+    return notice
+  }
+  async subscribersOff(
+    channel: string,
+    ...args: string[]
+  ): Promise<NoticeMessages> {
+    channel = sanitizers.channel(channel)
+    const message = `/${ChatCommands.SUBSCRIBERS_OFF} ${args.join(' ')}`
+
+    const [notice] = await Promise.all([
+      pEvent<string, NoticeMessages>(
+        // @ts-expect-error
+        this,
+        [
+          `${NoticeMessageIds.SUBS_OFF}/${channel}`,
+          `${NoticeMessageIds.ALREADY_SUBS_OFF}/${channel}`,
+        ],
+        {},
+      ),
+      this.say(channel, message),
+    ])
+
+    return notice
+  }
+  async timeout(channel: string, ...args: string[]): Promise<NoticeMessages> {
+    channel = sanitizers.channel(channel)
+    const message = `/${ChatCommands.TIMEOUT} ${args.join(' ')}`
+
+    const [notice] = await Promise.all([
+      pEvent<string, NoticeMessages>(
+        // @ts-expect-error
+        this,
+        [`${NoticeMessageIds.TIMEOUT_SUCCESS}/${channel}`],
+        {},
+      ),
+      this.say(channel, message),
+    ])
+
+    return notice
+  }
+  async unban(channel: string, ...args: string[]): Promise<NoticeMessages> {
+    channel = sanitizers.channel(channel)
+    const message = `/${ChatCommands.UNBAN} ${args.join(' ')}`
+
+    const [notice] = await Promise.all([
+      pEvent<string, NoticeMessages>(
+        // @ts-expect-error
+        this,
+        [
+          `${NoticeMessageIds.UNBAN_SUCCESS}/${channel}`,
+          `${NoticeMessageIds.BAD_UNBAN_NO_BAN}/${channel}`,
+        ],
+        {},
+      ),
+      this.say(channel, message),
+    ])
+
+    return notice
+  }
+  async unhost(channel: string, ...args: string[]): Promise<NoticeMessages> {
+    channel = sanitizers.channel(channel)
+    const message = `/${ChatCommands.UNHOST} ${args.join(' ')}`
+
+    const [notice] = await Promise.all([
+      pEvent<string, NoticeMessages>(
+        // @ts-expect-error
+        this,
+        [`${NoticeMessageIds.HOST_OFF}/${channel}`],
+        {},
+      ),
+      this.say(channel, message),
+    ])
+
+    return notice
+  }
+  async unmod(channel: string, ...args: string[]): Promise<NoticeMessages> {
+    channel = sanitizers.channel(channel)
+    const message = `/${ChatCommands.UNMOD} ${args.join(' ')}`
+
+    const [notice] = await Promise.all([
+      pEvent<string, NoticeMessages>(
+        // @ts-expect-error
+        this,
+        [`${NoticeMessageIds.UNMOD_SUCCESS}/${channel}`],
+        {},
+      ),
+      this.say(channel, message),
+    ])
+
+    return notice
+  }
+  async unraid(channel: string, ...args: string[]): Promise<NoticeMessages> {
+    channel = sanitizers.channel(channel)
+    const message = `/${ChatCommands.UNRAID} ${args.join(' ')}`
+
+    const [notice] = await Promise.all([
+      pEvent<string, NoticeMessages>(
+        // @ts-expect-error
+        this,
+        [`${NoticeMessageIds.UNRAID_SUCCESS}/${channel}`],
+        {},
+      ),
+      this.say(channel, message),
+    ])
+
+    return notice
+  }
+
   /**
    * Disconnected from Twitch.
    */
   disconnect() {
+    this._readyState = ChatReadyStates.DISCONNECTING
     this._client?.disconnect()
+    this._readyState = ChatReadyStates.DISCONNECTED
   }
 
   /**
@@ -292,7 +731,7 @@ class Chat extends EventEmitter<EventTypes> {
    */
   async reconnect(options?: ChatOptions) {
     if (options) {
-      this._options = { ...this._options, ...options }
+      this._options = validators.chatOptions({ ...this._options, ...options })
     }
 
     this._connectionInProgress = undefined
@@ -341,18 +780,11 @@ class Chat extends EventEmitter<EventTypes> {
 
     const joinProfiler = this._log.profile(`Joining ${sanitizedChannel}`)
 
-    await this.connect()
-
-    this.send(`${Commands.JOIN} ${sanitizedChannel}`)
-
     const [roomState, userState] = await Promise.all([
       pEvent<string, RoomStateMessage>(
         // @ts-expect-error
         this,
         `${Commands.ROOM_STATE}/${sanitizedChannel}`,
-        {
-          timeout: constants.JOIN_TIMEOUT,
-        },
       ),
 
       this._isAuthenticated
@@ -360,11 +792,9 @@ class Chat extends EventEmitter<EventTypes> {
             // @ts-expect-error
             this,
             `${Commands.USER_STATE}/${sanitizedChannel}`,
-            {
-              timeout: constants.JOIN_TIMEOUT,
-            },
           )
         : undefined,
+      this.send(`${Commands.JOIN} ${sanitizedChannel}`),
     ])
 
     const channelState = {
@@ -406,22 +836,25 @@ class Chat extends EventEmitter<EventTypes> {
     const isModerator =
       this._channelState[sanitizedChannel]?.userState?.mod === '1'
 
-    this.send(`${Commands.PRIVATE_MESSAGE} ${sanitizedChannel} :${message}`, {
-      isModerator,
-      ...options,
-    })
+    const [userState] = await Promise.all([
+      pEvent<string, UserStateMessage>(
+        // @ts-expect-error
+        this,
+        `${Commands.USER_STATE}/${channel}`,
+      ),
+      this.send(`${Commands.PRIVATE_MESSAGE} ${sanitizedChannel} :${message}`, {
+        isModerator,
+        ...options,
+      }),
+    ])
 
-    return pEvent<string, UserStateMessage>(
-      // @ts-expect-error
-      this,
-      `${Commands.USER_STATE}/${channel}`,
-    )
+    return userState
   }
 
   /**
    * Whisper to another user.
    */
-  whisper(user: string, message: string) {
+  async whisper(user: string, message: string) {
     if (!this._isAuthenticated) {
       throw new Errors.ChatError(
         'To whisper, please provide a token and username',
@@ -434,7 +867,7 @@ class Chat extends EventEmitter<EventTypes> {
   /**
    * Broadcast message to all connected channels.
    */
-  broadcast(message: string) {
+  async broadcast(message: string) {
     if (!this._isAuthenticated) {
       throw new Errors.ChatError(
         'To broadcast, please provide a token and username',
@@ -447,6 +880,8 @@ class Chat extends EventEmitter<EventTypes> {
   private _handleConnectionAttempt(): Promise<void> {
     return new Promise((resolve, reject) => {
       const connectProfiler = this._log.profile('Connecting ...')
+
+      const { token, username } = this._options
 
       // Connect ...
       this._readyState = ChatReadyStates.CONNECTING
@@ -462,54 +897,48 @@ class Chat extends EventEmitter<EventTypes> {
       // Create client and connect.
       this._client = new Client(this._options)
 
-      // Handle messages.
-      this._client.on(ClientEvents.ALL, this._handleMessage, this)
-
       // Handle disconnects.
       this._client.on(ClientEvents.DISCONNECTED, this._handleDisconnect, this)
 
       // Listen for reconnects.
       this._client.once(ClientEvents.RECONNECT, () => this.reconnect())
 
-      // Listen for authentication.
-      this._client.once(ClientEvents.AUTHENTICATED, this._handleAuthenticated)
-
-      this._client.on(ClientEvents.GLOBALUSERSTATE, this._handleAuthenticated)
-
       // Listen for authentication failure.
-      this._client.once(
-        ClientEvents.AUTHENTICATION_FAILED,
-        this._handleAuthenticationFailure,
-      )
+      this._client.once(ClientEvents.AUTHENTICATION_FAILED, reject)
 
       // Once the client is connected, resolve ...
-      this._client.once(ClientEvents.CONNECTED, () => {
+      this._client.once(ClientEvents.CONNECTED, (message) => {
+        if (token && username) {
+          this._handleAuthenticated(message)
+        }
         this._handleJoinsAfterConnect()
-        connectProfiler.done('Connected')
         resolve()
+        connectProfiler.done('Connected')
       })
+
+      // Handle messages.
+      this._client.on(ClientEvents.ALL, this._handleMessage, this)
     })
   }
 
   private _handleDisconnect() {
     this._log.info('Disconnecting ...')
-    this._readyState = ChatReadyStates.DISCONNECTING
     this._connectionInProgress = undefined
     this._isAuthenticated = false
     this._clearChannelState()
-    this._readyState = ChatReadyStates.DISCONNECTED
     this._log.info('Disconnected')
   }
 
   private _handleAuthenticated(message: BaseMessage) {
-    this._globalUserState = parsers.globalUserStateMessage(message).tags
+    const globalUserStateMessage = parsers.globalUserStateMessage(message)
+    this._globalUserState = globalUserStateMessage.tags
     this._isAuthenticated = true
   }
 
-  private async _handleAuthenticationFailure(message: BaseMessage) {
-    this.disconnect()
-
+  private async _handleAuthenticationFailure() {
     try {
+      this._log.info('Retrying ...')
+
       const token = await this._options.onAuthenticationFailure?.()
 
       if (token) {
@@ -518,8 +947,8 @@ class Chat extends EventEmitter<EventTypes> {
         return this.connect()
       }
     } catch (err) {
-      this._log.error('Connection failed')
-      throw new Errors.AuthenticationError(err, message)
+      this._log.error('Re-authentication failed')
+      throw new Errors.AuthenticationError(err)
     }
   }
 
@@ -616,13 +1045,15 @@ class Chat extends EventEmitter<EventTypes> {
 
         if (
           this._isAuthenticated &&
-          typeof channelState.userState !== 'undefined'
+          typeof channelState.userState !== 'undefined' &&
+          message.username === this._options.username
         ) {
           this._setChannelState(channel, {
             ...channelState,
             userState: {
               ...channelState.userState,
-              mod: '1',
+              mod: message.isModerator ? '1' : '0',
+              isModerator: message.isModerator,
             },
           })
         }
@@ -686,10 +1117,12 @@ class Chat extends EventEmitter<EventTypes> {
     if (eventName) {
       const events = uniq(eventName.split('/'))
 
-      const displayName =
-        'tags' in message || 'username' in message
-          ? message.tags.displayName || message.username
-          : 'tmi.twitch.tv'
+      const tagsDisplayName =
+        'tags' in message ? message.tags.displayName : undefined
+      const username = 'username' in message ? message.username : undefined
+
+      const displayName = tagsDisplayName || username || 'tmi.twitch.tv'
+
       const info = 'message' in message ? message.message : eventName
       this._log.info(
         `${events.join('/')}`,

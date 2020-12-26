@@ -18,6 +18,9 @@ class WebSocket extends EventEmitter {
     setTimeout(() => {
       server.emit('open')
       this.emit('open')
+
+      // Emit welcome message
+      this.emit('message', commands.WELCOME)
     })
 
     this.readyState = 1
@@ -65,8 +68,6 @@ class WebSocket extends EventEmitter {
       case 'NICK': {
         // Mock successful connections.
         if (this.isTokenValid) {
-          this.emit('message', commands.WELCOME.replace(/<user>/g, args[0]))
-
           if (!args[0].startsWith('justinfan')) {
             this.emit('message', tags.GLOBALUSERSTATE)
           }

@@ -122,6 +122,8 @@ class Client extends EventEmitter<Record<ClientEvents, BaseMessage>> {
 
   private _handleMessage(messageEvent: WebSocket.MessageEvent) {
     const rawMessage = messageEvent.data.toString()
+
+    const { token, username } = this._options
     const priority = this._clientPriority
 
     this._handleHeartbeat()
@@ -140,49 +142,51 @@ class Client extends EventEmitter<Record<ClientEvents, BaseMessage>> {
 
         // Handle authentication failure.
         if (utils.isAuthenticationFailedMessage(message)) {
-          this.emit(ClientEvents.AUTHENTICATION_FAILED, {
-            ...message,
-            event: ClientEvents.AUTHENTICATION_FAILED,
-          })
+          this._multiEmit(
+            [ClientEvents.ALL, ClientEvents.AUTHENTICATION_FAILED],
+            {
+              ...message,
+              event: ClientEvents.AUTHENTICATION_FAILED,
+            },
+          )
 
           this.disconnect()
         } else {
-          // Handle PING/PONG.
           if (message.command === Commands.PING) {
+            // Handle PING/PONG.
             this.send('PONG :tmi.twitch.tv', { priority })
-          }
-
-          // Handle successful connections.
-          if (message.command === Commands.WELCOME) {
-            this.emit(ClientEvents.CONNECTED, {
+          } else if (
+            !token &&
+            !username &&
+            message.command === Commands.WELCOME
+          ) {
+            // Handle successful connections.
+            this._multiEmit([ClientEvents.ALL, ClientEvents.CONNECTED], {
               ...message,
               event: ClientEvents.CONNECTED,
             })
-          }
-
-          // Handle successful authentications.
-          if (message.command === Commands.GLOBALUSERSTATE) {
-            this.emit(ClientEvents.AUTHENTICATED, {
-              ...message,
-              event: ClientEvents.AUTHENTICATED,
-            })
-            this.emit(ClientEvents.GLOBALUSERSTATE, {
+          } else if (message.command === Commands.GLOBALUSERSTATE) {
+            // Handle successful authentications.
+            this._multiEmit([ClientEvents.ALL, ClientEvents.GLOBALUSERSTATE], {
               ...message,
               event: ClientEvents.GLOBALUSERSTATE,
             })
-          }
-
-          // Handle RECONNECT.
-          if (message.command === Commands.RECONNECT) {
-            this.emit(ClientEvents.RECONNECT, {
+            if (token && username) {
+              this._multiEmit([ClientEvents.ALL, ClientEvents.CONNECTED], {
+                ...message,
+                event: ClientEvents.CONNECTED,
+              })
+            }
+          } else if (message.command === Commands.RECONNECT) {
+            // Handle RECONNECT.
+            this._multiEmit([ClientEvents.ALL, ClientEvents.RECONNECT], {
               ...message,
               event: ClientEvents.RECONNECT,
             })
+          } else {
+            this.emit(ClientEvents.ALL, message)
           }
         }
-
-        // Emit all messages.
-        this.emit(ClientEvents.ALL, message)
       })
     } catch (error) {
       const title = 'Parsing error encountered'
@@ -233,6 +237,17 @@ class Client extends EventEmitter<Record<ClientEvents, BaseMessage>> {
     }
     if (this._reconnectTimeoutId) {
       clearTimeout(this._reconnectTimeoutId)
+    }
+  }
+
+  private _multiEmit(
+    event: ClientEvents | ClientEvents[],
+    message: BaseMessage,
+  ) {
+    if (Array.isArray(event)) {
+      event.forEach((eventName) => this.emit(eventName, message))
+    } else {
+      this.emit(event, message)
     }
   }
 }

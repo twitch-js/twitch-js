@@ -17,7 +17,7 @@ export const chatOptions = (
   options: Partial<types.ChatOptions>,
 ): types.ChatOptions => {
   const shape = {
-    username: isString,
+    username: (value: any) => isNil(value) || isString(value),
     token: (value: any) => isNil(value) || isString(value),
     isKnown: isBoolean,
     isVerified: isBoolean,
@@ -29,8 +29,10 @@ export const chatOptions = (
   const optionsWithDefaults = defaults(
     {
       ...options,
-      username: sanitizers.username(options.username),
-      token: sanitizers.token(options.token),
+      username: options.username
+        ? sanitizers.username(options.username)
+        : undefined,
+      token: options.token ? sanitizers.token(options.token) : undefined,
     },
     {
       isKnown: false,
@@ -44,42 +46,6 @@ export const chatOptions = (
   invariant(
     conformsTo(optionsWithDefaults, shape),
     '[twitch-js/Chat] options: Expected valid options',
-  )
-
-  return optionsWithDefaults
-}
-
-export const clientOptions = (
-  options: Partial<types.ClientOptions>,
-): types.ClientOptions => {
-  const shape = {
-    username: isString,
-    token: isString,
-    server: isString,
-    port: isFinite,
-    ssl: isBoolean,
-    isKnown: isBoolean,
-    isVerified: isBoolean,
-  }
-
-  const optionsWithDefaults: types.ClientOptions = defaults(
-    {
-      ...options,
-      username: sanitizers.username(options.username),
-      token: sanitizers.token(options.token),
-    },
-    {
-      server: constants.CHAT_SERVER,
-      port: constants.CHAT_SERVER_SSL_PORT,
-      ssl: true,
-      isKnown: false,
-      isVerified: false,
-    },
-  )
-
-  invariant(
-    conformsTo(optionsWithDefaults, shape),
-    '[twitch-js/Chat/Client] options: Expected valid options',
   )
 
   return optionsWithDefaults

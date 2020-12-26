@@ -80,7 +80,7 @@ Object {
 }
 `;
 
-exports[`Api methods should throw on failure 1`] = `[Error: [TwitchJS] https://api.twitch.tv/helix/404 Not Found]`;
+exports[`Api methods should throw on failure 1`] = `[FetchError: [TwitchJS] https://api.twitch.tv/helix/404 Not Found]`;
 
 exports[`Api versions should call the Helix endpoint 1`] = `
 Object {

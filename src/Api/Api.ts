@@ -252,13 +252,10 @@ class Api {
 
     const headers = this._getHeaders(version)
 
-    const optionHeaders =
-      fetchOptions.headers instanceof Headers
-        ? fetchOptions.headers.entries()
-        : Object.entries(fetchOptions.headers || {})
+    const optionHeaders = Object.entries(fetchOptions.headers || {})
 
     for (const [name, value] of optionHeaders) {
-      headers.append(String(name), value)
+      headers[String(name)] = value
     }
 
     const performRequest = () =>

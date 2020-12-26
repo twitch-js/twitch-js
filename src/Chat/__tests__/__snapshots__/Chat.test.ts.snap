@@ -1,5 +1,293 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`Chat reconnect should reconnect and rejoin channels 1`] = `
+Array [
+  Array [
+    "close",
+  ],
+  Array [
+    "open",
+  ],
+  Array [
+    "CAP REQ :twitch.tv/tags twitch.tv/commands twitch.tv/membership",
+  ],
+  Array [
+    "PASS oauth:TOKEN",
+  ],
+  Array [
+    "NICK USERNAME",
+  ],
+  Array [
+    "JOIN #dallas",
+  ],
+]
+`;
+
+exports[`Chat reconnect should reconnect and rejoin channels 2`] = `
+Object {
+  "_raw": "@color=#0D4200;display-name=dallas;emote-sets=0,33,50,237,793,2126,3517,4578,5569,9400,10337,12239;turbo=0;user-id=1337;user-type=admin :tmi.twitch.tv GLOBALUSERSTATE",
+  "channel": undefined,
+  "command": "GLOBALUSERSTATE",
+  "event": "GLOBALUSERSTATE",
+  "isSelf": false,
+  "message": undefined,
+  "tags": Object {
+    "color": "#0D4200",
+    "displayName": "dallas",
+    "emoteSets": "0,33,50,237,793,2126,3517,4578,5569,9400,10337,12239",
+    "turbo": "0",
+    "userId": "1337",
+    "userType": "admin",
+  },
+  "timestamp": Any<Date>,
+  "username": "dallas",
+}
+`;
+
+exports[`Chat reconnect should reconnect and rejoin channels 3`] = `
+Object {
+  "_raw": "@color=#0D4200;display-name=dallas;emote-sets=0,33,50,237,793,2126,3517,4578,5569,9400,10337,12239;turbo=0;user-id=1337;user-type=admin :tmi.twitch.tv GLOBALUSERSTATE",
+  "channel": undefined,
+  "command": "GLOBALUSERSTATE",
+  "event": "CONNECTED",
+  "isSelf": false,
+  "message": undefined,
+  "tags": Object {
+    "color": "#0D4200",
+    "displayName": "dallas",
+    "emoteSets": "0,33,50,237,793,2126,3517,4578,5569,9400,10337,12239",
+    "turbo": "0",
+    "userId": "1337",
+    "userType": "admin",
+  },
+  "timestamp": Any<Date>,
+  "username": "dallas",
+}
+`;
+
+exports[`Chat reconnect should reconnect and rejoin channels 4`] = `
+Object {
+  "_raw": ":tmi.twitch.tv 001 <user> :Welcome, GLHF!",
+  "channel": "<user>",
+  "command": "001",
+  "event": "001",
+  "isSelf": false,
+  "message": "Welcome, GLHF!",
+  "tags": Object {},
+  "timestamp": Any<Date>,
+  "username": "tmi.twitch.tv",
+}
+`;
+
+exports[`Chat reconnect should reconnect and rejoin channels 5`] = `
+Object {
+  "_raw": ":tmi.twitch.tv 002 <user> :Your host is tmi.twitch.tv",
+  "channel": "<user>",
+  "command": "002",
+  "event": "002",
+  "isSelf": false,
+  "message": "Your host is tmi.twitch.tv",
+  "tags": Object {},
+  "timestamp": Any<Date>,
+  "username": "tmi.twitch.tv",
+}
+`;
+
+exports[`Chat reconnect should reconnect and rejoin channels 6`] = `
+Object {
+  "_raw": ":tmi.twitch.tv 003 <user> :This server is rather new",
+  "channel": "<user>",
+  "command": "003",
+  "event": "003",
+  "isSelf": false,
+  "message": "This server is rather new",
+  "tags": Object {},
+  "timestamp": Any<Date>,
+  "username": "tmi.twitch.tv",
+}
+`;
+
+exports[`Chat reconnect should reconnect and rejoin channels 7`] = `
+Object {
+  "_raw": ":tmi.twitch.tv 004 <user> :-",
+  "channel": "<user>",
+  "command": "004",
+  "event": "004",
+  "isSelf": false,
+  "message": "-",
+  "tags": Object {},
+  "timestamp": Any<Date>,
+  "username": "tmi.twitch.tv",
+}
+`;
+
+exports[`Chat reconnect should reconnect and rejoin channels 8`] = `
+Object {
+  "_raw": ":tmi.twitch.tv 375 <user> :-",
+  "channel": "<user>",
+  "command": "375",
+  "event": "375",
+  "isSelf": false,
+  "message": "-",
+  "tags": Object {},
+  "timestamp": Any<Date>,
+  "username": "tmi.twitch.tv",
+}
+`;
+
+exports[`Chat reconnect should reconnect and rejoin channels 9`] = `
+Object {
+  "_raw": ":tmi.twitch.tv 372 <user> :You are in a maze of twisty passages.",
+  "channel": "<user>",
+  "command": "372",
+  "event": "372",
+  "isSelf": false,
+  "message": "You are in a maze of twisty passages.",
+  "tags": Object {},
+  "timestamp": Any<Date>,
+  "username": "tmi.twitch.tv",
+}
+`;
+
+exports[`Chat reconnect should reconnect and rejoin channels 10`] = `
+Object {
+  "_raw": ":tmi.twitch.tv 376 <user> :>",
+  "channel": "<user>",
+  "command": "376",
+  "event": "376",
+  "isSelf": false,
+  "message": ">",
+  "tags": Object {},
+  "timestamp": Any<Date>,
+  "username": "tmi.twitch.tv",
+}
+`;
+
+exports[`Chat reconnect should reconnect and rejoin channels 11`] = `
+Object {
+  "_raw": ":ronni!ronni@ronni.tmi.twitch.tv JOIN #dallas",
+  "channel": "#dallas",
+  "command": "JOIN",
+  "event": "JOIN",
+  "isSelf": false,
+  "message": undefined,
+  "tags": Object {},
+  "timestamp": Any<Date>,
+  "username": "ronni",
+}
+`;
+
+exports[`Chat reconnect should reconnect and rejoin channels 12`] = `
+Object {
+  "_raw": "@broadcaster-lang=en;r9k=0;slow=0;subs-only=0 :tmi.twitch.tv ROOMSTATE #dallas",
+  "channel": "#dallas",
+  "command": "ROOMSTATE",
+  "event": "ROOMSTATE",
+  "isSelf": false,
+  "message": undefined,
+  "tags": Object {
+    "broadcasterLang": "en",
+    "r9K": "0",
+    "slow": 0,
+    "subsOnly": false,
+  },
+  "timestamp": Any<Date>,
+  "username": "tmi.twitch.tv",
+}
+`;
+
+exports[`Chat reconnect should reconnect and rejoin channels 13`] = `
+Object {
+  "_raw": "@color=#0D4200;display-name=ronni;emote-sets=0,33,50,237,793,2126,3517,4578,5569,9400,10337,12239;mod=1;subscriber=1;turbo=1;user-type=staff :tmi.twitch.tv USERSTATE #dallas",
+  "channel": "#dallas",
+  "command": "USERSTATE",
+  "event": "USERSTATE",
+  "isSelf": false,
+  "message": undefined,
+  "tags": Object {
+    "badges": Object {},
+    "bits": undefined,
+    "color": "#0D4200",
+    "displayName": "ronni",
+    "emoteSets": Array [
+      "0",
+      "33",
+      "50",
+      "237",
+      "793",
+      "2126",
+      "3517",
+      "4578",
+      "5569",
+      "9400",
+      "10337",
+      "12239",
+    ],
+    "emotes": Array [],
+    "isModerator": true,
+    "mod": "1",
+    "subscriber": "1",
+    "turbo": "1",
+    "userType": "staff",
+    "username": "ronni",
+  },
+  "timestamp": Any<Date>,
+  "username": "ronni",
+}
+`;
+
+exports[`Chat say should resolve with event 1`] = `
+Object {
+  "_raw": "@color=#0D4200;display-name=ronni;emote-sets=0,33,50,237,793,2126,3517,4578,5569,9400,10337,12239;mod=1;subscriber=1;turbo=1;user-type=staff :tmi.twitch.tv USERSTATE #dallas",
+  "channel": "#dallas",
+  "command": "USERSTATE",
+  "event": "USERSTATE",
+  "isSelf": false,
+  "message": undefined,
+  "tags": Object {
+    "badges": Object {},
+    "bits": undefined,
+    "color": "#0D4200",
+    "displayName": "ronni",
+    "emoteSets": Array [
+      "0",
+      "33",
+      "50",
+      "237",
+      "793",
+      "2126",
+      "3517",
+      "4578",
+      "5569",
+      "9400",
+      "10337",
+      "12239",
+    ],
+    "emotes": Array [],
+    "isModerator": true,
+    "mod": "1",
+    "subscriber": "1",
+    "turbo": "1",
+    "userType": "staff",
+    "username": "ronni",
+  },
+  "timestamp": Any<Date>,
+  "username": "ronni",
+}
+`;
+
+exports[`Chat should handle messages CLEARCHAT 1`] = `
+Object {
+  "_raw": ":tmi.twitch.tv CLEARCHAT #dallas",
+  "channel": "#dallas",
+  "command": "CLEARCHAT",
+  "event": "CLEARCHAT",
+  "isSelf": false,
+  "timestamp": Any<Date>,
+  "username": "tmi.twitch.tv",
+}
+`;
+
 exports[`Chat should handle messages CLEARCHAT user with reason 1`] = `
 Object {
   "_raw": "@ban-reason=Follow\\\\sthe\\\\srules :tmi.twitch.tv CLEARCHAT #dallas :ronni",
@@ -87,6 +375,66 @@ Object {
   "tags": Object {},
   "timestamp": Any<Date>,
   "username": "ronni",
+}
+`;
+
+exports[`Chat should handle messages MODE another user +o 1`] = `
+Object {
+  "_raw": ":jtv MODE #dallas +o ronni",
+  "channel": "#dallas",
+  "command": "MODE",
+  "event": "MOD_GAINED",
+  "isModerator": true,
+  "isSelf": false,
+  "message": "+o",
+  "tags": Object {},
+  "timestamp": Any<Date>,
+  "username": "ronni",
+}
+`;
+
+exports[`Chat should handle messages MODE another user -o 1`] = `
+Object {
+  "_raw": ":jtv MODE #dallas -o ronni",
+  "channel": "#dallas",
+  "command": "MODE",
+  "event": "MOD_LOST",
+  "isModerator": false,
+  "isSelf": false,
+  "message": "-o",
+  "tags": Object {},
+  "timestamp": Any<Date>,
+  "username": "ronni",
+}
+`;
+
+exports[`Chat should handle messages MODE current user +o 1`] = `
+Object {
+  "_raw": ":jtv MODE #dallas +o dallas",
+  "channel": "#dallas",
+  "command": "MODE",
+  "event": "MOD_GAINED",
+  "isModerator": true,
+  "isSelf": false,
+  "message": "+o",
+  "tags": Object {},
+  "timestamp": Any<Date>,
+  "username": "dallas",
+}
+`;
+
+exports[`Chat should handle messages MODE current user -o 1`] = `
+Object {
+  "_raw": ":jtv MODE #dallas -o dallas",
+  "channel": "#dallas",
+  "command": "MODE",
+  "event": "MOD_LOST",
+  "isModerator": false,
+  "isSelf": false,
+  "message": "-o",
+  "tags": Object {},
+  "timestamp": Any<Date>,
+  "username": "dallas",
 }
 `;
 
@@ -612,6 +960,7 @@ Object {
     "emoteSets": Array [],
     "emotes": Array [],
     "id": "b34ccfc7-4977-403a-8a94-33c6bac34fb8",
+    "isModerator": false,
     "mod": "0",
     "roomId": "1337",
     "subscriber": "0",
@@ -711,6 +1060,7 @@ Object {
       },
     ],
     "id": "b34ccfc7-4977-403a-8a94-33c6bac34fb8",
+    "isModerator": false,
     "mod": "0",
     "roomId": "1337",
     "subscriber": "0",
@@ -724,6 +1074,8 @@ Object {
   "username": "dallas",
 }
 `;
+
+exports[`Chat should handle messages PRIVMSG whisper when anonymous 1`] = `[ChatError: [TwitchJS] To whisper, please provide a token and username [Chat]]`;
 
 exports[`Chat should handle messages USERNOTICE ANON_GIFT_PAID_UPGRADE 1`] = `
 Object {
@@ -747,6 +1099,7 @@ Object {
     "emotes": Array [],
     "flags": "",
     "id": "0717057c-510d-4da4-8d25-b592803bdeac",
+    "isModerator": false,
     "login": "mrsquidzilla",
     "mod": "0",
     "msgId": "anongiftpaidupgrade",
@@ -790,6 +1143,7 @@ Object {
     "emoteSets": Array [],
     "emotes": Array [],
     "id": "5bd3e064-c1e4-451b-9d7e-afe8cf5a44a2",
+    "isModerator": false,
     "login": "elizabethswann",
     "mod": "0",
     "msgId": "giftpaidupgrade",
@@ -836,6 +1190,7 @@ Object {
     "emoteSets": Array [],
     "emotes": Array [],
     "id": "3d830f12-795c-447d-af3c-ea05e40fbddb",
+    "isModerator": false,
     "login": "testchannel",
     "mod": "0",
     "msgId": "raid",
@@ -883,6 +1238,7 @@ Object {
     "emoteSets": Array [],
     "emotes": Array [],
     "id": "db25007f-7a18-43eb-9379-80131e44d633",
+    "isModerator": false,
     "login": "ronni",
     "mod": "0",
     "msgId": "resub",
@@ -931,6 +1287,7 @@ Object {
       },
     ],
     "id": "37feed0f-b9c7-4c3a-b475-21c6c6d21c3d",
+    "isModerator": false,
     "login": "seventest1",
     "mod": "0",
     "msgId": "ritual",
@@ -975,6 +1332,7 @@ Object {
     "emoteSets": Array [],
     "emotes": Array [],
     "id": "761a4698-b867-4668-9658-c3844c7b8637",
+    "isModerator": false,
     "login": "nefarious_ned",
     "mod": "0",
     "msgId": "submysterygift",
@@ -1021,6 +1379,7 @@ Object {
     "emoteSets": Array [],
     "emotes": Array [],
     "id": "db25007f-7a18-43eb-9379-80131e44d633",
+    "isModerator": false,
     "login": "ronni",
     "mod": "0",
     "msgId": "sub",
@@ -1069,6 +1428,7 @@ Object {
     "emoteSets": Array [],
     "emotes": Array [],
     "id": "e9176cd8-5e22-4684-ad40-ce53c2561c5e",
+    "isModerator": false,
     "login": "tww2",
     "mod": "0",
     "msgId": "subgift",
@@ -1120,6 +1480,7 @@ Object {
       },
     ],
     "id": "37feed0f-b9c7-4c3a-b475-21c6c6d21c3d",
+    "isModerator": false,
     "login": "seventest1",
     "mod": "0",
     "msgId": "unknown",
@@ -1183,6 +1544,7 @@ Object {
     "emoteSets": Array [],
     "emotes": Array [],
     "id": "db25007f-7a18-43eb-9379-80131e44d633",
+    "isModerator": false,
     "login": "ronni",
     "mod": "0",
     "msgId": "sub",
@@ -1229,6 +1591,7 @@ Object {
     "emoteSets": Array [],
     "emotes": Array [],
     "id": "db25007f-7a18-43eb-9379-80131e44d633",
+    "isModerator": false,
     "login": "ronni",
     "mod": "0",
     "msgId": "sub",
@@ -1249,4 +1612,44 @@ Object {
 }
 `;
 
-exports[`Chat should throw when sending a message as anonymous 1`] = `[Error: [TwitchJS] To whisper, please provide a token and username [Chat]]`;
+exports[`Chat should handle multiple channels should deny message broadcasting when anonymous 1`] = `[ChatError: [TwitchJS] To broadcast, please provide a token and username [Chat]]`;
+
+exports[`Chat should join channel 1`] = `
+Object {
+  "roomState": Object {
+    "broadcasterLang": "en",
+    "r9K": "0",
+    "slow": 0,
+    "subsOnly": false,
+  },
+  "userState": Object {
+    "badges": Object {},
+    "bits": undefined,
+    "color": "#0D4200",
+    "displayName": "ronni",
+    "emoteSets": Array [
+      "0",
+      "33",
+      "50",
+      "237",
+      "793",
+      "2126",
+      "3517",
+      "4578",
+      "5569",
+      "9400",
+      "10337",
+      "12239",
+    ],
+    "emotes": Array [],
+    "isModerator": true,
+    "mod": "1",
+    "subscriber": "1",
+    "turbo": "1",
+    "userType": "staff",
+    "username": "ronni",
+  },
+}
+`;
+
+exports[`Chat should throw when sending a message as anonymous 1`] = `[ChatError: [TwitchJS] To whisper, please provide a token and username [Chat]]`;

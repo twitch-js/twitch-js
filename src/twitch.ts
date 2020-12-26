@@ -208,9 +208,17 @@ export enum KnownNoticeMessageIds {
   SUBS_ON = 'subs_on',
   TIMEOUT_SUCCESS = 'timeout_success',
   UNBAN_SUCCESS = 'unban_success',
+  UNMOD_SUCCESS = 'unmod_success',
   UNRAID_SUCCESS = 'unraid_success',
   UNRECOGNIZED_CMD = 'unrecognized_cmd',
 }
+
+export const KnownNoticeMessageIdsUpperCase = Object.entries(
+  KnownNoticeMessageIds,
+).reduce(
+  (uppercase, [key, value]) => ({ ...uppercase, [key]: value.toUpperCase() }),
+  {} as Record<keyof typeof KnownNoticeMessageIds, string>,
+)
 
 export const NoticeEvents = Object.keys(KnownNoticeMessageIds).reduce(
   (events, event) => ({
@@ -372,6 +380,7 @@ export interface UserStateTags extends BaseTags {
   turbo?: string
   userType?: string
   username: string
+  isModerator: boolean
 }
 
 /**
