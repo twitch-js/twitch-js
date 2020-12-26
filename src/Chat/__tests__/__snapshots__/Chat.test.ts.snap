@@ -279,6 +279,8 @@ Array [
 ]
 `;
 
+exports[`Chat command whisper should call say with args 1`] = `Array []`;
+
 exports[`Chat reconnect should reconnect and rejoin channels 1`] = `
 Array [
   Array [
@@ -1354,7 +1356,31 @@ Object {
 }
 `;
 
-exports[`Chat should handle messages PRIVMSG whisper when anonymous 1`] = `[ChatError: [TwitchJS] To whisper, please provide a token and username [Chat]]`;
+exports[`Chat should handle messages PRIVMSG should receive whisper 1`] = `
+Object {
+  "_raw": "@badges=premium/1;color=#FF7F50;display-name=joezeng;emotes=;message-id=4;thread-id=12345678_987654321;turbo=0;user-id=12345678;user-type= :joezeng!joezeng@joezeng.tmi.twitch.tv WHISPER test_chatbot :whisper whisper whisper'",
+  "channel": "test_chatbot",
+  "command": "WHISPER",
+  "event": "WHISPER",
+  "isSelf": false,
+  "message": "whisper whisper whisper'",
+  "tags": Object {
+    "badges": "premium/1",
+    "color": "#FF7F50",
+    "displayName": "joezeng",
+    "emotes": "",
+    "messageId": "4",
+    "threadId": "12345678_987654321",
+    "turbo": "0",
+    "userId": "12345678",
+    "userType": "",
+  },
+  "timestamp": Any<Date>,
+  "username": "joezeng",
+}
+`;
+
+exports[`Chat should handle messages PRIVMSG whisper when anonymous 1`] = `[ChatError: [TwitchJS] To whisper, please connect with a token and username [Chat]]`;
 
 exports[`Chat should handle messages USERNOTICE ANON_GIFT_PAID_UPGRADE 1`] = `
 Object {
@@ -1931,4 +1957,4 @@ Object {
 }
 `;
 
-exports[`Chat should throw when sending a message as anonymous 1`] = `[ChatError: [TwitchJS] To whisper, please provide a token and username [Chat]]`;
+exports[`Chat should throw when sending a message as anonymous 1`] = `[ChatError: [TwitchJS] To whisper, please connect with a token and username [Chat]]`;

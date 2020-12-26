@@ -279,6 +279,12 @@ class Chat extends EventEmitter<EventTypes> {
       throw new Errors.ChatError('Not connected')
     }
 
+    if (!this._isAuthenticated) {
+      throw new Errors.ChatError(
+        'To whisper, please connect with a token and username',
+      )
+    }
+
     return this._client.send(message, options)
   }
 
@@ -836,6 +842,14 @@ class Chat extends EventEmitter<EventTypes> {
   }
 
   /**
+   * This command sends a private message to another user on Twitch.
+   */
+  async whisper(username: string, message: string): Promise<void> {
+    const command = `/${ChatCommands.WHISPER} ${username} ${message}`
+    return this.send(command)
+  }
+
+  /**
    * Disconnected from Twitch.
    */
   disconnect() {
@@ -941,12 +955,6 @@ class Chat extends EventEmitter<EventTypes> {
    * Send a message to a channel.
    */
   async say(channel: string, message: string, options?: { priority: number }) {
-    if (!this._isAuthenticated) {
-      throw new Errors.ChatError(
-        'To whisper, please provide a token and username',
-      )
-    }
-
     const sanitizedChannel = sanitizers.channel(channel)
 
     this._log.info(`PRIVMSG/${sanitizedChannel} :${message}`)
@@ -967,19 +975,6 @@ class Chat extends EventEmitter<EventTypes> {
     ])
 
     return userState
-  }
-
-  /**
-   * Whisper to another user.
-   */
-  async whisper(user: string, message: string) {
-    if (!this._isAuthenticated) {
-      throw new Errors.ChatError(
-        'To whisper, please provide a token and username',
-      )
-    }
-
-    return this.send(`${Commands.WHISPER} :/w ${user} ${message}`)
   }
 
   /**

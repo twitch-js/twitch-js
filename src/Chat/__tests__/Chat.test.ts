@@ -507,7 +507,7 @@ describe('Chat', () => {
         await chat.connect()
 
         server.once('message', (message) => {
-          expect(message).toEqual('PRIVMSG #jtv :/w dallas Kappa Keepo Kappa')
+          expect(message).toEqual('/w dallas Kappa Keepo Kappa')
           done()
         })
 
@@ -521,6 +521,22 @@ describe('Chat', () => {
         await expect(
           chat.whisper('dallas', 'Kappa Keepo Kappa'),
         ).rejects.toMatchSnapshot()
+      })
+
+      test('should receive whisper', async (done) => {
+        const raw = tags.WHISPER
+
+        const chat = new Chat({ log: { enabled: false } })
+        await chat.connect()
+
+        chat.once('WHISPER', (message) => {
+          expect(message).toMatchSnapshot({
+            timestamp: expect.any(Date),
+          })
+          done()
+        })
+
+        emitHelper(chat._client, raw)
       })
     })
 

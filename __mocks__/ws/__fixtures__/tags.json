@@ -28,5 +28,6 @@
   },
   "USERSTATE": {
     "JOIN": "@color=#0D4200;display-name=ronni;emote-sets=0,33,50,237,793,2126,3517,4578,5569,9400,10337,12239;mod=1;subscriber=1;turbo=1;user-type=staff :tmi.twitch.tv USERSTATE #dallas"
-  }
+  },
+  "WHISPER": "@badges=premium/1;color=#FF7F50;display-name=joezeng;emotes=;message-id=4;thread-id=12345678_987654321;turbo=0;user-id=12345678;user-type= :joezeng!joezeng@joezeng.tmi.twitch.tv WHISPER test_chatbot :whisper whisper whisper'"
 }

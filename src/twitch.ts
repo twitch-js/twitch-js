@@ -59,7 +59,7 @@ export enum OtherCommands {
   WELCOME = '001',
   PING = 'PING',
   PONG = 'PONG',
-  WHISPER = 'PRIVMSG #jtv',
+  WHISPER = 'WHISPER',
 }
 
 /**
@@ -176,7 +176,7 @@ export enum ChatCommands {
   UNVIP = 'unvip',
   VIP = 'vip',
   VIPS = 'vips',
-  // WHISPER = 'w',
+  WHISPER = 'w',
 }
 
 export enum KnownNoticeMessageIds {
