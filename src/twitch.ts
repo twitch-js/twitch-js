@@ -144,6 +144,7 @@ export enum ChatEvents {
  */
 export enum ChatCommands {
   BAN = 'ban',
+  BLOCK = 'block',
   CLEAR = 'clear',
   COLOR = 'color',
   COMMERCIAL = 'commercial',
@@ -168,9 +169,13 @@ export enum ChatCommands {
   SUBSCRIBERS_OFF = 'subscribersoff',
   TIMEOUT = 'timeout',
   UNBAN = 'unban',
+  UNBLOCK = 'unblock',
   UNHOST = 'unhost',
   UNMOD = 'unmod',
   UNRAID = 'unraid',
+  UNVIP = 'unvip',
+  VIP = 'vip',
+  VIPS = 'vips',
   // WHISPER = 'w',
 }
 

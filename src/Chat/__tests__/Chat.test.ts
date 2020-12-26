@@ -168,24 +168,22 @@ describe('Chat', () => {
       .catch((err) => expect(err).toMatchSnapshot())
   })
 
-  test('commands should call say with args', async () => {
-    const chat = new Chat(options)
-    await chat.connect()
+  test.each(Object.keys(ChatCommands).map(camelCase))(
+    'command %s should call say with args',
+    async (command) => {
+      const chat = new Chat(options)
+      await chat.connect()
 
-    const channel = '#channel'
-    const args = ['arg1', 'arg2', 'arg3']
+      const channel = '#channel'
+      const args = ['arg1', 'arg2', 'arg3']
 
-    const spy = jest.spyOn(chat, 'say')
+      const spy = jest.spyOn(chat, 'say')
 
-    Object.entries(ChatCommands).forEach(([key, command]) => {
-      chat[camelCase(key)](channel, ...args)
+      chat[command](channel, ...args)
 
-      expect(spy).toHaveBeenLastCalledWith(
-        channel,
-        `/${command} ${args.join(' ')}`,
-      )
-    })
-  })
+      expect(spy.mock.calls).toMatchSnapshot()
+    },
+  )
 
   test('should part a channel', async (done) => {
     const chat = new Chat(options)

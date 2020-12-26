@@ -282,10 +282,12 @@ class Chat extends EventEmitter<EventTypes> {
     return this._client.send(message, options)
   }
 
-  async ban(channel: string, ...args: string[]): Promise<NoticeMessages> {
+  /**
+   * This command will allow you to permanently ban a user from the chat room.
+   */
+  async ban(channel: string, username: string): Promise<NoticeMessages> {
     channel = sanitizers.channel(channel)
-    const message = `/${ChatCommands.BAN} ${args.join(' ')}`
-
+    const message = `/${ChatCommands.BAN} ${username}`
     const [notice] = await Promise.all([
       pEvent<string, NoticeMessages>(
         // @ts-expect-error
@@ -298,13 +300,26 @@ class Chat extends EventEmitter<EventTypes> {
       ),
       this.say(channel, message),
     ])
-
     return notice
   }
-  async clear(channel: string, ...args: string[]): Promise<NoticeMessages> {
-    channel = sanitizers.channel(channel)
-    const message = `/${ChatCommands.CLEAR} ${args.join(' ')}`
 
+  /**
+   * This command will allow you to block all messages from a specific user in
+   * chat and whispers if you do not wish to see their comments.
+   */
+  async block(channel: string, username: string): Promise<UserStateMessage> {
+    channel = sanitizers.channel(channel)
+    const message = `/${ChatCommands.BLOCK} ${username}`
+    return this.say(channel, message)
+  }
+
+  /**
+   * This command will allow the Broadcaster and chat moderators to completely
+   * wipe the previous chat history.
+   */
+  async clear(channel: string): Promise<NoticeMessages> {
+    channel = sanitizers.channel(channel)
+    const message = `/${ChatCommands.CLEAR}`
     const [notice] = await Promise.all([
       pEvent<string, NoticeMessages>(
         // @ts-expect-error
@@ -314,13 +329,15 @@ class Chat extends EventEmitter<EventTypes> {
       ),
       this.say(channel, message),
     ])
-
     return notice
   }
-  async color(channel: string, ...args: string[]): Promise<NoticeMessages> {
-    channel = sanitizers.channel(channel)
-    const message = `/${ChatCommands.COLOR} ${args.join(' ')}`
 
+  /**
+   * Allows you to change the color of your username.
+   */
+  async color(channel: string, color: string): Promise<NoticeMessages> {
+    channel = sanitizers.channel(channel)
+    const message = `/${ChatCommands.COLOR} ${color}`
     const [notice] = await Promise.all([
       pEvent<string, NoticeMessages>(
         // @ts-expect-error
@@ -330,16 +347,19 @@ class Chat extends EventEmitter<EventTypes> {
       ),
       this.say(channel, message),
     ])
-
     return notice
   }
+
+  /**
+   * An Affiliate and Partner command that runs a commercial for all of your
+   * viewers.
+   */
   async commercial(
     channel: string,
-    ...args: string[]
+    length: 30 | 60 | 90 | 120 | 150 | 180,
   ): Promise<NoticeMessages> {
     channel = sanitizers.channel(channel)
-    const message = `/${ChatCommands.COMMERCIAL} ${args.join(' ')}`
-
+    const message = `/${ChatCommands.COMMERCIAL} ${length}`
     const [notice] = await Promise.all([
       pEvent<string, NoticeMessages>(
         // @ts-expect-error
@@ -349,13 +369,16 @@ class Chat extends EventEmitter<EventTypes> {
       ),
       this.say(channel, message),
     ])
-
     return notice
   }
-  async emoteOnly(channel: string, ...args: string[]): Promise<NoticeMessages> {
-    channel = sanitizers.channel(channel)
-    const message = `/${ChatCommands.EMOTE_ONLY} ${args.join(' ')}`
 
+  /**
+   * This command allows you to set your room so only messages that are 100%
+   * emotes are allowed.
+   */
+  async emoteOnly(channel: string): Promise<NoticeMessages> {
+    channel = sanitizers.channel(channel)
+    const message = `/${ChatCommands.EMOTE_ONLY}`
     const [notice] = await Promise.all([
       pEvent<string, NoticeMessages>(
         // @ts-expect-error
@@ -368,16 +391,16 @@ class Chat extends EventEmitter<EventTypes> {
       ),
       this.say(channel, message),
     ])
-
     return notice
   }
-  async emoteOnlyOff(
-    channel: string,
-    ...args: string[]
-  ): Promise<NoticeMessages> {
-    channel = sanitizers.channel(channel)
-    const message = `/${ChatCommands.EMOTE_ONLY_OFF} ${args.join(' ')}`
 
+  /**
+   * This command allows you to disable emote only mode if you previously
+   * enabled it.
+   */
+  async emoteOnlyOff(channel: string): Promise<NoticeMessages> {
+    channel = sanitizers.channel(channel)
+    const message = `/${ChatCommands.EMOTE_ONLY_OFF}`
     const [notice] = await Promise.all([
       pEvent<string, NoticeMessages>(
         // @ts-expect-error
@@ -390,16 +413,20 @@ class Chat extends EventEmitter<EventTypes> {
       ),
       this.say(channel, message),
     ])
-
     return notice
   }
+
+  /**
+   * This command allows you or your mods to restrict chat to all or some of
+   * your followers, based on how long they’ve followed.
+   * @param period - Follow time from 0 minutes (all followers) to 3 months.
+   */
   async followersOnly(
     channel: string,
-    ...args: string[]
+    period: string,
   ): Promise<NoticeMessages> {
     channel = sanitizers.channel(channel)
-    const message = `/${ChatCommands.FOLLOWERS_ONLY} ${args.join(' ')}`
-
+    const message = `/${ChatCommands.FOLLOWERS_ONLY} ${period}`
     const [notice] = await Promise.all([
       pEvent<string, NoticeMessages>(
         // @ts-expect-error
@@ -412,16 +439,16 @@ class Chat extends EventEmitter<EventTypes> {
       ),
       this.say(channel, message),
     ])
-
     return notice
   }
-  async followersOnlyOff(
-    channel: string,
-    ...args: string[]
-  ): Promise<NoticeMessages> {
-    channel = sanitizers.channel(channel)
-    const message = `/${ChatCommands.FOLLOWERS_ONLY_OFF} ${args.join(' ')}`
 
+  /**
+   * This command will disable followers only mode if it was previously enabled
+   * on the channel.
+   */
+  async followersOnlyOff(channel: string): Promise<NoticeMessages> {
+    channel = sanitizers.channel(channel)
+    const message = `/${ChatCommands.FOLLOWERS_ONLY_OFF}`
     const [notice] = await Promise.all([
       pEvent<string, NoticeMessages>(
         // @ts-expect-error
@@ -431,13 +458,12 @@ class Chat extends EventEmitter<EventTypes> {
       ),
       this.say(channel, message),
     ])
-
     return notice
   }
-  async help(channel: string, ...args: string[]): Promise<NoticeMessages> {
-    channel = sanitizers.channel(channel)
-    const message = `/${ChatCommands.HELP} ${args.join(' ')}`
 
+  async help(channel: string): Promise<NoticeMessages> {
+    channel = sanitizers.channel(channel)
+    const message = `/${ChatCommands.HELP}`
     const [notice] = await Promise.all([
       pEvent<string, NoticeMessages>(
         // @ts-expect-error
@@ -447,13 +473,15 @@ class Chat extends EventEmitter<EventTypes> {
       ),
       this.say(channel, message),
     ])
-
     return notice
   }
-  async host(channel: string, ...args: string[]): Promise<NoticeMessages> {
-    channel = sanitizers.channel(channel)
-    const message = `/${ChatCommands.HOST} ${args.join(' ')}`
 
+  /**
+   * This command will allow you to host another channel on yours.
+   */
+  async host(channel: string, hostChannel: string): Promise<NoticeMessages> {
+    channel = sanitizers.channel(channel)
+    const message = `/${ChatCommands.HOST} ${hostChannel}`
     const [notice] = await Promise.all([
       pEvent<string, NoticeMessages>(
         // @ts-expect-error
@@ -463,25 +491,38 @@ class Chat extends EventEmitter<EventTypes> {
       ),
       this.say(channel, message),
     ])
-
     return notice
   }
-  async marker(channel: string, ...args: string[]): Promise<UserStateMessage> {
-    channel = sanitizers.channel(channel)
-    const message = `/${ChatCommands.MARKER} ${args.join(' ')}`
 
+  /**
+   * Adds a stream marker (with an optional description, max 140 characters) at
+   * the current timestamp. You can use markers in the Highlighter for easier
+   * editing.
+   */
+  async marker(
+    channel: string,
+    description: string,
+  ): Promise<UserStateMessage> {
+    channel = sanitizers.channel(channel)
+    const message = `/${ChatCommands.MARKER} ${description.slice(0, 140)}`
     return this.say(channel, message)
   }
-  async me(channel: string, ...args: string[]): Promise<UserStateMessage> {
-    channel = sanitizers.channel(channel)
-    const message = `/${ChatCommands.ME} ${args.join(' ')}`
 
+  /**
+   * This command will color your text based on your chat name color.
+   */
+  async me(channel: string, text: string): Promise<UserStateMessage> {
+    channel = sanitizers.channel(channel)
+    const message = `/${ChatCommands.ME} ${text}`
     return this.say(channel, message)
   }
-  async mod(channel: string, ...args: string[]): Promise<NoticeMessages> {
-    channel = sanitizers.channel(channel)
-    const message = `/${ChatCommands.MOD} ${args.join(' ')}`
 
+  /**
+   * This command will allow you to promote a user to a channel moderator.
+   */
+  async mod(channel: string, username: string): Promise<NoticeMessages> {
+    channel = sanitizers.channel(channel)
+    const message = `/${ChatCommands.MOD} ${username}`
     const [notice] = await Promise.all([
       pEvent<string, NoticeMessages>(
         // @ts-expect-error
@@ -494,9 +535,13 @@ class Chat extends EventEmitter<EventTypes> {
       ),
       this.say(channel, message),
     ])
-
     return notice
   }
+
+  /**
+   * This command will display a list of all chat moderators for that specific
+   * channel.
+   */
   async mods(channel: string, ...args: string[]): Promise<NoticeMessages> {
     channel = sanitizers.channel(channel)
     const message = `/${ChatCommands.MODS} ${args.join(' ')}`
@@ -513,10 +558,13 @@ class Chat extends EventEmitter<EventTypes> {
 
     return notice
   }
-  async r9K(channel: string, ...args: string[]): Promise<NoticeMessages> {
-    channel = sanitizers.channel(channel)
-    const message = `/${ChatCommands.R9K} ${args.join(' ')}`
 
+  /**
+   * @deprecated
+   */
+  async r9K(channel: string): Promise<NoticeMessages> {
+    channel = sanitizers.channel(channel)
+    const message = `/${ChatCommands.R9K}`
     const [notice] = await Promise.all([
       pEvent<string, NoticeMessages>(
         // @ts-expect-error
@@ -529,13 +577,15 @@ class Chat extends EventEmitter<EventTypes> {
       ),
       this.say(channel, message),
     ])
-
     return notice
   }
-  async r9KOff(channel: string, ...args: string[]): Promise<NoticeMessages> {
-    channel = sanitizers.channel(channel)
-    const message = `/${ChatCommands.R9K_OFF} ${args.join(' ')}`
 
+  /**
+   * @deprecated
+   */
+  async r9KOff(channel: string): Promise<NoticeMessages> {
+    channel = sanitizers.channel(channel)
+    const message = `/${ChatCommands.R9K_OFF}`
     const [notice] = await Promise.all([
       pEvent<string, NoticeMessages>(
         // @ts-expect-error
@@ -548,19 +598,25 @@ class Chat extends EventEmitter<EventTypes> {
       ),
       this.say(channel, message),
     ])
-
     return notice
   }
-  async raid(channel: string, ...args: string[]): Promise<UserStateMessage> {
-    channel = sanitizers.channel(channel)
-    const message = `/${ChatCommands.RAID} ${args.join(' ')}`
 
+  /**
+   * This command will send the viewer to another live channel.
+   */
+  async raid(channel: string, raidChannel: string): Promise<UserStateMessage> {
+    channel = sanitizers.channel(channel)
+    const message = `/${ChatCommands.RAID} ${raidChannel}`
     return this.say(channel, message)
   }
-  async slow(channel: string, ...args: string[]): Promise<NoticeMessages> {
-    channel = sanitizers.channel(channel)
-    const message = `/${ChatCommands.SLOW} ${args.join(' ')}`
 
+  /**
+   * This command allows you to set a limit on how often users in the chat room
+   * are allowed to send messages (rate limiting).
+   */
+  async slow(channel: string, seconds: string): Promise<NoticeMessages> {
+    channel = sanitizers.channel(channel)
+    const message = `/${ChatCommands.SLOW} ${seconds}`
     const [notice] = await Promise.all([
       pEvent<string, NoticeMessages>(
         // @ts-expect-error
@@ -570,13 +626,15 @@ class Chat extends EventEmitter<EventTypes> {
       ),
       this.say(channel, message),
     ])
-
     return notice
   }
-  async slowOff(channel: string, ...args: string[]): Promise<NoticeMessages> {
-    channel = sanitizers.channel(channel)
-    const message = `/${ChatCommands.SLOW_OFF} ${args.join(' ')}`
 
+  /**
+   * This command allows you to disable slow mode if you had previously set it.
+   */
+  async slowOff(channel: string): Promise<NoticeMessages> {
+    channel = sanitizers.channel(channel)
+    const message = `/${ChatCommands.SLOW_OFF}`
     const [notice] = await Promise.all([
       pEvent<string, NoticeMessages>(
         // @ts-expect-error
@@ -586,16 +644,18 @@ class Chat extends EventEmitter<EventTypes> {
       ),
       this.say(channel, message),
     ])
-
     return notice
   }
-  async subscribers(
-    channel: string,
-    ...args: string[]
-  ): Promise<NoticeMessages> {
-    channel = sanitizers.channel(channel)
-    const message = `/${ChatCommands.SUBSCRIBERS} ${args.join(' ')}`
 
+  /**
+   * This command allows you to set your room so only users subscribed to you
+   * can talk in the chat room. If you don't have the subscription feature it
+   * will only allow the Broadcaster and the channel moderators to talk in the
+   * chat room.
+   */
+  async subscribers(channel: string): Promise<NoticeMessages> {
+    channel = sanitizers.channel(channel)
+    const message = `/${ChatCommands.SUBSCRIBERS}`
     const [notice] = await Promise.all([
       pEvent<string, NoticeMessages>(
         // @ts-expect-error
@@ -608,16 +668,16 @@ class Chat extends EventEmitter<EventTypes> {
       ),
       this.say(channel, message),
     ])
-
     return notice
   }
-  async subscribersOff(
-    channel: string,
-    ...args: string[]
-  ): Promise<NoticeMessages> {
-    channel = sanitizers.channel(channel)
-    const message = `/${ChatCommands.SUBSCRIBERS_OFF} ${args.join(' ')}`
 
+  /**
+   * This command allows you to disable subscribers only chat room if you
+   * previously enabled it.
+   */
+  async subscribersOff(channel: string): Promise<NoticeMessages> {
+    channel = sanitizers.channel(channel)
+    const message = `/${ChatCommands.SUBSCRIBERS_OFF}`
     const [notice] = await Promise.all([
       pEvent<string, NoticeMessages>(
         // @ts-expect-error
@@ -630,13 +690,23 @@ class Chat extends EventEmitter<EventTypes> {
       ),
       this.say(channel, message),
     ])
-
     return notice
   }
-  async timeout(channel: string, ...args: string[]): Promise<NoticeMessages> {
-    channel = sanitizers.channel(channel)
-    const message = `/${ChatCommands.TIMEOUT} ${args.join(' ')}`
 
+  /**
+   * This command allows you to temporarily ban someone from the chat room for
+   * 10 minutes by default. This will be indicated to yourself and the
+   * temporarily banned subject in chat on a successful temporary ban. A new
+   * timeout command will overwrite an old one.
+   */
+  async timeout(
+    channel: string,
+    username: string,
+    timeout?: number,
+  ): Promise<NoticeMessages> {
+    channel = sanitizers.channel(channel)
+    const timeoutArg = timeout ? ` ${timeout}` : ''
+    const message = `/${ChatCommands.TIMEOUT} ${username}${timeoutArg}`
     const [notice] = await Promise.all([
       pEvent<string, NoticeMessages>(
         // @ts-expect-error
@@ -646,13 +716,17 @@ class Chat extends EventEmitter<EventTypes> {
       ),
       this.say(channel, message),
     ])
-
     return notice
   }
-  async unban(channel: string, ...args: string[]): Promise<NoticeMessages> {
-    channel = sanitizers.channel(channel)
-    const message = `/${ChatCommands.UNBAN} ${args.join(' ')}`
 
+  /**
+   * This command will allow you to lift a permanent ban on a user from the
+   * chat room. You can also use this command to end a ban early; this also
+   * applies to timeouts.
+   */
+  async unban(channel: string, username: string): Promise<NoticeMessages> {
+    channel = sanitizers.channel(channel)
+    const message = `/${ChatCommands.UNBAN} ${username}`
     const [notice] = await Promise.all([
       pEvent<string, NoticeMessages>(
         // @ts-expect-error
@@ -665,13 +739,26 @@ class Chat extends EventEmitter<EventTypes> {
       ),
       this.say(channel, message),
     ])
-
     return notice
   }
-  async unhost(channel: string, ...args: string[]): Promise<NoticeMessages> {
-    channel = sanitizers.channel(channel)
-    const message = `/${ChatCommands.UNHOST} ${args.join(' ')}`
 
+  /**
+   * This command will allow you to remove users from your block list that you
+   * previously added.
+   */
+  async unblock(channel: string, username: string): Promise<UserStateMessage> {
+    channel = sanitizers.channel(channel)
+    const message = `/${ChatCommands.UNBLOCK} ${username}`
+    return this.say(channel, message)
+  }
+
+  /**
+   * Using this command will revert the embedding from hosting a channel and
+   * return it to its normal state.
+   */
+  async unhost(channel: string): Promise<NoticeMessages> {
+    channel = sanitizers.channel(channel)
+    const message = `/${ChatCommands.UNHOST}`
     const [notice] = await Promise.all([
       pEvent<string, NoticeMessages>(
         // @ts-expect-error
@@ -681,13 +768,16 @@ class Chat extends EventEmitter<EventTypes> {
       ),
       this.say(channel, message),
     ])
-
     return notice
   }
-  async unmod(channel: string, ...args: string[]): Promise<NoticeMessages> {
-    channel = sanitizers.channel(channel)
-    const message = `/${ChatCommands.UNMOD} ${args.join(' ')}`
 
+  /**
+   * This command will allow you to demote an existing moderator back to viewer
+   * status (removing their moderator abilities).
+   */
+  async unmod(channel: string, username: string): Promise<NoticeMessages> {
+    channel = sanitizers.channel(channel)
+    const message = `/${ChatCommands.UNMOD} ${username}`
     const [notice] = await Promise.all([
       pEvent<string, NoticeMessages>(
         // @ts-expect-error
@@ -697,13 +787,15 @@ class Chat extends EventEmitter<EventTypes> {
       ),
       this.say(channel, message),
     ])
-
     return notice
   }
-  async unraid(channel: string, ...args: string[]): Promise<NoticeMessages> {
-    channel = sanitizers.channel(channel)
-    const message = `/${ChatCommands.UNRAID} ${args.join(' ')}`
 
+  /**
+   * This command will cancel the raid.
+   */
+  async unraid(channel: string): Promise<NoticeMessages> {
+    channel = sanitizers.channel(channel)
+    const message = `/${ChatCommands.UNRAID}`
     const [notice] = await Promise.all([
       pEvent<string, NoticeMessages>(
         // @ts-expect-error
@@ -713,8 +805,34 @@ class Chat extends EventEmitter<EventTypes> {
       ),
       this.say(channel, message),
     ])
-
     return notice
+  }
+
+  /**
+   * This command will grant VIP status to a user.
+   */
+  unvip(channel: string, username: string): Promise<UserStateMessage> {
+    channel = sanitizers.channel(channel)
+    const message = `/${ChatCommands.UNVIP} ${username}`
+    return this.say(channel, message)
+  }
+
+  /**
+   * This command will grant VIP status to a user.
+   */
+  vip(channel: string, username: string): Promise<UserStateMessage> {
+    channel = sanitizers.channel(channel)
+    const message = `/${ChatCommands.VIP} ${username}`
+    return this.say(channel, message)
+  }
+
+  /**
+   * This command will display a list of VIPs for that specific channel.
+   */
+  vips(channel: string): Promise<UserStateMessage> {
+    channel = sanitizers.channel(channel)
+    const message = `/${ChatCommands.VIPS}`
+    return this.say(channel, message)
   }
 
   /**

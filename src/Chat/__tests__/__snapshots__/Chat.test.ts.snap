@@ -1,5 +1,284 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`Chat command ban should call say with args 1`] = `
+Array [
+  Array [
+    "#channel",
+    "/ban arg1",
+  ],
+]
+`;
+
+exports[`Chat command block should call say with args 1`] = `
+Array [
+  Array [
+    "#channel",
+    "/block arg1",
+  ],
+]
+`;
+
+exports[`Chat command clear should call say with args 1`] = `
+Array [
+  Array [
+    "#channel",
+    "/clear",
+  ],
+]
+`;
+
+exports[`Chat command color should call say with args 1`] = `
+Array [
+  Array [
+    "#channel",
+    "/color arg1",
+  ],
+]
+`;
+
+exports[`Chat command commercial should call say with args 1`] = `
+Array [
+  Array [
+    "#channel",
+    "/commercial arg1",
+  ],
+]
+`;
+
+exports[`Chat command emoteOnly should call say with args 1`] = `
+Array [
+  Array [
+    "#channel",
+    "/emoteonly",
+  ],
+]
+`;
+
+exports[`Chat command emoteOnlyOff should call say with args 1`] = `
+Array [
+  Array [
+    "#channel",
+    "/emoteonlyoff",
+  ],
+]
+`;
+
+exports[`Chat command followersOnly should call say with args 1`] = `
+Array [
+  Array [
+    "#channel",
+    "/followers arg1",
+  ],
+]
+`;
+
+exports[`Chat command followersOnlyOff should call say with args 1`] = `
+Array [
+  Array [
+    "#channel",
+    "/followersoff",
+  ],
+]
+`;
+
+exports[`Chat command help should call say with args 1`] = `
+Array [
+  Array [
+    "#channel",
+    "/help",
+  ],
+]
+`;
+
+exports[`Chat command host should call say with args 1`] = `
+Array [
+  Array [
+    "#channel",
+    "/host arg1",
+  ],
+]
+`;
+
+exports[`Chat command marker should call say with args 1`] = `
+Array [
+  Array [
+    "#channel",
+    "/marker arg1",
+  ],
+]
+`;
+
+exports[`Chat command me should call say with args 1`] = `
+Array [
+  Array [
+    "#channel",
+    "/me arg1",
+  ],
+]
+`;
+
+exports[`Chat command mod should call say with args 1`] = `
+Array [
+  Array [
+    "#channel",
+    "/mod arg1",
+  ],
+]
+`;
+
+exports[`Chat command mods should call say with args 1`] = `
+Array [
+  Array [
+    "#channel",
+    "/mods arg1 arg2 arg3",
+  ],
+]
+`;
+
+exports[`Chat command r9K should call say with args 1`] = `
+Array [
+  Array [
+    "#channel",
+    "/r9kbeta",
+  ],
+]
+`;
+
+exports[`Chat command r9KOff should call say with args 1`] = `
+Array [
+  Array [
+    "#channel",
+    "/r9kbetaoff",
+  ],
+]
+`;
+
+exports[`Chat command raid should call say with args 1`] = `
+Array [
+  Array [
+    "#channel",
+    "/raid arg1",
+  ],
+]
+`;
+
+exports[`Chat command slow should call say with args 1`] = `
+Array [
+  Array [
+    "#channel",
+    "/slow arg1",
+  ],
+]
+`;
+
+exports[`Chat command slowOff should call say with args 1`] = `
+Array [
+  Array [
+    "#channel",
+    "/slowoff",
+  ],
+]
+`;
+
+exports[`Chat command subscribers should call say with args 1`] = `
+Array [
+  Array [
+    "#channel",
+    "/subscribers",
+  ],
+]
+`;
+
+exports[`Chat command subscribersOff should call say with args 1`] = `
+Array [
+  Array [
+    "#channel",
+    "/subscribersoff",
+  ],
+]
+`;
+
+exports[`Chat command timeout should call say with args 1`] = `
+Array [
+  Array [
+    "#channel",
+    "/timeout arg1 arg2",
+  ],
+]
+`;
+
+exports[`Chat command unban should call say with args 1`] = `
+Array [
+  Array [
+    "#channel",
+    "/unban arg1",
+  ],
+]
+`;
+
+exports[`Chat command unblock should call say with args 1`] = `
+Array [
+  Array [
+    "#channel",
+    "/unblock arg1",
+  ],
+]
+`;
+
+exports[`Chat command unhost should call say with args 1`] = `
+Array [
+  Array [
+    "#channel",
+    "/unhost",
+  ],
+]
+`;
+
+exports[`Chat command unmod should call say with args 1`] = `
+Array [
+  Array [
+    "#channel",
+    "/unmod arg1",
+  ],
+]
+`;
+
+exports[`Chat command unraid should call say with args 1`] = `
+Array [
+  Array [
+    "#channel",
+    "/unraid",
+  ],
+]
+`;
+
+exports[`Chat command unvip should call say with args 1`] = `
+Array [
+  Array [
+    "#channel",
+    "/unvip arg1",
+  ],
+]
+`;
+
+exports[`Chat command vip should call say with args 1`] = `
+Array [
+  Array [
+    "#channel",
+    "/vip arg1",
+  ],
+]
+`;
+
+exports[`Chat command vips should call say with args 1`] = `
+Array [
+  Array [
+    "#channel",
+    "/vips",
+  ],
+]
+`;
+
 exports[`Chat reconnect should reconnect and rejoin channels 1`] = `
 Array [
   Array [
