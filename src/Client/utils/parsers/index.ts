@@ -8,10 +8,7 @@ import { BaseMessage, Commands, Events } from '../../../twitch'
 
 import * as helpers from './helpers'
 
-const baseParser = (
-  rawMessages: string,
-  username: string = '',
-): BaseMessage[] => {
+const baseParser = (rawMessages: string, username = ''): BaseMessage[] => {
   const rawMessagesArray = rawMessages.split(/\r?\n/g)
 
   return rawMessagesArray.reduce((messages, rawMessage) => {

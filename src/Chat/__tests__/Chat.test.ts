@@ -2,9 +2,9 @@ import { server } from 'ws'
 import pEvent from 'p-event'
 import camelCase from 'lodash/camelCase'
 
-import rawCommands from '../../../__mocks__/ws/__fixtures__/commands'
-import membership from '../../../__mocks__/ws/__fixtures__/membership'
-import tags from '../../../__mocks__/ws/__fixtures__/tags'
+import rawCommands from '../../../__mocks__/ws/__fixtures__/commands.json'
+import membership from '../../../__mocks__/ws/__fixtures__/membership.json'
+import tags from '../../../__mocks__/ws/__fixtures__/tags.json'
 
 import {
   ChatCommands,

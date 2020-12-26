@@ -1,6 +1,6 @@
 import { server } from 'ws'
 
-import membership from '../../../__mocks__/ws/__fixtures__/membership'
+import membership from '../../../__mocks__/ws/__fixtures__/membership.json'
 
 import Client, { ClientEvents } from '../'
 import * as constants from '../constants'
@@ -68,7 +68,7 @@ describe('Chat/Client', () => {
 
       const client = new Client(options)
 
-      client.on(ClientEvents.CONNECTED, (m) => {
+      client.on(ClientEvents.CONNECTED, () => {
         jest.advanceTimersByTime(constants.KEEP_ALIVE_PING_TIMEOUT)
       })
 

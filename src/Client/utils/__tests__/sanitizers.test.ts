@@ -1,4 +1,3 @@
-import * as utils from '../index'
 import * as sanitizers from '../sanitizers'
 
 describe('Chat/utils/sanitizers', () => {

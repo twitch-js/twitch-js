@@ -13,7 +13,6 @@ describe('Api/utils/validators', () => {
     test('default onAuthenticationFailure should reject', async () => {
       const { onAuthenticationFailure } = validators.apiOptions(options)
 
-      // @ts-expect-error onAuthenticationFailure is optional
       await expect(onAuthenticationFailure()).rejects.toBeUndefined()
     })
   })

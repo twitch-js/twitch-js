@@ -1,11 +1,17 @@
 import { EventEmitter } from 'eventemitter3'
 
-import commands from './__fixtures__/commands'
-import membership from './__fixtures__/membership'
-import tags from './__fixtures__/tags'
+import commands from './__fixtures__/commands.json'
+import membership from './__fixtures__/membership.json'
+import tags from './__fixtures__/tags.json'
 
-const server = new EventEmitter()
-server.sendMessageToClient = (data) => server.emit('emit', { data })
+type Listener = (...args: any[]) => void
+
+class Server extends EventEmitter {
+  sendMessageToClient(data: any) {
+    super.emit('emit', { data })
+  }
+}
+const server = new Server()
 
 class WebSocket extends EventEmitter {
   readyState = 0
@@ -26,31 +32,31 @@ class WebSocket extends EventEmitter {
     this.readyState = 1
   }
 
-  set onopen(listener) {
+  set onopen(listener: Listener) {
     this.addListener('open', listener)
   }
 
-  set onmessage(listener) {
+  set onmessage(listener: Listener) {
     this.addListener('message', listener)
     server.on('emit', listener)
   }
 
-  set onerror(listener) {
+  set onerror(listener: Listener) {
     this.addListener('error', listener)
   }
 
-  set onclose(listener) {
+  set onclose(listener: Listener) {
     this.addListener('close', listener)
   }
 
-  emit(eventName, data) {
-    super.emit(eventName, { data })
+  emit<T extends string | symbol>(eventName: T, data?: any) {
+    return super.emit(eventName, { data })
   }
 
-  send(message) {
+  send(message: string) {
     server.emit('message', message)
 
-    const [, command, argv = ''] = /^(\w+) (.+)/.exec(message)
+    const [, command, argv = ''] = /^(\w+) (.+)/.exec(message) as string[]
 
     const args = argv.split(' ')
     // In the future, `args` can be used to mock more complex client-server

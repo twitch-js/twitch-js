@@ -4,7 +4,6 @@ import {
   ClearChatMessages,
   Events,
   BaseMessage,
-  GlobalUserStateMessage,
   HostingAutoPrivateMessage,
   HostingPrivateMessage,
   HostingWithViewersPrivateMessage,

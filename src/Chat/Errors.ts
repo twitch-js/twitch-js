@@ -1,4 +1,4 @@
-import { Commands, Events, BaseMessage, ChatEvents } from '../twitch'
+import { BaseMessage, ChatEvents } from '../twitch'
 
 import BaseError from '../utils/BaseError'
 

@@ -46,10 +46,7 @@ import * as utils from '../'
 import * as helpers from './helpers'
 import * as tagParsers from './tags'
 
-export const base = (
-  rawMessages: string,
-  username: string = '',
-): BaseMessage[] => {
+export const base = (rawMessages: string, username = ''): BaseMessage[] => {
   const rawMessagesV = rawMessages.split(/\r?\n/g)
 
   return rawMessagesV.reduce((messages, rawMessage) => {

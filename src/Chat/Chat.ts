@@ -296,7 +296,7 @@ class Chat extends EventEmitter<EventTypes> {
     const message = `/${ChatCommands.BAN} ${username}`
     const [notice] = await Promise.all([
       pEvent<string, NoticeMessages>(
-        // @ts-expect-error
+        // @ts-expect-error pEvent does not recognize eventemitter3.
         this,
         [
           `${NoticeMessageIds.BAN_SUCCESS}/${channel}`,
@@ -328,7 +328,7 @@ class Chat extends EventEmitter<EventTypes> {
     const message = `/${ChatCommands.CLEAR}`
     const [notice] = await Promise.all([
       pEvent<string, NoticeMessages>(
-        // @ts-expect-error
+        // @ts-expect-error pEvent does not recognize eventemitter3.
         this,
         [`${Commands.CLEAR_CHAT}/${channel}`],
         {},
@@ -346,7 +346,7 @@ class Chat extends EventEmitter<EventTypes> {
     const message = `/${ChatCommands.COLOR} ${color}`
     const [notice] = await Promise.all([
       pEvent<string, NoticeMessages>(
-        // @ts-expect-error
+        // @ts-expect-error pEvent does not recognize eventemitter3.
         this,
         [`${NoticeMessageIds.COLOR_CHANGED}/${channel}`],
         {},
@@ -368,7 +368,7 @@ class Chat extends EventEmitter<EventTypes> {
     const message = `/${ChatCommands.COMMERCIAL} ${length}`
     const [notice] = await Promise.all([
       pEvent<string, NoticeMessages>(
-        // @ts-expect-error
+        // @ts-expect-error pEvent does not recognize eventemitter3.
         this,
         [`${NoticeMessageIds.COMMERCIAL_SUCCESS}/${channel}`],
         {},
@@ -387,7 +387,7 @@ class Chat extends EventEmitter<EventTypes> {
     const message = `/${ChatCommands.EMOTE_ONLY}`
     const [notice] = await Promise.all([
       pEvent<string, NoticeMessages>(
-        // @ts-expect-error
+        // @ts-expect-error pEvent does not recognize eventemitter3.
         this,
         [
           `${NoticeMessageIds.EMOTE_ONLY_ON}/${channel}`,
@@ -409,7 +409,7 @@ class Chat extends EventEmitter<EventTypes> {
     const message = `/${ChatCommands.EMOTE_ONLY_OFF}`
     const [notice] = await Promise.all([
       pEvent<string, NoticeMessages>(
-        // @ts-expect-error
+        // @ts-expect-error pEvent does not recognize eventemitter3.
         this,
         [
           `${NoticeMessageIds.EMOTE_ONLY_OFF}/${channel}`,
@@ -435,7 +435,7 @@ class Chat extends EventEmitter<EventTypes> {
     const message = `/${ChatCommands.FOLLOWERS_ONLY} ${period}`
     const [notice] = await Promise.all([
       pEvent<string, NoticeMessages>(
-        // @ts-expect-error
+        // @ts-expect-error pEvent does not recognize eventemitter3.
         this,
         [
           `${NoticeMessageIds.FOLLOWERS_ON_ZERO}/${channel}`,
@@ -457,7 +457,7 @@ class Chat extends EventEmitter<EventTypes> {
     const message = `/${ChatCommands.FOLLOWERS_ONLY_OFF}`
     const [notice] = await Promise.all([
       pEvent<string, NoticeMessages>(
-        // @ts-expect-error
+        // @ts-expect-error pEvent does not recognize eventemitter3.
         this,
         [`${NoticeMessageIds.FOLLOWERS_OFF}/${channel}`],
         {},
@@ -472,7 +472,7 @@ class Chat extends EventEmitter<EventTypes> {
     const message = `/${ChatCommands.HELP}`
     const [notice] = await Promise.all([
       pEvent<string, NoticeMessages>(
-        // @ts-expect-error
+        // @ts-expect-error pEvent does not recognize eventemitter3.
         this,
         [`${NoticeMessageIds.CMDS_AVAILABLE}/${channel}`],
         {},
@@ -490,7 +490,7 @@ class Chat extends EventEmitter<EventTypes> {
     const message = `/${ChatCommands.HOST} ${hostChannel}`
     const [notice] = await Promise.all([
       pEvent<string, NoticeMessages>(
-        // @ts-expect-error
+        // @ts-expect-error pEvent does not recognize eventemitter3.
         this,
         [`${NoticeMessageIds.HOST_ON}/${channel}`],
         {},
@@ -531,7 +531,7 @@ class Chat extends EventEmitter<EventTypes> {
     const message = `/${ChatCommands.MOD} ${username}`
     const [notice] = await Promise.all([
       pEvent<string, NoticeMessages>(
-        // @ts-expect-error
+        // @ts-expect-error pEvent does not recognize eventemitter3.
         this,
         [
           `${NoticeMessageIds.MOD_SUCCESS}/${channel}`,
@@ -554,7 +554,7 @@ class Chat extends EventEmitter<EventTypes> {
 
     const [notice] = await Promise.all([
       pEvent<string, NoticeMessages>(
-        // @ts-expect-error
+        // @ts-expect-error pEvent does not recognize eventemitter3.
         this,
         [`${NoticeMessageIds.ROOM_MODS}/${channel}`],
         {},
@@ -573,7 +573,7 @@ class Chat extends EventEmitter<EventTypes> {
     const message = `/${ChatCommands.R9K}`
     const [notice] = await Promise.all([
       pEvent<string, NoticeMessages>(
-        // @ts-expect-error
+        // @ts-expect-error pEvent does not recognize eventemitter3.
         this,
         [
           `${NoticeMessageIds.R9K_ON}/${channel}`,
@@ -594,7 +594,7 @@ class Chat extends EventEmitter<EventTypes> {
     const message = `/${ChatCommands.R9K_OFF}`
     const [notice] = await Promise.all([
       pEvent<string, NoticeMessages>(
-        // @ts-expect-error
+        // @ts-expect-error pEvent does not recognize eventemitter3.
         this,
         [
           `${NoticeMessageIds.R9K_OFF}/${channel}`,
@@ -625,7 +625,7 @@ class Chat extends EventEmitter<EventTypes> {
     const message = `/${ChatCommands.SLOW} ${seconds}`
     const [notice] = await Promise.all([
       pEvent<string, NoticeMessages>(
-        // @ts-expect-error
+        // @ts-expect-error pEvent does not recognize eventemitter3.
         this,
         [`${NoticeMessageIds.SLOW_ON}/${channel}`],
         {},
@@ -643,7 +643,7 @@ class Chat extends EventEmitter<EventTypes> {
     const message = `/${ChatCommands.SLOW_OFF}`
     const [notice] = await Promise.all([
       pEvent<string, NoticeMessages>(
-        // @ts-expect-error
+        // @ts-expect-error pEvent does not recognize eventemitter3.
         this,
         [`${NoticeMessageIds.SLOW_OFF}/${channel}`],
         {},
@@ -664,7 +664,7 @@ class Chat extends EventEmitter<EventTypes> {
     const message = `/${ChatCommands.SUBSCRIBERS}`
     const [notice] = await Promise.all([
       pEvent<string, NoticeMessages>(
-        // @ts-expect-error
+        // @ts-expect-error pEvent does not recognize eventemitter3.
         this,
         [
           `${NoticeMessageIds.SUBS_ON}/${channel}`,
@@ -686,7 +686,7 @@ class Chat extends EventEmitter<EventTypes> {
     const message = `/${ChatCommands.SUBSCRIBERS_OFF}`
     const [notice] = await Promise.all([
       pEvent<string, NoticeMessages>(
-        // @ts-expect-error
+        // @ts-expect-error pEvent does not recognize eventemitter3.
         this,
         [
           `${NoticeMessageIds.SUBS_OFF}/${channel}`,
@@ -715,7 +715,7 @@ class Chat extends EventEmitter<EventTypes> {
     const message = `/${ChatCommands.TIMEOUT} ${username}${timeoutArg}`
     const [notice] = await Promise.all([
       pEvent<string, NoticeMessages>(
-        // @ts-expect-error
+        // @ts-expect-error pEvent does not recognize eventemitter3.
         this,
         [`${NoticeMessageIds.TIMEOUT_SUCCESS}/${channel}`],
         {},
@@ -735,7 +735,7 @@ class Chat extends EventEmitter<EventTypes> {
     const message = `/${ChatCommands.UNBAN} ${username}`
     const [notice] = await Promise.all([
       pEvent<string, NoticeMessages>(
-        // @ts-expect-error
+        // @ts-expect-error pEvent does not recognize eventemitter3.
         this,
         [
           `${NoticeMessageIds.UNBAN_SUCCESS}/${channel}`,
@@ -767,7 +767,7 @@ class Chat extends EventEmitter<EventTypes> {
     const message = `/${ChatCommands.UNHOST}`
     const [notice] = await Promise.all([
       pEvent<string, NoticeMessages>(
-        // @ts-expect-error
+        // @ts-expect-error pEvent does not recognize eventemitter3.
         this,
         [`${NoticeMessageIds.HOST_OFF}/${channel}`],
         {},
@@ -786,7 +786,7 @@ class Chat extends EventEmitter<EventTypes> {
     const message = `/${ChatCommands.UNMOD} ${username}`
     const [notice] = await Promise.all([
       pEvent<string, NoticeMessages>(
-        // @ts-expect-error
+        // @ts-expect-error pEvent does not recognize eventemitter3.
         this,
         [`${NoticeMessageIds.UNMOD_SUCCESS}/${channel}`],
         {},
@@ -804,7 +804,7 @@ class Chat extends EventEmitter<EventTypes> {
     const message = `/${ChatCommands.UNRAID}`
     const [notice] = await Promise.all([
       pEvent<string, NoticeMessages>(
-        // @ts-expect-error
+        // @ts-expect-error pEvent does not recognize eventemitter3.
         this,
         [`${NoticeMessageIds.UNRAID_SUCCESS}/${channel}`],
         {},
@@ -914,14 +914,14 @@ class Chat extends EventEmitter<EventTypes> {
 
     const [roomState, userState] = await Promise.all([
       pEvent<string, RoomStateMessage>(
-        // @ts-expect-error
+        // @ts-expect-error pEvent does not recognize eventemitter3.
         this,
         `${Commands.ROOM_STATE}/${sanitizedChannel}`,
       ),
 
       this._isAuthenticated
         ? pEvent<string, UserStateMessage>(
-            // @ts-expect-error
+            // @ts-expect-error pEvent does not recognize eventemitter3.
             this,
             `${Commands.USER_STATE}/${sanitizedChannel}`,
           )
@@ -964,7 +964,7 @@ class Chat extends EventEmitter<EventTypes> {
 
     const [userState] = await Promise.all([
       pEvent<string, UserStateMessage>(
-        // @ts-expect-error
+        // @ts-expect-error pEvent does not recognize eventemitter3.
         this,
         `${Commands.USER_STATE}/${channel}`,
       ),
