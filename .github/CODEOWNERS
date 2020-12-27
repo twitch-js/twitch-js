@@ -4,8 +4,5 @@
 # Root files
 /*.*          @marcandrews
 
-# Documentation
-/docs         @marcandrews
-
-# Wesbite
-/website      @marcandrews
+# E2E tests
+/__e2e__      @marcandrews

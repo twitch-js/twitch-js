@@ -1,21 +1,15 @@
-import TwitchJs from '../../lib'
-import { ApiVersions } from '../../lib/twitch'
+import TwitchJs, { ApiVersions } from '../../lib'
 
 import { preflight } from '../utils'
 
 describe('Node E2E', () => {
-  if (!process.env.CI) {
-    /* eslint-disable-next-line @typescript-eslint/no-var-requires */
-    require('dotenv').config()
-  }
-
   beforeAll(() => {
     preflight()
   })
 
-  const token = process.env.ACCESS_TOKEN
-  const username = process.env.USERNAME
-  const channel = process.env.USERNAME
+  const token = process.env.TWITCH_ACCESS_TOKEN
+  const username = process.env.TWITCH_USERNAME
+  const channel = process.env.TWITCH_USERNAME
   const message = process.env.GITHUB_RUN_ID
     ? `CI E2E Build #${process.env.GITHUB_RUN_ID}`
     : `Local E2E ${new Date()}`

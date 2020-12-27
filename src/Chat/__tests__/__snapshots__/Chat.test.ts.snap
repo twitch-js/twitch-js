@@ -281,6 +281,41 @@ Array [
 
 exports[`Chat command whisper should call say with args 1`] = `Array []`;
 
+exports[`Chat connect should connect as anonymous 1`] = `
+Object {
+  "_raw": ":tmi.twitch.tv 001 <user> :Welcome, GLHF!",
+  "channel": "<user>",
+  "command": "001",
+  "event": "CONNECTED",
+  "isSelf": false,
+  "message": "Welcome, GLHF!",
+  "tags": Object {},
+  "timestamp": Any<Date>,
+  "username": "tmi.twitch.tv",
+}
+`;
+
+exports[`Chat connect should connect as authenticated 1`] = `
+Object {
+  "_raw": "@color=#0D4200;display-name=dallas;emote-sets=0,33,50,237,793,2126,3517,4578,5569,9400,10337,12239;turbo=0;user-id=1337;user-type=admin :tmi.twitch.tv GLOBALUSERSTATE",
+  "channel": undefined,
+  "command": "GLOBALUSERSTATE",
+  "event": "CONNECTED",
+  "isSelf": false,
+  "message": undefined,
+  "tags": Object {
+    "color": "#0D4200",
+    "displayName": "dallas",
+    "emoteSets": "0,33,50,237,793,2126,3517,4578,5569,9400,10337,12239",
+    "turbo": "0",
+    "userId": "1337",
+    "userType": "admin",
+  },
+  "timestamp": Any<Date>,
+  "username": "dallas",
+}
+`;
+
 exports[`Chat reconnect should reconnect and rejoin channels 1`] = `
 Array [
   Array [

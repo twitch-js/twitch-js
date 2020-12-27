@@ -1,6 +1,8 @@
 import EventEmitter from 'eventemitter3'
-import delay from 'delay'
+import delay, { ClearablePromise } from 'delay'
+import PCancelable from 'p-cancelable'
 import pEvent from 'p-event'
+import pTimeout from 'p-timeout'
 
 import uniq from 'lodash/uniq'
 
@@ -18,8 +20,6 @@ import {
 } from '../twitch'
 
 import createLogger, { Logger } from '../utils/logger'
-
-import * as chatUtils from './utils'
 
 import Client, { ClientEvents } from '../Client'
 import * as Errors from './Errors'
@@ -209,7 +209,7 @@ class Chat extends EventEmitter<EventTypes> {
   private _readyState: ChatReadyStates = ChatReadyStates.WAITING
 
   private _connectionAttempts = 0
-  private _connectionInProgress?: Promise<void> | void
+  private _connectionInProgress?: ClearablePromise<void> | void
 
   private _globalUserState?: GlobalUserStateTags
   private _channelState: ChannelStates = {}
@@ -239,7 +239,10 @@ class Chat extends EventEmitter<EventTypes> {
         return this._connectionInProgress
       }
 
-      this._connectionInProgress = await this._handleConnectionAttempt()
+      this._connectionInProgress = await pTimeout(
+        this._handleConnectionAttempt(),
+        this._options.connectionTimeout,
+      )
 
       this._readyState = ChatReadyStates.CONNECTED
       this._connectionAttempts = 0
@@ -302,7 +305,6 @@ class Chat extends EventEmitter<EventTypes> {
           `${NoticeMessageIds.BAN_SUCCESS}/${channel}`,
           `${NoticeMessageIds.ALREADY_BANNED}/${channel}`,
         ],
-        {},
       ),
       this.say(channel, message),
     ])
@@ -331,7 +333,6 @@ class Chat extends EventEmitter<EventTypes> {
         // @ts-expect-error pEvent does not recognize eventemitter3.
         this,
         [`${Commands.CLEAR_CHAT}/${channel}`],
-        {},
       ),
       this.say(channel, message),
     ])
@@ -349,7 +350,6 @@ class Chat extends EventEmitter<EventTypes> {
         // @ts-expect-error pEvent does not recognize eventemitter3.
         this,
         [`${NoticeMessageIds.COLOR_CHANGED}/${channel}`],
-        {},
       ),
       this.say(channel, message),
     ])
@@ -371,7 +371,6 @@ class Chat extends EventEmitter<EventTypes> {
         // @ts-expect-error pEvent does not recognize eventemitter3.
         this,
         [`${NoticeMessageIds.COMMERCIAL_SUCCESS}/${channel}`],
-        {},
       ),
       this.say(channel, message),
     ])
@@ -393,7 +392,6 @@ class Chat extends EventEmitter<EventTypes> {
           `${NoticeMessageIds.EMOTE_ONLY_ON}/${channel}`,
           `${NoticeMessageIds.ALREADY_EMOTE_ONLY_ON}/${channel}`,
         ],
-        {},
       ),
       this.say(channel, message),
     ])
@@ -415,7 +413,6 @@ class Chat extends EventEmitter<EventTypes> {
           `${NoticeMessageIds.EMOTE_ONLY_OFF}/${channel}`,
           `${NoticeMessageIds.ALREADY_EMOTE_ONLY_OFF}/${channel}`,
         ],
-        {},
       ),
       this.say(channel, message),
     ])
@@ -441,7 +438,6 @@ class Chat extends EventEmitter<EventTypes> {
           `${NoticeMessageIds.FOLLOWERS_ON_ZERO}/${channel}`,
           `${NoticeMessageIds.FOLLOWERS_ON}/${channel}`,
         ],
-        {},
       ),
       this.say(channel, message),
     ])
@@ -460,7 +456,6 @@ class Chat extends EventEmitter<EventTypes> {
         // @ts-expect-error pEvent does not recognize eventemitter3.
         this,
         [`${NoticeMessageIds.FOLLOWERS_OFF}/${channel}`],
-        {},
       ),
       this.say(channel, message),
     ])
@@ -475,7 +470,6 @@ class Chat extends EventEmitter<EventTypes> {
         // @ts-expect-error pEvent does not recognize eventemitter3.
         this,
         [`${NoticeMessageIds.CMDS_AVAILABLE}/${channel}`],
-        {},
       ),
       this.say(channel, message),
     ])
@@ -493,7 +487,6 @@ class Chat extends EventEmitter<EventTypes> {
         // @ts-expect-error pEvent does not recognize eventemitter3.
         this,
         [`${NoticeMessageIds.HOST_ON}/${channel}`],
-        {},
       ),
       this.say(channel, message),
     ])
@@ -537,7 +530,6 @@ class Chat extends EventEmitter<EventTypes> {
           `${NoticeMessageIds.MOD_SUCCESS}/${channel}`,
           `${NoticeMessageIds.BAD_MOD_MOD}/${channel}`,
         ],
-        {},
       ),
       this.say(channel, message),
     ])
@@ -557,7 +549,6 @@ class Chat extends EventEmitter<EventTypes> {
         // @ts-expect-error pEvent does not recognize eventemitter3.
         this,
         [`${NoticeMessageIds.ROOM_MODS}/${channel}`],
-        {},
       ),
       this.say(channel, message),
     ])
@@ -579,7 +570,6 @@ class Chat extends EventEmitter<EventTypes> {
           `${NoticeMessageIds.R9K_ON}/${channel}`,
           `${NoticeMessageIds.ALREADY_R9K_ON}/${channel}`,
         ],
-        {},
       ),
       this.say(channel, message),
     ])
@@ -600,7 +590,6 @@ class Chat extends EventEmitter<EventTypes> {
           `${NoticeMessageIds.R9K_OFF}/${channel}`,
           `${NoticeMessageIds.ALREADY_R9K_OFF}/${channel}`,
         ],
-        {},
       ),
       this.say(channel, message),
     ])
@@ -628,7 +617,6 @@ class Chat extends EventEmitter<EventTypes> {
         // @ts-expect-error pEvent does not recognize eventemitter3.
         this,
         [`${NoticeMessageIds.SLOW_ON}/${channel}`],
-        {},
       ),
       this.say(channel, message),
     ])
@@ -646,7 +634,6 @@ class Chat extends EventEmitter<EventTypes> {
         // @ts-expect-error pEvent does not recognize eventemitter3.
         this,
         [`${NoticeMessageIds.SLOW_OFF}/${channel}`],
-        {},
       ),
       this.say(channel, message),
     ])
@@ -670,7 +657,6 @@ class Chat extends EventEmitter<EventTypes> {
           `${NoticeMessageIds.SUBS_ON}/${channel}`,
           `${NoticeMessageIds.ALREADY_SUBS_ON}/${channel}`,
         ],
-        {},
       ),
       this.say(channel, message),
     ])
@@ -692,7 +678,6 @@ class Chat extends EventEmitter<EventTypes> {
           `${NoticeMessageIds.SUBS_OFF}/${channel}`,
           `${NoticeMessageIds.ALREADY_SUBS_OFF}/${channel}`,
         ],
-        {},
       ),
       this.say(channel, message),
     ])
@@ -718,7 +703,6 @@ class Chat extends EventEmitter<EventTypes> {
         // @ts-expect-error pEvent does not recognize eventemitter3.
         this,
         [`${NoticeMessageIds.TIMEOUT_SUCCESS}/${channel}`],
-        {},
       ),
       this.say(channel, message),
     ])
@@ -741,7 +725,6 @@ class Chat extends EventEmitter<EventTypes> {
           `${NoticeMessageIds.UNBAN_SUCCESS}/${channel}`,
           `${NoticeMessageIds.BAD_UNBAN_NO_BAN}/${channel}`,
         ],
-        {},
       ),
       this.say(channel, message),
     ])
@@ -770,7 +753,6 @@ class Chat extends EventEmitter<EventTypes> {
         // @ts-expect-error pEvent does not recognize eventemitter3.
         this,
         [`${NoticeMessageIds.HOST_OFF}/${channel}`],
-        {},
       ),
       this.say(channel, message),
     ])
@@ -789,7 +771,6 @@ class Chat extends EventEmitter<EventTypes> {
         // @ts-expect-error pEvent does not recognize eventemitter3.
         this,
         [`${NoticeMessageIds.UNMOD_SUCCESS}/${channel}`],
-        {},
       ),
       this.say(channel, message),
     ])
@@ -807,7 +788,6 @@ class Chat extends EventEmitter<EventTypes> {
         // @ts-expect-error pEvent does not recognize eventemitter3.
         this,
         [`${NoticeMessageIds.UNRAID_SUCCESS}/${channel}`],
-        {},
       ),
       this.say(channel, message),
     ])
@@ -991,7 +971,7 @@ class Chat extends EventEmitter<EventTypes> {
   }
 
   private _handleConnectionAttempt(): Promise<void> {
-    return new Promise((resolve, reject) => {
+    return new PCancelable((resolve, reject) => {
       const connectProfiler = this._log.profile('Connecting ...')
 
       const { token, username } = this._options
@@ -1036,6 +1016,9 @@ class Chat extends EventEmitter<EventTypes> {
 
   private _handleDisconnect() {
     this._log.info('Disconnecting ...')
+    if (this._connectionInProgress) {
+      this._connectionInProgress.clear()
+    }
     this._connectionInProgress = undefined
     this._isAuthenticated = false
     this._clearChannelState()
@@ -1113,46 +1096,48 @@ class Chat extends EventEmitter<EventTypes> {
   ): [string, Messages] {
     const channel = sanitizers.channel(baseMessage.channel)
 
+    const baseEventName = baseMessage.event || baseMessage.command
+
     switch (baseMessage.command) {
       case Events.JOIN: {
         const message = parsers.joinMessage(baseMessage)
-        const eventName = `${message.command}/${channel}`
+        const eventName = `${baseEventName}/${channel}`
         return [eventName, message]
       }
 
       case Events.PART: {
         const message = parsers.partMessage(baseMessage)
-        const eventName = `${message.command}/${channel}`
+        const eventName = `${baseEventName}/${channel}`
         return [eventName, message]
       }
 
       case Events.NAMES: {
         const message = parsers.namesMessage(baseMessage)
-        const eventName = `${message.command}/${channel}`
+        const eventName = `${baseEventName}/${channel}`
         return [eventName, message]
       }
 
       case Events.NAMES_END: {
         const message = parsers.namesEndMessage(baseMessage)
-        const eventName = `${message.command}/${channel}`
+        const eventName = `${baseEventName}/${channel}`
         return [eventName, message]
       }
 
       case Events.CLEAR_CHAT: {
         const message = parsers.clearChatMessage(baseMessage)
-        const eventName = `${message.command}/${message.event}/${channel}`
+        const eventName = `${baseEventName}/${message.event}/${channel}`
         return [eventName, message]
       }
 
       case Events.HOST_TARGET: {
         const message = parsers.hostTargetMessage(baseMessage)
-        const eventName = `${message.command}/${channel}`
+        const eventName = `${baseEventName}/${channel}`
         return [eventName, message]
       }
 
       case Events.MODE: {
         const message = parsers.modeMessage(baseMessage)
-        const eventName = `${message.command}/${channel}`
+        const eventName = `${baseEventName}/${channel}`
 
         const channelState = this._getChannelState(channel)
 
@@ -1175,7 +1160,7 @@ class Chat extends EventEmitter<EventTypes> {
 
       case Events.USER_STATE: {
         const message = parsers.userStateMessage(baseMessage)
-        const eventName = `${message.command}/${channel}`
+        const eventName = `${baseEventName}/${channel}`
 
         this._setChannelState(channel, {
           ...this._getChannelState(channel),
@@ -1186,7 +1171,7 @@ class Chat extends EventEmitter<EventTypes> {
 
       case Events.ROOM_STATE: {
         const message = parsers.roomStateMessage(baseMessage)
-        const eventName = `${message.command}/${channel}`
+        const eventName = `${baseEventName}/${channel}`
 
         this._setChannelState(channel, {
           ...this._getChannelState(channel),
@@ -1197,25 +1182,25 @@ class Chat extends EventEmitter<EventTypes> {
 
       case Events.NOTICE: {
         const message = parsers.noticeMessage(baseMessage)
-        const eventName = `${message.command}/${message.event}/${channel}`
+        const eventName = `${baseEventName}/${message.event}/${channel}`
         return [eventName, message]
       }
 
       case Events.USER_NOTICE: {
         const message = parsers.userNoticeMessage(baseMessage)
-        const eventName = `${message.command}/${message.event}/${channel}`
+        const eventName = `${baseEventName}/${message.event}/${channel}`
         return [eventName, message]
       }
 
       case Events.PRIVATE_MESSAGE: {
         const message = parsers.privateMessage(baseMessage)
-        const eventName = `${message.command}/${message.event}/${channel}`
+        const eventName = `${baseEventName}/${message.event}/${channel}`
         return [eventName, message]
       }
 
       default: {
-        const command = chatUtils.getEventNameFromMessage(baseMessage)
-        const eventName = channel === '#' ? command : `${command}/${channel}`
+        const eventName =
+          channel === '#' ? baseEventName : `${baseEventName}/${channel}`
         return [eventName, baseMessage]
       }
     }

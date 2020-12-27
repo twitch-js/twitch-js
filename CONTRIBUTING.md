@@ -27,14 +27,18 @@ from an existing contributor **will receive merge rights**.
    scope.
 2. Create a `.env` file at the repository root with your Twitch username and the
    generated tokens from step #1. For example:
+   ```bash
+   TWITCH_USERNAME={YOUR_TWITCH_USERNAME}
+   TWITCH_CLIENT_ID=uo6dggojyb8d6soh92zknwmi5ej1q2
+   TWITCH_ACCESS_TOKEN=0123456789abcdefghijABCDEFGHIJ
+   TWITCH_REFRESH_TOKEN=eyJfaWQmNzMtNGCJ9%6VFV5LNrZFUj8oU231/3Aj
    ```
-   USERNAME={YOUR_TWITCH_USERNAME}
-   CLIENT_ID=uo6dggojyb8d6soh92zknwmi5ej1q2
-   ACCESS_TOKEN=0123456789abcdefghijABCDEFGHIJ
-   REFRESH_TOKEN=eyJfaWQmNzMtNGCJ9%6VFV5LNrZFUj8oU231/3Aj
+3. Compile the library:
+   ```bash
+   $ yarn build
    ```
-3. Run the E2E tests:
-   ```
+4. Run the E2E tests:
+   ```bash
    $ yarn test:e2e
    ```
 

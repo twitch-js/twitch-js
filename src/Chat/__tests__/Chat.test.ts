@@ -42,6 +42,12 @@ describe('Chat', () => {
     log: { enabled: false },
   }
 
+  const anonymousOptions = {
+    ...options,
+    token: undefined,
+    username: undefined,
+  }
+
   describe('event compounds', () => {
     test('should include all NOTICE messages', () => {
       Object.keys(KnownNoticeMessageIds).forEach((notice) => {
@@ -64,17 +70,27 @@ describe('Chat', () => {
 
   describe('connect', () => {
     test('should connect as anonymous', async () => {
-      const chat = new Chat({
-        ...options,
-        token: undefined,
-        username: undefined,
+      const chat = new Chat(anonymousOptions)
+
+      const [message] = await Promise.all([
+        pEvent(chat, Events.CONNECTED),
+        chat.connect(),
+      ])
+      expect(message).toMatchSnapshot({
+        timestamp: expect.any(Date),
       })
-      await chat.connect()
     })
 
     test('should connect as authenticated', async () => {
       const chat = new Chat(options)
-      await chat.connect()
+
+      const [message] = await Promise.all([
+        pEvent(chat, Events.CONNECTED),
+        chat.connect(),
+      ])
+      expect(message).toMatchSnapshot({
+        timestamp: expect.any(Date),
+      })
     })
 
     test('should call onAuthenticationFailure', async () => {
@@ -160,7 +176,7 @@ describe('Chat', () => {
   })
 
   test('should throw when sending a message as anonymous', async () => {
-    const chat = new Chat({ log: { enabled: false } })
+    const chat = new Chat(anonymousOptions)
     await chat.connect()
 
     await chat
@@ -253,10 +269,9 @@ describe('Chat', () => {
       const chat = new Chat(options)
       await chat.connect()
 
-      await chat.reconnect({ token: 'NEW_TOKEN', debug: true })
+      await chat.reconnect({ token: 'NEW_TOKEN' })
 
       expect(chat._options.token).toBe('oauth:NEW_TOKEN')
-      expect(chat._options.debug).toBe(true)
     })
   })
 
@@ -515,7 +530,7 @@ describe('Chat', () => {
       })
 
       test('whisper when anonymous', async () => {
-        const chat = new Chat({ log: { enabled: false } })
+        const chat = new Chat(anonymousOptions)
         await chat.connect()
 
         await expect(
@@ -526,7 +541,7 @@ describe('Chat', () => {
       test('should receive whisper', async (done) => {
         const raw = tags.WHISPER
 
-        const chat = new Chat({ log: { enabled: false } })
+        const chat = new Chat(options)
         await chat.connect()
 
         chat.once('WHISPER', (message) => {
@@ -592,11 +607,11 @@ describe('Chat', () => {
   })
 
   describe('should handle multiple channels', () => {
-    // test('should join multiple channels', () => {})
-    // test('should broadcast message to all channels', () => {})
+    test.todo('should join multiple channels')
+    test.todo('should broadcast message to all channels')
 
     test('should deny message broadcasting when anonymous', async () => {
-      const chat = new Chat({ log: { enabled: false } })
+      const chat = new Chat(anonymousOptions)
       await chat.connect()
 
       await expect(

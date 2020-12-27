@@ -1,24 +1,20 @@
 const path = require('path')
 const pkg = require('../../package.json')
 
-const { ApiVersions } = require('../../lib/twitch')
+const { ApiVersions } = require('../../lib')
 
 const { preflight } = require('../utils')
 
 const BUILD_PATH = path.join(__dirname, `../../${pkg.unpkg}`)
 
 describe('Browser E2E', () => {
-  if (!process.env.CI) {
-    require('dotenv').config()
-  }
-
   beforeAll(() => {
     preflight()
   })
 
-  const token = process.env.ACCESS_TOKEN
-  const username = process.env.USERNAME
-  const channel = process.env.USERNAME
+  const token = process.env.TWITCH_ACCESS_TOKEN
+  const username = process.env.TWITCH_USERNAME
+  const channel = process.env.TWITCH_USERNAME
   const message = process.env.GITHUB_RUN_ID
     ? `CI E2E Build #${process.env.GITHUB_RUN_ID}`
     : `Local E2E ${new Date()}`
