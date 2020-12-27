@@ -31,8 +31,8 @@ class Client extends EventEmitter {
   private _queue: Queue
   private _moderatorQueue: Queue
 
-  private _pingTimeoutId: NodeJS.Timeout
-  private _reconnectTimeoutId: NodeJS.Timeout
+  private _pingTimeoutId: any
+  private _reconnectTimeoutId: any
 
   constructor(maybeOptions: ClientOptions) {
     super()
@@ -126,7 +126,7 @@ class Client extends EventEmitter {
 
       const messages = baseParser(rawMessage, this._options.username)
 
-      messages.forEach(message => {
+      messages.forEach((message) => {
         const event = message.command || ''
 
         this._log.debug(

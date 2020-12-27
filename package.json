@@ -1,6 +1,6 @@
 {
   "name": "twitch-js",
-  "version": "2.0.0-beta.33",
+  "version": "2.0.0-beta.34",
   "description": "Javascript library for the Twitch Messaging Interface.",
   "license": "MIT",
   "author": "Marc Andrews",
@@ -56,7 +56,7 @@
     "test": "jest",
     "prebuild": "yarn clean",
     "build:lib": "tsc --project tsconfig.build.json",
-    "build:dist": "rollup -c && mv es/types types",
+    "build:dist": "rollup -c",
     "build": "run-p build:**",
     "start:example": "ts-node-dev examples/node.js",
     "predocs:build": "rimraf docs",
