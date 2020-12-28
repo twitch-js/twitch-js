@@ -16,7 +16,6 @@ if [[ ${#LATEST_VERSION} -eq "0" ]]; then
     --message "v${PACKAGE_VERSION} release"
 
   # ... and publish to NPM.
-  npm set //registry.npmjs.org/:_authToken $INPUT_NPM_TOKEN
   npm publish
 else
   # ... otherwise, determine next version.
