@@ -1,0 +1,13 @@
+name: 'Release'
+description: 'Publishes package to NPM'
+
+inputs:
+  npm-token:
+    description: 'NPM token'
+    required: true
+
+runs:
+  using: 'composite'
+  steps:
+    - run: ${{ github.action_path }}/release.sh
+      shell: bash

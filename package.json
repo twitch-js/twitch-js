@@ -84,6 +84,7 @@
     "ws": "^7.3.1"
   },
   "devDependencies": {
+    "@actions/core": "^1.2.6",
     "@rollup/plugin-alias": "^3.1.1",
     "@rollup/plugin-json": "^4.1.0",
     "@rollup/plugin-replace": "^2.3.3",
@@ -258,12 +259,10 @@
   "lint-staged": {
     "*.ts": [
       "yarn prettier --write",
-      "yarn lint",
-      "git add"
+      "yarn lint"
     ],
     "*.md": [
-      "prettier --write",
-      "git add"
+      "prettier --write"
     ]
   }
 }

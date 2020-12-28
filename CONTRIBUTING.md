@@ -13,13 +13,13 @@ All pull requests must:
 1. Be titled in the following format: _Feature: feature description_, _Bugfix:
    bugfix description_ or _Chore: chore description_
 2. Pass lint tests
-3. Pass TravisCI tests
+3. Pass CI-CD tests
 4. Maintain current test coverage
 5. Receive at least one approval from an existing contributor
 6. ... more to follow
 
-Anyone who submits a PR that is merged with relatively little-to-no assistance
-from an existing contributor **will receive merge rights**.
+If your PR is merged with relatively little-to-no assistance from an existing
+contributors, **you will be granted contributor access**.
 
 ## Running E2E (end-to-end) tests locally
 
@@ -29,9 +29,7 @@ from an existing contributor **will receive merge rights**.
    generated tokens from step #1. For example:
    ```bash
    TWITCH_USERNAME={YOUR_TWITCH_USERNAME}
-   TWITCH_CLIENT_ID=uo6dggojyb8d6soh92zknwmi5ej1q2
    TWITCH_ACCESS_TOKEN=0123456789abcdefghijABCDEFGHIJ
-   TWITCH_REFRESH_TOKEN=eyJfaWQmNzMtNGCJ9%6VFV5LNrZFUj8oU231/3Aj
    ```
 3. Compile the library:
    ```bash
