@@ -1,7 +1,5 @@
 #!/bin/bash
 
-echo $TEST
-
 # Setup GIT for pushing.
 git config --global user.name "TwitchJS CI"
 git config --global user.email "36392591+twitch-js-ci@users.noreply.github.com"
@@ -18,7 +16,7 @@ if [[ ${#LATEST_VERSION} -eq "0" ]]; then
     --message "v${PACKAGE_VERSION} release"
 
   # ... and publish to NPM.
-  # npm publish
+  npm publish
 else
   # ... otherwise, determine next version.
   if [[ $PACKAGE_VERSION =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
@@ -37,4 +35,4 @@ else
 fi
 
 # Push version increment.
-# git push --follow-tags
+git push --follow-tags

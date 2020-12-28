@@ -63,8 +63,7 @@ jobs:
         run: yarn test:e2e
 
       - name: Release
-        # if: ${{ github.event_name == 'push' }}
+        if: ${{ github.event_name == 'push' }}
         uses: ./.github/actions/release
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-          TEST: TESTENV
