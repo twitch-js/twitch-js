@@ -7,7 +7,6 @@
 [![Build status](https://img.shields.io/github/workflow/status/twitch-js/twitch-js/ci?style=flat-square)](https://github.com/twitch-js/twitch-js/actions)
 [![Coverage status](https://img.shields.io/codecov/c/github/twitch-js/twitch-js/next.svg?longCache=true&style=flat-square)](https://codecov.io/gh/twitch-js/twitch-js/branch/next)
 [![NPM version](https://img.shields.io/npm/v/twitch-js.svg?longCache=true&style=flat-square)](https://www.npmjs.com/package/twitch-js)
-[![NPM version@next](https://img.shields.io/npm/v/twitch-js/next.svg?longCache=true&style=flat-square)](https://www.npmjs.com/package/twitch-js/v/next)
 [![NPM downloads](https://img.shields.io/npm/dm/twitch-js.svg?longCache=true&style=flat-square)](https://www.npmjs.com/package/twitch-js)
 [![GitHub issues](https://img.shields.io/github/issues-raw/twitch-js/twitch-js.svg?longCache=true&style=flat-square)](https://github.com/twitch-js/twitch-js/issues)
 [![GitHub bug issues](https://img.shields.io/github/issues-raw/twitch-js/twitch-js/bug?style=flat-square)](https://github.com/twitch-js/twitch-js/issues?q=is%3Aopen+is%3Aissue+label%3Abug)
@@ -51,7 +50,7 @@ If you are using a module bundler, such [Webpack](https://webpack.js.org/),
 
 1. Add TwitchJS to your project:
    ```bash
-   npm install --save twitch-js@next
+   npm install --save twitch-js
    ```
 2. Import TwitchJS
 
