@@ -14,7 +14,7 @@ jobs:
         with:
           token: ${{ secrets.RELEASE_TOKEN || github.token }}
 
-      - uses: actions/setup-node@v1
+      - uses: actions/setup-node@v2
         if: ${{ github.event_name == 'push' }}
         with:
           node-version: '12.x'
