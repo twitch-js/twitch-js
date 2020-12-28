@@ -14,6 +14,12 @@ jobs:
         with:
           token: ${{ secrets.RELEASE_TOKEN || github.token }}
 
+      - uses: actions/setup-node@v1
+        if: ${{ github.event_name == 'push' }}
+        with:
+          node-version: '12.x'
+          registry-url: 'https://registry.npmjs.org'
+
       - name: Install dependencies
         run: yarn install
 
@@ -60,4 +66,4 @@ jobs:
         if: ${{ github.event_name == 'push' }}
         uses: ./.github/actions/release
         with:
-          npm-token: ${{ secrets.NPM_TOKEN }}
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
