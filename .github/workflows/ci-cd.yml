@@ -11,6 +11,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
+        with:
+          token: ${{ secrets.RELEASE_TOKEN || github.token }}
 
       - name: Install dependencies
         run: yarn install
@@ -56,8 +58,6 @@ jobs:
 
       - name: Release
         if: ${{ github.event_name == 'push' }}
-        env:
-          GITHUB_TOKEN: ${{ secrets.RELEASE_TOKEN }}
         uses: ./.github/actions/release
         with:
           npm-token: ${{ secrets.NPM_TOKEN }}
