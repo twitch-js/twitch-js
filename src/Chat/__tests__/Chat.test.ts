@@ -1,24 +1,25 @@
 import { server } from 'ws'
+import pEvent from 'p-event'
+import camelCase from 'lodash/camelCase'
 
-import rawCommands from '../../../__mocks__/ws/__fixtures__/commands'
-import membership from '../../../__mocks__/ws/__fixtures__/membership'
-import tags from '../../../__mocks__/ws/__fixtures__/tags'
+import rawCommands from '../../../__mocks__/ws/__fixtures__/commands.json'
+import membership from '../../../__mocks__/ws/__fixtures__/membership.json'
+import tags from '../../../__mocks__/ws/__fixtures__/tags.json'
 
 import {
-  Events,
+  ChatCommands,
   Commands,
+  Events,
   KnownNoticeMessageIds,
   KnownUserNoticeMessageIds,
   PrivateMessageEvents,
 } from '../../twitch'
 
-import { resolveOnEvent } from '../../utils'
-
 import Chat, {
   NoticeCompounds,
   PrivateMessageCompounds,
   UserNoticeCompounds,
-} from '../'
+} from '..'
 import parser from '../utils/parsers'
 
 jest.mock('ws')
@@ -28,7 +29,7 @@ jest.mock('lodash/random', () => ({
 }))
 
 const emitHelper = (emitter, rawMessages) =>
-  parser(rawMessages).forEach(message => emitter.emit(Events.ALL, message))
+  parser(rawMessages).forEach((message) => emitter.emit(Events.ALL, message))
 
 describe('Chat', () => {
   const options = {
@@ -41,21 +42,27 @@ describe('Chat', () => {
     log: { enabled: false },
   }
 
+  const anonymousOptions = {
+    ...options,
+    token: undefined,
+    username: undefined,
+  }
+
   describe('event compounds', () => {
     test('should include all NOTICE messages', () => {
-      Object.keys(KnownNoticeMessageIds).forEach(notice => {
+      Object.keys(KnownNoticeMessageIds).forEach((notice) => {
         expect(NoticeCompounds[notice]).toBe(`NOTICE/${notice}`)
       })
     })
 
     test('should include all PRIVMSG messages', () => {
-      Object.keys(PrivateMessageEvents).forEach(notice => {
+      Object.keys(PrivateMessageEvents).forEach((notice) => {
         expect(PrivateMessageCompounds[notice]).toBe(`PRIVMSG/${notice}`)
       })
     })
 
     test('should include all USERNOTICE messages', () => {
-      Object.keys(KnownUserNoticeMessageIds).forEach(notice => {
+      Object.keys(KnownUserNoticeMessageIds).forEach((notice) => {
         expect(UserNoticeCompounds[notice]).toBe(`USERNOTICE/${notice}`)
       })
     })
@@ -63,41 +70,49 @@ describe('Chat', () => {
 
   describe('connect', () => {
     test('should connect as anonymous', async () => {
-      const chat = new Chat({
-        ...options,
-        token: undefined,
-        username: undefined,
-      })
-      const actual = await chat.connect()
+      const chat = new Chat(anonymousOptions)
 
-      expect(actual).toMatchSnapshot({ timestamp: expect.any(Date) })
-      expect(chat._readyState).toBe(3)
+      const [message] = await Promise.all([
+        pEvent(chat, Events.CONNECTED),
+        chat.connect(),
+      ])
+      expect(message).toMatchSnapshot({
+        timestamp: expect.any(Date),
+      })
     })
 
     test('should connect as authenticated', async () => {
       const chat = new Chat(options)
-      const actual = await chat.connect()
 
-      expect(actual).toMatchSnapshot({ timestamp: expect.any(Date) })
-      expect(chat._readyState).toBe(3)
+      const [message] = await Promise.all([
+        pEvent(chat, Events.CONNECTED),
+        chat.connect(),
+      ])
+      expect(message).toMatchSnapshot({
+        timestamp: expect.any(Date),
+      })
     })
 
-    test('should call onAuthenticationFailure', done => {
-      const onAuthenticationFailure = jest.fn(() => Promise.reject())
+    test('should call onAuthenticationFailure', async () => {
+      const onAuthenticationFailure = jest.fn(() =>
+        Promise.reject('token fail'),
+      )
 
-      const chat = new Chat({
-        ...options,
-        token: 'INVALID_TOKEN',
-        onAuthenticationFailure,
-      })
+      try {
+        const chat = new Chat({
+          ...options,
+          token: 'INVALID_TOKEN',
+          connectionTimeout: 100,
+          onAuthenticationFailure,
+        })
 
-      chat.connect().catch(() => {
+        await chat.connect()
+      } catch (err) {
         expect(onAuthenticationFailure).toHaveBeenCalled()
-        done()
-      })
+      }
     })
 
-    test('should update token and successfully connect', done => {
+    test('should update token and successfully connect', async () => {
       const onAuthenticationFailure = jest.fn(() => Promise.resolve('TOKEN'))
 
       const chat = new Chat({
@@ -107,11 +122,9 @@ describe('Chat', () => {
         onAuthenticationFailure,
       })
 
-      chat.connect().then(() => {
-        expect(onAuthenticationFailure).toHaveBeenCalled()
-        expect(chat.options.token).toEqual('oauth:TOKEN')
-        done()
-      })
+      await chat.connect()
+
+      expect(onAuthenticationFailure).toHaveBeenCalled()
     })
 
     test('should return the same promise', async () => {
@@ -134,22 +147,21 @@ describe('Chat', () => {
 
   test('should join channel', async () => {
     const chat = new Chat(options)
+
     await chat.connect()
 
     const actual = await chat.join('#dallas')
     expect(actual).toMatchSnapshot()
-    expect(chat._getChannelState('#dallas')).toEqual(actual)
   })
 
-  test('should send message to channel', async done => {
+  test('should send message to channel', async (done) => {
     const chat = new Chat(options)
     await chat.connect()
 
-    expect.assertions(1)
-
-    server.once('message', message => {
-      expect(message).toEqual('PRIVMSG #dallas :Kappa Keepo Kappa')
-      done()
+    server.on('message', (message) => {
+      if (message === 'PRIVMSG #dallas :Kappa Keepo Kappa') {
+        done()
+      }
     })
 
     chat.say('#dallas', 'Kappa Keepo Kappa')
@@ -164,15 +176,32 @@ describe('Chat', () => {
   })
 
   test('should throw when sending a message as anonymous', async () => {
-    const chat = new Chat({ log: { enabled: false } })
+    const chat = new Chat(anonymousOptions)
     await chat.connect()
 
     await chat
       .say('#dallas', 'Kappa Keepo Kappa')
-      .catch(err => expect(err).toMatchSnapshot())
+      .catch((err) => expect(err).toMatchSnapshot())
   })
 
-  test('should part a channel', async done => {
+  test.each(Object.keys(ChatCommands).map(camelCase))(
+    'command %s should call say with args',
+    async (command) => {
+      const chat = new Chat(options)
+      await chat.connect()
+
+      const channel = '#channel'
+      const args = ['arg1', 'arg2', 'arg3']
+
+      const spy = jest.spyOn(chat, 'say')
+
+      chat[command](channel, ...args)
+
+      expect(spy.mock.calls).toMatchSnapshot()
+    },
+  )
+
+  test('should part a channel', async (done) => {
     const chat = new Chat(options)
     await chat.connect()
     await chat.join('#dallas')
@@ -181,7 +210,7 @@ describe('Chat', () => {
 
     expect(chat._channelState['#dallas']).toBeDefined()
 
-    server.once('message', message => {
+    server.once('message', (message) => {
       expect(message).toEqual('PART #dallas')
       expect(chat._channelState['#dallas']).not.toBeDefined()
       done()
@@ -190,19 +219,13 @@ describe('Chat', () => {
     chat.part('#dallas')
   })
 
-  test('should disconnect', async done => {
+  test('should disconnect', async () => {
     const chat = new Chat(options)
     await chat.connect()
 
-    expect.assertions(2)
-
-    chat.once(Events.DISCONNECTED, () => {
-      expect(chat._readyState).toBe(5)
-      expect(chat._connectionInProgress).toBe(null)
-      done()
-    })
-
     chat.disconnect()
+    expect(chat._readyState).toBe(5)
+    expect(chat._connectionInProgress).toBe(undefined)
   })
 
   describe('reconnect', () => {
@@ -221,7 +244,7 @@ describe('Chat', () => {
       await chat.reconnect()
 
       expect(serverListener.mock.calls).toMatchSnapshot()
-      chatListener.mock.calls.forEach(call => {
+      chatListener.mock.calls.forEach((call) => {
         const actual = call[0]
         expect(actual).toMatchSnapshot({
           timestamp: expect.any(Date),
@@ -233,7 +256,7 @@ describe('Chat', () => {
       server.removeListener('message')
     })
 
-    test('should reconnect on RECONNECT event', async done => {
+    test('should reconnect on RECONNECT event', async (done) => {
       const chat = new Chat(options)
       await chat.connect()
 
@@ -246,19 +269,18 @@ describe('Chat', () => {
       const chat = new Chat(options)
       await chat.connect()
 
-      await chat.reconnect({ token: 'NEW_TOKEN', debug: true })
+      await chat.reconnect({ token: 'NEW_TOKEN' })
 
       expect(chat._options.token).toBe('oauth:NEW_TOKEN')
-      expect(chat._options.debug).toBe(true)
     })
   })
 
   describe('should handle messages', () => {
-    test('JOIN', async done => {
+    test('JOIN', async (done) => {
       const chat = new Chat(options)
       await chat.connect()
 
-      chat.once(Events.JOIN, message => {
+      chat.once(Events.JOIN, (message) => {
         expect(message).toMatchSnapshot({
           timestamp: expect.any(Date),
         })
@@ -268,11 +290,11 @@ describe('Chat', () => {
       emitHelper(chat._client, membership.JOIN)
     })
 
-    test('PART', async done => {
+    test('PART', async (done) => {
       const chat = new Chat(options)
       await chat.connect()
 
-      chat.once(Events.PART, message => {
+      chat.once(Events.PART, (message) => {
         expect(message).toMatchSnapshot({
           timestamp: expect.any(Date),
         })
@@ -287,15 +309,15 @@ describe('Chat', () => {
       await chat.connect()
 
       const emissions = Promise.all([
-        resolveOnEvent(chat, Commands.NAMES),
-        resolveOnEvent(chat, Commands.NAMES),
-        resolveOnEvent(chat, Commands.NAMES_END),
+        pEvent(chat, Commands.NAMES),
+        pEvent(chat, Commands.NAMES),
+        pEvent(chat, Commands.NAMES_END),
       ])
 
       emitHelper(chat._client, membership.NAMES)
 
-      return emissions.then(emission => {
-        emission.forEach(actual =>
+      return emissions.then((emission) => {
+        emission.forEach((actual) =>
           expect(actual).toMatchSnapshot({
             timestamp: expect.any(Date),
           }),
@@ -305,14 +327,14 @@ describe('Chat', () => {
 
     describe('MODE', () => {
       describe('current user', () => {
-        test('+o', async done => {
+        test('+o', async (done) => {
           const chat = new Chat({ ...options, username: 'dallas' })
           await chat.connect()
           await chat.join('#dallas')
 
           chat._channelState['#dallas'].userState.isModerator = false
 
-          chat.once(Events.MODE, message => {
+          chat.once(Events.MODE, (message) => {
             expect(message).toMatchSnapshot({
               timestamp: expect.any(Date),
             })
@@ -326,14 +348,14 @@ describe('Chat', () => {
           emitHelper(chat._client, membership.MODE.OPERATOR_PLUS_DALLAS)
         })
 
-        test('-o', async done => {
+        test('-o', async (done) => {
           const chat = new Chat({ ...options, username: 'dallas' })
           await chat.connect()
           await chat.join('#dallas')
 
           chat._channelState['#dallas'].userState.isModerator = true
 
-          chat.once(Events.MODE, message => {
+          chat.once(Events.MODE, (message) => {
             expect(message).toMatchSnapshot({
               timestamp: expect.any(Date),
             })
@@ -351,14 +373,14 @@ describe('Chat', () => {
       })
 
       describe('another user', () => {
-        test('+o', async done => {
+        test('+o', async (done) => {
           const chat = new Chat(options)
           await chat.connect()
           await chat.join('#dallas')
 
           const before = chat._channelState['#dallas'].userState.isModerator
 
-          chat.once(Events.MODE, message => {
+          chat.once(Events.MODE, (message) => {
             expect(message).toMatchSnapshot({
               timestamp: expect.any(Date),
             })
@@ -371,14 +393,14 @@ describe('Chat', () => {
           emitHelper(chat._client, membership.MODE.OPERATOR_PLUS_RONNI)
         })
 
-        test('-o', async done => {
+        test('-o', async (done) => {
           const chat = new Chat(options)
           await chat.connect()
           await chat.join('#dallas')
 
           const before = chat._channelState['#dallas'].userState.isModerator
 
-          chat.once(Events.MODE, message => {
+          chat.once(Events.MODE, (message) => {
             expect(message).toMatchSnapshot({
               timestamp: expect.any(Date),
             })
@@ -393,11 +415,11 @@ describe('Chat', () => {
       })
     })
 
-    test('CLEARCHAT', async done => {
+    test('CLEARCHAT', async (done) => {
       const chat = new Chat(options)
       await chat.connect()
 
-      chat.once(Events.CLEAR_CHAT, message => {
+      chat.once(Events.CLEAR_CHAT, (message) => {
         expect(message).toMatchSnapshot({
           timestamp: expect.any(Date),
         })
@@ -407,11 +429,11 @@ describe('Chat', () => {
       emitHelper(chat._client, rawCommands.CLEARCHAT.CHANNEL)
     })
 
-    test('CLEARCHAT user with reason', async done => {
+    test('CLEARCHAT user with reason', async (done) => {
       const chat = new Chat(options)
       await chat.connect()
 
-      chat.once(Events.CLEAR_CHAT, message => {
+      chat.once(Events.CLEAR_CHAT, (message) => {
         expect(message).toMatchSnapshot({
           timestamp: expect.any(Date),
         })
@@ -428,7 +450,7 @@ describe('Chat', () => {
         const chat = new Chat(options)
         await chat.connect()
 
-        chat.once(Events.HOST_TARGET, message => {
+        chat.once(Events.HOST_TARGET, (message) => {
           expect(message).toMatchSnapshot({
             timestamp: expect.any(Date),
           })
@@ -448,7 +470,7 @@ describe('Chat', () => {
 
           const eventName = `${Events.NOTICE}/${name}`
 
-          chat.once(eventName, message => {
+          chat.once(eventName, (message) => {
             expect(message).toMatchSnapshot({
               timestamp: expect.any(Date),
             })
@@ -468,7 +490,7 @@ describe('Chat', () => {
           const chat = new Chat(options)
           await chat.connect()
 
-          chat.once(Commands.USER_NOTICE, message => {
+          chat.once(Commands.USER_NOTICE, (message) => {
             expect(message).toMatchSnapshot({
               timestamp: expect.any(Date),
             })
@@ -485,7 +507,7 @@ describe('Chat', () => {
         const chat = new Chat(options)
         await chat.connect()
 
-        chat.once('PRIVMSG', message => {
+        chat.once('PRIVMSG', (message) => {
           expect(message).toMatchSnapshot({
             timestamp: expect.any(Date),
           })
@@ -495,29 +517,45 @@ describe('Chat', () => {
         emitHelper(chat._client, raw)
       })
 
-      test('whisper', async done => {
+      test('whisper', async (done) => {
         const chat = new Chat(options)
         await chat.connect()
 
-        server.once('message', message => {
-          expect(message).toEqual('PRIVMSG #jtv :/w dallas Kappa Keepo Kappa')
+        server.once('message', (message) => {
+          expect(message).toEqual('/w dallas Kappa Keepo Kappa')
           done()
         })
 
-        chat.whisper('dallas', 'Kappa Keepo Kappa')
+        await chat.whisper('dallas', 'Kappa Keepo Kappa')
       })
 
       test('whisper when anonymous', async () => {
-        const chat = new Chat({ log: { enabled: false } })
+        const chat = new Chat(anonymousOptions)
         await chat.connect()
 
         await expect(
           chat.whisper('dallas', 'Kappa Keepo Kappa'),
         ).rejects.toMatchSnapshot()
       })
+
+      test('should receive whisper', async (done) => {
+        const raw = tags.WHISPER
+
+        const chat = new Chat(options)
+        await chat.connect()
+
+        chat.once('WHISPER', (message) => {
+          expect(message).toMatchSnapshot({
+            timestamp: expect.any(Date),
+          })
+          done()
+        })
+
+        emitHelper(chat._client, raw)
+      })
     })
 
-    test('should emit multiple events for compound events', async done => {
+    test('should emit multiple events for compound events', async (done) => {
       const chat = new Chat({ log: { enabled: false } })
       await chat.connect()
 
@@ -529,17 +567,17 @@ describe('Chat', () => {
         `${UserNoticeCompounds.SUBSCRIPTION}/#dallas`,
       ]
 
-      Promise.all(events.map(event => resolveOnEvent(chat, event))).then(
-        messages => {
+      Promise.all(events.map((event) => pEvent(chat, event))).then(
+        (messages) => {
           expect(messages[0]).toMatchSnapshot({
             timestamp: expect.any(Date),
           })
 
-          messages.forEach(message => expect(message).toEqual(messages[0]))
+          messages.forEach((message) => expect(message).toEqual(messages[0]))
           done()
         },
       )
-      chat.once(Commands.USER_NOTICE, message => {
+      chat.once(Commands.USER_NOTICE, (message) => {
         expect(message).toMatchSnapshot({
           timestamp: expect.any(Date),
         })
@@ -550,13 +588,13 @@ describe('Chat', () => {
     })
 
     describe('deviations', () => {
-      test('CLEARCHAT deviation 1', async done => {
+      test('CLEARCHAT deviation 1', async (done) => {
         const chat = new Chat(options)
         await chat.connect()
 
         expect.assertions(1)
 
-        chat.on('CLEARCHAT', actual => {
+        chat.on('CLEARCHAT', (actual) => {
           expect(actual).toMatchSnapshot({
             timestamp: expect.any(Date),
           })
@@ -569,11 +607,11 @@ describe('Chat', () => {
   })
 
   describe('should handle multiple channels', () => {
-    // test('should join multiple channels', () => {})
-    // test('should broadcast message to all channels', () => {})
+    test.todo('should join multiple channels')
+    test.todo('should broadcast message to all channels')
 
     test('should deny message broadcasting when anonymous', async () => {
-      const chat = new Chat({ log: { enabled: false } })
+      const chat = new Chat(anonymousOptions)
       await chat.connect()
 
       await expect(

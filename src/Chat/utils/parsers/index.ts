@@ -46,7 +46,7 @@ import * as utils from '../'
 import * as helpers from './helpers'
 import * as tagParsers from './tags'
 
-export const base = (rawMessages: string, username: string): BaseMessage[] => {
+export const base = (rawMessages: string, username = ''): BaseMessage[] => {
   const rawMessagesV = rawMessages.split(/\r?\n/g)
 
   return rawMessagesV.reduce((messages, rawMessage) => {
@@ -235,8 +235,8 @@ export const globalUserStateMessage = (
 
   return {
     ...other,
-    command: Commands.GLOBAL_USER_STATE,
-    event: Commands.GLOBAL_USER_STATE,
+    command: Commands.GLOBALUSERSTATE,
+    event: Commands.GLOBALUSERSTATE,
     tags: tagParsers.globalUserState(tags),
   }
 }
@@ -300,7 +300,6 @@ export const hostTargetMessage = (
     numberOfViewers: isFinite(toNumber(numberOfViewers))
       ? parseInt(numberOfViewers, 10)
       : undefined,
-    message: undefined,
   }
 }
 
@@ -383,7 +382,7 @@ export const privateMessage = (baseMessage: BaseMessage): PrivateMessages => {
       ...userStateMessage(baseMessage),
       command: Commands.PRIVATE_MESSAGE,
       event: ChatEvents.CHEER,
-      bits: helpers.generalNumber(tags.bits),
+      bits: parseInt(tags.bits, 10),
     }
   }
 
@@ -445,7 +444,7 @@ export const userNoticeMessage = (
     ...tagParsers.userNotice(baseMessage.tags),
     systemMsg: helpers.generalString(baseMessage.tags.systemMsg),
   } as UserNoticeTags
-  const systemMessage = helpers.generalString(baseMessage.tags.systemMsg)
+  const systemMessage = helpers.generalString(baseMessage.tags.systemMsg) || ''
   const parameters = tagParsers.userNoticeMessageParameters(tags)
 
   switch (tags.msgId) {

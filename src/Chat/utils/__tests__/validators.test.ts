@@ -11,7 +11,7 @@ describe('Chat/utils/validators', () => {
       expect(actual).toMatchSnapshot()
     })
 
-    test('default onAuthenticationFailure should reject', done => {
+    test('default onAuthenticationFailure should reject', (done) => {
       const { onAuthenticationFailure } = validators.chatOptions({
         username,
         token,

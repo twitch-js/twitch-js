@@ -1,0 +1,17 @@
+name: 'Refresh access token'
+description: 'Refreshes Twitch access token and adds it to the environment'
+
+inputs:
+  client-id:
+    description: 'Twitch client ID'
+    required: true
+  client-secret:
+    description: 'Twitch client secret'
+    required: true
+  refresh-token:
+    description: 'Twitch refresh token'
+    required: true
+
+runs:
+  using: 'node12'
+  main: 'refresh-access-token.js'

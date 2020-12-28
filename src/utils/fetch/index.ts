@@ -1,15 +1,19 @@
-import fetch, { RequestInit, RequestInfo } from 'node-fetch'
+import fetch from 'cross-fetch'
 import FormData from 'form-data'
 import { stringify, IStringifyOptions } from 'qs'
 
 import parser from './parser'
 
-type SearchOptions = {
+type SearchOption = {
   /** Any query parameters you want to add to your request. */
   search?: { [key: string]: any }
 }
 
-export type FetchOptions = RequestInit & SearchOptions
+type HeaderOption = { headers?: Record<string, string> }
+
+export type FetchOptions = Omit<RequestInit, 'headers'> &
+  SearchOption &
+  HeaderOption
 
 /**
  * Fetches URL

@@ -1,0 +1,13 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Chat/utils/validators clientOptions should return default client options 1`] = `
+Object {
+  "isKnown": false,
+  "isVerified": false,
+  "port": 443,
+  "server": "irc-ws.chat.twitch.tv",
+  "ssl": true,
+  "token": "oauth:TOKEN",
+  "username": "USERNAME",
+}
+`;

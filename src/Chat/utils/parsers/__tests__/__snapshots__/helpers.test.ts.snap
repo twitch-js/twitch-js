@@ -2,18 +2,18 @@
 
 exports[`Chat/utils/parsers/helpers badges should parse known badges 1`] = `
 Object {
-  "admin": "1",
-  "bits": "100",
-  "bitsLeader": "3",
-  "broadcaster": "1",
-  "globalMod": "1",
-  "moderator": "1",
-  "partner": "1",
-  "premium": "1",
-  "staff": "1",
-  "subGifter": "1",
-  "subscriber": "9",
-  "turbo": "1",
-  "vip": "1",
+  "admin": true,
+  "bits": 100,
+  "bitsLeader": 3,
+  "broadcaster": true,
+  "globalMod": true,
+  "moderator": true,
+  "partner": true,
+  "premium": true,
+  "staff": true,
+  "subGifter": true,
+  "subscriber": 9,
+  "turbo": true,
+  "vip": true,
 }
 `;

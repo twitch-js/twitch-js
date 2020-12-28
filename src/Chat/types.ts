@@ -1,7 +1,9 @@
+import WebSocket from 'ws'
+
 import {
   ClearChatMessages,
   Events,
-  GlobalUserStateMessage,
+  BaseMessage,
   HostingAutoPrivateMessage,
   HostingPrivateMessage,
   HostingWithViewersPrivateMessage,
@@ -35,7 +37,7 @@ import {
 
 import { LoggerOptions } from '../utils/logger'
 
-type BaseChatOptions = {
+export type ChatOptions = {
   username?: string
   /**
    * OAuth token
@@ -52,27 +54,25 @@ type BaseChatOptions = {
    * @see https://dev.twitch.tv/docs/irc/guide/#known-and-verified-bots
    */
   isVerified?: boolean
-  connectionTimeout?: number
-  joinTimeout?: number
+  connectionTimeout: number
+  joinTimeout: number
   log?: LoggerOptions
   onAuthenticationFailure?: () => Promise<string>
 }
 
-export type ChatOptions = BaseChatOptions & ClientOptions
-
 export type ClientOptions = {
   username?: string
   token?: string
-  isKnown?: boolean
-  isVerified?: boolean
-  server?: string
-  port?: number
-  ssl?: boolean
+  isKnown: boolean
+  isVerified: boolean
+  server: string
+  port: number
+  ssl: boolean
   log?: LoggerOptions
 }
 
 export enum ChatReadyStates {
-  'NOT_READY',
+  'WAITING',
   'CONNECTING',
   'RECONNECTING',
   'CONNECTED',
@@ -81,8 +81,8 @@ export enum ChatReadyStates {
 }
 
 export type ChannelState = {
-  userState: UserStateTags
   roomState: RoomStateTags
+  userState?: UserStateTags
 }
 
 export type ChannelStates = Record<string, ChannelState>
@@ -121,6 +121,7 @@ export enum NoticeCompounds {
   SUBS_ON = 'NOTICE/SUBS_ON',
   TIMEOUT_SUCCESS = 'NOTICE/TIMEOUT_SUCCESS',
   UNBAN_SUCCESS = 'NOTICE/UNBAN_SUCCESS',
+  UNMOD_SUCCESS = 'NOTICE/UNMOD_SUCCESS',
   UNRAID_SUCCESS = 'NOTICE/UNRAID_SUCCESS',
   UNRECOGNIZED_CMD = 'NOTICE/UNRECOGNIZED_CMD',
 }
@@ -144,9 +145,13 @@ export enum UserNoticeCompounds {
 }
 
 export type EventTypes = {
-  [Events.RAW]: [string]
+  [Events.CONNECTED]: [BaseMessage]
+  [Events.AUTHENTICATED]: [BaseMessage]
+  [Events.AUTHENTICATION_FAILED]: [BaseMessage]
+  [Events.GLOBALUSERSTATE]: [BaseMessage]
+
   [Events.ALL]: [Messages]
-  [Events.GLOBAL_USER_STATE]: [GlobalUserStateMessage]
+
   [Events.JOIN]: [JoinMessage]
   [Events.PART]: [PartMessage]
   [Events.ROOM_STATE]: [RoomStateMessage]
@@ -283,5 +288,13 @@ export type EventTypes = {
     UserNoticeSubscriptionGiftCommunityMessage,
   ]
 
-  [key: string]: [string | Messages | Message]
+  [key: string]: [
+    | string
+    | Messages
+    | Message
+    | WebSocket.OpenEvent
+    | WebSocket.MessageEvent
+    | WebSocket.ErrorEvent
+    | WebSocket.CloseEvent,
+  ]
 }

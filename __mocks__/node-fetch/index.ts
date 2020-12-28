@@ -1,8 +1,8 @@
 import { Response } from 'node-fetch'
 
-import responseRoot from './__fixtures__/kraken/root'
-import response401 from './__fixtures__/kraken/401'
-import response404 from './__fixtures__/kraken/404'
+import responseRoot from './__fixtures__/kraken/root.json'
+import response401 from './__fixtures__/kraken/401.json'
+import response404 from './__fixtures__/kraken/404.json'
 
 const mockJson = jest.fn(() => Promise.resolve({ mock: true }))
 

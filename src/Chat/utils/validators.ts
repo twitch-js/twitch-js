@@ -14,10 +14,10 @@ import * as constants from '../constants'
 import * as sanitizers from './sanitizers'
 
 export const chatOptions = (
-  maybeOptions: types.ChatOptions,
+  options: Partial<types.ChatOptions>,
 ): types.ChatOptions => {
   const shape = {
-    username: isString,
+    username: (value: any) => isNil(value) || isString(value),
     token: (value: any) => isNil(value) || isString(value),
     isKnown: isBoolean,
     isVerified: isBoolean,
@@ -26,11 +26,13 @@ export const chatOptions = (
     onAuthenticationFailure: isFunction,
   }
 
-  const options: types.ChatOptions = defaults(
+  const optionsWithDefaults = defaults(
     {
-      ...maybeOptions,
-      username: sanitizers.username(maybeOptions.username),
-      token: sanitizers.token(maybeOptions.token),
+      ...options,
+      username: options.username
+        ? sanitizers.username(options.username)
+        : undefined,
+      token: options.token ? sanitizers.token(options.token) : undefined,
     },
     {
       isKnown: false,
@@ -42,45 +44,9 @@ export const chatOptions = (
   )
 
   invariant(
-    conformsTo(options, shape),
+    conformsTo(optionsWithDefaults, shape),
     '[twitch-js/Chat] options: Expected valid options',
   )
 
-  return options
-}
-
-export const clientOptions = (
-  maybeOptions: types.ClientOptions,
-): types.ClientOptions => {
-  const shape = {
-    username: isString,
-    token: isString,
-    server: isString,
-    port: isFinite,
-    ssl: isBoolean,
-    isKnown: isBoolean,
-    isVerified: isBoolean,
-  }
-
-  const options: types.ClientOptions = defaults(
-    {
-      ...maybeOptions,
-      username: sanitizers.username(maybeOptions.username),
-      token: sanitizers.token(maybeOptions.token),
-    },
-    {
-      server: constants.CHAT_SERVER,
-      port: constants.CHAT_SERVER_SSL_PORT,
-      ssl: true,
-      isKnown: false,
-      isVerified: false,
-    },
-  )
-
-  invariant(
-    conformsTo(options, shape),
-    '[twitch-js/Chat/Client] options: Expected valid options',
-  )
-
-  return options
+  return optionsWithDefaults
 }

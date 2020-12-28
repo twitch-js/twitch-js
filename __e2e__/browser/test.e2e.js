@@ -1,20 +1,22 @@
 const path = require('path')
 const pkg = require('../../package.json')
 
-const { ApiVersions } = require('../../lib/twitch')
+const { ApiVersions } = require('../../lib')
+
+const { preflight } = require('../utils')
 
 const BUILD_PATH = path.join(__dirname, `../../${pkg.unpkg}`)
 
 describe('Browser E2E', () => {
-  if (!process.env.CI) {
-    require('dotenv').config()
-  }
+  beforeAll(() => {
+    preflight()
+  })
 
-  const token = process.env.TWITCH_TOKEN
+  const token = process.env.TWITCH_ACCESS_TOKEN
   const username = process.env.TWITCH_USERNAME
   const channel = process.env.TWITCH_USERNAME
-  const message = process.env.TRAVIS_BUILD_NUMBER
-    ? `Travis CI E2E Build #${process.env.TRAVIS_BUILD_NUMBER}`
+  const message = process.env.GITHUB_RUN_ID
+    ? `CI E2E Build #${process.env.GITHUB_RUN_ID}`
     : `Local E2E ${new Date()}`
 
   beforeEach(async () => {
@@ -22,32 +24,7 @@ describe('Browser E2E', () => {
   })
 
   describe('Chat', () => {
-    test('should connect', async () => {
-      await page.evaluate(
-        (token, username) => {
-          const { chat } = new window.TwitchJs({ token, username })
-
-          return chat.connect()
-        },
-        token,
-        username,
-      )
-    })
-
-    test('should join channel', async () => {
-      await page.evaluate(
-        (token, username, channel) => {
-          const { chat } = new window.TwitchJs({ token, username })
-
-          return chat.connect().then(() => chat.join(channel))
-        },
-        token,
-        username,
-        channel,
-      )
-    })
-
-    test('should send message to channel', async () => {
+    test('should connect, join channel, send message to channel', async () => {
       await page.evaluate(
         (token, username, channel, message) => {
           const { chat } = new window.TwitchJs({ token, username })

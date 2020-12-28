@@ -114,7 +114,9 @@ describe('Api', () => {
 
       await expect(
         api.get('', { version: twitchTypes.ApiVersions.Helix }),
-      ).rejects.toMatchInlineSnapshot(`[Error: [TwitchJS] undefined undefined]`)
+      ).rejects.toMatchInlineSnapshot(
+        `[Invariant Violation: [twitch-js/Api] To call a Helix endpoint, a \`clientId\` or \`token\` must be provided]`,
+      )
     })
   })
 

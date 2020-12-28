@@ -1,5 +1,3 @@
-import { Response } from 'node-fetch'
-
 import BaseError from '../BaseError'
 
 class FetchError extends BaseError {

@@ -1,13 +1,12 @@
-import { Commands, Events, BaseMessage, ChatEvents } from '../twitch'
+import { BaseMessage, ChatEvents } from '../twitch'
 
 import BaseError from '../utils/BaseError'
 
-class ChatError extends BaseError {
-  command: Commands | Events
+export class ChatError extends BaseError {
+  command?: string
 
   constructor(error: Error | string, message?: BaseMessage | string) {
-    const errorMessage = error instanceof Error ? error.message : error
-    super(`${errorMessage} [Chat]`)
+    super(`${error instanceof Error ? error.message : error} [Chat]`)
     Object.setPrototypeOf(this, ChatError.prototype)
 
     if (typeof message !== 'undefined' && typeof message !== 'string') {
@@ -53,5 +52,3 @@ export class TimeoutError extends ChatError {
     Object.setPrototypeOf(this, TimeoutError.prototype)
   }
 }
-
-export default ChatError

@@ -5,5 +5,5 @@
     "outDir": "lib",
     "target": "es5"
   },
-  "exclude": ["**/__tests__", "**/__mocks__", "src/browser.ts"]
+  "exclude": ["**/__*", "src/browser.ts"]
 }
