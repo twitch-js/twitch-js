@@ -1,4 +1,4 @@
-import { Commands } from '../twitch'
+import { BaseMessage, Commands } from '../twitch'
 import { LoggerOptions } from '../utils/logger'
 
 export type ClientOptions = {
@@ -21,9 +21,22 @@ export enum Events {
   RECONNECT = 'RECONNECT',
   AUTHENTICATED = 'AUTHENTICATED',
   AUTHENTICATION_FAILED = 'AUTHENTICATION_FAILED',
+
   ERROR_ENCOUNTERED = 'ERROR_ENCOUNTERED',
-  PARSE_ERROR_ENCOUNTERED = 'PARSE_ERROR_ENCOUNTERED',
 }
 
 export const ClientEvents = { ...Commands, ...Events }
 export type ClientEvents = Commands | Events
+
+export type ClientEventTypes = {
+  [Events.RAW]: [string]
+  [Events.ALL]: [BaseMessage]
+  [Events.CONNECTED]: [BaseMessage]
+  [Events.DISCONNECTED]: []
+  [Events.RECONNECT]: []
+  [Events.AUTHENTICATED]: [BaseMessage]
+  [Events.AUTHENTICATION_FAILED]: [BaseMessage]
+  [Events.ERROR_ENCOUNTERED]: [Error]
+} & {
+  [eventName: string]: [BaseMessage]
+}

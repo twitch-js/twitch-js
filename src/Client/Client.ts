@@ -15,9 +15,9 @@ import * as utils from './utils'
 
 import * as Errors from './Errors'
 
-import { ClientOptions, ClientEvents } from './types'
+import { ClientOptions, ClientEvents, ClientEventTypes } from './types'
 
-class Client extends EventEmitter<Record<ClientEvents, BaseMessage>> {
+class Client extends EventEmitter<ClientEventTypes> {
   private _options: ClientOptions
   private _log: Logger
 
@@ -141,91 +141,94 @@ class Client extends EventEmitter<Record<ClientEvents, BaseMessage>> {
 
     this._handleHeartbeat()
 
+    let messages: BaseMessage[] = []
+
     try {
-      const messages = baseParser(rawMessage, this._options.username)
+      messages = baseParser(rawMessage, this._options.username)
+    } catch (error) {
+      this._log.error(
+        '\n' +
+          'An error occurred while attempting to parse a message from ' +
+          'Twitch. Please use the following stack trace and raw message to ' +
+          'resolve the bug in the TwitchJS source code, and then issue a ' +
+          'pull request at https://github.com/twitch-js/twitch-js/compare\n' +
+          '\n' +
+          'Stack trace:\n' +
+          `${error}\n` +
+          '\n' +
+          'Raw message:\n' +
+          rawMessage,
+      )
+      this.emit(ClientEvents.ERROR_ENCOUNTERED, error)
+    }
 
-      messages.forEach((message) => {
-        const event = message.command || ''
+    messages.forEach((message) => {
+      const event = message.command || ''
 
-        this._log.debug(
-          '> %s %s',
-          event,
-          JSON.stringify({ ...message, _raw: undefined }),
+      this._log.debug(
+        '> %s %s',
+        event,
+        JSON.stringify({ ...message, _raw: undefined }),
+      )
+
+      // Handle authentication failure.
+      if (utils.isAuthenticationFailedMessage(message)) {
+        this._multiEmit(
+          [ClientEvents.ALL, ClientEvents.AUTHENTICATION_FAILED],
+          {
+            ...message,
+            event: ClientEvents.AUTHENTICATION_FAILED,
+          },
         )
 
-        // Handle authentication failure.
-        if (utils.isAuthenticationFailedMessage(message)) {
-          this._multiEmit(
-            [ClientEvents.ALL, ClientEvents.AUTHENTICATION_FAILED],
-            {
-              ...message,
-              event: ClientEvents.AUTHENTICATION_FAILED,
-            },
-          )
-
-          this.disconnect()
-        } else {
-          if (message.command === Commands.PING) {
-            // Handle PING/PONG.
-            this.send('PONG :tmi.twitch.tv', { priority })
-          } else if (
-            !token &&
-            !username &&
-            message.command === Commands.WELCOME
-          ) {
-            // Handle successful connections.
+        this.disconnect()
+      } else {
+        if (message.command === Commands.PING) {
+          // Handle PING/PONG.
+          this.send('PONG :tmi.twitch.tv', { priority })
+        } else if (
+          !token &&
+          !username &&
+          message.command === Commands.WELCOME
+        ) {
+          // Handle successful connections.
+          this._multiEmit([ClientEvents.ALL, ClientEvents.CONNECTED], {
+            ...message,
+            event: ClientEvents.CONNECTED,
+          })
+        } else if (message.command === Commands.GLOBALUSERSTATE) {
+          // Handle successful authentications.
+          this._multiEmit([ClientEvents.ALL, ClientEvents.GLOBALUSERSTATE], {
+            ...message,
+            event: ClientEvents.GLOBALUSERSTATE,
+          })
+          if (token && username) {
             this._multiEmit([ClientEvents.ALL, ClientEvents.CONNECTED], {
               ...message,
               event: ClientEvents.CONNECTED,
             })
-          } else if (message.command === Commands.GLOBALUSERSTATE) {
-            // Handle successful authentications.
-            this._multiEmit([ClientEvents.ALL, ClientEvents.GLOBALUSERSTATE], {
-              ...message,
-              event: ClientEvents.GLOBALUSERSTATE,
-            })
-            if (token && username) {
-              this._multiEmit([ClientEvents.ALL, ClientEvents.CONNECTED], {
-                ...message,
-                event: ClientEvents.CONNECTED,
-              })
-            }
-          } else if (message.command === Commands.RECONNECT) {
-            // Handle RECONNECT.
-            this._multiEmit([ClientEvents.ALL, ClientEvents.RECONNECT], {
-              ...message,
-              event: ClientEvents.RECONNECT,
-            })
-          } else {
-            this.emit(ClientEvents.ALL, message)
           }
+        } else if (message.command === Commands.RECONNECT) {
+          // Handle RECONNECT.
+          this._multiEmit([ClientEvents.ALL, ClientEvents.RECONNECT], {
+            ...message,
+            event: ClientEvents.RECONNECT,
+          })
+        } else {
+          this.emit(ClientEvents.ALL, message)
         }
-      })
-    } catch (error) {
-      const title = 'Parsing error encountered'
-      const query = stringify({ title, body: rawMessage })
-      this._log.error(
-        'Parsing error encountered. Please create an issue: %s',
-        `https://github.com/twitch-js/twitch-js/issues/new?${query}`,
-        error,
-      )
+      }
+    })
 
-      const errorMessage = new Errors.ParseError(error, rawMessage)
-
-      this.emit(ClientEvents.PARSE_ERROR_ENCOUNTERED, errorMessage)
-      this.emit(ClientEvents.ALL, errorMessage)
-      throw errorMessage
-    } finally {
-      this.emit(ClientEvents.RAW, rawMessage)
-    }
+    this.emit(ClientEvents.RAW, rawMessage)
   }
 
   private _handleError(errorEvent: WebSocket.ErrorEvent) {
-    this.emit(ClientEvents.ERROR_ENCOUNTERED, errorEvent)
+    this._log.error(errorEvent)
   }
 
   private _handleClose(closeEvent: WebSocket.CloseEvent) {
-    this.emit(ClientEvents.DISCONNECTED, closeEvent)
+    this.emit(ClientEvents.DISCONNECTED)
   }
 
   private _handleHeartbeat() {
