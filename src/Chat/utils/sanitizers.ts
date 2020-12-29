@@ -1,19 +1,20 @@
 import isEmpty from 'lodash/isEmpty'
 import random from 'lodash/random'
-import toLower from 'lodash/toLower'
 
 import { ANONYMOUS_USERNAME } from '../constants'
 
-export const channel = (value: any): string => {
-  if (value == null) {
-    return '#'
+export const channel = (value?: any): string => {
+  if (typeof value !== 'string' || value.length === 0) {
+    return ''
   }
 
-  if (value.startsWith('#')) {
-    return value
+  value = value.toLowerCase()
+
+  if (!value.startsWith('#')) {
+    return `#${value}`
   }
 
-  return toLower(`#${value}`)
+  return value
 }
 
 export const token = (value: any): string => {

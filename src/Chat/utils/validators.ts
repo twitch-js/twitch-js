@@ -50,3 +50,13 @@ export const chatOptions = (
 
   return optionsWithDefaults
 }
+
+export const channel = (channel: string): string => {
+  channel = sanitizers.channel(channel)
+
+  if (!channel) {
+    throw new Error('Channel required')
+  }
+
+  return channel
+}
