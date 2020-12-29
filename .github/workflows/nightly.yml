@@ -14,8 +14,17 @@ jobs:
       - name: Install dependencies
         run: yarn install & yarn add twitch-js@latest
 
-      - name: Run nightly
+      - name: Refresh access token
+        if: ${{ github.event_name == 'push' }}
+        uses: ./.github/actions/refresh-access-token
+        with:
+          client-id: ${{ secrets.TWITCH_CLIENT_ID }}
+          client-secret: ${{ secrets.TWITCH_CLIENT_SECRET }}
+          refresh-token: ${{ secrets.TWITCH_REFRESH_TOKEN }}
 
+      - name: Run nightly
+        env:
+          TWITCH_USERNAME: ${{ secrets.TWITCH_USERNAME }}
         run: yarn start:nightly
 
       - name: Archive log
