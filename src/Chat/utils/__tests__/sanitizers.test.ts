@@ -3,20 +3,20 @@ import * as sanitizers from '../sanitizers'
 
 describe('Chat/utils/sanitizers', () => {
   describe('channel', () => {
-    test('should return "#" when null or empty', () => {
-      const actual = sanitizers.channel(null)
-      const expected = '#'
+    test('should return empty string when no channel is given', () => {
+      const actual = sanitizers.channel()
+      const expected = ''
       expect(actual).toEqual(expected)
     })
 
     test('should return the sanitized channel', () => {
-      const actual = sanitizers.channel('lorem')
+      const actual = sanitizers.channel('Lorem')
       const expected = '#lorem'
       expect(actual).toEqual(expected)
     })
 
     test('should return the input channel', () => {
-      const actual = sanitizers.channel('#lorem')
+      const actual = sanitizers.channel('#Lorem')
       const expected = '#lorem'
       expect(actual).toEqual(expected)
     })

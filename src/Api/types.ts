@@ -4,8 +4,8 @@ import { FetchOptions } from '../utils/fetch'
 import { LoggerOptions } from '../utils/logger'
 
 export type ApiOptions = {
+  token: string
   clientId?: string
-  token?: string
   log?: LoggerOptions
   onAuthenticationFailure?: () => Promise<string>
 }

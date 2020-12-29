@@ -3,7 +3,7 @@ import nodeFetch from 'node-fetch'
 
 import * as twitchTypes from '../../twitch'
 
-import * as Errors from '../../utils/fetch/Errors'
+import { FetchError } from '../../utils/fetch'
 
 import Api from '../'
 import { Settings } from '../types'
@@ -30,12 +30,6 @@ describe('Api', () => {
     fetchUtil.mockClear()
   })
 
-  describe('constructor', () => {
-    test('should instantiate with no options', () => {
-      expect(() => new Api({ log: { enabled: false } })).not.toThrow()
-    })
-  })
-
   test('should allow options to be updated without changing clientId or token', () => {
     const api = new Api(options)
 
@@ -49,7 +43,7 @@ describe('Api', () => {
 
     api.updateOptions(nextOptions)
 
-    expect(api.options).toMatchObject({ ...options, log })
+    expect(api._options).toMatchObject({ ...options, log })
   })
 
   describe('initialize', () => {
@@ -71,25 +65,18 @@ describe('Api', () => {
 
     test('should update client options', async () => {
       const api = new Api(options)
-      expect(api.options.token).toBe(options.token)
+      expect(api._options.token).toBe(options.token)
 
       const newToken = 'NEW_TOKEN'
       await api.initialize({ token: newToken })
 
-      expect(api.options.token).toBe(newToken)
+      expect(api._options.token).toBe(newToken)
     })
   })
 
   describe('headers', () => {
     test('should create headers with clientId and token', async () => {
       const api = new Api(options)
-      await api.get()
-
-      expect(fetchUtil.mock.calls).toMatchSnapshot()
-    })
-
-    test('should create headers with clientId', async () => {
-      const api = new Api({ ...options, token: undefined })
       await api.get()
 
       expect(fetchUtil.mock.calls).toMatchSnapshot()
@@ -107,16 +94,6 @@ describe('Api', () => {
       await api.get('', { version: twitchTypes.ApiVersions.Helix })
 
       expect(fetchUtil.mock.calls).toMatchSnapshot()
-    })
-
-    test('should throw if clientId and token are absent when calling a Helix endpoint', async () => {
-      const api = new Api({ log: { enabled: false } })
-
-      await expect(
-        api.get('', { version: twitchTypes.ApiVersions.Helix }),
-      ).rejects.toMatchInlineSnapshot(
-        `[Invariant Violation: [twitch-js/Api] To call a Helix endpoint, a \`clientId\` or \`token\` must be provided]`,
-      )
     })
   })
 
@@ -180,45 +157,41 @@ describe('Api', () => {
       try {
         await api.get('404')
       } catch (error) {
-        expect(error).toBeInstanceOf(Errors.FetchError)
+        expect(error).toBeInstanceOf(FetchError)
         expect(error).toMatchSnapshot()
       }
     })
   })
 
   describe('versions', () => {
-    test('should fallback to the Helix endpoint', () => {
+    test('should fallback to the Helix endpoint', async () => {
       const api = new Api(options)
 
       const endpoint = 'ENDPOINT'
 
-      return api.get(endpoint, fetchOptions).then(() => {
-        const [actualEndpoint, actualOpts] = fetchUtil.mock.calls[0]
+      await api.get(endpoint, fetchOptions)
+      const [actualEndpoint, actualOpts] = fetchUtil.mock.calls[0]
 
-        expect(actualEndpoint).toBe(`${helixBaseUrl}/${endpoint}?a=b`)
-        expect(actualOpts).toMatchObject(fetchOptions)
+      expect(actualEndpoint).toBe(`${helixBaseUrl}/${endpoint}?a=b`)
+      expect(actualOpts).toMatchObject(fetchOptions)
+    })
+
+    test('should call the Kraken endpoint', async () => {
+      const api = new Api(options)
+
+      const endpoint = 'ENDPOINT'
+
+      await api.get(endpoint, {
+        ...fetchOptions,
+        version: twitchTypes.ApiVersions.Kraken,
       })
+      const [actualEndpoint, actualOpts] = fetchUtil.mock.calls[0]
+
+      expect(actualEndpoint).toBe(`${krakenBaseUrl}/${endpoint}?a=b`)
+      expect(actualOpts).toMatchObject(fetchOptions)
     })
 
-    test('should call the Kraken endpoint', () => {
-      const api = new Api(options)
-
-      const endpoint = 'ENDPOINT'
-
-      return api
-        .get(endpoint, {
-          ...fetchOptions,
-          version: twitchTypes.ApiVersions.Kraken,
-        })
-        .then(() => {
-          const [actualEndpoint, actualOpts] = fetchUtil.mock.calls[0]
-
-          expect(actualEndpoint).toBe(`${krakenBaseUrl}/${endpoint}?a=b`)
-          expect(actualOpts).toMatchObject(fetchOptions)
-        })
-    })
-
-    test('should call the Helix endpoint', () => {
+    test('should call the Helix endpoint', async () => {
       const api = new Api(options)
 
       const endpoint = 'ENDPOINT'
@@ -227,12 +200,11 @@ describe('Api', () => {
         version: twitchTypes.ApiVersions['Helix'],
       }
 
-      return api.get(endpoint, opts).then(() => {
-        const [actualEndpoint, actualOpts] = fetchUtil.mock.calls[0]
+      await api.get(endpoint, opts)
+      const [actualEndpoint, actualOpts] = fetchUtil.mock.calls[0]
 
-        expect(actualEndpoint).toBe(`${helixBaseUrl}/${endpoint}?a=b`)
-        expect(actualOpts).toMatchSnapshot()
-      })
+      expect(actualEndpoint).toBe(`${helixBaseUrl}/${endpoint}?a=b`)
+      expect(actualOpts).toMatchSnapshot()
     })
   })
 
@@ -264,7 +236,7 @@ describe('Api', () => {
         await api.get('401')
       } catch (error) {
         expect(onAuthenticationFailure).toHaveBeenCalled()
-        expect(api.options.token).toEqual('TOKEN')
+        expect(api._options.token).toEqual('TOKEN')
       }
     })
   })

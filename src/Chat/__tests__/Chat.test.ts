@@ -5,6 +5,7 @@ import camelCase from 'lodash/camelCase'
 import rawCommands from '../../../__mocks__/ws/__fixtures__/commands.json'
 import membership from '../../../__mocks__/ws/__fixtures__/membership.json'
 import tags from '../../../__mocks__/ws/__fixtures__/tags.json'
+import issues from '../../../__mocks__/ws/__fixtures__/issues.json'
 
 import {
   ChatCommands,
@@ -602,6 +603,21 @@ describe('Chat', () => {
         })
 
         emitHelper(chat._client, rawCommands.CLEARCHAT.DEVIATION_1)
+      })
+
+      test.each(Object.entries(issues))('%s', async (_issue, message) => {
+        const chat = new Chat(options)
+        await chat.connect()
+
+        expect.assertions(message.split('\n').length)
+
+        chat.on('*', (actual) => {
+          expect(actual).toMatchSnapshot({
+            timestamp: expect.any(Date),
+          })
+        })
+
+        server.sendMessageToClient(message)
       })
     })
   })

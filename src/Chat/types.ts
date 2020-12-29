@@ -3,13 +3,11 @@ import WebSocket from 'ws'
 import {
   ClearChatMessages,
   Events,
-  BaseMessage,
   HostingAutoPrivateMessage,
   HostingPrivateMessage,
   HostingWithViewersPrivateMessage,
   HostTargetMessage,
   JoinMessage,
-  Message,
   Messages,
   ModeMessages,
   NamesEndMessage,
@@ -33,9 +31,12 @@ import {
   UserNoticeSubscriptionMessage,
   UserStateMessage,
   UserStateTags,
+  ChatEvents,
 } from '../twitch'
 
 import { LoggerOptions } from '../utils/logger'
+
+import { ClientEventTypes, Events as ClientEvents } from '../Client/types'
 
 export type ChatOptions = {
   username?: string
@@ -144,12 +145,7 @@ export enum UserNoticeCompounds {
   SUBSCRIPTION_GIFT_COMMUNITY = 'USERNOTICE/SUBSCRIPTION_GIFT_COMMUNITY',
 }
 
-export type EventTypes = {
-  [Events.CONNECTED]: [BaseMessage]
-  [Events.AUTHENTICATED]: [BaseMessage]
-  [Events.AUTHENTICATION_FAILED]: [BaseMessage]
-  [Events.GLOBALUSERSTATE]: [BaseMessage]
-
+export type EventTypes = Omit<ClientEventTypes, ClientEvents.ALL> & {
   [Events.ALL]: [Messages]
 
   [Events.JOIN]: [JoinMessage]
@@ -288,13 +284,7 @@ export type EventTypes = {
     UserNoticeSubscriptionGiftCommunityMessage,
   ]
 
-  [key: string]: [
-    | string
-    | Messages
-    | Message
-    | WebSocket.OpenEvent
-    | WebSocket.MessageEvent
-    | WebSocket.ErrorEvent
-    | WebSocket.CloseEvent,
-  ]
+  [eventName: string]: [Messages]
 }
+
+type t = EventTypes['*']

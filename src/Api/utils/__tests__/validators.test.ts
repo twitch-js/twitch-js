@@ -1,7 +1,7 @@
 import * as validators from '../validators'
 
 describe('Api/utils/validators', () => {
-  const options = { clientId: 'CLIENT_ID' }
+  const options = { token: 'TOKEN' }
 
   describe('apiOptions', () => {
     test('should return default chat options', () => {
@@ -10,10 +10,10 @@ describe('Api/utils/validators', () => {
       expect(actual).toMatchSnapshot()
     })
 
-    test('default onAuthenticationFailure should reject', async () => {
-      const { onAuthenticationFailure } = validators.apiOptions(options)
-
-      await expect(onAuthenticationFailure()).rejects.toBeUndefined()
+    test('should throw if token is missing', async () => {
+      expect(() =>
+        validators.apiOptions({ ...options, token: undefined }),
+      ).toThrow()
     })
   })
 })

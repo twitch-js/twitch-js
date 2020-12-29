@@ -51,6 +51,11 @@ export const badges = (maybeBadges: string): Partial<Badges> => {
   return typeof maybeBadges === 'string'
     ? maybeBadges.split(',').reduce((parsed, badge) => {
         const [rawKey, value] = badge.split('/')
+
+        if (typeof value === 'undefined') {
+          return parsed
+        }
+
         const key = camelCase(rawKey)
 
         if (key in BooleanBadges) {

@@ -31,20 +31,6 @@ Array [
 ]
 `;
 
-exports[`Api headers should create headers with clientId 1`] = `
-Array [
-  Array [
-    "https://api.twitch.tv/helix/",
-    Object {
-      "headers": Object {
-        "Client-ID": "CLIENT_ID",
-      },
-      "method": "get",
-    },
-  ],
-]
-`;
-
 exports[`Api headers should create headers with clientId and token 1`] = `
 Array [
   Array [

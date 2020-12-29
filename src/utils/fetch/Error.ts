@@ -7,8 +7,9 @@ class FetchError extends BaseError {
   url: Response['url']
   body: any
 
-  constructor(response: Response, body: any) {
-    super(`${response.url} ${response.statusText}`)
+  constructor(response: Response, json: any) {
+    const message = json?.message || `${response.url} ${response.statusText}`
+    super(message)
 
     Object.setPrototypeOf(this, FetchError.prototype)
 
@@ -16,15 +17,8 @@ class FetchError extends BaseError {
     this.status = response.status
     this.statusText = response.statusText
     this.url = response.url
-    this.body = body
+    this.body = json
   }
 }
 
-class AuthenticationError extends FetchError {
-  constructor(response: Response, body: any) {
-    super(response, body)
-    Object.setPrototypeOf(this, AuthenticationError.prototype)
-  }
-}
-
-export { BaseError, FetchError, AuthenticationError }
+export default FetchError
