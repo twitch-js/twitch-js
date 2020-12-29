@@ -146,6 +146,9 @@ class Client extends EventEmitter<ClientEventTypes> {
     try {
       messages = baseParser(rawMessage, this._options.username)
     } catch (error) {
+      /**
+       * Catch errors while parsing raw messages into base messages.
+       */
       this._log.error(
         '\n' +
           'An error occurred while attempting to parse a message from ' +

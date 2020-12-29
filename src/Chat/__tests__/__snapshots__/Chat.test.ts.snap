@@ -1612,9 +1612,7 @@ Object {
   },
   "systemMessage": "Seventoes is new here!",
   "tags": Object {
-    "badges": Object {
-      "": undefined,
-    },
+    "badges": Object {},
     "bits": undefined,
     "color": "",
     "displayName": "SevenTest1",
@@ -1805,9 +1803,7 @@ Object {
   },
   "systemMessage": "Unknown system message",
   "tags": Object {
-    "badges": Object {
-      "": undefined,
-    },
+    "badges": Object {},
     "bits": undefined,
     "color": "",
     "displayName": "SevenTest1",

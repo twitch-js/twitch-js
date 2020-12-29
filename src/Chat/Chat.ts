@@ -1054,9 +1054,28 @@ class Chat extends EventEmitter<EventTypes> {
       return
     }
 
-    const [eventName, message] = this._parseMessageForEmitter(baseMessage)
-
-    this._emit(eventName, message)
+    try {
+      const [eventName, message] = this._parseMessageForEmitter(baseMessage)
+      this._emit(eventName, message)
+    } catch (error) {
+      /**
+       * Catch errors while parsing base messages into events.
+       */
+      this._log.error(
+        '\n' +
+          'An error occurred while attempting to parse a message into a ' +
+          'event. Please use the following stack trace and raw message to ' +
+          'resolve the bug in the TwitchJS source code, and then issue a ' +
+          'pull request at https://github.com/twitch-js/twitch-js/compare\n' +
+          '\n' +
+          'Stack trace:\n' +
+          `${error}\n` +
+          '\n' +
+          'Base message:\n' +
+          JSON.stringify(baseMessage),
+      )
+      this.emit(ClientEvents.ERROR_ENCOUNTERED, error)
+    }
   }
 
   private async _handleJoinsAfterConnect() {
@@ -1212,39 +1231,55 @@ class Chat extends EventEmitter<EventTypes> {
       return
     }
 
-    if (eventName) {
-      const events = uniq(eventName.split('/'))
+    try {
+      if (eventName) {
+        const events = uniq(eventName.split('/'))
 
-      const tagsDisplayName =
-        'tags' in message ? message.tags.displayName : undefined
-      const username = 'username' in message ? message.username : undefined
+        const tagsDisplayName =
+          'tags' in message ? message.tags.displayName : undefined
+        const username = 'username' in message ? message.username : undefined
 
-      const displayName = tagsDisplayName || username || 'tmi.twitch.tv'
+        const displayName = tagsDisplayName || username || 'tmi.twitch.tv'
 
-      const info = 'message' in message ? message.message : eventName
-      this._log.info(
-        `${events.join('/')}`,
-        `${displayName}${info ? ':' : ''}`,
-        info,
+        const info = 'message' in message ? message.message : eventName
+        this._log.info(
+          `${events.join('/')}`,
+          `${displayName}${info ? ':' : ''}`,
+          info,
+        )
+
+        events
+          .filter((part) => part !== '#')
+          .reduce<string[]>((parents, part) => {
+            const eventParts = [...parents, part]
+            if (eventParts.length > 1) {
+              super.emit(part as keyof EventTypes, message)
+            }
+            super.emit(eventParts.join('/') as keyof EventTypes, message)
+            return eventParts
+          }, [])
+      }
+
+      // Emit message under the ALL `*` event.
+      super.emit(Events.ALL, message)
+    } catch (error) {
+      /**
+       * Catch external implementation errors.
+       */
+      this._log.error(
+        '\n' +
+          `While attempting to handle the ${message.command} event, an ` +
+          'error occurred in your implementation. To avoid seeing this ' +
+          'message, please resolve the error:\n' +
+          '\n' +
+          `${error.stack}\n` +
+          '\n' +
+          'Parsed messages:\n' +
+          JSON.stringify(message),
       )
 
-      events
-        .filter((part) => part !== '#')
-        .reduce<string[]>((parents, part) => {
-          const eventParts = [...parents, part]
-          if (eventParts.length > 1) {
-            super.emit(part as keyof EventTypes, message)
-          }
-          super.emit(eventParts.join('/') as keyof EventTypes, message)
-          return eventParts
-        }, [])
+      this.emit(ClientEvents.ERROR_ENCOUNTERED, error)
     }
-
-    /**
-     * All events are also emitted with this event name.
-     * @event Chat#*
-     */
-    super.emit(Events.ALL, message)
   }
 }
 
