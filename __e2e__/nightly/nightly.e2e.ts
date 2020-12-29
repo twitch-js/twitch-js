@@ -1,10 +1,17 @@
 import pino from 'pino'
 import delay from 'delay'
-import TwitchJs, { BooleanBadges, NumberBadges, ChatEvents } from '../../src'
+import TwitchJs, {
+  BooleanBadges,
+  ChatEvents,
+  Events,
+  NumberBadges,
+} from '../../src'
 
 import { preflight } from '../utils'
 
-const Badges = { ...BooleanBadges, ...NumberBadges }
+const KnownBadges = Object.keys({ ...BooleanBadges, ...NumberBadges })
+
+const KnownEvents = Object.values(Events)
 
 const newBadges = []
 const newEvents = []
@@ -33,17 +40,25 @@ const run = async () => {
   // Listen to chat.
   chat.on(ChatEvents.ALL, (message) => {
     try {
+      let isNew = false
+
       // Check badges.
       const badges = message.tags?.badges || {}
       for (const badge in badges) {
-        if (!(badge in Badges)) {
+        if (!KnownBadges.includes(badge) && !newBadges.includes(badge)) {
           newBadges.push(badge)
+          isNew = true
         }
       }
 
       // Check events
-      if (!(message?.event && message.event in ChatEvents)) {
+      if (
+        message?.event &&
+        !KnownEvents.includes(message.event) &&
+        !newEvents.includes(message.event)
+      ) {
         newEvents.push(message.event)
+        isNew = true
       }
 
       // Check message parameters.
@@ -51,18 +66,21 @@ const run = async () => {
       for (const param in params) {
         // Collect all parameters for now.
         newParams.push(param)
+        isNew = true
       }
 
-      logger.info(message)
+      if (isNew) {
+        logger.info(message)
+      }
     } catch (err) {
-      console.log(err)
+      logger.error(err)
     }
   })
 
   await chat.connect()
   await chat.join(channel)
 
-  await delay(600000) // 600000 ms = 10 minutes
+  await delay(60000) // 600000 ms = 10 minutes
   chat.disconnect()
 
   logger.info({ newBadges, newEvents, newParams })
