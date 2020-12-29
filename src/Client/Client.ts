@@ -17,7 +17,11 @@ import * as Errors from './Errors'
 
 import { ClientOptions, ClientEvents, ClientEventTypes } from './types'
 
-class Client extends EventEmitter<ClientEventTypes> {
+class Client extends EventEmitter<
+  ClientEventTypes & {
+    [eventName: string]: [BaseMessage]
+  }
+> {
   private _options: ClientOptions
   private _log: Logger
 

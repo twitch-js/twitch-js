@@ -1226,11 +1226,6 @@ class Chat extends EventEmitter<EventTypes> {
   }
 
   private _emit(eventName: string, message: Messages) {
-    if (message instanceof Error) {
-      super.emit('error', message)
-      return
-    }
-
     try {
       if (eventName) {
         const events = uniq(eventName.split('/'))
@@ -1253,9 +1248,9 @@ class Chat extends EventEmitter<EventTypes> {
           .reduce<string[]>((parents, part) => {
             const eventParts = [...parents, part]
             if (eventParts.length > 1) {
-              super.emit(part as keyof EventTypes, message)
+              super.emit(part, message)
             }
-            super.emit(eventParts.join('/') as keyof EventTypes, message)
+            super.emit(eventParts.join('/'), message)
             return eventParts
           }, [])
       }

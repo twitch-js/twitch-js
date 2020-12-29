@@ -37,6 +37,4 @@ export type ClientEventTypes = {
   [Events.AUTHENTICATED]: [BaseMessage]
   [Events.AUTHENTICATION_FAILED]: [BaseMessage]
   [Events.ERROR_ENCOUNTERED]: [Error]
-} & {
-  [eventName: string]: [BaseMessage]
 }

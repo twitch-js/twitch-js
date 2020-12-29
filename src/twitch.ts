@@ -842,4 +842,3 @@ export type Messages =
   | UserStateMessage
   | PrivateMessages
   | UserNoticeMessages
-  | Error
