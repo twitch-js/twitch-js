@@ -1835,6 +1835,90 @@ Object {
 }
 `;
 
+exports[`Chat should handle messages deviations 218 1`] = `
+Object {
+  "_raw": ":twipkr.tmi.twitch.tv 353 twipkr = #bjhjh100 :commanderroot anotherttvviewer bjhjh100 twipkr ssakdook grany0 bananennanen nightbot p0sitivitybot",
+  "channel": "#bjhjh100",
+  "command": "353",
+  "event": "353",
+  "isSelf": false,
+  "message": "=",
+  "tags": Object {},
+  "timestamp": Any<Date>,
+  "username": "twipkr",
+  "usernames": Array [
+    "commanderroot",
+    "anotherttvviewer",
+    "bjhjh100",
+    "twipkr",
+    "ssakdook",
+    "grany0",
+    "bananennanen",
+    "nightbot",
+    "p0sitivitybot",
+  ],
+}
+`;
+
+exports[`Chat should handle messages deviations 218 2`] = `
+Object {
+  "_raw": ":twipkr.tmi.twitch.tv 366 twipkr #bjhjh100 :End of /NAMES list",
+  "channel": "#bjhjh100",
+  "command": "366",
+  "event": "366",
+  "isSelf": false,
+  "message": "#bjhjh100",
+  "tags": Object {},
+  "timestamp": Any<Date>,
+  "username": "twipkr",
+}
+`;
+
+exports[`Chat should handle messages deviations 218 3`] = `
+Object {
+  "_raw": ":jtv MODE #bjhjh100 +o twipkr",
+  "channel": "#bjhjh100",
+  "command": "MODE",
+  "event": "MOD_GAINED",
+  "isModerator": true,
+  "isSelf": false,
+  "message": "+o",
+  "tags": Object {},
+  "timestamp": Any<Date>,
+  "username": "twipkr",
+}
+`;
+
+exports[`Chat should handle messages deviations 218 4`] = `
+Object {
+  "_raw": ":jtv MODE #bjhjh100 +o nightbot",
+  "channel": "#bjhjh100",
+  "command": "MODE",
+  "event": "MOD_GAINED",
+  "isModerator": true,
+  "isSelf": false,
+  "message": "+o",
+  "tags": Object {},
+  "timestamp": Any<Date>,
+  "username": "nightbot",
+}
+`;
+
+exports[`Chat should handle messages deviations 218 5`] = `
+Object {
+  "_raw": ":jtv MODE #bjhjh100 +o bjhjh100",
+  "channel": "#bjhjh100",
+  "command": "MODE",
+  "event": "MOD_GAINED",
+  "isModerator": true,
+  "isSelf": false,
+  "message": "+o",
+  "tags": Object {},
+  "timestamp": Any<Date>,
+  "username": "bjhjh100",
+}
+`;
+
 exports[`Chat should handle messages deviations CLEARCHAT deviation 1 1`] = `
 Object {
   "_raw": "@ban-duration=600;room-id=19571641;target-user-id=200817980;tmi-sent-ts=1531857100477 :tmi.twitch.tv CLEARCHAT #ninja :aiibopz",

@@ -1086,7 +1086,7 @@ class Chat extends EventEmitter<EventTypes> {
     return Object.keys(this._channelState)
   }
 
-  private _getChannelState(channel: string) {
+  private _getChannelState(channel: string): ChannelState | undefined {
     return this._channelState[channel]
   }
 
@@ -1161,7 +1161,7 @@ class Chat extends EventEmitter<EventTypes> {
 
         if (
           this._isAuthenticated &&
-          typeof channelState.userState !== 'undefined' &&
+          typeof channelState?.userState !== 'undefined' &&
           message.username === this._options.username
         ) {
           this._setChannelState(channel, {
@@ -1180,10 +1180,14 @@ class Chat extends EventEmitter<EventTypes> {
         const message = parsers.userStateMessage(baseMessage)
         const eventName = `${baseEventName}/${channel}`
 
-        this._setChannelState(channel, {
-          ...this._getChannelState(channel),
-          userState: message.tags,
-        })
+        const channelState = this._getChannelState(channel)
+
+        if (channelState) {
+          this._setChannelState(channel, {
+            ...channelState,
+            userState: message.tags,
+          })
+        }
         return [eventName, message]
       }
 
