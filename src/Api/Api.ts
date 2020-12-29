@@ -7,9 +7,8 @@ import toUpper from 'lodash/toUpper'
 import { ApiRootResponse, ApiVersions } from '../twitch'
 
 import createLogger, { Logger } from '../utils/logger'
+import fetchUtil, { FetchError } from '../utils/fetch'
 
-import fetchUtil from '../utils/fetch'
-import * as Errors from '../utils/fetch/Errors'
 import * as validators from './utils/validators'
 
 import {
@@ -83,25 +82,17 @@ import {
  */
 
 class Api {
-  private _options!: ApiOptions
+  private _options: ApiOptions
   private _log: Logger
 
   private _readyState: ApiReadyStates = ApiReadyStates.READY
 
   private _status!: ApiRootResponse
 
-  constructor(maybeOptions: ApiOptions = {}) {
-    this.options = maybeOptions
+  constructor(options: Partial<ApiOptions>) {
+    this._options = validators.apiOptions(options)
 
-    this._log = createLogger({ name: 'Api', ...this.options.log })
-  }
-
-  set options(maybeOptions) {
-    this._options = validators.apiOptions(maybeOptions)
-  }
-
-  get options() {
-    return this._options
+    this._log = createLogger({ name: 'Api', ...this._options.log })
   }
 
   get readyState() {
@@ -116,8 +107,8 @@ class Api {
    * New client options. To update `token` or `clientId`, use [**api.initialize()**]{@link Api#initialize}.
    */
   updateOptions(options: Partial<ApiOptions>) {
-    const { clientId, token } = this.options
-    this.options = { ...options, clientId, token }
+    const { clientId, token } = this._options
+    this._options = validators.apiOptions({ ...options, clientId, token })
   }
 
   /**
@@ -126,7 +117,7 @@ class Api {
    */
   async initialize(newOptions?: Partial<ApiOptions>) {
     if (newOptions) {
-      this.options = { ...this.options, ...newOptions }
+      this._options = validators.apiOptions({ ...this._options, ...newOptions })
     }
 
     if (!newOptions && this.readyState === 2) {
@@ -137,8 +128,10 @@ class Api {
       version: ApiVersions.Kraken,
     })
 
-    this._readyState = ApiReadyStates.INITIALIZED
-    this._status = statusResponse
+    if ('token' in statusResponse) {
+      this._readyState = ApiReadyStates.INITIALIZED
+      this._status = statusResponse
+    }
 
     return statusResponse
   }
@@ -208,14 +201,9 @@ class Api {
   }
 
   private _getHeaders(version: ApiVersions): ApiHeaders {
-    const { clientId, token } = this.options
+    const { clientId, token } = this._options
 
     const isHelix = this._isVersionHelix(version)
-
-    invariant(
-      isHelix ? !(isEmpty(clientId) && isEmpty(token)) : true,
-      '[twitch-js/Api] To call a Helix endpoint, a `clientId` or `token` must be provided',
-    )
 
     const headers: ApiHeaders = {}
 
@@ -264,14 +252,17 @@ class Api {
         headers,
       })
 
+    let caughtError
     try {
       return await performRequest()
     } catch (error) {
+      caughtError = error
       if (
-        error instanceof Errors.AuthenticationError &&
-        typeof this.options.onAuthenticationFailure === 'function'
+        typeof this._options.onAuthenticationFailure === 'function' &&
+        error instanceof FetchError &&
+        error.status === 401
       ) {
-        const token = await this.options.onAuthenticationFailure()
+        const token = await this._options.onAuthenticationFailure()
 
         if (token) {
           await this.initialize({ token })
@@ -282,9 +273,9 @@ class Api {
 
         return await performRequest()
       }
-      throw new Errors.FetchError(error, message)
+      throw error
     } finally {
-      fetchProfiler.done(message)
+      fetchProfiler.done(message, caughtError)
     }
   }
 }

@@ -8,26 +8,20 @@ import isUndefined from 'lodash/isUndefined'
 
 import { ApiOptions } from '../types'
 
-export const apiOptions = (maybeOptions: any): ApiOptions | never => {
+export const apiOptions = (options: Partial<ApiOptions>): ApiOptions => {
   const shape = {
-    clientId: (token: unknown) => isUndefined(token) || isString(token),
-    token: (token: unknown) => isUndefined(token) || isString(token),
-    onAuthenticationFailure: isFunction,
+    token: isString,
+    clientId: (clientId: unknown) =>
+      isString(clientId) || isUndefined(clientId),
+    onAuthenticationFailure: (cb: unknown) => isFunction(cb) || isUndefined(cb),
   }
 
-  const options = defaults<ApiOptions, ApiOptions>(
-    { ...maybeOptions },
-    {
-      clientId: undefined,
-      token: undefined,
-      onAuthenticationFailure: () => new Promise((_, reject) => reject()),
-    },
-  )
+  options = defaults(options, {
+    clientId: undefined,
+    onAuthenticationFailure: undefined,
+  })
 
-  invariant(
-    conformsTo(options, shape),
-    '[twitch-js/Api] options: Expected valid options',
-  )
+  invariant(conformsTo(options, shape), 'Expected valid options')
 
   return options as ApiOptions
 }
