@@ -57,6 +57,7 @@
     "build:lib": "tsc --project tsconfig.build.json",
     "build:dist": "rollup -c",
     "build": "run-p build:**",
+    "start:nightly": "ts-node --project tsconfig.json --transpile-only --require dotenv/config __e2e__/nightly/nightly.e2e.ts",
     "start:example": "ts-node-dev examples/node.js",
     "predocs:build": "rimraf docs",
     "docs:build": "typedoc",

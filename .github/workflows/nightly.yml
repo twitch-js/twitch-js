@@ -1,0 +1,26 @@
+name: Nightly
+
+on:
+  schedule:
+    - cron: '0 0 * * * *'
+
+jobs:
+  pipeline:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Install dependencies
+        run: yarn install & yarn add twitch-js@latest
+
+      - name: Run nightly
+
+        run: yarn start:nightly
+
+      - name: Archive log
+        uses: actions/upload-artifact@v2
+        with:
+          name: nightly-log
+          path: nightly.log
+          retention-days: 7
