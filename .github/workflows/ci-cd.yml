@@ -8,7 +8,6 @@ on:
 
 jobs:
   pipeline:
-    if: "!contains(github.event.head_commit.message, 'ci skip')"
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -50,7 +49,9 @@ jobs:
         run: yarn build
 
       - name: Refresh access token
-        if: ${{ github.event_name == 'push' }}
+        if: |
+          !contains(github.event.head_commit.message, 'deploy skip') && 
+          github.event_name == 'push'
         uses: ./.github/actions/refresh-access-token
         with:
           client-id: ${{ secrets.TWITCH_CLIENT_ID }}
@@ -58,13 +59,17 @@ jobs:
           refresh-token: ${{ secrets.TWITCH_REFRESH_TOKEN }}
 
       - name: Run E2E tests
-        if: ${{ github.event_name == 'push' }}
+        if: |
+          !contains(github.event.head_commit.message, 'deploy skip') &&
+          github.event_name == 'push'
         env:
           TWITCH_USERNAME: ${{ secrets.TWITCH_USERNAME }}
         run: yarn test:e2e
 
       - name: Release
-        if: ${{ github.event_name == 'push' }}
+        if: |
+          !contains(github.event.head_commit.message, 'deploy skip') && 
+          github.event_name == 'push'
         uses: ./.github/actions/release
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
