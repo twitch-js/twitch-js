@@ -25,6 +25,7 @@ jobs:
       - name: Run nightly
         env:
           TWITCH_USERNAME: ${{ secrets.TWITCH_USERNAME }}
+          RUNTIME_MILLISECONDS: 600000
         run: yarn start:nightly
 
       - name: Archive log

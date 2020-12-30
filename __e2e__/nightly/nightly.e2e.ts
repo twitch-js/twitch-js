@@ -24,6 +24,8 @@ const run = async () => {
   const token = process.env.TWITCH_ACCESS_TOKEN
   const clientId = process.env.TWITCH_CLIENT_ID
 
+  const runtime = Number(process.env.RUNTIME_MILLISECONDS) || 60000
+
   const logger = pino(pino.destination({ dest: './nightly.log', sync: false }))
 
   const { chat, api } = new TwitchJs({
@@ -80,7 +82,7 @@ const run = async () => {
   await chat.connect()
   await chat.join(channel)
 
-  await delay(60000) // 600000 ms = 10 minutes
+  await delay(runtime)
   chat.disconnect()
 
   logger.info({ newBadges, newEvents, newParams })
