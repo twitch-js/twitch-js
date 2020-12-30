@@ -97,9 +97,9 @@ class Client extends EventEmitter<
         : this._queue
 
       await queue.add(() => this._ws.send(message), { priority })
-      this._log.debug('<', message)
+      this._log.trace(`< ${message}`)
     } catch (error) {
-      this._log.error('<', message)
+      this._log.error(`< ${message}`)
     }
   }
 
@@ -131,14 +131,15 @@ class Client extends EventEmitter<
     const { token, username } = this._options
     if (token && username) {
       this.send(`PASS ${token}`, { priority })
-      this.send(`NICK ${username}`, { priority })
     }
+    this.send(`NICK ${username}`, { priority })
 
     this._handleHeartbeat()
   }
 
   private _handleMessage(messageEvent: WebSocket.MessageEvent) {
     const rawMessage = messageEvent.data.toString()
+    this._log.trace(`> ${rawMessage.trim()}`)
 
     const { token, username } = this._options
     const priority = this._clientPriority
@@ -172,11 +173,7 @@ class Client extends EventEmitter<
     messages.forEach((message) => {
       const event = message.command || ''
 
-      this._log.debug(
-        '> %s %s',
-        event,
-        JSON.stringify({ ...message, _raw: undefined }),
-      )
+      this._log.debug({ ...message, _raw: undefined }, '> %s', event)
 
       // Handle authentication failure.
       if (utils.isAuthenticationFailedMessage(message)) {
@@ -193,12 +190,8 @@ class Client extends EventEmitter<
         if (message.command === Commands.PING) {
           // Handle PING/PONG.
           this.send('PONG :tmi.twitch.tv', { priority })
-        } else if (
-          !token &&
-          !username &&
-          message.command === Commands.WELCOME
-        ) {
-          // Handle successful connections.
+        } else if (!token && message.command === Commands.WELCOME) {
+          // Handle successful connections without authentications.
           this._multiEmit([ClientEvents.ALL, ClientEvents.CONNECTED], {
             ...message,
             event: ClientEvents.CONNECTED,
@@ -234,7 +227,7 @@ class Client extends EventEmitter<
     this._log.error(errorEvent)
   }
 
-  private _handleClose(closeEvent: WebSocket.CloseEvent) {
+  private _handleClose(_closeEvent: WebSocket.CloseEvent) {
     this.emit(ClientEvents.DISCONNECTED)
   }
 

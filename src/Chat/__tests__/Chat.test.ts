@@ -40,7 +40,7 @@ describe('Chat', () => {
     username: 'USERNAME',
     ssl: false,
     isVerified: true,
-    log: { enabled: false },
+    log: { level: 'silent' },
   }
 
   const anonymousOptions = {

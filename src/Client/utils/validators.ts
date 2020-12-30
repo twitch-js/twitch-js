@@ -28,9 +28,7 @@ export const clientOptions = (
   const optionsWithDefaults: types.ClientOptions = defaults(
     {
       ...options,
-      username: options.username
-        ? sanitizers.username(options.username)
-        : undefined,
+      username: sanitizers.username(options.username),
       token: options.token ? sanitizers.token(options.token) : undefined,
     },
     {

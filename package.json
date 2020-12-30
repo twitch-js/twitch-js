@@ -207,6 +207,9 @@
         "preset": "ts-jest",
         "globals": {
           "ts-jest": {
+            "tsconfig": {
+              "diagnostics": false
+            },
             "diagnostics": false
           }
         }
@@ -224,6 +227,9 @@
         ],
         "globals": {
           "ts-jest": {
+            "tsconfig": {
+              "diagnostics": false
+            },
             "diagnostics": false
           }
         }

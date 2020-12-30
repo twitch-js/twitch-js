@@ -282,12 +282,6 @@ class Chat extends EventEmitter<EventTypes> {
       throw new Errors.ChatError('Not connected')
     }
 
-    if (!this._isAuthenticated) {
-      throw new Errors.ChatError(
-        'To whisper, please connect with a token and username',
-      )
-    }
-
     return this._client.send(message, options)
   }
 
@@ -396,7 +390,17 @@ class Chat extends EventEmitter<EventTypes> {
   /**
    * Send a message to a channel.
    */
-  async say(channel: string, message: string, options?: { priority: number }) {
+  async say(
+    channel: string,
+    message: string,
+    options: { priority?: number } = {},
+  ) {
+    if (!this._isAuthenticated) {
+      throw new Errors.ChatError(
+        'To send messages, please connect with a token and username',
+      )
+    }
+
     channel = validators.channel(channel)
 
     this._log.info(`PRIVMSG/${channel} :${message}`)
@@ -424,7 +428,7 @@ class Chat extends EventEmitter<EventTypes> {
   async broadcast(message: string) {
     if (!this._isAuthenticated) {
       throw new Errors.ChatError(
-        'To broadcast, please provide a token and username',
+        'To broadcast, please connect with a token and username',
       )
     }
 
@@ -965,6 +969,12 @@ class Chat extends EventEmitter<EventTypes> {
    * This command sends a private message to another user on Twitch.
    */
   async whisper(username: string, message: string): Promise<void> {
+    if (!this._isAuthenticated) {
+      throw new Errors.ChatError(
+        'To whisper, please connect with a token and username',
+      )
+    }
+
     const command = `/${ChatCommands.WHISPER} ${username} ${message}`
     return this.send(command)
   }
@@ -1232,20 +1242,9 @@ class Chat extends EventEmitter<EventTypes> {
   private _emit(eventName: string, message: Messages) {
     try {
       if (eventName) {
+        this._log.info(message, eventName)
+
         const events = uniq(eventName.split('/'))
-
-        const tagsDisplayName =
-          'tags' in message ? message.tags.displayName : undefined
-        const username = 'username' in message ? message.username : undefined
-
-        const displayName = tagsDisplayName || username || 'tmi.twitch.tv'
-
-        const info = 'message' in message ? message.message : eventName
-        this._log.info(
-          `${events.join('/')}`,
-          `${displayName}${info ? ':' : ''}`,
-          info,
-        )
 
         events
           .filter((part) => part !== '#')
