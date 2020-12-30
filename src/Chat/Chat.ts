@@ -282,12 +282,6 @@ class Chat extends EventEmitter<EventTypes> {
       throw new Errors.ChatError('Not connected')
     }
 
-    if (!this._isAuthenticated) {
-      throw new Errors.ChatError(
-        'To whisper, please connect with a token and username',
-      )
-    }
-
     return this._client.send(message, options)
   }
 
@@ -396,7 +390,17 @@ class Chat extends EventEmitter<EventTypes> {
   /**
    * Send a message to a channel.
    */
-  async say(channel: string, message: string, options?: { priority: number }) {
+  async say(
+    channel: string,
+    message: string,
+    options: { priority?: number } = {},
+  ) {
+    if (!this._isAuthenticated) {
+      throw new Errors.ChatError(
+        'To send messages, please connect with a token and username',
+      )
+    }
+
     channel = validators.channel(channel)
 
     this._log.info(`PRIVMSG/${channel} :${message}`)
