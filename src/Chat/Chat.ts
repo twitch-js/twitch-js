@@ -428,7 +428,7 @@ class Chat extends EventEmitter<EventTypes> {
   async broadcast(message: string) {
     if (!this._isAuthenticated) {
       throw new Errors.ChatError(
-        'To broadcast, please provide a token and username',
+        'To broadcast, please connect with a token and username',
       )
     }
 
@@ -969,6 +969,12 @@ class Chat extends EventEmitter<EventTypes> {
    * This command sends a private message to another user on Twitch.
    */
   async whisper(username: string, message: string): Promise<void> {
+    if (!this._isAuthenticated) {
+      throw new Errors.ChatError(
+        'To whisper, please connect with a token and username',
+      )
+    }
+
     const command = `/${ChatCommands.WHISPER} ${username} ${message}`
     return this.send(command)
   }
