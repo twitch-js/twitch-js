@@ -12,7 +12,6 @@ import {
   Commands,
   Events,
   GlobalUserStateTags,
-  KnownNoticeMessageIdsUpperCase as NoticeMessageIds,
   Messages,
   NoticeMessages,
   RoomStateMessage,
@@ -22,6 +21,7 @@ import {
 import createLogger, { Logger } from '../utils/logger'
 
 import Client, { ClientEvents } from '../Client'
+
 import * as Errors from './Errors'
 
 import * as parsers from './utils/parsers'
@@ -407,12 +407,17 @@ class Chat extends EventEmitter<EventTypes> {
 
     const isModerator = this._channelState[channel]?.userState?.mod === '1'
 
+    const resolver: Promise<void | UserStateMessage> = message.startsWith('/')
+      ? // Commands to not result in USERSTATE messages
+        Promise.resolve()
+      : pEvent<string, UserStateMessage>(
+          // @ts-expect-error pEvent does not recognize eventemitter3.
+          this,
+          `${Commands.USER_STATE}/${channel}`,
+        )
+
     const [userState] = await Promise.all([
-      pEvent<string, UserStateMessage>(
-        // @ts-expect-error pEvent does not recognize eventemitter3.
-        this,
-        `${Commands.USER_STATE}/${channel}`,
-      ),
+      resolver,
       this.send(`${Commands.PRIVATE_MESSAGE} ${channel} :${message}`, {
         isModerator,
         ...options,
@@ -446,8 +451,8 @@ class Chat extends EventEmitter<EventTypes> {
         // @ts-expect-error pEvent does not recognize eventemitter3.
         this,
         [
-          `${NoticeMessageIds.BAN_SUCCESS}/${channel}`,
-          `${NoticeMessageIds.ALREADY_BANNED}/${channel}`,
+          `${NoticeCompounds.BAN_SUCCESS}/${channel}`,
+          `${NoticeCompounds.ALREADY_BANNED}/${channel}`,
         ],
       ),
       this.say(channel, message),
@@ -493,7 +498,7 @@ class Chat extends EventEmitter<EventTypes> {
       pEvent<string, NoticeMessages>(
         // @ts-expect-error pEvent does not recognize eventemitter3.
         this,
-        [`${NoticeMessageIds.COLOR_CHANGED}/${channel}`],
+        [`${NoticeCompounds.COLOR_CHANGED}/${channel}`],
       ),
       this.say(channel, message),
     ])
@@ -514,7 +519,7 @@ class Chat extends EventEmitter<EventTypes> {
       pEvent<string, NoticeMessages>(
         // @ts-expect-error pEvent does not recognize eventemitter3.
         this,
-        [`${NoticeMessageIds.COMMERCIAL_SUCCESS}/${channel}`],
+        [`${NoticeCompounds.COMMERCIAL_SUCCESS}/${channel}`],
       ),
       this.say(channel, message),
     ])
@@ -533,8 +538,8 @@ class Chat extends EventEmitter<EventTypes> {
         // @ts-expect-error pEvent does not recognize eventemitter3.
         this,
         [
-          `${NoticeMessageIds.EMOTE_ONLY_ON}/${channel}`,
-          `${NoticeMessageIds.ALREADY_EMOTE_ONLY_ON}/${channel}`,
+          `${NoticeCompounds.EMOTE_ONLY_ON}/${channel}`,
+          `${NoticeCompounds.ALREADY_EMOTE_ONLY_ON}/${channel}`,
         ],
       ),
       this.say(channel, message),
@@ -554,8 +559,8 @@ class Chat extends EventEmitter<EventTypes> {
         // @ts-expect-error pEvent does not recognize eventemitter3.
         this,
         [
-          `${NoticeMessageIds.EMOTE_ONLY_OFF}/${channel}`,
-          `${NoticeMessageIds.ALREADY_EMOTE_ONLY_OFF}/${channel}`,
+          `${NoticeCompounds.EMOTE_ONLY_OFF}/${channel}`,
+          `${NoticeCompounds.ALREADY_EMOTE_ONLY_OFF}/${channel}`,
         ],
       ),
       this.say(channel, message),
@@ -579,8 +584,8 @@ class Chat extends EventEmitter<EventTypes> {
         // @ts-expect-error pEvent does not recognize eventemitter3.
         this,
         [
-          `${NoticeMessageIds.FOLLOWERS_ON_ZERO}/${channel}`,
-          `${NoticeMessageIds.FOLLOWERS_ON}/${channel}`,
+          `${NoticeCompounds.FOLLOWERS_ON_ZERO}/${channel}`,
+          `${NoticeCompounds.FOLLOWERS_ON}/${channel}`,
         ],
       ),
       this.say(channel, message),
@@ -599,7 +604,7 @@ class Chat extends EventEmitter<EventTypes> {
       pEvent<string, NoticeMessages>(
         // @ts-expect-error pEvent does not recognize eventemitter3.
         this,
-        [`${NoticeMessageIds.FOLLOWERS_OFF}/${channel}`],
+        [`${NoticeCompounds.FOLLOWERS_OFF}/${channel}`],
       ),
       this.say(channel, message),
     ])
@@ -613,7 +618,7 @@ class Chat extends EventEmitter<EventTypes> {
       pEvent<string, NoticeMessages>(
         // @ts-expect-error pEvent does not recognize eventemitter3.
         this,
-        [`${NoticeMessageIds.CMDS_AVAILABLE}/${channel}`],
+        [`${NoticeCompounds.CMDS_AVAILABLE}/${channel}`],
       ),
       this.say(channel, message),
     ])
@@ -630,7 +635,7 @@ class Chat extends EventEmitter<EventTypes> {
       pEvent<string, NoticeMessages>(
         // @ts-expect-error pEvent does not recognize eventemitter3.
         this,
-        [`${NoticeMessageIds.HOST_ON}/${channel}`],
+        [`${NoticeCompounds.HOST_ON}/${channel}`],
       ),
       this.say(channel, message),
     ])
@@ -671,8 +676,8 @@ class Chat extends EventEmitter<EventTypes> {
         // @ts-expect-error pEvent does not recognize eventemitter3.
         this,
         [
-          `${NoticeMessageIds.MOD_SUCCESS}/${channel}`,
-          `${NoticeMessageIds.BAD_MOD_MOD}/${channel}`,
+          `${NoticeCompounds.MOD_SUCCESS}/${channel}`,
+          `${NoticeCompounds.BAD_MOD_MOD}/${channel}`,
         ],
       ),
       this.say(channel, message),
@@ -692,7 +697,7 @@ class Chat extends EventEmitter<EventTypes> {
       pEvent<string, NoticeMessages>(
         // @ts-expect-error pEvent does not recognize eventemitter3.
         this,
-        [`${NoticeMessageIds.ROOM_MODS}/${channel}`],
+        [`${NoticeCompounds.ROOM_MODS}/${channel}`],
       ),
       this.say(channel, message),
     ])
@@ -711,8 +716,8 @@ class Chat extends EventEmitter<EventTypes> {
         // @ts-expect-error pEvent does not recognize eventemitter3.
         this,
         [
-          `${NoticeMessageIds.R9K_ON}/${channel}`,
-          `${NoticeMessageIds.ALREADY_R9K_ON}/${channel}`,
+          `${NoticeCompounds.R9K_ON}/${channel}`,
+          `${NoticeCompounds.ALREADY_R9K_ON}/${channel}`,
         ],
       ),
       this.say(channel, message),
@@ -731,8 +736,8 @@ class Chat extends EventEmitter<EventTypes> {
         // @ts-expect-error pEvent does not recognize eventemitter3.
         this,
         [
-          `${NoticeMessageIds.R9K_OFF}/${channel}`,
-          `${NoticeMessageIds.ALREADY_R9K_OFF}/${channel}`,
+          `${NoticeCompounds.R9K_OFF}/${channel}`,
+          `${NoticeCompounds.ALREADY_R9K_OFF}/${channel}`,
         ],
       ),
       this.say(channel, message),
@@ -760,7 +765,7 @@ class Chat extends EventEmitter<EventTypes> {
       pEvent<string, NoticeMessages>(
         // @ts-expect-error pEvent does not recognize eventemitter3.
         this,
-        [`${NoticeMessageIds.SLOW_ON}/${channel}`],
+        [`${NoticeCompounds.SLOW_ON}/${channel}`],
       ),
       this.say(channel, message),
     ])
@@ -777,7 +782,7 @@ class Chat extends EventEmitter<EventTypes> {
       pEvent<string, NoticeMessages>(
         // @ts-expect-error pEvent does not recognize eventemitter3.
         this,
-        [`${NoticeMessageIds.SLOW_OFF}/${channel}`],
+        [`${NoticeCompounds.SLOW_OFF}/${channel}`],
       ),
       this.say(channel, message),
     ])
@@ -798,8 +803,8 @@ class Chat extends EventEmitter<EventTypes> {
         // @ts-expect-error pEvent does not recognize eventemitter3.
         this,
         [
-          `${NoticeMessageIds.SUBS_ON}/${channel}`,
-          `${NoticeMessageIds.ALREADY_SUBS_ON}/${channel}`,
+          `${NoticeCompounds.SUBS_ON}/${channel}`,
+          `${NoticeCompounds.ALREADY_SUBS_ON}/${channel}`,
         ],
       ),
       this.say(channel, message),
@@ -819,8 +824,8 @@ class Chat extends EventEmitter<EventTypes> {
         // @ts-expect-error pEvent does not recognize eventemitter3.
         this,
         [
-          `${NoticeMessageIds.SUBS_OFF}/${channel}`,
-          `${NoticeMessageIds.ALREADY_SUBS_OFF}/${channel}`,
+          `${NoticeCompounds.SUBS_OFF}/${channel}`,
+          `${NoticeCompounds.ALREADY_SUBS_OFF}/${channel}`,
         ],
       ),
       this.say(channel, message),
@@ -846,7 +851,7 @@ class Chat extends EventEmitter<EventTypes> {
       pEvent<string, NoticeMessages>(
         // @ts-expect-error pEvent does not recognize eventemitter3.
         this,
-        [`${NoticeMessageIds.TIMEOUT_SUCCESS}/${channel}`],
+        [`${NoticeCompounds.TIMEOUT_SUCCESS}/${channel}`],
       ),
       this.say(channel, message),
     ])
@@ -866,8 +871,8 @@ class Chat extends EventEmitter<EventTypes> {
         // @ts-expect-error pEvent does not recognize eventemitter3.
         this,
         [
-          `${NoticeMessageIds.UNBAN_SUCCESS}/${channel}`,
-          `${NoticeMessageIds.BAD_UNBAN_NO_BAN}/${channel}`,
+          `${NoticeCompounds.UNBAN_SUCCESS}/${channel}`,
+          `${NoticeCompounds.BAD_UNBAN_NO_BAN}/${channel}`,
         ],
       ),
       this.say(channel, message),
@@ -896,7 +901,8 @@ class Chat extends EventEmitter<EventTypes> {
       pEvent<string, NoticeMessages>(
         // @ts-expect-error pEvent does not recognize eventemitter3.
         this,
-        [`${NoticeMessageIds.HOST_OFF}/${channel}`],
+        [`${NoticeCompounds.HOST_OFF}/${channel}`],
+        { rejectionEvents: [`${NoticeCompounds.NOT_HOSTING}/${channel}`] },
       ),
       this.say(channel, message),
     ])
@@ -914,7 +920,7 @@ class Chat extends EventEmitter<EventTypes> {
       pEvent<string, NoticeMessages>(
         // @ts-expect-error pEvent does not recognize eventemitter3.
         this,
-        [`${NoticeMessageIds.UNMOD_SUCCESS}/${channel}`],
+        [`${NoticeCompounds.UNMOD_SUCCESS}/${channel}`],
       ),
       this.say(channel, message),
     ])
@@ -931,7 +937,7 @@ class Chat extends EventEmitter<EventTypes> {
       pEvent<string, NoticeMessages>(
         // @ts-expect-error pEvent does not recognize eventemitter3.
         this,
-        [`${NoticeMessageIds.UNRAID_SUCCESS}/${channel}`],
+        [`${NoticeCompounds.UNRAID_SUCCESS}/${channel}`],
       ),
       this.say(channel, message),
     ])
@@ -1250,10 +1256,11 @@ class Chat extends EventEmitter<EventTypes> {
           .filter((part) => part !== '#')
           .reduce<string[]>((parents, part) => {
             const eventParts = [...parents, part]
+            const eventCompound = eventParts.join('/')
             if (eventParts.length > 1) {
               super.emit(part, message)
             }
-            super.emit(eventParts.join('/'), message)
+            super.emit(eventCompound, message)
             return eventParts
           }, [])
       }
