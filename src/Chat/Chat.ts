@@ -1242,20 +1242,9 @@ class Chat extends EventEmitter<EventTypes> {
   private _emit(eventName: string, message: Messages) {
     try {
       if (eventName) {
+        this._log.info(message, eventName)
+
         const events = uniq(eventName.split('/'))
-
-        const tagsDisplayName =
-          'tags' in message ? message.tags.displayName : undefined
-        const username = 'username' in message ? message.username : undefined
-
-        const displayName = tagsDisplayName || username || 'tmi.twitch.tv'
-
-        const info = 'message' in message ? message.message : eventName
-        this._log.info(
-          `${events.join('/')}`,
-          `${displayName}${info ? ':' : ''}`,
-          info,
-        )
 
         events
           .filter((part) => part !== '#')
