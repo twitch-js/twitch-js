@@ -1,0 +1,36 @@
+name: Nightly
+
+on:
+  schedule:
+    - cron: '0 0 * * * *'
+
+jobs:
+  pipeline:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Install dependencies
+        run: yarn install & yarn add twitch-js@latest
+
+      - name: Refresh access token
+        if: ${{ github.event_name == 'push' }}
+        uses: ./.github/actions/refresh-access-token
+        with:
+          client-id: ${{ secrets.TWITCH_CLIENT_ID }}
+          client-secret: ${{ secrets.TWITCH_CLIENT_SECRET }}
+          refresh-token: ${{ secrets.TWITCH_REFRESH_TOKEN }}
+
+      - name: Run nightly
+        env:
+          TWITCH_USERNAME: ${{ secrets.TWITCH_USERNAME }}
+          RUNTIME_MILLISECONDS: 600000
+        run: yarn start:nightly
+
+      - name: Archive log
+        uses: actions/upload-artifact@v2
+        with:
+          name: nightly-log
+          path: nightly.log
+          retention-days: 7
