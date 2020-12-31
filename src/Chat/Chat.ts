@@ -127,8 +127,8 @@ import {
  * chat
  *   .say(channel, 'Kappa Keepo Kappa')
  *   // Optionally ...
- *   .then(userStateMessage => {
- *     // ... do stuff with userStateMessage on success ...
+ *   .then(() => {
+ *     // ... do stuff on success ...
  *   })
  * ```
  *
@@ -350,14 +350,14 @@ class Chat extends EventEmitter<EventTypes> {
 
     const [roomState, userState] = await Promise.all([
       pEvent<string, RoomStateMessage>(
-        // @ts-expect-error pEvent does not recognize eventemitter3.
+        // @ts-expect-error EventTypes breaks this
         this,
         `${Commands.ROOM_STATE}/${channel}`,
       ),
 
       this._isAuthenticated
         ? pEvent<string, UserStateMessage>(
-            // @ts-expect-error pEvent does not recognize eventemitter3.
+            // @ts-expect-error EventTypes breaks this
             this,
             `${Commands.USER_STATE}/${channel}`,
           )
@@ -394,7 +394,7 @@ class Chat extends EventEmitter<EventTypes> {
     channel: string,
     message: string,
     options: { priority?: number } = {},
-  ) {
+  ): Promise<void> {
     if (!this._isAuthenticated) {
       throw new Errors.ChatError(
         'To send messages, please connect with a token and username',
@@ -403,28 +403,31 @@ class Chat extends EventEmitter<EventTypes> {
 
     channel = validators.channel(channel)
 
-    this._log.info(`PRIVMSG/${channel} :${message}`)
-
+    const isCommand = message.startsWith('/')
     const isModerator = this._channelState[channel]?.userState?.mod === '1'
 
-    const resolver: Promise<void | UserStateMessage> = message.startsWith('/')
+    if (isCommand) {
+      this._log.info(`${channel} :${message}`)
+    } else {
+      this._log.info(`PRIVMSG/${channel} :${message}`)
+    }
+
+    const resolver: Promise<void | UserStateMessage> = isCommand
       ? // Commands to not result in USERSTATE messages
         Promise.resolve()
       : pEvent<string, UserStateMessage>(
-          // @ts-expect-error pEvent does not recognize eventemitter3.
+          // @ts-expect-error EventTypes breaks this
           this,
           `${Commands.USER_STATE}/${channel}`,
         )
 
-    const [userState] = await Promise.all([
+    await Promise.all([
       resolver,
       this.send(`${Commands.PRIVATE_MESSAGE} ${channel} :${message}`, {
         isModerator,
         ...options,
       }),
     ])
-
-    return userState
   }
 
   /**
@@ -448,7 +451,7 @@ class Chat extends EventEmitter<EventTypes> {
     const message = `/${ChatCommands.BAN} ${username}`
     const [notice] = await Promise.all([
       pEvent<string, NoticeMessages>(
-        // @ts-expect-error pEvent does not recognize eventemitter3.
+        // @ts-expect-error EventTypes breaks this
         this,
         [
           `${NoticeCompounds.BAN_SUCCESS}/${channel}`,
@@ -464,7 +467,10 @@ class Chat extends EventEmitter<EventTypes> {
    * This command will allow you to block all messages from a specific user in
    * chat and whispers if you do not wish to see their comments.
    */
-  async block(channel: string, username: string): Promise<UserStateMessage> {
+  async block(
+    channel: string,
+    username: string,
+  ): Promise<void | UserStateMessage> {
     channel = validators.channel(channel)
     const message = `/${ChatCommands.BLOCK} ${username}`
     return this.say(channel, message)
@@ -479,7 +485,7 @@ class Chat extends EventEmitter<EventTypes> {
     const message = `/${ChatCommands.CLEAR}`
     const [notice] = await Promise.all([
       pEvent<string, NoticeMessages>(
-        // @ts-expect-error pEvent does not recognize eventemitter3.
+        // @ts-expect-error EventTypes breaks this
         this,
         [`${Commands.CLEAR_CHAT}/${channel}`],
       ),
@@ -496,7 +502,7 @@ class Chat extends EventEmitter<EventTypes> {
     const message = `/${ChatCommands.COLOR} ${color}`
     const [notice] = await Promise.all([
       pEvent<string, NoticeMessages>(
-        // @ts-expect-error pEvent does not recognize eventemitter3.
+        // @ts-expect-error EventTypes breaks this
         this,
         [`${NoticeCompounds.COLOR_CHANGED}/${channel}`],
       ),
@@ -517,7 +523,7 @@ class Chat extends EventEmitter<EventTypes> {
     const message = `/${ChatCommands.COMMERCIAL} ${length}`
     const [notice] = await Promise.all([
       pEvent<string, NoticeMessages>(
-        // @ts-expect-error pEvent does not recognize eventemitter3.
+        // @ts-expect-error EventTypes breaks this
         this,
         [`${NoticeCompounds.COMMERCIAL_SUCCESS}/${channel}`],
       ),
@@ -535,7 +541,7 @@ class Chat extends EventEmitter<EventTypes> {
     const message = `/${ChatCommands.EMOTE_ONLY}`
     const [notice] = await Promise.all([
       pEvent<string, NoticeMessages>(
-        // @ts-expect-error pEvent does not recognize eventemitter3.
+        // @ts-expect-error EventTypes breaks this
         this,
         [
           `${NoticeCompounds.EMOTE_ONLY_ON}/${channel}`,
@@ -556,7 +562,7 @@ class Chat extends EventEmitter<EventTypes> {
     const message = `/${ChatCommands.EMOTE_ONLY_OFF}`
     const [notice] = await Promise.all([
       pEvent<string, NoticeMessages>(
-        // @ts-expect-error pEvent does not recognize eventemitter3.
+        // @ts-expect-error EventTypes breaks this
         this,
         [
           `${NoticeCompounds.EMOTE_ONLY_OFF}/${channel}`,
@@ -581,7 +587,7 @@ class Chat extends EventEmitter<EventTypes> {
     const message = `/${ChatCommands.FOLLOWERS_ONLY} ${period}`
     const [notice] = await Promise.all([
       pEvent<string, NoticeMessages>(
-        // @ts-expect-error pEvent does not recognize eventemitter3.
+        // @ts-expect-error EventTypes breaks this
         this,
         [
           `${NoticeCompounds.FOLLOWERS_ON_ZERO}/${channel}`,
@@ -602,7 +608,7 @@ class Chat extends EventEmitter<EventTypes> {
     const message = `/${ChatCommands.FOLLOWERS_ONLY_OFF}`
     const [notice] = await Promise.all([
       pEvent<string, NoticeMessages>(
-        // @ts-expect-error pEvent does not recognize eventemitter3.
+        // @ts-expect-error EventTypes breaks this
         this,
         [`${NoticeCompounds.FOLLOWERS_OFF}/${channel}`],
       ),
@@ -616,7 +622,7 @@ class Chat extends EventEmitter<EventTypes> {
     const message = `/${ChatCommands.HELP}`
     const [notice] = await Promise.all([
       pEvent<string, NoticeMessages>(
-        // @ts-expect-error pEvent does not recognize eventemitter3.
+        // @ts-expect-error EventTypes breaks this
         this,
         [`${NoticeCompounds.CMDS_AVAILABLE}/${channel}`],
       ),
@@ -633,7 +639,7 @@ class Chat extends EventEmitter<EventTypes> {
     const message = `/${ChatCommands.HOST} ${hostChannel}`
     const [notice] = await Promise.all([
       pEvent<string, NoticeMessages>(
-        // @ts-expect-error pEvent does not recognize eventemitter3.
+        // @ts-expect-error EventTypes breaks this
         this,
         [`${NoticeCompounds.HOST_ON}/${channel}`],
       ),
@@ -647,10 +653,7 @@ class Chat extends EventEmitter<EventTypes> {
    * the current timestamp. You can use markers in the Highlighter for easier
    * editing.
    */
-  async marker(
-    channel: string,
-    description: string,
-  ): Promise<UserStateMessage> {
+  async marker(channel: string, description: string): Promise<void> {
     channel = validators.channel(channel)
     const message = `/${ChatCommands.MARKER} ${description.slice(0, 140)}`
     return this.say(channel, message)
@@ -659,7 +662,7 @@ class Chat extends EventEmitter<EventTypes> {
   /**
    * This command will color your text based on your chat name color.
    */
-  async me(channel: string, text: string): Promise<UserStateMessage> {
+  async me(channel: string, text: string): Promise<void> {
     channel = validators.channel(channel)
     const message = `/${ChatCommands.ME} ${text}`
     return this.say(channel, message)
@@ -673,7 +676,7 @@ class Chat extends EventEmitter<EventTypes> {
     const message = `/${ChatCommands.MOD} ${username}`
     const [notice] = await Promise.all([
       pEvent<string, NoticeMessages>(
-        // @ts-expect-error pEvent does not recognize eventemitter3.
+        // @ts-expect-error EventTypes breaks this
         this,
         [
           `${NoticeCompounds.MOD_SUCCESS}/${channel}`,
@@ -695,7 +698,7 @@ class Chat extends EventEmitter<EventTypes> {
 
     const [notice] = await Promise.all([
       pEvent<string, NoticeMessages>(
-        // @ts-expect-error pEvent does not recognize eventemitter3.
+        // @ts-expect-error EventTypes breaks this
         this,
         [`${NoticeCompounds.ROOM_MODS}/${channel}`],
       ),
@@ -713,7 +716,7 @@ class Chat extends EventEmitter<EventTypes> {
     const message = `/${ChatCommands.R9K}`
     const [notice] = await Promise.all([
       pEvent<string, NoticeMessages>(
-        // @ts-expect-error pEvent does not recognize eventemitter3.
+        // @ts-expect-error EventTypes breaks this
         this,
         [
           `${NoticeCompounds.R9K_ON}/${channel}`,
@@ -733,7 +736,7 @@ class Chat extends EventEmitter<EventTypes> {
     const message = `/${ChatCommands.R9K_OFF}`
     const [notice] = await Promise.all([
       pEvent<string, NoticeMessages>(
-        // @ts-expect-error pEvent does not recognize eventemitter3.
+        // @ts-expect-error EventTypes breaks this
         this,
         [
           `${NoticeCompounds.R9K_OFF}/${channel}`,
@@ -748,7 +751,7 @@ class Chat extends EventEmitter<EventTypes> {
   /**
    * This command will send the viewer to another live channel.
    */
-  async raid(channel: string, raidChannel: string): Promise<UserStateMessage> {
+  async raid(channel: string, raidChannel: string): Promise<void> {
     channel = validators.channel(channel)
     const message = `/${ChatCommands.RAID} ${raidChannel}`
     return this.say(channel, message)
@@ -763,7 +766,7 @@ class Chat extends EventEmitter<EventTypes> {
     const message = `/${ChatCommands.SLOW} ${seconds}`
     const [notice] = await Promise.all([
       pEvent<string, NoticeMessages>(
-        // @ts-expect-error pEvent does not recognize eventemitter3.
+        // @ts-expect-error EventTypes breaks this
         this,
         [`${NoticeCompounds.SLOW_ON}/${channel}`],
       ),
@@ -780,7 +783,7 @@ class Chat extends EventEmitter<EventTypes> {
     const message = `/${ChatCommands.SLOW_OFF}`
     const [notice] = await Promise.all([
       pEvent<string, NoticeMessages>(
-        // @ts-expect-error pEvent does not recognize eventemitter3.
+        // @ts-expect-error EventTypes breaks this
         this,
         [`${NoticeCompounds.SLOW_OFF}/${channel}`],
       ),
@@ -800,7 +803,7 @@ class Chat extends EventEmitter<EventTypes> {
     const message = `/${ChatCommands.SUBSCRIBERS}`
     const [notice] = await Promise.all([
       pEvent<string, NoticeMessages>(
-        // @ts-expect-error pEvent does not recognize eventemitter3.
+        // @ts-expect-error EventTypes breaks this
         this,
         [
           `${NoticeCompounds.SUBS_ON}/${channel}`,
@@ -821,7 +824,7 @@ class Chat extends EventEmitter<EventTypes> {
     const message = `/${ChatCommands.SUBSCRIBERS_OFF}`
     const [notice] = await Promise.all([
       pEvent<string, NoticeMessages>(
-        // @ts-expect-error pEvent does not recognize eventemitter3.
+        // @ts-expect-error EventTypes breaks this
         this,
         [
           `${NoticeCompounds.SUBS_OFF}/${channel}`,
@@ -849,7 +852,7 @@ class Chat extends EventEmitter<EventTypes> {
     const message = `/${ChatCommands.TIMEOUT} ${username}${timeoutArg}`
     const [notice] = await Promise.all([
       pEvent<string, NoticeMessages>(
-        // @ts-expect-error pEvent does not recognize eventemitter3.
+        // @ts-expect-error EventTypes breaks this
         this,
         [`${NoticeCompounds.TIMEOUT_SUCCESS}/${channel}`],
       ),
@@ -868,7 +871,7 @@ class Chat extends EventEmitter<EventTypes> {
     const message = `/${ChatCommands.UNBAN} ${username}`
     const [notice] = await Promise.all([
       pEvent<string, NoticeMessages>(
-        // @ts-expect-error pEvent does not recognize eventemitter3.
+        // @ts-expect-error EventTypes breaks this
         this,
         [
           `${NoticeCompounds.UNBAN_SUCCESS}/${channel}`,
@@ -884,7 +887,10 @@ class Chat extends EventEmitter<EventTypes> {
    * This command will allow you to remove users from your block list that you
    * previously added.
    */
-  async unblock(channel: string, username: string): Promise<UserStateMessage> {
+  async unblock(
+    channel: string,
+    username: string,
+  ): Promise<void | UserStateMessage> {
     channel = validators.channel(channel)
     const message = `/${ChatCommands.UNBLOCK} ${username}`
     return this.say(channel, message)
@@ -899,7 +905,7 @@ class Chat extends EventEmitter<EventTypes> {
     const message = `/${ChatCommands.UNHOST}`
     const [notice] = await Promise.all([
       pEvent<string, NoticeMessages>(
-        // @ts-expect-error pEvent does not recognize eventemitter3.
+        // @ts-expect-error EventTypes breaks this
         this,
         [`${NoticeCompounds.HOST_OFF}/${channel}`],
         { rejectionEvents: [`${NoticeCompounds.NOT_HOSTING}/${channel}`] },
@@ -918,7 +924,7 @@ class Chat extends EventEmitter<EventTypes> {
     const message = `/${ChatCommands.UNMOD} ${username}`
     const [notice] = await Promise.all([
       pEvent<string, NoticeMessages>(
-        // @ts-expect-error pEvent does not recognize eventemitter3.
+        // @ts-expect-error EventTypes breaks this
         this,
         [`${NoticeCompounds.UNMOD_SUCCESS}/${channel}`],
       ),
@@ -935,7 +941,7 @@ class Chat extends EventEmitter<EventTypes> {
     const message = `/${ChatCommands.UNRAID}`
     const [notice] = await Promise.all([
       pEvent<string, NoticeMessages>(
-        // @ts-expect-error pEvent does not recognize eventemitter3.
+        // @ts-expect-error EventTypes breaks this
         this,
         [`${NoticeCompounds.UNRAID_SUCCESS}/${channel}`],
       ),
@@ -947,7 +953,7 @@ class Chat extends EventEmitter<EventTypes> {
   /**
    * This command will grant VIP status to a user.
    */
-  unvip(channel: string, username: string): Promise<UserStateMessage> {
+  unvip(channel: string, username: string): Promise<void | UserStateMessage> {
     channel = validators.channel(channel)
     const message = `/${ChatCommands.UNVIP} ${username}`
     return this.say(channel, message)
@@ -956,7 +962,7 @@ class Chat extends EventEmitter<EventTypes> {
   /**
    * This command will grant VIP status to a user.
    */
-  vip(channel: string, username: string): Promise<UserStateMessage> {
+  vip(channel: string, username: string): Promise<void | UserStateMessage> {
     channel = validators.channel(channel)
     const message = `/${ChatCommands.VIP} ${username}`
     return this.say(channel, message)
@@ -965,7 +971,7 @@ class Chat extends EventEmitter<EventTypes> {
   /**
    * This command will display a list of VIPs for that specific channel.
    */
-  vips(channel: string): Promise<UserStateMessage> {
+  vips(channel: string): Promise<void | UserStateMessage> {
     channel = validators.channel(channel)
     const message = `/${ChatCommands.VIPS}`
     return this.say(channel, message)

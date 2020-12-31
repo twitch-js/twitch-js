@@ -128,8 +128,8 @@
     "ts-jest": "^26.4.4",
     "ts-node-dev": "^1.1.1",
     "tslib": "^2.0.1",
-    "typedoc": "^0.19.2",
-    "typescript": "^3.8"
+    "typedoc": "^0.20.5",
+    "typescript": "^3.9.7"
   },
   "browser": {
     "form-data": "./shims/form-data.js",

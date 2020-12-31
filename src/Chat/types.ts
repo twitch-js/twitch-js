@@ -1,6 +1,5 @@
-import WebSocket from 'ws'
-
 import {
+  ChatCommands,
   ClearChatMessages,
   Events,
   HostingAutoPrivateMessage,
@@ -8,6 +7,7 @@ import {
   HostingWithViewersPrivateMessage,
   HostTargetMessage,
   JoinMessage,
+  KnownNoticeMessageIds as MessageId,
   Messages,
   ModeMessages,
   NamesEndMessage,
@@ -31,7 +31,6 @@ import {
   UserNoticeSubscriptionMessage,
   UserStateMessage,
   UserStateTags,
-  ChatEvents,
 } from '../twitch'
 
 import { LoggerOptions } from '../utils/logger'
@@ -285,7 +284,5 @@ export type EventTypes = Omit<ClientEventTypes, ClientEvents.ALL> & {
     UserNoticeSubscriptionGiftCommunityMessage,
   ]
 
-  [eventName: string]: [Messages]
+  [eventName: string]: [Messages] // This break p-event typing.
 }
-
-type t = EventTypes['*']
