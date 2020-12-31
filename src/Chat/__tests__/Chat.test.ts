@@ -172,8 +172,7 @@ describe('Chat', () => {
     const chat = new Chat(options)
     await chat.connect()
 
-    const userState = await chat.say('#dallas', 'Kappa Keepo Kappa')
-    expect(userState).toMatchSnapshot({ timestamp: expect.any(Date) })
+    await chat.say('#dallas', 'Kappa Keepo Kappa')
   })
 
   test('should throw when sending a message as anonymous', async () => {

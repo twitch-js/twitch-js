@@ -1,5 +1,3 @@
-import WebSocket from 'ws'
-
 import {
   ClearChatMessages,
   Events,
@@ -31,7 +29,6 @@ import {
   UserNoticeSubscriptionMessage,
   UserStateMessage,
   UserStateTags,
-  ChatEvents,
 } from '../twitch'
 
 import { LoggerOptions } from '../utils/logger'
@@ -107,12 +104,13 @@ export enum NoticeCompounds {
   EMOTE_ONLY_ON = 'NOTICE/EMOTE_ONLY_ON',
   FOLLOWERS_OFF = 'NOTICE/FOLLOWERS_OFF',
   FOLLOWERS_ON = 'NOTICE/FOLLOWERS_ON',
-  FOLLOWERS_ON_ZERO = 'NOTICE/FOLLOWERS_ON_ZERO',
+  FOLLOWERS_ONZERO = 'NOTICE/FOLLOWERS_ONZERO',
   HOST_OFF = 'NOTICE/HOST_OFF',
   HOST_ON = 'NOTICE/HOST_ON',
   HOSTS_REMAINING = 'NOTICE/HOSTS_REMAINING',
   MSG_CHANNEL_SUSPENDED = 'NOTICE/MSG_CHANNEL_SUSPENDED',
   MOD_SUCCESS = 'NOTICE/MOD_SUCCESS',
+  NOT_HOSTING = 'NOTICE/NOT_HOSTING',
   R9K_OFF = 'NOTICE/R9K_OFF',
   R9K_ON = 'NOTICE/R9K_ON',
   ROOM_MODS = 'NOTICE/ROOM_MODS',
@@ -182,7 +180,7 @@ export type EventTypes = Omit<ClientEventTypes, ClientEvents.ALL> & {
   [Events.EMOTE_ONLY_ON]: [NoticeMessage]
   [Events.FOLLOWERS_OFF]: [NoticeMessage]
   [Events.FOLLOWERS_ON]: [NoticeMessage]
-  [Events.FOLLOWERS_ON_ZERO]: [NoticeMessage]
+  [Events.FOLLOWERS_ONZERO]: [NoticeMessage]
   [Events.HOST_OFF]: [NoticeMessage]
   [Events.HOST_ON]: [NoticeMessage]
   [Events.HOSTS_REMAINING]: [NoticeMessage]
@@ -218,7 +216,7 @@ export type EventTypes = Omit<ClientEventTypes, ClientEvents.ALL> & {
   [NoticeCompounds.EMOTE_ONLY_ON]: [NoticeMessage]
   [NoticeCompounds.FOLLOWERS_OFF]: [NoticeMessage]
   [NoticeCompounds.FOLLOWERS_ON]: [NoticeMessage]
-  [NoticeCompounds.FOLLOWERS_ON_ZERO]: [NoticeMessage]
+  [NoticeCompounds.FOLLOWERS_ONZERO]: [NoticeMessage]
   [NoticeCompounds.HOST_OFF]: [NoticeMessage]
   [NoticeCompounds.HOST_ON]: [NoticeMessage]
   [NoticeCompounds.HOSTS_REMAINING]: [NoticeMessage]
@@ -284,7 +282,5 @@ export type EventTypes = Omit<ClientEventTypes, ClientEvents.ALL> & {
     UserNoticeSubscriptionGiftCommunityMessage,
   ]
 
-  [eventName: string]: [Messages]
+  [eventName: string]: [Messages] // This break p-event typing.
 }
-
-type t = EventTypes['*']

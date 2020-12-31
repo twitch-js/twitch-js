@@ -198,12 +198,13 @@ export enum KnownNoticeMessageIds {
   EMOTE_ONLY_ON = 'emote_only_on',
   FOLLOWERS_OFF = 'followers_off',
   FOLLOWERS_ON = 'followers_on',
-  FOLLOWERS_ON_ZERO = 'followers_on_zero',
+  FOLLOWERS_ONZERO = 'followers_onzero',
   HOST_OFF = 'host_off',
   HOST_ON = 'host_on',
   HOSTS_REMAINING = 'hosts_remaining',
   MSG_CHANNEL_SUSPENDED = 'msg_channel_suspended',
   MOD_SUCCESS = 'mod_success',
+  NOT_HOSTING = 'not_hosting',
   R9K_OFF = 'r9k_off',
   R9K_ON = 'r9k_on',
   ROOM_MODS = 'room_mods',
@@ -229,7 +230,7 @@ export const NoticeEvents = Object.keys(KnownNoticeMessageIds).reduce(
   (events, event) => ({
     ...events,
     [event]: event,
-    [`${Commands.NOTICE}/${event}`]: event,
+    [`${Commands.NOTICE}/${event.toUpperCase()}`]: event,
   }),
   {} as DistributeKeys<typeof KnownNoticeMessageIds>,
 )
