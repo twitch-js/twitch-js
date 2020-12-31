@@ -198,7 +198,7 @@ export enum KnownNoticeMessageIds {
   EMOTE_ONLY_ON = 'emote_only_on',
   FOLLOWERS_OFF = 'followers_off',
   FOLLOWERS_ON = 'followers_on',
-  FOLLOWERS_ON_ZERO = 'followers_on_zero',
+  FOLLOWERS_ONZERO = 'followers_onzero',
   HOST_OFF = 'host_off',
   HOST_ON = 'host_on',
   HOSTS_REMAINING = 'hosts_remaining',

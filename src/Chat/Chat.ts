@@ -407,13 +407,13 @@ class Chat extends EventEmitter<EventTypes> {
     const isModerator = this._channelState[channel]?.userState?.mod === '1'
 
     if (isCommand) {
-      this._log.info(`${channel} :${message}`)
+      this._log.info(`CMD/${channel} :${message}`)
     } else {
       this._log.info(`PRIVMSG/${channel} :${message}`)
     }
 
     const resolver: Promise<void | UserStateMessage> = isCommand
-      ? // Commands to not result in USERSTATE messages
+      ? // Commands do not result in USERSTATE messages
         Promise.resolve()
       : pEvent<string, UserStateMessage>(
           // @ts-expect-error EventTypes breaks this
@@ -590,7 +590,7 @@ class Chat extends EventEmitter<EventTypes> {
         // @ts-expect-error EventTypes breaks this
         this,
         [
-          `${NoticeCompounds.FOLLOWERS_ON_ZERO}/${channel}`,
+          `${NoticeCompounds.FOLLOWERS_ONZERO}/${channel}`,
           `${NoticeCompounds.FOLLOWERS_ON}/${channel}`,
         ],
       ),
@@ -678,10 +678,7 @@ class Chat extends EventEmitter<EventTypes> {
       pEvent<string, NoticeMessages>(
         // @ts-expect-error EventTypes breaks this
         this,
-        [
-          `${NoticeCompounds.MOD_SUCCESS}/${channel}`,
-          `${NoticeCompounds.BAD_MOD_MOD}/${channel}`,
-        ],
+        [`${NoticeCompounds.MOD_SUCCESS}/${channel}`],
       ),
       this.say(channel, message),
     ])
@@ -873,10 +870,7 @@ class Chat extends EventEmitter<EventTypes> {
       pEvent<string, NoticeMessages>(
         // @ts-expect-error EventTypes breaks this
         this,
-        [
-          `${NoticeCompounds.UNBAN_SUCCESS}/${channel}`,
-          `${NoticeCompounds.BAD_UNBAN_NO_BAN}/${channel}`,
-        ],
+        [`${NoticeCompounds.UNBAN_SUCCESS}/${channel}`],
       ),
       this.say(channel, message),
     ])
@@ -908,7 +902,6 @@ class Chat extends EventEmitter<EventTypes> {
         // @ts-expect-error EventTypes breaks this
         this,
         [`${NoticeCompounds.HOST_OFF}/${channel}`],
-        { rejectionEvents: [`${NoticeCompounds.NOT_HOSTING}/${channel}`] },
       ),
       this.say(channel, message),
     ])
