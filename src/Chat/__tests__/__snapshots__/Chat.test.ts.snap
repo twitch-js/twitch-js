@@ -580,6 +580,25 @@ Object {
 }
 `;
 
+exports[`Chat should handle messages CLEARMSG 1`] = `
+Object {
+  "_raw": "@login=ronni;target-msg-id=abc-123-def :tmi.twitch.tv CLEARMSG #dallas :HeyGuys",
+  "channel": "#dallas",
+  "command": "CLEARMSG",
+  "event": "CLEARMSG",
+  "isSelf": false,
+  "message": "HeyGuys",
+  "tags": Object {
+    "login": "ronni",
+    "message": undefined,
+    "targetMsgId": "abc-123-def",
+  },
+  "targetMessageId": "abc-123-def",
+  "timestamp": Any<Date>,
+  "username": "ronni",
+}
+`;
+
 exports[`Chat should handle messages HOSTTARGET START 1`] = `
 Object {
   "_raw": ":tmi.twitch.tv HOSTTARGET #ronni :dallas 123",

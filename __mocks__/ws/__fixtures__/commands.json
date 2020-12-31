@@ -5,6 +5,7 @@
     "USER_WITH_REASON": "@ban-reason=Follow\\sthe\\srules :tmi.twitch.tv CLEARCHAT #dallas :ronni",
     "DEVIATION_1": "@ban-duration=600;room-id=19571641;target-user-id=200817980;tmi-sent-ts=1531857100477 :tmi.twitch.tv CLEARCHAT #ninja :aiibopz\n"
   },
+  "CLEARMSG": "@login=ronni;target-msg-id=abc-123-def :tmi.twitch.tv CLEARMSG #dallas :HeyGuys",
   "HOSTTARGET": {
     "START": ":tmi.twitch.tv HOSTTARGET #ronni :dallas 123",
     "START_WITHOUT_VIEWERS": ":tmi.twitch.tv HOSTTARGET #ronni :dallas",

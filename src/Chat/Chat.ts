@@ -1163,6 +1163,12 @@ class Chat extends EventEmitter<EventTypes> {
         return [eventName, message]
       }
 
+      case Events.CLEAR_MESSAGE: {
+        const message = parsers.clearMessageMessage(baseMessage)
+        const eventName = `${baseEventName}/${channel}`
+        return [eventName, message]
+      }
+
       case Events.HOST_TARGET: {
         const message = parsers.hostTargetMessage(baseMessage)
         const eventName = `${baseEventName}/${channel}`

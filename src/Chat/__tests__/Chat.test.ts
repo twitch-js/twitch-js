@@ -444,6 +444,20 @@ describe('Chat', () => {
       emitHelper(chat._client, rawCommands.CLEARCHAT.USER_WITH_REASON)
     })
 
+    test('CLEARMSG', async (done) => {
+      const chat = new Chat(options)
+      await chat.connect()
+
+      chat.once(Events.CLEAR_MESSAGE, (message) => {
+        expect(message).toMatchSnapshot({
+          timestamp: expect.any(Date),
+        })
+        done()
+      })
+
+      emitHelper(chat._client, rawCommands.CLEARMSG)
+    })
+
     describe('HOSTTARGET', () => {
       const table = Object.entries(rawCommands.HOSTTARGET)
 

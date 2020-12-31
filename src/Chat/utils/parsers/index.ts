@@ -10,35 +10,36 @@ import toUpper from 'lodash/toUpper'
 
 import {
   BaseMessage,
-  Commands,
-  JoinMessage,
-  PartMessage,
-  ModeMessages,
   ChatEvents,
+  ClearChatMessages,
+  ClearMessageMessage,
+  Commands,
   Events,
-  NamesMessage,
-  NamesEndMessage,
+  GiftPaidUpgradeParameters,
   GlobalUserStateMessage,
   HostTargetMessage,
-  RoomStateMessage,
-  NoticeMessage,
-  UserNoticeTags,
+  JoinMessage,
   KnownNoticeMessageIds,
-  UserStateMessage,
   KnownUserNoticeMessageIds,
-  ClearChatMessages,
-  NoticeMessages,
+  ModeMessages,
+  NamesEndMessage,
+  NamesMessage,
   NoticeEvents,
-  PrivateMessages,
+  NoticeMessage,
+  NoticeMessages,
   NoticeTags,
-  UserNoticeMessages,
-  GiftPaidUpgradeParameters,
+  PartMessage,
+  PrivateMessages,
   RaidParameters,
   ResubscriptionParameters,
   RitualParameters,
+  RoomStateMessage,
   SubscriptionGiftCommunityParameters,
   SubscriptionGiftParameters,
   SubscriptionParameters,
+  UserNoticeMessages,
+  UserNoticeTags,
+  UserStateMessage,
 } from '../../../twitch'
 
 import * as constants from '../../constants'
@@ -271,6 +272,28 @@ export const clearChatMessage = (
     ...other,
     command: Commands.CLEAR_CHAT,
     event: Commands.CLEAR_CHAT,
+  }
+}
+
+/**
+ * Single message removal on a channel.
+ * @see https://dev.twitch.tv/docs/irc/commands#clearmsg-twitch-commands
+ */
+export const clearMessageMessage = (
+  baseMessage: BaseMessage,
+): ClearMessageMessage => {
+  const { tags } = baseMessage
+
+  return {
+    ...baseMessage,
+    tags: {
+      login: tags.login,
+      message: tags.message,
+      targetMsgId: tags.targetMsgId,
+    },
+    command: Commands.CLEAR_MESSAGE,
+    event: Commands.CLEAR_MESSAGE,
+    targetMessageId: tags.targetMsgId,
   }
 }
 
