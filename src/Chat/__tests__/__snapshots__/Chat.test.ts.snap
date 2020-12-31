@@ -599,7 +599,6 @@ Object {
   "message": "HeyGuys",
   "tags": Object {
     "login": "ronni",
-    "message": undefined,
     "targetMsgId": "abc-123-def",
   },
   "targetMessageId": "abc-123-def",

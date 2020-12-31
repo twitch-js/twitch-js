@@ -353,7 +353,6 @@ export interface ClearChatTags extends BaseTags {
  */
 export interface ClearMessageTags extends BaseTags {
   login: string
-  message: string
   targetMsgId: string
 }
 

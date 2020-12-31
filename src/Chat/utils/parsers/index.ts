@@ -288,7 +288,6 @@ export const clearMessageMessage = (
     ...baseMessage,
     tags: {
       login: tags.login,
-      message: tags.message,
       targetMsgId: tags.targetMsgId,
     },
     command: Commands.CLEAR_MESSAGE,
