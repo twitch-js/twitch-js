@@ -196,7 +196,9 @@ describe('Chat', () => {
 
       const spy = jest.spyOn(chat, 'say')
 
-      chat[command](channel, ...args)
+      const numberOfArguments = chat[command].length
+
+      chat[command](channel, ...args.slice(0, numberOfArguments))
 
       expect(spy.mock.calls).toMatchSnapshot()
     },

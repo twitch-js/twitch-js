@@ -151,6 +151,7 @@ export enum ChatCommands {
   COLOR = 'color',
   COMMERCIAL = 'commercial',
   // DISCONNECTED = 'disconnect',
+  DELETE = 'delete',
   EMOTE_ONLY = 'emoteonly',
   EMOTE_ONLY_OFF = 'emoteonlyoff',
   FOLLOWERS_ONLY = 'followers',
