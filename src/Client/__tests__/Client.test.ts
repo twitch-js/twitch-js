@@ -2,7 +2,8 @@ import { server } from 'ws'
 
 import membership from '../../../__mocks__/ws/__fixtures__/membership.json'
 
-import Client, { ClientEvents } from '../'
+import Client from '../'
+import { ClientEvents } from '../types'
 import * as constants from '../constants'
 
 jest.mock('ws')

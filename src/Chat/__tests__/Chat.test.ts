@@ -16,11 +16,12 @@ import {
   PrivateMessageEvents,
 } from '../../twitch'
 
-import Chat, {
+import Chat from '../'
+import {
   NoticeCompounds,
   PrivateMessageCompounds,
   UserNoticeCompounds,
-} from '..'
+} from '../types'
 import parser from '../utils/parsers'
 
 jest.mock('ws')
