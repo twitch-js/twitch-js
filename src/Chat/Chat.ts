@@ -468,12 +468,18 @@ class Chat extends EventEmitter<EventTypes> {
    * This command will allow you to block all messages from a specific user in
    * chat and whispers if you do not wish to see their comments.
    */
-  async block(
-    channel: string,
-    username: string,
-  ): Promise<void | UserStateMessage> {
+  async block(channel: string, username: string): Promise<void> {
     channel = validators.channel(channel)
     const message = `/${ChatCommands.BLOCK} ${username}`
+    return this.say(channel, message)
+  }
+
+  /**
+   * Single message removal on a channel.
+   */
+  async delete(channel: string, targetMessageId: string): Promise<void> {
+    channel = validators.channel(channel)
+    const message = `/${ChatCommands.DELETE} ${targetMessageId}`
     return this.say(channel, message)
   }
 
@@ -690,9 +696,9 @@ class Chat extends EventEmitter<EventTypes> {
    * This command will display a list of all chat moderators for that specific
    * channel.
    */
-  async mods(channel: string, ...args: string[]): Promise<NoticeMessages> {
+  async mods(channel: string): Promise<NoticeMessages> {
     channel = validators.channel(channel)
-    const message = `/${ChatCommands.MODS} ${args.join(' ')}`
+    const message = `/${ChatCommands.MODS}`
 
     const [notice] = await Promise.all([
       pEvent<string, NoticeMessages>(
@@ -882,10 +888,7 @@ class Chat extends EventEmitter<EventTypes> {
    * This command will allow you to remove users from your block list that you
    * previously added.
    */
-  async unblock(
-    channel: string,
-    username: string,
-  ): Promise<void | UserStateMessage> {
+  async unblock(channel: string, username: string): Promise<void> {
     channel = validators.channel(channel)
     const message = `/${ChatCommands.UNBLOCK} ${username}`
     return this.say(channel, message)
@@ -947,7 +950,7 @@ class Chat extends EventEmitter<EventTypes> {
   /**
    * This command will grant VIP status to a user.
    */
-  unvip(channel: string, username: string): Promise<void | UserStateMessage> {
+  unvip(channel: string, username: string): Promise<void> {
     channel = validators.channel(channel)
     const message = `/${ChatCommands.UNVIP} ${username}`
     return this.say(channel, message)
@@ -956,7 +959,7 @@ class Chat extends EventEmitter<EventTypes> {
   /**
    * This command will grant VIP status to a user.
    */
-  vip(channel: string, username: string): Promise<void | UserStateMessage> {
+  vip(channel: string, username: string): Promise<void> {
     channel = validators.channel(channel)
     const message = `/${ChatCommands.VIP} ${username}`
     return this.say(channel, message)
@@ -965,7 +968,7 @@ class Chat extends EventEmitter<EventTypes> {
   /**
    * This command will display a list of VIPs for that specific channel.
    */
-  vips(channel: string): Promise<void | UserStateMessage> {
+  vips(channel: string): Promise<void> {
     channel = validators.channel(channel)
     const message = `/${ChatCommands.VIPS}`
     return this.say(channel, message)
@@ -1160,6 +1163,12 @@ class Chat extends EventEmitter<EventTypes> {
       case Events.CLEAR_CHAT: {
         const message = parsers.clearChatMessage(baseMessage)
         const eventName = `${baseEventName}/${message.event}/${channel}`
+        return [eventName, message]
+      }
+
+      case Events.CLEAR_MESSAGE: {
+        const message = parsers.clearMessageMessage(baseMessage)
+        const eventName = `${baseEventName}/${channel}`
         return [eventName, message]
       }
 

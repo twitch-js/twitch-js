@@ -196,7 +196,9 @@ describe('Chat', () => {
 
       const spy = jest.spyOn(chat, 'say')
 
-      chat[command](channel, ...args)
+      const numberOfArguments = chat[command].length
+
+      chat[command](channel, ...args.slice(0, numberOfArguments))
 
       expect(spy.mock.calls).toMatchSnapshot()
     },
@@ -442,6 +444,20 @@ describe('Chat', () => {
       })
 
       emitHelper(chat._client, rawCommands.CLEARCHAT.USER_WITH_REASON)
+    })
+
+    test('CLEARMSG', async (done) => {
+      const chat = new Chat(options)
+      await chat.connect()
+
+      chat.once(Events.CLEAR_MESSAGE, (message) => {
+        expect(message).toMatchSnapshot({
+          timestamp: expect.any(Date),
+        })
+        done()
+      })
+
+      emitHelper(chat._client, rawCommands.CLEARMSG)
     })
 
     describe('HOSTTARGET', () => {

@@ -67,6 +67,7 @@ export enum OtherCommands {
  */
 export enum BaseCommands {
   CLEAR_CHAT = 'CLEARCHAT',
+  CLEAR_MESSAGE = 'CLEARMSG',
   HOST_TARGET = 'HOSTTARGET',
   NOTICE = 'NOTICE',
   RECONNECT = 'RECONNECT',
@@ -91,6 +92,7 @@ export enum Commands {
   NAMES_END = '366',
 
   CLEAR_CHAT = 'CLEARCHAT',
+  CLEAR_MESSAGE = 'CLEARMSG',
   GLOBALUSERSTATE = 'GLOBALUSERSTATE',
   HOST_TARGET = 'HOSTTARGET',
   NOTICE = 'NOTICE',
@@ -149,6 +151,7 @@ export enum ChatCommands {
   COLOR = 'color',
   COMMERCIAL = 'commercial',
   // DISCONNECTED = 'disconnect',
+  DELETE = 'delete',
   EMOTE_ONLY = 'emoteonly',
   EMOTE_ONLY_OFF = 'emoteonlyoff',
   FOLLOWERS_ONLY = 'followers',
@@ -342,6 +345,15 @@ export interface BaseTags {
 export interface ClearChatTags extends BaseTags {
   banReason?: string
   banDuration?: number
+}
+
+/**
+ * CLEARMSG tags
+ * @see https://dev.twitch.tv/docs/irc/tags#clearmsg-twitch-tags
+ */
+export interface ClearMessageTags extends BaseTags {
+  login: string
+  targetMsgId: string
 }
 
 /**
@@ -540,6 +552,18 @@ export interface ClearChatMessage
 }
 
 export type ClearChatMessages = ClearChatMessage | ClearChatUserBannedMessage
+
+/**
+ * Single message removal on a channel.
+ * @see https://dev.twitch.tv/docs/irc/commands#clearmsg-twitch-commands
+ * @see https://dev.twitch.tv/docs/irc/tags#clearmsg-twitch-tags
+ */
+export interface ClearMessageMessage extends Omit<BaseMessage, 'message'> {
+  command: Commands.CLEAR_MESSAGE
+  event: Commands.CLEAR_MESSAGE
+  tags: ClearMessageTags
+  targetMessageId: string
+}
 
 /**
  * Host starts or stops a message.
@@ -837,6 +861,7 @@ export type Messages =
   | NamesEndMessage
   | GlobalUserStateMessage
   | ClearChatMessages
+  | ClearMessageMessage
   | HostTargetMessage
   | RoomStateMessage
   | NoticeMessages

@@ -45,6 +45,15 @@ Array [
 ]
 `;
 
+exports[`Chat command delete should call say with args 1`] = `
+Array [
+  Array [
+    "#channel",
+    "/delete arg1",
+  ],
+]
+`;
+
 exports[`Chat command emoteOnly should call say with args 1`] = `
 Array [
   Array [
@@ -130,7 +139,7 @@ exports[`Chat command mods should call say with args 1`] = `
 Array [
   Array [
     "#channel",
-    "/mods arg1 arg2 arg3",
+    "/mods",
   ],
 ]
 `;
@@ -575,6 +584,24 @@ Object {
     "banDuration": undefined,
     "banReason": "Follow the rules",
   },
+  "timestamp": Any<Date>,
+  "username": "ronni",
+}
+`;
+
+exports[`Chat should handle messages CLEARMSG 1`] = `
+Object {
+  "_raw": "@login=ronni;target-msg-id=abc-123-def :tmi.twitch.tv CLEARMSG #dallas :HeyGuys",
+  "channel": "#dallas",
+  "command": "CLEARMSG",
+  "event": "CLEARMSG",
+  "isSelf": false,
+  "message": "HeyGuys",
+  "tags": Object {
+    "login": "ronni",
+    "targetMsgId": "abc-123-def",
+  },
+  "targetMessageId": "abc-123-def",
   "timestamp": Any<Date>,
   "username": "ronni",
 }
