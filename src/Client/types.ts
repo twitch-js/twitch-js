@@ -12,7 +12,7 @@ export type ClientOptions = {
   log?: LoggerOptions
 }
 
-export enum Events {
+export enum BaseClientEvents {
   RAW = 'RAW',
 
   ALL = '*',
@@ -25,16 +25,16 @@ export enum Events {
   ERROR_ENCOUNTERED = 'ERROR_ENCOUNTERED',
 }
 
-export const ClientEvents = { ...Commands, ...Events }
-export type ClientEvents = Commands | Events
+export const ClientEvents = { ...Commands, ...BaseClientEvents }
+export type ClientEvents = Commands | BaseClientEvents
 
 export type ClientEventTypes = {
-  [Events.RAW]: [string]
-  [Events.ALL]: [BaseMessage]
-  [Events.CONNECTED]: [BaseMessage]
-  [Events.DISCONNECTED]: []
-  [Events.RECONNECT]: []
-  [Events.AUTHENTICATED]: [BaseMessage]
-  [Events.AUTHENTICATION_FAILED]: [BaseMessage]
-  [Events.ERROR_ENCOUNTERED]: [Error]
+  [ClientEvents.RAW]: [string]
+  [ClientEvents.ALL]: [BaseMessage]
+  [ClientEvents.CONNECTED]: [BaseMessage]
+  [ClientEvents.DISCONNECTED]: []
+  [ClientEvents.RECONNECT]: []
+  [ClientEvents.AUTHENTICATED]: [BaseMessage]
+  [ClientEvents.AUTHENTICATION_FAILED]: [BaseMessage]
+  [ClientEvents.ERROR_ENCOUNTERED]: [Error]
 }

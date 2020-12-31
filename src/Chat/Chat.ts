@@ -20,7 +20,8 @@ import {
 
 import createLogger, { Logger } from '../utils/logger'
 
-import Client, { ClientEvents } from '../Client'
+import Client from '../Client'
+import { ClientEvents } from '../Client/types'
 
 import * as Errors from './Errors'
 

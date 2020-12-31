@@ -1,2 +1,3 @@
-export { default } from './Chat'
+import Chat from './Chat'
+export default Chat
 export * from './types'
