@@ -1,5 +1,7 @@
-import Chat, { ChatOptions } from './Chat'
-import Api, { ApiOptions } from './Api'
+import Chat from './Chat'
+import { ChatOptions } from './Chat/types'
+import Api from './Api'
+import { ApiOptions } from './Api/types'
 
 import { LoggerOptions } from './utils/logger'
 

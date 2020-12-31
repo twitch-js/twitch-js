@@ -1,2 +1,2 @@
-export { default } from './Api'
-export * from './types'
+import Api from './Api'
+export default Api

@@ -33,7 +33,7 @@ import {
 
 import { LoggerOptions } from '../utils/logger'
 
-import { ClientEventTypes, Events as ClientEvents } from '../Client/types'
+import { ClientEventTypes, BaseClientEvents } from '../Client/types'
 
 export type ChatOptions = {
   username?: string
@@ -143,7 +143,7 @@ export enum UserNoticeCompounds {
   SUBSCRIPTION_GIFT_COMMUNITY = 'USERNOTICE/SUBSCRIPTION_GIFT_COMMUNITY',
 }
 
-export type EventTypes = Omit<ClientEventTypes, ClientEvents.ALL> & {
+export type EventTypes = Omit<ClientEventTypes, BaseClientEvents.ALL> & {
   [Events.ALL]: [Messages]
 
   [Events.JOIN]: [JoinMessage]
