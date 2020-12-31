@@ -1,10 +1,10 @@
-import Chat, * as ChatTypes from './Chat'
-import Api, * as ApiTypes from './Api'
+import Chat, { ChatOptions } from './Chat'
+import Api, { ApiOptions } from './Api'
 
 import { LoggerOptions } from './utils/logger'
 
-export { Chat, ChatTypes }
-export { Api, ApiTypes }
+export { Chat }
+export { Api }
 export * from './twitch'
 
 type BaseTwitchJsOptions = {
@@ -16,8 +16,8 @@ type BaseTwitchJsOptions = {
 }
 
 type IndividualClassOptions = {
-  chat?: ChatTypes.ChatOptions
-  api?: ApiTypes.ApiOptions
+  chat?: ChatOptions
+  api?: ApiOptions
 }
 
 export type TwitchJsOptions = BaseTwitchJsOptions & IndividualClassOptions

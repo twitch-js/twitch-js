@@ -57,9 +57,7 @@ export default [
 
   {
     input: 'src/index.ts',
-    output: [
-      { file: pkg.module, format: 'es', exports: 'named', sourcemap: true },
-    ],
+    output: [{ file: pkg.module, format: 'es', sourcemap: true }],
     plugins: [
       typescript({
         tsconfig: (resolvedConfig) => ({
