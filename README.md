@@ -154,7 +154,11 @@ more information on authentication.
 
 ## Examples
 
-Please see the `examples` folder for browser, Node and TypeScript examples.
+Examples are provided via [CodeSandbox](https://codesandbox.io):
+
+- [Browser](https://codesandbox.io/s/twitch-js-browser-example-upf4x)
+- [Node](https://codesandbox.io/s/twitch-js-node-example-mnel5)
+- [TypeScript](https://codesandbox.io/s/twitch-js-typescript-example-tnnys)
 
 ## Contribution guidelines
 
