@@ -15,7 +15,7 @@ assignees: ''
 https://codesandbox.io/s/xxxxx-xxxxx-xxxxx
 
 <!--
-  Fork one of the following Codesandbox templates and recreate the bug:
+  Recreate the bug in one of the following CodeSandbox templates:
   - Browser: https://codesandbox.io/s/twitch-js-browser-example-upf4x
   - Node: https://codesandbox.io/s/twitch-js-node-example-mnel5
   - TypeScript: https://codesandbox.io/s/twitch-js-typescript-example-tnnys
