@@ -2,7 +2,7 @@
   <img width="128" src="media/logo.svg">
 </p>
 
-# [TwitchJS](https://twitch-js.github.io/twitch-js)
+# [TwitchJS](https://twitch-js.netlify.com/)
 
 [![Build status](https://img.shields.io/github/workflow/status/twitch-js/twitch-js/ci?style=flat-square)](https://github.com/twitch-js/twitch-js/actions)
 [![Coverage status](https://img.shields.io/codecov/c/github/twitch-js/twitch-js/next.svg?longCache=true&style=flat-square)](https://codecov.io/gh/twitch-js/twitch-js/branch/next)
