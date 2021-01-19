@@ -15,5 +15,5 @@ export enum ApiReadyStates {
 
 export type ApiSettings = {
   BaseUrl: string
-  AuthorizationHeader: string
+  Bearer: string
 }

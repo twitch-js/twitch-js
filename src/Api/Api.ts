@@ -75,6 +75,7 @@ class Api {
   private options: ApiOptions
   private log: Logger
   private api: Ky
+
   public kraken: Ky
 
   constructor(options: Partial<ApiOptions>) {
@@ -82,44 +83,52 @@ class Api {
 
     this.log = createLogger({ name: 'Api', ...this.options.log })
 
+    // Create Helix API client.
     this.api = ky.create({
       prefixUrl: Settings.Helix.BaseUrl,
       hooks: {
         beforeRequest: [
+          // Log requests.
           (request) => {
             this.log.debug(request, `Requesting ${request.url} ...`)
           },
+          // Add headers.
           (request) => {
             const isKrakenRequest = request.url.startsWith(
               Settings.Kraken.BaseUrl,
             )
 
+            // Add Kraken headers.
             if (isKrakenRequest) {
               request.headers.set('Accept', 'application/vnd.twitchtv.v5+json')
             }
 
+            // Add client ID header.
             if (this.options.clientId) {
               request.headers.set('Client-ID', this.options.clientId)
             }
 
+            // Add token header.
             if (this.options.token) {
-              const authorizationHeader = isKrakenRequest
-                ? Settings.Kraken.AuthorizationHeader
-                : Settings.Helix.AuthorizationHeader
+              const bearer = isKrakenRequest
+                ? Settings.Kraken.Bearer
+                : Settings.Helix.Bearer
 
               request.headers.set(
                 'Authorization',
-                `${authorizationHeader} ${this.options.token}`,
+                `${bearer} ${this.options.token}`,
               )
             }
           },
         ],
         beforeRetry: [
+          // Log retries.
           ({ request, error, retryCount }) => {
             this.log.debug(error, `Retrying ${request.url} (${retryCount})`)
           },
         ],
         afterResponse: [
+          // Log responses.
           (request, _options, response) => {
             if (!response.ok) {
               this.log.error(response, `Request ${request.url} failed`)
@@ -127,26 +136,22 @@ class Api {
               this.log.debug(response, `Request ${request.url} completed`)
             }
           },
+          // Token refreshing.
           async (request, _options, response) => {
             if (
               this.options.onAuthenticationFailure &&
               response.status === 403
             ) {
-              const authorizationHeader = request.url.startsWith(
-                Settings.Kraken.BaseUrl,
-              )
-                ? Settings.Kraken.AuthorizationHeader
-                : Settings.Helix.AuthorizationHeader
-
-              // Get a fresh token
+              // Get a fresh token.
               const token = await this.options.onAuthenticationFailure()
               this.log.debug(`Token refreshed, retrying ${request.url} ...`)
 
-              // Retry with the token
-              request.headers.set(
-                'Authorization',
-                `${authorizationHeader} ${token}`,
-              )
+              const bearer = request.url.startsWith(Settings.Kraken.BaseUrl)
+                ? Settings.Kraken.Bearer
+                : Settings.Helix.Bearer
+
+              // Retry with the token.
+              request.headers.set('Authorization', `${bearer} ${token}`)
 
               return ky(request)
             }
@@ -156,13 +161,14 @@ class Api {
       parseJson: (text) => camelCaseKeys(JSON.parse(text), { deep: true }),
     })
 
+    // Create Kraken API client.
     this.kraken = ky.extend({ prefixUrl: Settings.Kraken.BaseUrl })
 
     return Object.assign(this.api, this)
   }
 
   /**
-   * New client options.
+   * Update API client options.
    */
   updateOptions(options: Partial<ApiOptions>) {
     this.options = validators.apiOptions(options)
