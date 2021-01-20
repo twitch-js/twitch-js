@@ -61,8 +61,8 @@
     "start:nightly": "ts-node --project tsconfig.json --transpile-only --require dotenv/config __e2e__/nightly/nightly.e2e.ts",
     "start:example": "ts-node-dev examples/node.js",
     "predocs:build": "rimraf docs",
-    "docs:build": "typedoc",
-    "docs:build:watch": "ts-node-dev --exec yarn docs:build"
+    "docs:build": "typedoc --target ES6",
+    "docs:build:watch": "chokidar \"src/**/*.ts\" -c \"yarn docs:build\""
   },
   "dependencies": {
     "camelcase-keys": "^6.2.2",
@@ -100,6 +100,7 @@
     "@typescript-eslint/parser": "^4.2.0",
     "@wessberg/rollup-plugin-ts": "^1.3.4",
     "benchmark": "^2.1.4",
+    "chokidar-cli": "^2.1.0",
     "codecov": "^3.0.2",
     "dotenv": "^8.2.0",
     "eslint": "^7.9.0",

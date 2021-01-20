@@ -1,3 +1,5 @@
+/// <reference types="ky" />
+
 import ky from 'ky-universal'
 
 import camelCaseKeys from 'camelcase-keys'
@@ -8,10 +10,17 @@ import * as validators from './utils/validators'
 import { ApiOptions } from './types'
 import { Settings } from './constants'
 
+/**
+ * @see https://github.com/sindresorhus/ky/tree/v0.26.0#readme
+ */
 type Ky = typeof ky
 
 /**
- * Make requests to Twitch API.
+ * Make requests to Twitch Helix API.
+ *
+ * The API client is a simple wrapper around [[`Ky`]] that handles request
+ * headers, retries, and token refreshes. For additional options, see
+ * [Ky documentation](https://github.com/sindresorhus/ky/tree/v0.26.0#readme).
  *
  * ## Initializing
  *
@@ -29,53 +38,73 @@ type Ky = typeof ky
  *
  * ## Making requests
  *
- * By default, the API client makes requests to the
- * [Helix API](https://dev.twitch.tv/docs/api), and exposes [[Api.get]],
- * [[Api.post]] and [[Api.put]] methods. Query string parameters and body
- * parameters are provided via `options.search` and `options.body` properties,
- * respectively.
+ * The API client makes requests to the
+ * [Helix API](https://dev.twitch.tv/docs/api). To make requests to the
+ * [Kraken/v5 API](https://dev.twitch.tv/docs/v5), use [[`Api.kraken`]].
  *
- * To make requests to the [Kraken/v5 API](https://dev.twitch.tv/docs/v5), use
- * `options.version = 'kraken'`
+ * @example Get streams
+ * ```js
+ * api('streams', { searchParams: { first: 20 } })
+ *   .json()
+ *   .then(response => {
+ *     // Do stuff with response ...
+ *   })
+ * ```
  *
- * ### Examples
+ * @example Start commercial
+ * ```js
+ * api('channels/commercial', {
+ *   method: 'post',
+ *   json: { broadcaster_id: '41245072', length: 60 },
+ * })
+ *   .json()
+ *   .then(response => {
+ *     // Do stuff with response ...
+ *   })
+ * ```
  *
- * #### Get bits leaderboard
+ * @example Create clip
  * ```js
  * api
- *   .get('bits/leaderboard', { search: { user_id: '44322889' } })
- *   .then(response => {
- *     // Do stuff with response ...
- *   })
- * ```
- *
- * #### Get the latest Overwatch live streams
- * ```
- * api
- *   .get('streams', { version: 'kraken', search: { game: 'Overwatch' } })
- *   .then(response => {
- *     // Do stuff with response ...
- *   })
- * ```
- *
- * #### Start a channel commercial
- * ```
- * const channelId = '44322889'
- * api
- *   .post(`channels/${channelId}/commercial`, {
- *     version: 'kraken',
- *     body: { length: 30 },
- *   })
+ *   .post('clips', { searchParams: { broadcaster_id: '44322889' } })
+ *   .json()
  *   .then(response => {
  *     // Do stuff with response ...
  *   })
  * ```
  */
+interface Api extends Ky {}
 class Api {
   private options: ApiOptions
   private log: Logger
   private api: Ky
 
+  /**
+   * Make API request to Kraken API.
+   *
+   * @example Get the latest Overwatch live streams
+   * ```
+   * api
+   *   .kraken
+   *   .get('streams', { searchParams: { game: 'Overwatch' } })
+   *   .json()
+   *   .then(response => {
+   *     // Do stuff with response ...
+   *   })
+   * ```
+   *
+   * @example Start a channel commercial
+   * ```
+   * const channelId = '44322889'
+   * api
+   *   .kraken
+   *   .post(`channels/${channelId}/commercial`, { json: { length: 30 } })
+   *   .json()
+   *   .then(response => {
+   *     // Do stuff with response ...
+   *   })
+   * ```
+   */
   public kraken: Ky
 
   constructor(options: Partial<ApiOptions>) {
@@ -174,6 +203,5 @@ class Api {
     this.options = validators.apiOptions(options)
   }
 }
-interface Api extends Ky {}
 
 export default Api
