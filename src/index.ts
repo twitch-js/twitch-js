@@ -1,12 +1,13 @@
-import Chat from './Chat'
-import { ChatOptions } from './Chat/types'
 import Api from './Api'
 import { ApiOptions } from './Api/types'
+import Chat from './Chat'
+import { ChatOptions } from './Chat/types'
 
-import { LoggerOptions } from './utils/logger'
+import BaseError from './utils/BaseError'
+import createLogger, { Logger, LoggerOptions } from './utils/logger'
 
-export { Chat }
 export { Api }
+export { Chat }
 export * from './twitch'
 
 type BaseTwitchJsOptions = {
@@ -17,12 +18,12 @@ type BaseTwitchJsOptions = {
   onAuthenticationFailure?: () => Promise<string>
 }
 
-type IndividualClassOptions = {
-  chat?: ChatOptions
-  api?: ApiOptions
+type IndividualClientOptions = {
+  api?: Omit<ApiOptions, 'clientId' | 'token' | 'onAuthenticationFailure'>
+  chat?: Omit<ChatOptions, 'token' | 'onAuthenticationFailure'>
 }
 
-export type TwitchJsOptions = BaseTwitchJsOptions & IndividualClassOptions
+export type TwitchJsOptions = BaseTwitchJsOptions & IndividualClientOptions
 
 /**
  * Interact with chat and make requests to Twitch API.
@@ -44,44 +45,52 @@ export type TwitchJsOptions = BaseTwitchJsOptions & IndividualClassOptions
  */
 
 class TwitchJs {
-  chat: Chat
-  api: Api
+  private options: TwitchJsOptions
+  private log: Logger
 
-  static Chat = Chat
+  api: Api
+  chat: Chat
+
   static Api = Api
+  static Chat = Chat
 
   constructor(options: TwitchJsOptions) {
-    const {
-      token,
-      username,
-      clientId,
-      log,
-      onAuthenticationFailure,
-      chat,
-      api,
-    } = options
+    this.options = options
+    const { token, username, clientId, log, chat, api } = this.options
 
-    this.chat = new Chat({
-      log,
-      ...chat,
-      token,
-      username,
-      onAuthenticationFailure,
-    })
+    this.log = createLogger({ name: 'TwitchJs', ...log })
+
+    const handleApiAuthenticationFailure =
+      typeof this.options.onAuthenticationFailure === 'function'
+        ? this.handleApiAuthenticatedFailure
+        : undefined
+
+    const handleChatAuthenticationFailure =
+      typeof this.options.onAuthenticationFailure === 'function'
+        ? this.handleChatAuthenticatedFailure
+        : undefined
 
     this.api = new Api({
       log,
       ...api,
       token,
       clientId,
-      onAuthenticationFailure,
+      onAuthenticationFailure: handleApiAuthenticationFailure,
+    })
+
+    this.chat = new Chat({
+      log,
+      ...chat,
+      token,
+      username,
+      onAuthenticationFailure: handleChatAuthenticationFailure,
     })
   }
 
   /**
    * Update client options.
    */
-  updateOptions(options: IndividualClassOptions) {
+  updateOptions(options: IndividualClientOptions) {
     const { chat, api } = options
 
     if (chat) {
@@ -90,6 +99,36 @@ class TwitchJs {
 
     if (api) {
       this.api.updateOptions(api)
+    }
+  }
+
+  private async handleApiAuthenticatedFailure() {
+    try {
+      const token = await this.options.onAuthenticationFailure?.()
+      if (!token) {
+        throw new BaseError('Token did not refresh')
+      }
+
+      this.chat.reconnect({ token })
+      return token
+    } catch (error) {
+      this.log.error(error, 'Re-authentication failed')
+      throw error
+    }
+  }
+
+  private async handleChatAuthenticatedFailure() {
+    try {
+      const token = await this.options.onAuthenticationFailure?.()
+      if (!token) {
+        throw new BaseError('Token did not refresh')
+      }
+
+      this.api.updateOptions({ token })
+      return token
+    } catch (error) {
+      this.log.error(error, 'Re-authentication failed')
+      throw error
     }
   }
 }
