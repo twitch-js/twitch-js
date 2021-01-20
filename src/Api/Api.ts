@@ -173,6 +173,7 @@ class Api {
             ) {
               // Get a fresh token.
               const token = await this.options.onAuthenticationFailure()
+              this.updateOptions({ token })
               this.log.debug(`Token refreshed, retrying ${request.url} ...`)
 
               const bearer = request.url.startsWith(Settings.Kraken.BaseUrl)
