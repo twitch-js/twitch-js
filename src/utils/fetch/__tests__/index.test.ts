@@ -1,5 +1,4 @@
 import fetch from 'node-fetch'
-import FormData from 'form-data'
 
 import fetchUtil from '../'
 

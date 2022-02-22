@@ -1,8 +1,8 @@
 import { Response } from 'node-fetch'
 
-import responseRoot from './__fixtures__/kraken/root.json'
-import response401 from './__fixtures__/kraken/401.json'
-import response404 from './__fixtures__/kraken/404.json'
+import responseRoot from './__fixtures__/root.json'
+import response401 from './__fixtures__/401.json'
+import response404 from './__fixtures__/404.json'
 
 const mockJson = jest.fn(() => Promise.resolve({ mock: true }))
 
@@ -25,7 +25,7 @@ const fetch = jest.fn().mockImplementation(
           statusText: 'Not Found',
           json: () => Promise.resolve(response404),
         })
-      case 'https://api.twitch.tv/kraken/':
+      case 'https://api.twitch.tv/helix/':
         return Promise.resolve({
           url,
           ok: true,

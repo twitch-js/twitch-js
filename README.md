@@ -97,14 +97,10 @@ on behalf of your users.
 To quickly get started without a client ID, you may generate token using the
 following, community-maintained, sites:
 
-1. [Twitch Chat OAuth Password Generator](https://twitchapps.com/tmi)
-   (Kraken/v5)
-2. [Twitch Token Generator](https://twitchtokengenerator.com) (Helix)
+1. [Twitch Token Generator](https://twitchtokengenerator.com)
+2. [Twitch Chat OAuth Password Generator](https://twitchapps.com/tmi)
 
 ### Refreshing tokens
-
-While, Kraken/v5 tokens currently do not expire, Helix tokens expire and will
-need to be refreshed.
 
 To help with refreshing tokens, an `onAuthenticationFailure` function may be
 provided to the Messaging and API clients. `onAuthenticationFailure()` must

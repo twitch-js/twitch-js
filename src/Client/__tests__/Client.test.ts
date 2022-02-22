@@ -2,9 +2,9 @@ import { server } from 'ws'
 
 import membership from '../../../__mocks__/ws/__fixtures__/membership.json'
 
-import Client from '../'
-import { ClientEvents } from '../types'
-import * as constants from '../constants'
+import Client from '..'
+import { ClientEvents } from '../client-types'
+import * as constants from '../client-constants'
 
 jest.mock('ws')
 
@@ -36,7 +36,7 @@ describe('Chat/Client', () => {
         `PASS oauth:${options.token}`,
       ])
       expect(listener.mock.calls).toContainEqual([`NICK ${options.username}`])
-      server.removeListener('message')
+      server.removeListener('message', listener)
       done()
     })
   })
@@ -60,12 +60,14 @@ describe('Chat/Client', () => {
     test('should send PING after keep alive delay', (done) => {
       jest.useFakeTimers()
 
-      server.on('message', (message) => {
+      const listener = (message) => {
         if (message === ClientEvents.PING) {
           done()
-          server.off('message')
+          server.off('message', listener)
         }
-      })
+      }
+
+      server.on('message', listener)
 
       const client = new Client(options)
 
