@@ -45,7 +45,7 @@ branch.
 
 ### Module bundler (CJS/ESM)
 
-If you are using a module bundler, such [Webpack](https://webpack.js.org/),
+If you are using a module bundler, such as [Webpack](https://webpack.js.org/),
 [Browserify](http://browserify.org/), or a in a Node environment:
 
 1. Add TwitchJS to your project:
@@ -105,7 +105,7 @@ following, community-maintained, sites:
 To help with refreshing tokens, an `onAuthenticationFailure` function may be
 provided to the Messaging and API clients. `onAuthenticationFailure()` must
 return a `Promise` that resolves with the refreshed token. Upon resolution, any
-actions that yielded a an _expired token_ response will be retried with the new,
+actions that yielded an _expired token_ response will be retried with the new,
 refreshed token.
 
 #### Handling token refresh example
