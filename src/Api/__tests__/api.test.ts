@@ -5,6 +5,7 @@ import omit from 'lodash/omit'
 import { FetchError } from '../../utils/fetch'
 
 import Api from '../api'
+import { AuthenticationError } from '../../utils/error'
 
 jest.mock('cross-fetch')
 
@@ -25,7 +26,7 @@ describe('Api', () => {
     fetchUtil.mockClear()
   })
 
-  test('should allow options to be updated without changing clientId or token', () => {
+  test('should allow options to be updated', () => {
     const api = new Api(options)
 
     const log = { level: 'info' }
@@ -41,7 +42,7 @@ describe('Api', () => {
     expect(
       // @ts-expect-error private property
       api._options,
-    ).toMatchObject({ ...options, log })
+    ).toMatchObject({ ...nextOptions, log })
   })
 
   describe('initialize', () => {
@@ -157,6 +158,19 @@ describe('Api', () => {
   })
 
   describe('onAuthenticationFailure', () => {
+    test('should throw AuthenticationError', async () => {
+      const api = new Api({
+        ...options,
+        token: 'INVALID_TOKEN',
+      })
+
+      try {
+        await api.get('401')
+      } catch (error) {
+        expect(error).toBeInstanceOf(AuthenticationError)
+      }
+    })
+
     test('should call onAuthenticationFailure', async () => {
       const onAuthenticationFailure = jest.fn(() => Promise.reject())
       const api = new Api({
@@ -169,10 +183,11 @@ describe('Api', () => {
         await api.get('401')
       } catch (error) {
         expect(onAuthenticationFailure).toHaveBeenCalled()
+        expect(error).toBeInstanceOf(AuthenticationError)
       }
     })
 
-    test('should update token', async () => {
+    test('should refresh token and try again', async () => {
       const onAuthenticationFailure = jest.fn(() => Promise.resolve('TOKEN'))
       const api = new Api({
         ...options,
@@ -184,6 +199,7 @@ describe('Api', () => {
         await api.get('401')
       } catch (error) {
         expect(onAuthenticationFailure).toHaveBeenCalled()
+        expect(fetchUtil).toHaveBeenCalledTimes(2)
         expect(
           // @ts-expect-error private property
           api._options.token,

@@ -5,6 +5,7 @@ import { ApiRootResponse } from '../twitch'
 
 import createLogger, { Logger } from '../utils/logger'
 import fetchUtil, { FetchError } from '../utils/fetch'
+import { AuthenticationError } from '../utils/error'
 
 import * as validators from './utils/api-validators'
 
@@ -83,11 +84,10 @@ class Api {
   }
 
   /**
-   * New client options. To update `token` or `clientId`, use [**api.initialize()**]{@link Api#initialize}.
+   * Update client options.
    */
   updateOptions(options: Partial<ApiOptions>) {
-    const { clientId, token } = this._options
-    this._options = validators.apiOptions({ ...options, clientId, token })
+    this._options = validators.apiOptions({ ...this._options, ...options })
   }
 
   /**
@@ -186,17 +186,26 @@ class Api {
 
     const fetchProfiler = this._log.profile()
 
-    const authenticationHeaders = this._getAuthenticationHeaders()
+    const performRequest = async () => {
+      const authenticationHeaders = this._getAuthenticationHeaders()
 
-    const fetchOptions = {
-      ...options,
-      headers: {
-        ...options.headers,
-        ...authenticationHeaders,
-      },
+      const fetchOptions = {
+        ...options,
+        headers: {
+          ...options.headers,
+          ...authenticationHeaders,
+        },
+      }
+
+      try {
+        return await fetchUtil<T>(url, fetchOptions)
+      } catch (error) {
+        if (error instanceof FetchError && error.body.status === 401) {
+          throw new AuthenticationError(error.message, error.body)
+        }
+        throw error
+      }
     }
-
-    const performRequest = () => fetchUtil<T>(url, fetchOptions)
 
     let caughtError
     try {
@@ -204,25 +213,30 @@ class Api {
     } catch (error) {
       if (
         typeof this._options.onAuthenticationFailure === 'function' &&
-        error instanceof FetchError &&
-        error.body.status === 401
+        error instanceof AuthenticationError
       ) {
-        const token = await this._options.onAuthenticationFailure()
+        const token = await this._handleAuthenticationFailure(error)
 
         if (token) {
-          await this.initialize({ token })
-          this._log.info(`${message} ... re-initializing with new token`)
+          this._log.info(`${message} ... retrying with new token`)
+          this.updateOptions({ token })
+          return await performRequest()
         }
-
-        this._log.info(`${message} ... retrying`)
-
-        return await performRequest()
       }
 
       caughtError = error
       throw caughtError
     } finally {
       fetchProfiler.done(message, caughtError)
+    }
+  }
+
+  private async _handleAuthenticationFailure(originError: Error) {
+    try {
+      return await this._options.onAuthenticationFailure?.()
+    } catch (error) {
+      this._log.error(error as Error, 'onAuthenticationFailure error occurred')
+      throw originError
     }
   }
 }

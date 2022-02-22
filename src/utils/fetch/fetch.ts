@@ -2,7 +2,7 @@ import fetch from 'cross-fetch'
 import { stringify, IStringifyOptions } from 'qs'
 import camelCaseKeys from 'camelcase-keys'
 
-import TwitchJSError from '../error'
+import { TwitchJSError } from '../error'
 
 type QueryParams = {
   /** Any query parameters you want to add to your request. */

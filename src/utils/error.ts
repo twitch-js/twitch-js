@@ -1,6 +1,6 @@
 import { CustomError } from 'ts-custom-error'
 
-class TwitchJSError extends CustomError {
+export class TwitchJSError extends CustomError {
   timestamp: Date = new Date()
 
   constructor(message: string) {
@@ -9,4 +9,11 @@ class TwitchJSError extends CustomError {
   }
 }
 
-export default TwitchJSError
+export class AuthenticationError extends TwitchJSError {
+  public constructor(message: string, public body?: any) {
+    super(message)
+    Object.defineProperty(this, 'name', {
+      value: 'TwitchJSAuthenticationError',
+    })
+  }
+}

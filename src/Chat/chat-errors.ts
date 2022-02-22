@@ -1,6 +1,6 @@
 import { BaseMessage, ChatEvents } from '../twitch'
 
-import TwitchJSError from '../utils/error'
+import { TwitchJSError } from '../utils/error'
 
 export class ChatError extends TwitchJSError {
   command?: string
