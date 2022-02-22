@@ -11,6 +11,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
+        with:
+          token: ${{ secrets.RELEASE_TOKEN || github.token }}
 
       - uses: actions/setup-node@v2
         if: ${{ github.event_name == 'push' }}
@@ -51,7 +53,7 @@ jobs:
 
       - name: Refresh access token
         if: |
-          !contains(github.event.head_commit.message, 'deploy skip') &&
+          !contains(github.event.head_commit.message, 'deploy skip') && 
           github.event_name == 'push'
         uses: ./.github/actions/refresh-access-token
         with:
@@ -69,7 +71,7 @@ jobs:
 
       - name: Release
         if: |
-          !contains(github.event.head_commit.message, 'deploy skip') &&
+          !contains(github.event.head_commit.message, 'deploy skip') && 
           github.event_name == 'push'
         uses: ./.github/actions/release
         env:
