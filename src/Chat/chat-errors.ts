@@ -1,54 +1,39 @@
-import { BaseMessage, ChatEvents } from '../twitch'
-
 import { TwitchJSError } from '../utils/error'
 
+export * from '../utils/error'
+
 export class ChatError extends TwitchJSError {
-  command?: string
-
-  constructor(error: Error | string, message?: BaseMessage | string) {
-    super(`${error instanceof Error ? error.message : error} [Chat]`)
-    Object.setPrototypeOf(this, ChatError.prototype)
-
-    if (typeof message !== 'undefined' && typeof message !== 'string') {
-      this.command = message.command
-    }
-  }
-}
-
-export class AuthenticationError extends ChatError {
-  constructor(error: Error, message?: BaseMessage) {
-    super('Authentication error encountered', message)
-    Object.setPrototypeOf(this, AuthenticationError.prototype)
-
-    Object.assign(this, error)
-    Object.assign(this, message)
-  }
-}
-
-export class ParseError extends ChatError {
-  _raw: string
-
-  constructor(error: Error, rawMessage: string) {
-    super('Parse error encountered')
-    Object.setPrototypeOf(this, ParseError.prototype)
-
-    Object.assign(this, error)
-
-    this._raw = rawMessage
-    this.command = ChatEvents.PARSE_ERROR_ENCOUNTERED
-  }
-}
-
-export class JoinError extends ChatError {
-  constructor(message = 'Error: join') {
+  public constructor(message: string, public body?: any) {
     super(message)
-    Object.setPrototypeOf(this, JoinError.prototype)
+    Object.defineProperty(this, 'name', {
+      value: 'TwitchJSChatError',
+    })
   }
 }
 
-export class TimeoutError extends ChatError {
-  constructor(message = 'Error: timeout') {
+export class ParseError extends TwitchJSError {
+  public constructor(message: string, public body?: any) {
     super(message)
-    Object.setPrototypeOf(this, TimeoutError.prototype)
+    Object.defineProperty(this, 'name', {
+      value: 'TwitchJSChatParseError',
+    })
+  }
+}
+
+export class JoinError extends TwitchJSError {
+  public constructor(message: string, public body?: any) {
+    super(message)
+    Object.defineProperty(this, 'name', {
+      value: 'TwitchJSChatJoinError',
+    })
+  }
+}
+
+export class TimeoutError extends TwitchJSError {
+  public constructor(message: string, public body?: any) {
+    super(message)
+    Object.defineProperty(this, 'name', {
+      value: 'TwitchJSChatTimeoutError',
+    })
   }
 }

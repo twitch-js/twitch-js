@@ -8,6 +8,7 @@ import tags from '../../../__mocks__/ws/__fixtures__/tags.json'
 import issues from '../../../__mocks__/ws/__fixtures__/issues.json'
 
 import {
+  BaseMessage,
   ChatCommands,
   Commands,
   Events,
@@ -23,6 +24,8 @@ import {
   UserNoticeCompounds,
 } from '../chat-types'
 import parser from '../utils/parsers'
+import { AuthenticationError } from '../chat-errors'
+import EventEmitter from 'eventemitter3'
 
 jest.mock('ws')
 jest.mock('lodash/random', () => ({
@@ -30,7 +33,7 @@ jest.mock('lodash/random', () => ({
   default: jest.fn(() => '12345'),
 }))
 
-const emitHelper = (emitter, rawMessages) =>
+const emitHelper = (emitter: EventEmitter, rawMessages: string) =>
   parser(rawMessages).forEach((message) => emitter.emit(Events.ALL, message))
 
 describe('Chat', () => {
@@ -95,6 +98,20 @@ describe('Chat', () => {
       })
     })
 
+    test('should throw AuthenticationError', async () => {
+      try {
+        const chat = new Chat({
+          ...options,
+          token: 'INVALID_TOKEN',
+          connectionTimeout: 100,
+        })
+
+        await chat.connect()
+      } catch (error) {
+        expect(error).toBeInstanceOf(AuthenticationError)
+      }
+    })
+
     test('should call onAuthenticationFailure', async () => {
       const onAuthenticationFailure = jest.fn(() =>
         Promise.reject('token fail'),
@@ -109,7 +126,8 @@ describe('Chat', () => {
         })
 
         await chat.connect()
-      } catch (err) {
+      } catch (error) {
+        expect(error).toBeInstanceOf(AuthenticationError)
         expect(onAuthenticationFailure).toHaveBeenCalled()
       }
     })
@@ -123,10 +141,12 @@ describe('Chat', () => {
         connectionTimeout: 100,
         onAuthenticationFailure,
       })
+      const connectSpy = jest.spyOn(chat, 'connect')
 
       await chat.connect()
 
       expect(onAuthenticationFailure).toHaveBeenCalled()
+      expect(connectSpy).toHaveBeenCalledTimes(2)
     })
 
     test('should return the same promise', async () => {
@@ -144,7 +164,10 @@ describe('Chat', () => {
     const newJoinTimeout = 9876
     chat.updateOptions({ joinTimeout: newJoinTimeout })
 
-    expect(chat._options.joinTimeout).toBe(newJoinTimeout)
+    expect(
+      // @ts-expect-error private member
+      chat._options.joinTimeout,
+    ).toBe(newJoinTimeout)
   })
 
   test('should join channel', async () => {
@@ -211,11 +234,17 @@ describe('Chat', () => {
 
     expect.assertions(3)
 
-    expect(chat._channelState['#dallas']).toBeDefined()
+    expect(
+      // @ts-expect-error private member
+      chat._channelState['#dallas'],
+    ).toBeDefined()
 
     server.once('message', (message) => {
       expect(message).toEqual('PART #dallas')
-      expect(chat._channelState['#dallas']).not.toBeDefined()
+      expect(
+        // @ts-expect-error private member
+        chat._channelState['#dallas'],
+      ).not.toBeDefined()
       done()
     })
 
@@ -227,8 +256,14 @@ describe('Chat', () => {
     await chat.connect()
 
     chat.disconnect()
-    expect(chat._readyState).toBe(5)
-    expect(chat._connectionInProgress).toBe(undefined)
+    expect(
+      // @ts-expect-error private member
+      chat._readyState,
+    ).toBe(5)
+    expect(
+      // @ts-expect-error private member
+      chat._connectionInProgress,
+    ).toBe(undefined)
   })
 
   describe('reconnect', () => {
@@ -265,6 +300,7 @@ describe('Chat', () => {
 
       chat.once('GLOBALUSERSTATE', () => done())
 
+      // @ts-expect-error private member
       chat._client.emit('RECONNECT')
     })
 
@@ -274,7 +310,10 @@ describe('Chat', () => {
 
       await chat.reconnect({ token: 'NEW_TOKEN' })
 
-      expect(chat._options.token).toBe('oauth:NEW_TOKEN')
+      expect(
+        // @ts-expect-error private member
+        chat._options.token,
+      ).toBe('oauth:NEW_TOKEN')
     })
   })
 
@@ -290,7 +329,11 @@ describe('Chat', () => {
         done()
       })
 
-      emitHelper(chat._client, membership.JOIN)
+      emitHelper(
+        // @ts-expect-error private member
+        chat._client,
+        membership.JOIN,
+      )
     })
 
     test('PART', async (done) => {
@@ -304,7 +347,11 @@ describe('Chat', () => {
         done()
       })
 
-      emitHelper(chat._client, membership.PART)
+      emitHelper(
+        // @ts-expect-error private member
+        chat._client,
+        membership.PART,
+      )
     })
 
     test('NAMES', async () => {
@@ -317,7 +364,11 @@ describe('Chat', () => {
         pEvent(chat, Commands.NAMES_END),
       ])
 
-      emitHelper(chat._client, membership.NAMES)
+      emitHelper(
+        // @ts-expect-error private member
+        chat._client,
+        membership.NAMES,
+      )
 
       return emissions.then((emission) => {
         emission.forEach((actual) =>
@@ -335,6 +386,7 @@ describe('Chat', () => {
           await chat.connect()
           await chat.join('#dallas')
 
+          // @ts-expect-error private member
           chat._channelState['#dallas'].userState.isModerator = false
 
           chat.once(Events.MODE, (message) => {
@@ -342,13 +394,19 @@ describe('Chat', () => {
               timestamp: expect.any(Date),
             })
 
-            const actual = chat._channelState['#dallas'].userState.isModerator
+            const actual =
+              // @ts-expect-error private member
+              chat._channelState['#dallas'].userState.isModerator
             const expected = true
             expect(actual).toEqual(expected)
             done()
           })
 
-          emitHelper(chat._client, membership.MODE.OPERATOR_PLUS_DALLAS)
+          emitHelper(
+            // @ts-expect-error private member
+            chat._client,
+            membership.MODE.OPERATOR_PLUS_DALLAS,
+          )
         })
 
         test('-o', async (done) => {
@@ -356,6 +414,7 @@ describe('Chat', () => {
           await chat.connect()
           await chat.join('#dallas')
 
+          // @ts-expect-error private member
           chat._channelState['#dallas'].userState.isModerator = true
 
           chat.once(Events.MODE, (message) => {
@@ -363,7 +422,9 @@ describe('Chat', () => {
               timestamp: expect.any(Date),
             })
 
-            const actual = chat._channelState['#dallas'].userState.isModerator
+            const actual =
+              // @ts-expect-error private member
+              chat._channelState['#dallas'].userState.isModerator
             const expected = false
             expect(actual).toEqual(expected)
             done()
@@ -371,7 +432,11 @@ describe('Chat', () => {
 
           await chat.join('#dallas')
 
-          emitHelper(chat._client, membership.MODE.OPERATOR_MINUS_DALLAS)
+          emitHelper(
+            // @ts-expect-error private member
+            chat._client,
+            membership.MODE.OPERATOR_MINUS_DALLAS,
+          )
         })
       })
 
@@ -381,19 +446,27 @@ describe('Chat', () => {
           await chat.connect()
           await chat.join('#dallas')
 
-          const before = chat._channelState['#dallas'].userState.isModerator
+          const before =
+            // @ts-expect-error private member
+            chat._channelState['#dallas'].userState.isModerator
 
           chat.once(Events.MODE, (message) => {
             expect(message).toMatchSnapshot({
               timestamp: expect.any(Date),
             })
 
-            const after = chat._channelState['#dallas'].userState.isModerator
+            const after =
+              // @ts-expect-error private member
+              chat._channelState['#dallas'].userState.isModerator
             expect(before).toEqual(after)
             done()
           })
 
-          emitHelper(chat._client, membership.MODE.OPERATOR_PLUS_RONNI)
+          emitHelper(
+            // @ts-expect-error private member
+            chat._client,
+            membership.MODE.OPERATOR_PLUS_RONNI,
+          )
         })
 
         test('-o', async (done) => {
@@ -401,19 +474,27 @@ describe('Chat', () => {
           await chat.connect()
           await chat.join('#dallas')
 
-          const before = chat._channelState['#dallas'].userState.isModerator
+          const before =
+            // @ts-expect-error private member
+            chat._channelState['#dallas'].userState.isModerator
 
           chat.once(Events.MODE, (message) => {
             expect(message).toMatchSnapshot({
               timestamp: expect.any(Date),
             })
 
-            const after = chat._channelState['#dallas'].userState.isModerator
+            const after =
+              // @ts-expect-error private member
+              chat._channelState['#dallas'].userState.isModerator
             expect(before).toEqual(after)
             done()
           })
 
-          emitHelper(chat._client, membership.MODE.OPERATOR_MINUS_RONNI)
+          emitHelper(
+            // @ts-expect-error private member
+            chat._client,
+            membership.MODE.OPERATOR_MINUS_RONNI,
+          )
         })
       })
     })
@@ -429,7 +510,11 @@ describe('Chat', () => {
         done()
       })
 
-      emitHelper(chat._client, rawCommands.CLEARCHAT.CHANNEL)
+      emitHelper(
+        // @ts-expect-error private member
+        chat._client,
+        rawCommands.CLEARCHAT.CHANNEL,
+      )
     })
 
     test('CLEARCHAT user with reason', async (done) => {
@@ -443,7 +528,11 @@ describe('Chat', () => {
         done()
       })
 
-      emitHelper(chat._client, rawCommands.CLEARCHAT.USER_WITH_REASON)
+      emitHelper(
+        // @ts-expect-error private member
+        chat._client,
+        rawCommands.CLEARCHAT.USER_WITH_REASON,
+      )
     })
 
     test('CLEARMSG', async (done) => {
@@ -457,7 +546,11 @@ describe('Chat', () => {
         done()
       })
 
-      emitHelper(chat._client, rawCommands.CLEARMSG)
+      emitHelper(
+        // @ts-expect-error private member
+        chat._client,
+        rawCommands.CLEARMSG,
+      )
     })
 
     describe('HOSTTARGET', () => {
@@ -474,7 +567,11 @@ describe('Chat', () => {
           done()
         })
 
-        emitHelper(chat._client, raw)
+        emitHelper(
+          // @ts-expect-error private member
+          chat._client,
+          raw,
+        )
       })
     })
 
@@ -494,7 +591,11 @@ describe('Chat', () => {
             done()
           })
 
-          emitHelper(chat._client, raw)
+          emitHelper(
+            // @ts-expect-error private member
+            chat._client,
+            raw,
+          )
         },
         5000,
       )
@@ -514,7 +615,11 @@ describe('Chat', () => {
             done()
           })
 
-          emitHelper(chat._client, raw)
+          emitHelper(
+            // @ts-expect-error private member
+            chat._client,
+            raw,
+          )
         },
       )
     })
@@ -531,7 +636,11 @@ describe('Chat', () => {
           done()
         })
 
-        emitHelper(chat._client, raw)
+        emitHelper(
+          // @ts-expect-error private member
+          chat._client,
+          raw,
+        )
       })
 
       test('whisper', async (done) => {
@@ -568,7 +677,11 @@ describe('Chat', () => {
           done()
         })
 
-        emitHelper(chat._client, raw)
+        emitHelper(
+          // @ts-expect-error private member
+          chat._client,
+          raw,
+        )
       })
     })
 
@@ -601,7 +714,11 @@ describe('Chat', () => {
         done()
       })
 
-      emitHelper(chat._client, tags.USERNOTICE.SUBSCRIPTION)
+      emitHelper(
+        // @ts-expect-error private member
+        chat._client,
+        tags.USERNOTICE.SUBSCRIPTION,
+      )
     })
 
     describe('deviations', () => {
@@ -618,7 +735,11 @@ describe('Chat', () => {
           done()
         })
 
-        emitHelper(chat._client, rawCommands.CLEARCHAT.DEVIATION_1)
+        emitHelper(
+          // @ts-expect-error private member
+          chat._client,
+          rawCommands.CLEARCHAT.DEVIATION_1,
+        )
       })
 
       test.each(Object.entries(issues))('%s', async (_issue, message) => {

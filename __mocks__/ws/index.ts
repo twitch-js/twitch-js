@@ -4,13 +4,9 @@ import commands from './__fixtures__/commands.json'
 import membership from './__fixtures__/membership.json'
 import tags from './__fixtures__/tags.json'
 
-declare module 'ws' {
-  const server: ServerHelper
-}
-
 type Listener = (...args: any[]) => void
 
-class ServerHelper extends EventEmitter {
+export class ServerHelper extends EventEmitter {
   sendMessageToClient(data: any) {
     super.emit('emit', { data })
   }

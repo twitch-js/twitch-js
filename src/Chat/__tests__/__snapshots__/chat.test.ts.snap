@@ -1402,7 +1402,7 @@ Object {
 }
 `;
 
-exports[`Chat should handle messages PRIVMSG whisper when anonymous 1`] = `[TwitchJSError: To whisper, please connect with a token and username [Chat]]`;
+exports[`Chat should handle messages PRIVMSG whisper when anonymous 1`] = `[TwitchJSChatError: To whisper, please connect with a token and username]`;
 
 exports[`Chat should handle messages USERNOTICE ANON_GIFT_PAID_UPGRADE 1`] = `
 Object {
@@ -2019,7 +2019,7 @@ Object {
 }
 `;
 
-exports[`Chat should handle multiple channels should deny message broadcasting when anonymous 1`] = `[TwitchJSError: To broadcast, please connect with a token and username [Chat]]`;
+exports[`Chat should handle multiple channels should deny message broadcasting when anonymous 1`] = `[TwitchJSChatError: To broadcast, please connect with a token and username]`;
 
 exports[`Chat should join channel 1`] = `
 Object {
@@ -2059,4 +2059,4 @@ Object {
 }
 `;
 
-exports[`Chat should throw when sending a message as anonymous 1`] = `[TwitchJSError: To send messages, please connect with a token and username [Chat]]`;
+exports[`Chat should throw when sending a message as anonymous 1`] = `[TwitchJSChatError: To send messages, please connect with a token and username]`;

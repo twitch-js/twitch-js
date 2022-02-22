@@ -247,18 +247,17 @@ class Chat extends EventEmitter<EventTypes> {
 
       this._readyState = ChatReadyStates.CONNECTED
       this._connectionAttempts = 0
-    } catch (err) {
+    } catch (error) {
       if (
         this._readyState !== ChatReadyStates.DISCONNECTING &&
         this._readyState !== ChatReadyStates.DISCONNECTED
       ) {
-        this._log.info('Retrying ...')
+        this._log.info('retrying ...')
         await delay(this._options.connectionTimeout)
 
-        await this._handleAuthenticationFailure()
-        return this.connect()
+        return await this._handleAuthenticationFailure(error as BaseMessage)
       } else {
-        throw err
+        throw error
       }
     }
   }
@@ -298,7 +297,7 @@ class Chat extends EventEmitter<EventTypes> {
   /**
    * Reconnect to Twitch, providing new options to the client.
    */
-  async reconnect(options?: ChatOptions) {
+  async reconnect(options?: Partial<ChatOptions>) {
     if (options) {
       this._options = validators.chatOptions({ ...this._options, ...options })
     }
@@ -347,7 +346,7 @@ class Chat extends EventEmitter<EventTypes> {
   async join(channel: string) {
     channel = validators.channel(channel)
 
-    const joinProfiler = this._log.profile(`Joining ${channel}`)
+    const joinProfiler = this._log.profile(`joining ${channel}`)
 
     const [roomState, userState] = await Promise.all([
       pEvent<string, RoomStateMessage>(
@@ -382,7 +381,7 @@ class Chat extends EventEmitter<EventTypes> {
    */
   part(channel: string) {
     channel = validators.channel(channel)
-    this._log.info(`Parting ${channel}`)
+    this._log.info(`parting ${channel}`)
 
     this._removeChannelState(channel)
     return this.send(`${Commands.PART} ${channel}`)
@@ -990,7 +989,7 @@ class Chat extends EventEmitter<EventTypes> {
 
   private _handleConnectionAttempt(): Promise<void> {
     return new PCancelable((resolve, reject) => {
-      const connectProfiler = this._log.profile('Connecting ...')
+      const connectProfiler = this._log.profile('connecting ...')
 
       const { token, username } = this._options
 
@@ -1024,7 +1023,7 @@ class Chat extends EventEmitter<EventTypes> {
         }
         this._handleJoinsAfterConnect()
         resolve()
-        connectProfiler.done('Connected')
+        connectProfiler.done('connected')
       })
 
       // Handle messages.
@@ -1033,14 +1032,14 @@ class Chat extends EventEmitter<EventTypes> {
   }
 
   private _handleDisconnect() {
-    this._log.info('Disconnecting ...')
+    this._log.info('disconnecting ...')
     if (this._connectionInProgress) {
       this._connectionInProgress.clear()
     }
     this._connectionInProgress = undefined
     this._isAuthenticated = false
     this._clearChannelState()
-    this._log.info('Disconnected')
+    this._log.info('disconnected')
   }
 
   private _handleAuthenticated(message: BaseMessage) {
@@ -1049,20 +1048,23 @@ class Chat extends EventEmitter<EventTypes> {
     this._isAuthenticated = true
   }
 
-  private async _handleAuthenticationFailure() {
+  private async _handleAuthenticationFailure(originError: BaseMessage) {
     try {
-      this._log.info('Retrying ...')
+      this._log.info('retrying ...')
 
       const token = await this._options.onAuthenticationFailure?.()
 
       if (token) {
-        this._log.info('Re-authenticating ...')
+        this._log.info('re-authenticating ...')
         this._options = { ...this._options, token }
-        return this.connect()
+        return await this.connect()
       }
     } catch (error) {
-      this._log.error('Re-authentication failed')
-      throw new Errors.AuthenticationError(error as Error)
+      this._log.error(error as Error, 're-authentication failed')
+      throw new Errors.AuthenticationError(
+        originError?.message || 'Login authentication failed',
+        originError,
+      )
     }
   }
 
