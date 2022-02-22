@@ -1,8 +1,6 @@
 const path = require('path')
 const pkg = require('../../package.json')
 
-const { ApiVersions } = require('../../lib')
-
 const { preflight } = require('../utils')
 
 const BUILD_PATH = path.join(__dirname, `../../${pkg.unpkg}`)
@@ -48,7 +46,7 @@ describe('Browser E2E', () => {
         (token, username, ApiVersions) => {
           const { api } = new window.TwitchJs({ token, username })
 
-          return api.get('streams/featured', { version: ApiVersions.Kraken })
+          return api.get('streams')
         },
         token,
         username,

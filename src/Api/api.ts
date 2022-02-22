@@ -1,7 +1,7 @@
 import includes from 'lodash/includes'
 import toUpper from 'lodash/toUpper'
 
-import { ApiRootResponse } from '../twitch'
+import { ApiValidateResponse } from '../twitch'
 
 import createLogger, { Logger } from '../utils/logger'
 import fetchUtil, { FetchError } from '../utils/fetch'
@@ -67,7 +67,7 @@ class Api {
 
   private _readyState: ApiReadyStates = ApiReadyStates.READY
 
-  private _status!: ApiRootResponse
+  private _status!: ApiValidateResponse
 
   constructor(options: Partial<ApiOptions>) {
     this._options = validators.apiOptions(options)
@@ -103,14 +103,13 @@ class Api {
       return Promise.resolve()
     }
 
-    const statusResponse = await this.get<ApiRootResponse>('')
+    const response = await fetchUtil<ApiValidateResponse>(
+      'https://id.twitch.tv/oauth2/validate',
+      { headers: { Authorization: `Bearer ${this._options.token}` } },
+    )
 
-    if ('token' in statusResponse) {
-      this._readyState = ApiReadyStates.INITIALIZED
-      this._status = statusResponse
-    }
-
-    return statusResponse
+    this._readyState = ApiReadyStates.INITIALIZED
+    this._status = response
   }
 
   /**
@@ -122,9 +121,7 @@ class Api {
     scope: string,
   ): Promise<boolean> {
     return new Promise((resolve, reject) =>
-      this.status?.token?.authorization?.scopes?.includes(scope)
-        ? resolve(true)
-        : reject(false),
+      this.status?.scopes?.includes(scope) ? resolve(true) : reject(false),
     )
   }
 

@@ -1,26 +1,15 @@
 type DistributeKeys<T> = { [P in keyof T]: P }
 
-export enum ApiVersions {
-  Helix = 'helix',
-  Kraken = 'kraken',
-}
-
 /**
- * Root URL response
- * @see https://dev.twitch.tv/docs/v5#root-url
+ * Validate response
+ * @see https://dev.twitch.tv/docs/authentication#validating-requests
  */
-export type ApiRootResponse = {
-  token: {
-    authorization: {
-      createdAt: Date
-      updatedAt: Date
-      scopes: string[]
-    }
-    clientId: string
-    userId: string
-    userName: string
-    valid: boolean
-  }
+export type ApiValidateResponse = {
+  client_id: string
+  login: string
+  scopes: string[]
+  user_id: string
+  expires_in: number
 }
 
 /**

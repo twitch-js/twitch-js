@@ -1,6 +1,6 @@
 import { Response } from 'cross-fetch'
 
-import responseRoot from './__fixtures__/root.json'
+import responseValidate from './__fixtures__/validate.json'
 import response401 from './__fixtures__/401.json'
 import response404 from './__fixtures__/404.json'
 
@@ -25,13 +25,13 @@ const fetch = jest.fn().mockImplementation(
           statusText: 'Not Found',
           json: () => Promise.resolve(response404),
         })
-      case 'https://api.twitch.tv/helix/':
+      case 'https://id.twitch.tv/oauth2/validate':
         return Promise.resolve({
           url,
           ok: true,
           status: 200,
           statusText: 'OK',
-          json: () => Promise.resolve(responseRoot),
+          json: () => Promise.resolve(responseValidate),
         })
       default:
         return Promise.resolve({
