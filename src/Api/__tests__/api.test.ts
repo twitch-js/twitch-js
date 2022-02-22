@@ -94,13 +94,13 @@ describe('Api', () => {
 
     test('should reject if scope is absent', async () => {
       const api = new Api(options)
+      await api.initialize()
       await expect(api.hasScope('channel_read')).rejects.toBe(false)
     })
 
     test('should resolve if scope is present', async () => {
       const api = new Api(options)
       await api.initialize()
-
       await expect(api.hasScope('user_read')).resolves.toBe(true)
     })
   })

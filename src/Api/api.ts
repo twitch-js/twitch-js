@@ -121,15 +121,11 @@ class Api {
     /** Scope to check */
     scope: string,
   ): Promise<boolean> {
-    return new Promise((resolve, reject) => {
-      if (this.readyState !== 2 || !this.status) {
-        return reject(false)
-      }
-
-      return includes(this.status.token.authorization.scopes, scope)
+    return new Promise((resolve, reject) =>
+      this.status?.token?.authorization?.scopes?.includes(scope)
         ? resolve(true)
-        : reject(false)
-    })
+        : reject(false),
+    )
   }
 
   /**
@@ -164,14 +160,10 @@ class Api {
   private _getAuthenticationHeaders(): RequestInit['headers'] {
     const { clientId, token } = this._options
 
-    if (clientId && token) {
-      return {
-        Authorization: `Bearer ${token}`,
-        'Client-Id': clientId,
-      }
+    return {
+      Authorization: `Bearer ${token}`,
+      'Client-Id': clientId,
     }
-
-    return undefined
   }
 
   private async _handleFetch<T = any>(
