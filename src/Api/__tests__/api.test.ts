@@ -1,12 +1,12 @@
 import { mocked } from 'ts-jest/utils'
-import nodeFetch from 'node-fetch'
+import nodeFetch from 'cross-fetch'
 import omit from 'lodash/omit'
 
 import { FetchError } from '../../utils/fetch'
 
 import Api from '../api'
 
-jest.mock('node-fetch')
+jest.mock('cross-fetch')
 
 const fetchUtil = mocked(nodeFetch, true)
 

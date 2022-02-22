@@ -89,7 +89,7 @@ const getJsonInit = (
       return {}
     }
 
-    if (input instanceof FormData) {
+    if (toString.call(input) === '[object FormData]') {
       return { body: input }
     }
 

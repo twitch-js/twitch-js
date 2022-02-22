@@ -1,4 +1,4 @@
-import { Response } from 'node-fetch'
+import { Response } from 'cross-fetch'
 
 import responseRoot from './__fixtures__/root.json'
 import response401 from './__fixtures__/401.json'
