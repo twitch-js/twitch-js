@@ -8,6 +8,11 @@ git config --global user.email "36392591+twitch-js-ci@users.noreply.github.com"
 PACKAGE_VERSION=$(node -p "require('./package.json').version")
 LATEST_VERSION=$(npm view twitch-js@$PACKAGE_VERSION)
 
+TAG=next
+if [[ $PACKAGE_VERSION =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+  TAG=latest
+fi
+
 # If this version is unreleased ...
 if [[ ${#LATEST_VERSION} -eq "0" ]]; then
   # ... tag current version ...
@@ -16,7 +21,7 @@ if [[ ${#LATEST_VERSION} -eq "0" ]]; then
     --message "v${PACKAGE_VERSION} release"
 
   # ... and publish to NPM.
-  npm publish
+  npm publish --tag $TAG
 else
   # ... otherwise, determine next version.
   if [[ $PACKAGE_VERSION =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
