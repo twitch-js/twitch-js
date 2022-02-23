@@ -1,3 +1,3 @@
-import Chat from './Chat'
+import Chat from './chat'
 export default Chat
-export * from './types'
+export * from './chat-types'

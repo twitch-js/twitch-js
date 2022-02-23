@@ -1,9 +1,8 @@
-import fetch from 'node-fetch'
-import FormData from 'form-data'
+import fetch from 'cross-fetch'
 
 import fetchUtil from '../'
 
-jest.mock('node-fetch')
+jest.mock('cross-fetch')
 
 const mockUrl = 'http://example.com'
 

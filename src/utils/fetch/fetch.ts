@@ -1,74 +1,103 @@
 import fetch from 'cross-fetch'
-import FormData from 'form-data'
 import { stringify, IStringifyOptions } from 'qs'
 import camelCaseKeys from 'camelcase-keys'
 
-import FetchError from './Error'
+import { TwitchJSError } from '../error'
 
-type SearchOption = {
+type QueryParams = {
   /** Any query parameters you want to add to your request. */
-  search?: { [key: string]: any }
+  [key: string]: string | number | boolean
 }
 
-type HeaderOption = { headers?: Record<string, string> }
+interface BodyParams {
+  [key: string]: any
+}
 
-export type FetchOptions = Omit<RequestInit, 'headers'> &
-  SearchOption &
-  HeaderOption
+export type FetchOptions<Query = QueryParams, Body = BodyParams> = Omit<
+  RequestInit,
+  'body'
+> & { search?: Query } & { body?: Body }
+
+export class FetchError extends TwitchJSError {
+  public constructor(message: string, public body?: any) {
+    super(message)
+    Object.defineProperty(this, 'name', { value: 'TwitchJSFetchError' })
+  }
+}
 
 /**
  * Fetches URL
  */
-const fetchUtil = async <T = Response>(
+const fetchUtil = async <
+  Response = any,
+  Query = QueryParams,
+  Body = BodyParams
+>(
   url: RequestInfo,
-  options: FetchOptions = {},
+  options?: FetchOptions<Query, Body>,
   qsOptions?: IStringifyOptions,
 ) => {
-  const isBodyJson =
-    options.body &&
-    !(options.body instanceof FormData) &&
-    typeof options.body === 'object'
+  const { search, body: bodyParams, ...rest } = options || {}
 
-  const body = isBodyJson ? JSON.stringify(options.body) : options.body
+  const queryParams = search
+    ? stringify(search, {
+        ...qsOptions,
+        addQueryPrefix: true,
+        arrayFormat: 'repeat',
+      })
+    : ''
 
-  const headers = isBodyJson
-    ? { ...options.headers, 'Content-Type': 'application/json' }
-    : options.headers
+  const jsonInit = getJsonInit(bodyParams)
 
-  const search =
-    typeof options.search === 'object'
-      ? `?${stringify(options.search, qsOptions)}`
-      : ''
+  const init = {
+    ...rest,
+    ...jsonInit,
+    headers: {
+      ...options?.headers,
+      ...jsonInit.headers,
+    },
+  }
 
-  const fetchOptions = body
-    ? {
-        ...options,
-        method: options.method || 'get',
-        headers,
-        body,
-      }
-    : {
-        ...options,
-        method: options.method || 'get',
-        headers,
-      }
+  const response = await fetch(`${url}${queryParams}`, init)
 
-  const response = await fetch(`${url}${search}`, fetchOptions)
+  const json = await response.json().catch(() => ({}))
 
-  const responseJson = await response.json().catch(() => undefined)
-  const json = responseJson
-    ? camelCaseKeys(responseJson, { deep: true })
-    : undefined
+  const body = camelCaseKeys(json, { deep: true }) as
+    | Response
+    | { error: string; status: number; message: string }
+
+  if ('error' in body) {
+    throw new FetchError(body.message, body)
+  }
 
   if (!response.ok) {
-    throw new FetchError(response, json)
+    throw new FetchError(response.statusText, {
+      error: true,
+      status: response.status,
+      message: response.statusText,
+    })
   }
 
-  if (json) {
-    return json as T
-  }
+  return body
+}
 
-  return response
+const getJsonInit = (
+  input?: any,
+): { body?: string | FormData; headers?: HeadersInit } => {
+  try {
+    if (!input) {
+      return {}
+    }
+
+    if (toString.call(input) === '[object FormData]') {
+      return { body: input }
+    }
+
+    const body = JSON.stringify(input)
+    return { body, headers: { 'Content-Type': 'application/json' } }
+  } catch (err) {
+    return { body: input }
+  }
 }
 
 export default fetchUtil

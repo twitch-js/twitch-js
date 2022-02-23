@@ -1,4 +1,4 @@
-import TwitchJs, { ApiVersions } from '../../lib'
+import TwitchJs from '../../lib'
 
 import { preflight } from '../utils'
 
@@ -36,7 +36,7 @@ describe('Node E2E', () => {
     test('should get endpoint', async () => {
       const { api } = new TwitchJs(options)
 
-      await api.get('streams/featured', { version: ApiVersions.Kraken })
+      await api.get('streams')
     })
   })
 })

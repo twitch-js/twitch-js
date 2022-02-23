@@ -1,0 +1,7 @@
+{
+  "client_id": "wbmytr93xzw8zbg0p1izqyzzc5mbiz",
+  "login": "twitchdev",
+  "scopes": ["channel:read:subscriptions"],
+  "user_id": "141981764",
+  "expires_in": 5520838
+}

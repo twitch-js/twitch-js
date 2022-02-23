@@ -1,4 +1,4 @@
-import { EventEmitter } from 'eventemitter3'
+import EventEmitter from 'eventemitter3'
 
 import commands from './__fixtures__/commands.json'
 import membership from './__fixtures__/membership.json'
@@ -6,12 +6,12 @@ import tags from './__fixtures__/tags.json'
 
 type Listener = (...args: any[]) => void
 
-class Server extends EventEmitter {
+export class ServerHelper extends EventEmitter {
   sendMessageToClient(data: any) {
     super.emit('emit', { data })
   }
 }
-const server = new Server()
+const server = new ServerHelper()
 
 class WebSocket extends EventEmitter {
   readyState = 0

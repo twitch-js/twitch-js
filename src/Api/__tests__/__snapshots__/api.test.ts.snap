@@ -1,0 +1,49 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Api initialize should resolve if already initialized 1`] = `undefined`;
+
+exports[`Api initialize should set readyState and status 1`] = `
+Object {
+  "clientId": "wbmytr93xzw8zbg0p1izqyzzc5mbiz",
+  "expiresIn": 5520838,
+  "login": "twitchdev",
+  "scopes": Array [
+    "channel:read:subscriptions",
+  ],
+  "userId": "141981764",
+}
+`;
+
+exports[`Api methods post should call fetch with method=post 1`] = `
+Object {
+  "body": "{\\"broadcaster_id\\":\\"BROADCASTER_ID\\"}",
+  "headers": Object {
+    "Authorization": "Bearer TOKEN",
+    "Client-Id": "CLIENT_ID",
+    "Content-Type": "application/json",
+  },
+  "method": "post",
+}
+`;
+
+exports[`Api methods should throw on failure 1`] = `
+Object {
+  "error": "Not Found",
+  "message": "The channel could not be found",
+  "status": 404,
+}
+`;
+
+exports[`Api should create headers 1`] = `
+Array [
+  Array [
+    "https://api.twitch.tv/helix/",
+    Object {
+      "headers": Object {
+        "Authorization": "Bearer TOKEN",
+        "Client-Id": "CLIENT_ID",
+      },
+    },
+  ],
+]
+`;
