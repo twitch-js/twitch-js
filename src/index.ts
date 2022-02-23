@@ -30,8 +30,9 @@ export type TwitchJsOptions = BaseTwitchJsOptions & IndividualClassOptions
  * ## Initializing
  * ```
  * const token = 'cfabdegwdoklmawdzdo98xt2fo512y'
+ * const clientId = 'uo6dggojyb8d6soh92zknwmi5ej1q2'
  * const username = 'ronni'
- * const twitchJs = new TwitchJs({ token, username })
+ * const twitchJs = new TwitchJs({ token, clientId, username })
  *
  * twitchJs.chat.connect().then(globalUserState => {
  *   // Do stuff ...
