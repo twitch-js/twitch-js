@@ -7,6 +7,7 @@ describe('Node E2E', () => {
     preflight()
   })
 
+  const clientId = process.env.TWITCH_CLIENT_ID
   const token = process.env.TWITCH_ACCESS_TOKEN
   const username = process.env.TWITCH_USERNAME
   const channel = process.env.TWITCH_USERNAME
@@ -15,6 +16,7 @@ describe('Node E2E', () => {
     : `Local E2E ${new Date()}`
 
   const options = {
+    clientId,
     token,
     username,
     log: { enabled: false },
