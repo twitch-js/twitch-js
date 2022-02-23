@@ -53,7 +53,7 @@ jobs:
 
       - name: Refresh access token
         if: |
-          !contains(github.event.head_commit.message, 'deploy skip') && 
+          !contains(github.event.head_commit.message, 'deploy skip') &&
           github.event_name == 'push'
         uses: ./.github/actions/refresh-access-token
         with:
@@ -66,12 +66,13 @@ jobs:
           !contains(github.event.head_commit.message, 'deploy skip') &&
           github.event_name == 'push'
         env:
+          TWITCH_CLIENT_ID: ${{ secrets.TWITCH_CLIENT_ID }}
           TWITCH_USERNAME: ${{ secrets.TWITCH_USERNAME }}
         run: yarn test:e2e
 
       - name: Release
         if: |
-          !contains(github.event.head_commit.message, 'deploy skip') && 
+          !contains(github.event.head_commit.message, 'deploy skip') &&
           github.event_name == 'push'
         uses: ./.github/actions/release
         env:
