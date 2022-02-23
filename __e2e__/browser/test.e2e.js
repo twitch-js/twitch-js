@@ -10,8 +10,17 @@ describe('Browser E2E', () => {
     preflight()
   })
 
+  const clientId = process.env.TWITCH_CLIENT_ID
   const token = process.env.TWITCH_ACCESS_TOKEN
   const username = process.env.TWITCH_USERNAME
+
+  const options = {
+    clientId,
+    token,
+    username,
+    log: { enabled: false },
+  }
+
   const channel = process.env.TWITCH_USERNAME
   const message = process.env.GITHUB_RUN_ID
     ? `CI E2E Build #${process.env.GITHUB_RUN_ID}`
@@ -24,16 +33,15 @@ describe('Browser E2E', () => {
   describe('Chat', () => {
     test('should connect, join channel, send message to channel', async () => {
       await page.evaluate(
-        (token, username, channel, message) => {
-          const { chat } = new window.TwitchJs({ token, username })
+        (options, channel, message) => {
+          const { chat } = new window.TwitchJs(options)
 
           return chat
             .connect()
             .then(() => chat.join(channel))
             .then(() => chat.say(channel, message))
         },
-        token,
-        username,
+        options,
         channel,
         message,
       )
@@ -42,16 +50,11 @@ describe('Browser E2E', () => {
 
   describe('Api', () => {
     test('should get endpoint', async () => {
-      await page.evaluate(
-        (token, username, ApiVersions) => {
-          const { api } = new window.TwitchJs({ token, username })
+      await page.evaluate((options) => {
+        const { api } = new window.TwitchJs(options)
 
-          return api.get('streams')
-        },
-        token,
-        username,
-        ApiVersions,
-      )
+        return api.get('streams')
+      }, options)
     })
   })
 })
