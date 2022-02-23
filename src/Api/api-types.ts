@@ -14,15 +14,4 @@ export enum ApiReadyStates {
   'INITIALIZED',
 }
 
-export type ApiSettings = {
-  baseUrl: string
-  authorizationHeader: string
-}
-
-export type ApiHeaders = Record<string, string> & {
-  'Client-ID'?: string
-  Accept?: string
-  Authorization?: string
-}
-
 export type ApiFetchOptions = FetchOptions
