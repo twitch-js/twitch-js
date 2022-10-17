@@ -141,12 +141,11 @@ describe('Chat', () => {
         connectionTimeout: 100,
         onAuthenticationFailure,
       })
-      const connectSpy = jest.spyOn(chat, 'connect')
 
       await chat.connect()
 
       expect(onAuthenticationFailure).toHaveBeenCalled()
-      expect(connectSpy).toHaveBeenCalledTimes(2)
+      expect(chat._options.token).toEqual('TOKEN')
     })
 
     test('should return the same promise', async () => {
