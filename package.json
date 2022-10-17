@@ -62,7 +62,8 @@
     "start:example": "ts-node-dev examples/node.js",
     "predocs:build": "rimraf docs",
     "docs:build": "typedoc",
-    "docs:build:watch": "ts-node-dev --exec yarn docs:build"
+    "docs:build:watch": "ts-node-dev --exec yarn docs:build",
+    "prepare": "yarn build"
   },
   "dependencies": {
     "camelcase-keys": "^6.2.2",
