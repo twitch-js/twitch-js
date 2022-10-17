@@ -251,10 +251,17 @@ describe('Chat', () => {
   })
 
   test('should disconnect', async () => {
-    const chat = new Chat(options)
+    const chat = new Chat({ ...options, connectionTimeout: 10000 })
     await chat.connect()
 
-    chat.disconnect()
+    const disconnectPromise = chat.disconnect()
+    emitHelper(
+      // @ts-expect-error private member
+      chat._client,
+      Events.DISCONNECTED,
+    )
+    await disconnectPromise
+
     expect(
       // @ts-expect-error private member
       chat._readyState,
@@ -263,6 +270,12 @@ describe('Chat', () => {
       // @ts-expect-error private member
       chat._connectionInProgress,
     ).toBe(undefined)
+  })
+
+  test('should disconnect even without disconnect event', async () => {
+    const chat = new Chat({ ...options, connectionTimeout: 1000 })
+    await chat.connect()
+    await chat.disconnect()
   })
 
   describe('reconnect', () => {

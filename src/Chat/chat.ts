@@ -1102,11 +1102,6 @@ class Chat extends EventEmitter<EventTypes> {
   }
 
   private _handleClientMessage(baseMessage: BaseMessage) {
-    if (baseMessage instanceof Error) {
-      this.emit('error', baseMessage)
-      return
-    }
-
     try {
       const [eventName, message] = this._parseMessageForEmitter(baseMessage)
       this._emit(eventName, message)
