@@ -1,5 +1,6 @@
 import EventEmitter from 'eventemitter3'
 import pEvent, { CancelablePromise } from 'p-event'
+import pTimeout from 'p-timeout'
 
 import uniq from 'lodash/uniq'
 
@@ -210,7 +211,7 @@ class Chat extends EventEmitter<EventTypes> {
 
   private _connectionAttempts = 0
   private _connectionInProgress?: CancelablePromise<any>
-  private _disconnectionInProgress?: CancelablePromise<any>
+  private _disconnectionInProgress?: Promise<void>
 
   private _globalUserState?: GlobalUserStateTags
   private _channelState: ChannelStates = {}
@@ -279,7 +280,7 @@ class Chat extends EventEmitter<EventTypes> {
   /**
    * Disconnected from Twitch.
    */
-  disconnect(): CancelablePromise<void> {
+  disconnect(): Promise<void> {
     if (this._disconnectionInProgress) {
       return this._disconnectionInProgress
     }
@@ -289,13 +290,19 @@ class Chat extends EventEmitter<EventTypes> {
       this._connectionInProgress = undefined
     }
 
-    this._disconnectionInProgress = pEvent<string, Messages>(
+    const waitForDisconnectEvent = pEvent<string, Messages>(
       this,
       Events.DISCONNECTED,
-      {
-        timeout: this._options.connectionTimeout,
-      },
     )
+
+    this._disconnectionInProgress = pTimeout(
+      waitForDisconnectEvent,
+      this._options.connectionTimeout,
+      () => {
+        waitForDisconnectEvent.cancel()
+        Promise.resolve()
+      },
+    ) as Promise<void>
 
     this.emit(DISCONNECT)
     return this._disconnectionInProgress
