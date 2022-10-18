@@ -909,12 +909,14 @@ declare enum UserNoticeCompounds {
 }
 declare const CONNECT: unique symbol;
 declare const DISCONNECT: unique symbol;
+declare const RECONNECT: unique symbol;
 type EventTypes = Omit<ClientEventTypes, BaseClientEvents.ALL> & {
     /**
      * Internal events
      */
     [CONNECT]: [];
     [DISCONNECT]: [];
+    [RECONNECT]: [];
     [Events.ALL]: [Messages];
     [Events.JOIN]: [JoinMessage];
     [Events.PART]: [PartMessage];
@@ -1279,6 +1281,7 @@ declare class Chat extends EventEmitter<EventTypes> {
     private _connectionAttempts;
     private _connectionInProgress?;
     private _disconnectionInProgress?;
+    private _reconnectionInProgress?;
     private _globalUserState?;
     private _channelState;
     private _isAuthenticated;
@@ -1289,7 +1292,7 @@ declare class Chat extends EventEmitter<EventTypes> {
     /**
      * Connect to Twitch.
      */
-    connect: () => Promise<void>;
+    connect(): Promise<void>;
     /**
      * Updates the client options after instantiation.
      * To update `token` or `username`, use `reconnect()`.
@@ -1305,14 +1308,11 @@ declare class Chat extends EventEmitter<EventTypes> {
     /**
      * Disconnected from Twitch.
      */
-    disconnect(): CancelablePromise<void>;
+    disconnect(): Promise<void>;
     /**
      * Reconnect to Twitch, providing new options to the client.
      */
-    reconnect(options?: Partial<ChatOptions>): Promise<{
-        roomState: RoomStateTags;
-        userState: UserStateTags | undefined;
-    }[]>;
+    reconnect(options?: Partial<ChatOptions>): CancelablePromise<any>;
     /**
      * Join a channel.
      *
@@ -1516,8 +1516,7 @@ declare class Chat extends EventEmitter<EventTypes> {
     whisper(username: string, message: string): Promise<void>;
     private _handleConnect;
     private _handleDisconnect;
-    private _handleClientDisconnect;
-    private _handleClientAuthenticated;
+    private _handleReconnect;
     private _handleClientAuthenticationFailure;
     private _handleClientMessage;
     private _handleJoinsAfterConnect;
