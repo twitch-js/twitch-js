@@ -145,6 +145,7 @@ export enum UserNoticeCompounds {
 
 export const CONNECT = Symbol('connect')
 export const DISCONNECT = Symbol('disconnect')
+export const RECONNECT = Symbol('reconnect')
 
 export type EventTypes = Omit<ClientEventTypes, BaseClientEvents.ALL> & {
   /**
@@ -152,6 +153,7 @@ export type EventTypes = Omit<ClientEventTypes, BaseClientEvents.ALL> & {
    */
   [CONNECT]: []
   [DISCONNECT]: []
+  [RECONNECT]: []
 
   [Events.ALL]: [Messages]
 
