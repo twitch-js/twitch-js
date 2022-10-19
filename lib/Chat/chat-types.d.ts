@@ -101,16 +101,7 @@ export declare enum UserNoticeCompounds {
     SUBSCRIPTION_GIFT = "USERNOTICE/SUBSCRIPTION_GIFT",
     SUBSCRIPTION_GIFT_COMMUNITY = "USERNOTICE/SUBSCRIPTION_GIFT_COMMUNITY"
 }
-export declare const CONNECT: unique symbol;
-export declare const DISCONNECT: unique symbol;
-export declare const RECONNECT: unique symbol;
 export declare type EventTypes = Omit<ClientEventTypes, BaseClientEvents.ALL> & {
-    /**
-     * Internal events
-     */
-    [CONNECT]: [];
-    [DISCONNECT]: [];
-    [RECONNECT]: [];
     [Events.ALL]: [Messages];
     [Events.JOIN]: [JoinMessage];
     [Events.PART]: [PartMessage];

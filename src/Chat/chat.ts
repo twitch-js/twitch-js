@@ -1,6 +1,5 @@
 import EventEmitter from 'eventemitter3'
 import pEvent, { CancelablePromise } from 'p-event'
-// import pTimeout from 'p-timeout'
 
 import uniq from 'lodash/uniq'
 
@@ -21,12 +20,12 @@ import createLogger, { Logger } from '../utils/logger'
 import Client from '../Client'
 import { ClientEvents } from '../Client/client-types'
 
-import * as Errors from './chat-errors'
-
 import * as parsers from './utils/parsers'
 import * as sanitizers from './utils/chat-sanitizers'
 import * as validators from './utils/chat-validators'
 
+import * as constants from './chat-constants'
+import * as Errors from './chat-errors'
 import {
   ChatReadyStates,
   EventTypes,
@@ -36,9 +35,6 @@ import {
   PrivateMessageCompounds,
   UserNoticeCompounds,
   ChannelState,
-  CONNECT,
-  DISCONNECT,
-  RECONNECT,
 } from './chat-types'
 
 /**
@@ -202,6 +198,8 @@ class Chat extends EventEmitter<EventTypes> {
     [Events.USER_NOTICE]: UserNoticeCompounds,
   }
 
+  private _internalEmitter = new EventEmitter()
+
   private _options: ChatOptions
 
   private _log: Logger
@@ -231,9 +229,9 @@ class Chat extends EventEmitter<EventTypes> {
     // Create logger.
     this._log = createLogger({ name: 'Chat', ...this._options.log })
 
-    this.on(CONNECT, this._handleConnect)
-    this.on(DISCONNECT, this._handleDisconnect)
-    this.on(RECONNECT, this._handleReconnect)
+    this._internalEmitter.on(constants.CONNECT, this._handleConnect)
+    this._internalEmitter.on(constants.DISCONNECT, this._handleDisconnect)
+    this._internalEmitter.on(constants.RECONNECT, this._handleReconnect)
   }
 
   /**
@@ -245,15 +243,15 @@ class Chat extends EventEmitter<EventTypes> {
     }
 
     this._connectionInProgress = pEvent<string, Messages>(
-      this,
-      Events.CONNECTED,
+      this._internalEmitter,
+      constants.CONNECTED,
       {
         rejectionEvents: [Events.ERROR_ENCOUNTERED],
         timeout: this._options.connectionTimeout,
       },
     )
 
-    this.emit(CONNECT)
+    this._internalEmitter.emit(constants.CONNECT)
     return this._connectionInProgress
   }
 
@@ -283,32 +281,20 @@ class Chat extends EventEmitter<EventTypes> {
   /**
    * Disconnected from Twitch.
    */
-  disconnect(): void {
-    // if (this._disconnectionInProgress) {
-    //   return this._disconnectionInProgress
-    // }
-
+  disconnect(): Promise<void> {
     if (this._connectionInProgress) {
       this._connectionInProgress.cancel()
       this._connectionInProgress = undefined
     }
 
-    // const waitForDisconnectEvent = pEvent<string, Messages>(
-    //   this,
-    //   Events.DISCONNECTED,
-    // )
+    this._disconnectionInProgress = pEvent(
+      this._internalEmitter,
+      constants.DISCONNECTED,
+      { timeout: this._options.connectionTimeout },
+    ).catch()
 
-    // this._disconnectionInProgress = pTimeout(
-    //   waitForDisconnectEvent,
-    //   this._options.connectionTimeout,
-    //   () => {
-    //     waitForDisconnectEvent.cancel()
-    //     Promise.resolve()
-    //   },
-    // ) as Promise<void>
-
-    this.emit(DISCONNECT)
-    // return this._disconnectionInProgress
+    this._internalEmitter.emit(constants.DISCONNECT)
+    return this._disconnectionInProgress
   }
 
   /**
@@ -324,14 +310,14 @@ class Chat extends EventEmitter<EventTypes> {
     }
 
     this._reconnectionInProgress = pEvent<string, Messages>(
-      this,
-      Events.CONNECTED,
+      this._internalEmitter,
+      constants.CONNECTED,
       {
         timeout: this._options.connectionTimeout,
       },
     )
 
-    this.emit(RECONNECT)
+    this._internalEmitter.emit(constants.RECONNECT)
     return this._reconnectionInProgress
   }
 
@@ -1027,10 +1013,14 @@ class Chat extends EventEmitter<EventTypes> {
     this._client = new Client(this._options)
 
     // Handle disconnects.
-    this._client.once(ClientEvents.DISCONNECTED, () => this.emit(DISCONNECT))
+    this._client.once(ClientEvents.DISCONNECTED, () =>
+      this._internalEmitter.emit(constants.DISCONNECT),
+    )
 
     // Listen for reconnects.
-    this._client.once(ClientEvents.RECONNECT, () => this.emit(RECONNECT))
+    this._client.once(ClientEvents.RECONNECT, () =>
+      this._internalEmitter.emit(constants.RECONNECT),
+    )
 
     // Listen for authentication failure.
     this._client.once(
@@ -1047,6 +1037,7 @@ class Chat extends EventEmitter<EventTypes> {
         this._isAuthenticated = true
       }
       this._handleJoinsAfterConnect()
+      this._internalEmitter.emit(constants.CONNECTED)
       connectProfiler.done('connected')
     })
 
@@ -1054,7 +1045,7 @@ class Chat extends EventEmitter<EventTypes> {
     this._client.on(ClientEvents.ALL, this._handleClientMessage, this)
   }
 
-  private _handleDisconnect() {
+  private _handleDisconnect = () => {
     this._log.info('disconnecting ...')
     this._readyState = ChatReadyStates.DISCONNECTING
 
@@ -1062,7 +1053,7 @@ class Chat extends EventEmitter<EventTypes> {
     this._clearChannelState()
 
     this._client?.once(ClientEvents.DISCONNECTED, () => {
-      this.emit(Events.DISCONNECTED)
+      this._internalEmitter.emit(constants.DISCONNECTED)
       this._readyState = ChatReadyStates.DISCONNECTED
       this._log.info('disconnected')
     })
@@ -1070,14 +1061,14 @@ class Chat extends EventEmitter<EventTypes> {
     this._client?.disconnect()
   }
 
-  private _handleReconnect() {
+  private _handleReconnect = () => {
     this._log.info('reconnecting ...')
     this._readyState = ChatReadyStates.RECONNECTING
 
     this._client?.removeAllListeners()
 
-    this._client?.once(Events.DISCONNECTED, () => {
-      this.emit(CONNECT)
+    this._client?.once(ClientEvents.DISCONNECTED, () => {
+      this._internalEmitter.emit(constants.CONNECT)
     })
 
     this._client?.disconnect()
@@ -1096,7 +1087,7 @@ class Chat extends EventEmitter<EventTypes> {
         this._options = { ...this._options, token }
       }
 
-      this.emit(CONNECT)
+      this._internalEmitter.emit(constants.CONNECT)
     } catch (reAuthenticationError) {
       const error = (reAuthenticationError as Error) || originError
 
@@ -1105,7 +1096,10 @@ class Chat extends EventEmitter<EventTypes> {
         originError,
       )
 
-      this.emit(Events.ERROR_ENCOUNTERED, authenticationError as any)
+      this._internalEmitter.emit(
+        Events.ERROR_ENCOUNTERED,
+        authenticationError as any,
+      )
       this._log.error(error as Error, 'authentication failed')
     }
   }
@@ -1114,7 +1108,7 @@ class Chat extends EventEmitter<EventTypes> {
     try {
       const [eventName, message] = this._parseMessageForEmitter(baseMessage)
       this._emit(eventName, message)
-    } catch (error) {
+    } catch (clientMessageError) {
       /**
        * Catch errors while parsing base messages into events.
        */
@@ -1126,12 +1120,15 @@ class Chat extends EventEmitter<EventTypes> {
           'pull request at https://github.com/twitch-js/twitch-js/compare\n' +
           '\n' +
           'Stack trace:\n' +
-          `${error}\n` +
+          `${clientMessageError}\n` +
           '\n' +
           'Base message:\n' +
           JSON.stringify(baseMessage),
       )
-      this.emit(ClientEvents.ERROR_ENCOUNTERED, error as Error)
+      this._internalEmitter.emit(
+        ClientEvents.ERROR_ENCOUNTERED,
+        clientMessageError as Error,
+      )
     }
   }
 
@@ -1139,8 +1136,8 @@ class Chat extends EventEmitter<EventTypes> {
     try {
       const channels = this._getChannels()
       await Promise.all(channels.map((channel) => this.join(channel)))
-    } catch (joinError) {
-      this._log.error(joinError as Error, 'unable to rejoin channels')
+    } catch (joinsError) {
+      this._log.error(joinsError as Error, 'unable to rejoin channels')
     }
   }
 
@@ -1319,7 +1316,7 @@ class Chat extends EventEmitter<EventTypes> {
 
       // Emit message under the ALL `*` event.
       super.emit(Events.ALL, message)
-    } catch (error) {
+    } catch (emitError) {
       /**
        * Catch external implementation errors.
        */
@@ -1329,13 +1326,16 @@ class Chat extends EventEmitter<EventTypes> {
           'error occurred in your implementation. To avoid seeing this ' +
           'message, please resolve the error:\n' +
           '\n' +
-          `${(error as Error).stack}\n` +
+          `${(emitError as Error).stack}\n` +
           '\n' +
           'Parsed messages:\n' +
           JSON.stringify(message),
       )
 
-      this.emit(ClientEvents.ERROR_ENCOUNTERED, error as Error)
+      this._internalEmitter.emit(
+        ClientEvents.ERROR_ENCOUNTERED,
+        emitError as Error,
+      )
     }
   }
 }

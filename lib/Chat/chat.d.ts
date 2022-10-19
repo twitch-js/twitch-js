@@ -241,6 +241,7 @@ declare class Chat extends EventEmitter<EventTypes> {
         PRIVMSG: typeof PrivateMessageCompounds;
         USERNOTICE: typeof UserNoticeCompounds;
     };
+    private _internalEmitter;
     private _options;
     private _log;
     private _client?;

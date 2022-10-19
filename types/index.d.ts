@@ -907,16 +907,7 @@ declare enum UserNoticeCompounds {
     SUBSCRIPTION_GIFT = "USERNOTICE/SUBSCRIPTION_GIFT",
     SUBSCRIPTION_GIFT_COMMUNITY = "USERNOTICE/SUBSCRIPTION_GIFT_COMMUNITY"
 }
-declare const CONNECT: unique symbol;
-declare const DISCONNECT: unique symbol;
-declare const RECONNECT: unique symbol;
 type EventTypes = Omit<ClientEventTypes, BaseClientEvents.ALL> & {
-    /**
-     * Internal events
-     */
-    [CONNECT]: [];
-    [DISCONNECT]: [];
-    [RECONNECT]: [];
     [Events.ALL]: [Messages];
     [Events.JOIN]: [JoinMessage];
     [Events.PART]: [PartMessage];
@@ -1274,6 +1265,7 @@ declare class Chat extends EventEmitter<EventTypes> {
         PRIVMSG: typeof PrivateMessageCompounds;
         USERNOTICE: typeof UserNoticeCompounds;
     };
+    private _internalEmitter;
     private _options;
     private _log;
     private _client?;

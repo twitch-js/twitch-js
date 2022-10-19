@@ -23,3 +23,8 @@ export declare const MESSAGE_PARAMETER_PREFIX_RE: RegExp;
 export declare const PRIVATE_MESSAGE_HOSTED_RE: RegExp;
 export declare const ANONYMOUS_USERNAME = "justinfan";
 export declare const ANONYMOUS_USERNAME_RE: RegExp;
+export declare const CONNECT: unique symbol;
+export declare const CONNECTED: unique symbol;
+export declare const DISCONNECT: unique symbol;
+export declare const DISCONNECTED: unique symbol;
+export declare const RECONNECT: unique symbol;

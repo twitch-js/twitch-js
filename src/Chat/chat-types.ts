@@ -143,18 +143,7 @@ export enum UserNoticeCompounds {
   SUBSCRIPTION_GIFT_COMMUNITY = 'USERNOTICE/SUBSCRIPTION_GIFT_COMMUNITY',
 }
 
-export const CONNECT = Symbol('connect')
-export const DISCONNECT = Symbol('disconnect')
-export const RECONNECT = Symbol('reconnect')
-
 export type EventTypes = Omit<ClientEventTypes, BaseClientEvents.ALL> & {
-  /**
-   * Internal events
-   */
-  [CONNECT]: []
-  [DISCONNECT]: []
-  [RECONNECT]: []
-
   [Events.ALL]: [Messages]
 
   [Events.JOIN]: [JoinMessage]
