@@ -30,7 +30,7 @@ describe('Node E2E', () => {
       await chat.join(channel)
       await chat.say(channel, message)
 
-      chat.disconnect()
+      await chat.disconnect()
     })
   })
 
