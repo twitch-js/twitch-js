@@ -10,15 +10,15 @@ jobs:
   pipeline:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
         with:
           token: ${{ secrets.RELEASE_TOKEN || github.token }}
 
-      - uses: actions/setup-node@v2
+      - uses: actions/setup-node@v3
         if: ${{ github.event_name == 'push' }}
         with:
-          node-version: '12.x'
-          registry-url: 'https://registry.npmjs.org'
+          node-version: 16
+          cache: 'yarn'
 
       - name: Install dependencies
         run: yarn install
