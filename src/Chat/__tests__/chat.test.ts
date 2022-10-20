@@ -279,7 +279,7 @@ describe('Chat', () => {
   })
 
   describe('reconnect', () => {
-    test.only('should reconnect and rejoin channels', async () => {
+    test('should reconnect and rejoin channels', async () => {
       const chat = new Chat(options)
       await chat.connect()
       await chat.join('#dallas')
