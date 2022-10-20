@@ -8,6 +8,7 @@ on:
 
 jobs:
   pipeline:
+    timeout-minutes: 20
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -18,7 +19,7 @@ jobs:
         if: ${{ github.event_name == 'push' }}
         with:
           node-version: 16
-          cache: 'yarn'
+          cache: yarn
 
       - name: Install dependencies
         run: yarn install
