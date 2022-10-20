@@ -46,7 +46,7 @@ describe('Browser E2E', () => {
         channel,
         message,
       )
-    })
+    }, 30000)
   })
 
   describe('Api', () => {
