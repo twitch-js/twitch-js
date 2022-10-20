@@ -1,8 +1,5 @@
 import EventEmitter from 'eventemitter3'
-import delay, { ClearablePromise } from 'delay'
-import PCancelable from 'p-cancelable'
-import pEvent from 'p-event'
-import pTimeout from 'p-timeout'
+import pEvent, { CancelablePromise } from 'p-event'
 
 import uniq from 'lodash/uniq'
 
@@ -23,12 +20,12 @@ import createLogger, { Logger } from '../utils/logger'
 import Client from '../Client'
 import { ClientEvents } from '../Client/client-types'
 
-import * as Errors from './chat-errors'
-
 import * as parsers from './utils/parsers'
 import * as sanitizers from './utils/chat-sanitizers'
 import * as validators from './utils/chat-validators'
 
+import * as constants from './chat-constants'
+import * as Errors from './chat-errors'
 import {
   ChatReadyStates,
   EventTypes,
@@ -201,6 +198,8 @@ class Chat extends EventEmitter<EventTypes> {
     [Events.USER_NOTICE]: UserNoticeCompounds,
   }
 
+  private _internalEmitter = new EventEmitter()
+
   private _options: ChatOptions
 
   private _log: Logger
@@ -210,7 +209,9 @@ class Chat extends EventEmitter<EventTypes> {
   private _readyState: ChatReadyStates = ChatReadyStates.WAITING
 
   private _connectionAttempts = 0
-  private _connectionInProgress?: ClearablePromise<void> | void
+  private _connectionInProgress?: CancelablePromise<any>
+  private _disconnectionInProgress?: Promise<void>
+  private _reconnectionInProgress?: CancelablePromise<any>
 
   private _globalUserState?: GlobalUserStateTags
   private _channelState: ChannelStates = {}
@@ -227,39 +228,31 @@ class Chat extends EventEmitter<EventTypes> {
 
     // Create logger.
     this._log = createLogger({ name: 'Chat', ...this._options.log })
+
+    this._internalEmitter.on(constants.CONNECT, this._handleConnect)
+    this._internalEmitter.on(constants.DISCONNECT, this._handleDisconnect)
+    this._internalEmitter.on(constants.RECONNECT, this._handleReconnect)
   }
 
   /**
    * Connect to Twitch.
    */
-  async connect(): Promise<void> {
-    try {
-      this._readyState = ChatReadyStates.CONNECTING
-
-      if (this._connectionInProgress) {
-        return this._connectionInProgress
-      }
-
-      this._connectionInProgress = await pTimeout(
-        this._handleConnectionAttempt(),
-        this._options.connectionTimeout,
-      )
-
-      this._readyState = ChatReadyStates.CONNECTED
-      this._connectionAttempts = 0
-    } catch (error) {
-      if (
-        this._readyState !== ChatReadyStates.DISCONNECTING &&
-        this._readyState !== ChatReadyStates.DISCONNECTED
-      ) {
-        this._log.info('retrying ...')
-        await delay(this._options.connectionTimeout)
-
-        return await this._handleAuthenticationFailure(error as BaseMessage)
-      } else {
-        throw error
-      }
+  connect(): Promise<void> {
+    if (this._connectionInProgress) {
+      return this._connectionInProgress
     }
+
+    this._connectionInProgress = pEvent<string, Messages>(
+      this._internalEmitter,
+      constants.CONNECTED,
+      {
+        rejectionEvents: [Events.ERROR_ENCOUNTERED],
+        timeout: this._options.connectionTimeout,
+      },
+    )
+
+    this._internalEmitter.emit(constants.CONNECT)
+    return this._connectionInProgress
   }
 
   /**
@@ -288,29 +281,44 @@ class Chat extends EventEmitter<EventTypes> {
   /**
    * Disconnected from Twitch.
    */
-  disconnect() {
-    this._readyState = ChatReadyStates.DISCONNECTING
-    this._client?.disconnect()
-    this._readyState = ChatReadyStates.DISCONNECTED
+  disconnect(): Promise<void> {
+    if (this._connectionInProgress) {
+      this._connectionInProgress.cancel()
+      this._connectionInProgress = undefined
+    }
+
+    this._disconnectionInProgress = pEvent(
+      this._internalEmitter,
+      constants.DISCONNECTED,
+      { timeout: this._options.connectionTimeout },
+    ).catch()
+
+    this._internalEmitter.emit(constants.DISCONNECT)
+    return this._disconnectionInProgress
   }
 
   /**
    * Reconnect to Twitch, providing new options to the client.
    */
-  async reconnect(options?: Partial<ChatOptions>) {
+  reconnect(options?: Partial<ChatOptions>): CancelablePromise<any> {
+    if (this._reconnectionInProgress) {
+      return this._reconnectionInProgress
+    }
+
     if (options) {
       this._options = validators.chatOptions({ ...this._options, ...options })
     }
 
-    this._connectionInProgress = undefined
-    this._readyState = ChatReadyStates.RECONNECTING
+    this._reconnectionInProgress = pEvent<string, Messages>(
+      this._internalEmitter,
+      constants.CONNECTED,
+      {
+        timeout: this._options.connectionTimeout,
+      },
+    )
 
-    const channels = this._getChannels()
-    this.disconnect()
-
-    await this.connect()
-
-    return Promise.all(channels.map((channel) => this.join(channel)))
+    this._internalEmitter.emit(constants.RECONNECT)
+    return this._reconnectionInProgress
   }
 
   /**
@@ -987,68 +995,88 @@ class Chat extends EventEmitter<EventTypes> {
     return this.send(command)
   }
 
-  private _handleConnectionAttempt(): Promise<void> {
-    return new PCancelable((resolve, reject) => {
-      const connectProfiler = this._log.profile('connecting ...')
+  private _handleConnect = () => {
+    const connectProfiler = this._log.profile('connecting ...')
 
-      const { token, username } = this._options
+    // Connect ...
+    this._readyState = ChatReadyStates.CONNECTING
 
-      // Connect ...
-      this._readyState = ChatReadyStates.CONNECTING
+    // Increment connection attempts.
+    this._connectionAttempts += 1
 
-      // Increment connection attempts.
-      this._connectionAttempts += 1
+    if (this._client) {
+      // Remove all listeners, just in case.
+      this._client.removeAllListeners()
+    }
 
-      if (this._client) {
-        // Remove all listeners, just in case.
-        this._client.removeAllListeners()
+    // Create client and connect.
+    this._client = new Client(this._options)
+
+    // Handle disconnects.
+    this._client.once(ClientEvents.DISCONNECTED, () =>
+      this._internalEmitter.emit(constants.DISCONNECT),
+    )
+
+    // Listen for reconnects.
+    this._client.once(ClientEvents.RECONNECT, () =>
+      this._internalEmitter.emit(constants.RECONNECT),
+    )
+
+    // Listen for authentication failure.
+    this._client.once(
+      ClientEvents.AUTHENTICATION_FAILED,
+      this._handleClientAuthenticationFailure,
+    )
+
+    // Once the client is connected, resolve ...
+    this._client.once(ClientEvents.CONNECTED, (message) => {
+      this._readyState = ChatReadyStates.CONNECTED
+      if (this._options.token && this._options.username) {
+        const globalUserStateMessage = parsers.globalUserStateMessage(message)
+        this._globalUserState = globalUserStateMessage.tags
+        this._isAuthenticated = true
       }
-
-      // Create client and connect.
-      this._client = new Client(this._options)
-
-      // Handle disconnects.
-      this._client.on(ClientEvents.DISCONNECTED, this._handleDisconnect, this)
-
-      // Listen for reconnects.
-      this._client.once(ClientEvents.RECONNECT, () => this.reconnect())
-
-      // Listen for authentication failure.
-      this._client.once(ClientEvents.AUTHENTICATION_FAILED, reject)
-
-      // Once the client is connected, resolve ...
-      this._client.once(ClientEvents.CONNECTED, (message) => {
-        if (token && username) {
-          this._handleAuthenticated(message)
-        }
-        this._handleJoinsAfterConnect()
-        resolve()
-        connectProfiler.done('connected')
-      })
-
-      // Handle messages.
-      this._client.on(ClientEvents.ALL, this._handleMessage, this)
+      this._handleJoinsAfterConnect()
+      this._internalEmitter.emit(constants.CONNECTED)
+      connectProfiler.done('connected')
     })
+
+    // Handle messages.
+    this._client.on(ClientEvents.ALL, this._handleClientMessage, this)
   }
 
-  private _handleDisconnect() {
+  private _handleDisconnect = () => {
     this._log.info('disconnecting ...')
-    if (this._connectionInProgress) {
-      this._connectionInProgress.clear()
-    }
-    this._connectionInProgress = undefined
+    this._readyState = ChatReadyStates.DISCONNECTING
+
     this._isAuthenticated = false
     this._clearChannelState()
-    this._log.info('disconnected')
+
+    this._client?.once(ClientEvents.DISCONNECTED, () => {
+      this._internalEmitter.emit(constants.DISCONNECTED)
+      this._readyState = ChatReadyStates.DISCONNECTED
+      this._log.info('disconnected')
+    })
+
+    this._client?.disconnect()
   }
 
-  private _handleAuthenticated(message: BaseMessage) {
-    const globalUserStateMessage = parsers.globalUserStateMessage(message)
-    this._globalUserState = globalUserStateMessage.tags
-    this._isAuthenticated = true
+  private _handleReconnect = () => {
+    this._log.info('reconnecting ...')
+    this._readyState = ChatReadyStates.RECONNECTING
+
+    this._client?.removeAllListeners()
+
+    this._client?.once(ClientEvents.DISCONNECTED, () => {
+      this._internalEmitter.emit(constants.CONNECT)
+    })
+
+    this._client?.disconnect()
   }
 
-  private async _handleAuthenticationFailure(originError: BaseMessage) {
+  private _handleClientAuthenticationFailure = async (
+    originError: BaseMessage,
+  ) => {
     try {
       this._log.info('retrying ...')
 
@@ -1057,27 +1085,30 @@ class Chat extends EventEmitter<EventTypes> {
       if (token) {
         this._log.info('re-authenticating ...')
         this._options = { ...this._options, token }
-        return await this.connect()
       }
-    } catch (error) {
-      this._log.error(error as Error, 're-authentication failed')
-      throw new Errors.AuthenticationError(
+
+      this._internalEmitter.emit(constants.CONNECT)
+    } catch (reAuthenticationError) {
+      const error = (reAuthenticationError as Error) || originError
+
+      const authenticationError = new Errors.AuthenticationError(
         originError?.message || 'Login authentication failed',
         originError,
       )
+
+      this._internalEmitter.emit(
+        Events.ERROR_ENCOUNTERED,
+        authenticationError as any,
+      )
+      this._log.error(error as Error, 'authentication failed')
     }
   }
 
-  private _handleMessage(baseMessage: BaseMessage) {
-    if (baseMessage instanceof Error) {
-      this.emit('error', baseMessage)
-      return
-    }
-
+  private _handleClientMessage(baseMessage: BaseMessage) {
     try {
       const [eventName, message] = this._parseMessageForEmitter(baseMessage)
       this._emit(eventName, message)
-    } catch (error) {
+    } catch (clientMessageError) {
       /**
        * Catch errors while parsing base messages into events.
        */
@@ -1089,18 +1120,25 @@ class Chat extends EventEmitter<EventTypes> {
           'pull request at https://github.com/twitch-js/twitch-js/compare\n' +
           '\n' +
           'Stack trace:\n' +
-          `${error}\n` +
+          `${clientMessageError}\n` +
           '\n' +
           'Base message:\n' +
           JSON.stringify(baseMessage),
       )
-      this.emit(ClientEvents.ERROR_ENCOUNTERED, error as Error)
+      this._internalEmitter.emit(
+        ClientEvents.ERROR_ENCOUNTERED,
+        clientMessageError as Error,
+      )
     }
   }
 
   private async _handleJoinsAfterConnect() {
-    const channels = this._getChannels()
-    await Promise.all(channels.map((channel) => this.join(channel)))
+    try {
+      const channels = this._getChannels()
+      await Promise.all(channels.map((channel) => this.join(channel)))
+    } catch (joinsError) {
+      this._log.error(joinsError as Error, 'unable to rejoin channels')
+    }
   }
 
   private _getChannels() {
@@ -1278,7 +1316,7 @@ class Chat extends EventEmitter<EventTypes> {
 
       // Emit message under the ALL `*` event.
       super.emit(Events.ALL, message)
-    } catch (error) {
+    } catch (emitError) {
       /**
        * Catch external implementation errors.
        */
@@ -1288,13 +1326,16 @@ class Chat extends EventEmitter<EventTypes> {
           'error occurred in your implementation. To avoid seeing this ' +
           'message, please resolve the error:\n' +
           '\n' +
-          `${(error as Error).stack}\n` +
+          `${(emitError as Error).stack}\n` +
           '\n' +
           'Parsed messages:\n' +
           JSON.stringify(message),
       )
 
-      this.emit(ClientEvents.ERROR_ENCOUNTERED, error as Error)
+      this._internalEmitter.emit(
+        ClientEvents.ERROR_ENCOUNTERED,
+        emitError as Error,
+      )
     }
   }
 }

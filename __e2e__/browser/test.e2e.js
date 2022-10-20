@@ -40,6 +40,7 @@ describe('Browser E2E', () => {
             .connect()
             .then(() => chat.join(channel))
             .then(() => chat.say(channel, message))
+            .then(() => chat.disconnect())
         },
         options,
         channel,

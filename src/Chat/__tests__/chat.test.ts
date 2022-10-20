@@ -141,12 +141,11 @@ describe('Chat', () => {
         connectionTimeout: 100,
         onAuthenticationFailure,
       })
-      const connectSpy = jest.spyOn(chat, 'connect')
 
       await chat.connect()
 
       expect(onAuthenticationFailure).toHaveBeenCalled()
-      expect(connectSpy).toHaveBeenCalledTimes(2)
+      expect(chat._options.token).toEqual('TOKEN')
     })
 
     test('should return the same promise', async () => {
@@ -251,19 +250,43 @@ describe('Chat', () => {
     chat.part('#dallas')
   })
 
-  test('should disconnect', async () => {
-    const chat = new Chat(options)
-    await chat.connect()
+  describe('disconnect', () => {
+    test('should disconnect', async () => {
+      const chat = new Chat({ ...options, connectionTimeout: 10000 })
+      await chat.connect()
 
-    chat.disconnect()
-    expect(
-      // @ts-expect-error private member
-      chat._readyState,
-    ).toBe(5)
-    expect(
-      // @ts-expect-error private member
-      chat._connectionInProgress,
-    ).toBe(undefined)
+      const disconnectPromise = chat.disconnect()
+      emitHelper(
+        // @ts-expect-error private member
+        chat._client,
+        Events.DISCONNECTED,
+      )
+      await disconnectPromise
+
+      expect(
+        // @ts-expect-error private member
+        chat._readyState,
+      ).toBe(5)
+      expect(
+        // @ts-expect-error private member
+        chat._connectionInProgress,
+      ).toBe(undefined)
+    })
+
+    test('should disconnect even without disconnect event', async () => {
+      const chat = new Chat({ ...options, connectionTimeout: 1000 })
+      await chat.connect()
+      await chat.disconnect()
+    })
+
+    test('should return the same promise', async () => {
+      const chat = new Chat(options)
+      await chat.connect()
+      const actual = chat.disconnect()
+      const expected = chat.disconnect()
+
+      expect(actual).toEqual(expected)
+    })
   })
 
   describe('reconnect', () => {
@@ -282,12 +305,6 @@ describe('Chat', () => {
       await chat.reconnect()
 
       expect(serverListener.mock.calls).toMatchSnapshot()
-      chatListener.mock.calls.forEach((call) => {
-        const actual = call[0]
-        expect(actual).toMatchSnapshot({
-          timestamp: expect.any(Date),
-        })
-      })
 
       server.removeListener('close')
       server.removeListener('open')
@@ -314,6 +331,15 @@ describe('Chat', () => {
         // @ts-expect-error private member
         chat._options.token,
       ).toBe('oauth:NEW_TOKEN')
+    })
+
+    test('should return the same promise', async () => {
+      const chat = new Chat(options)
+      await chat.connect()
+      const actual = chat.reconnect()
+      const expected = chat.reconnect()
+
+      expect(actual).toEqual(expected)
     })
   })
 
