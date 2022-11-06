@@ -50,7 +50,7 @@ If you are using a module bundler, such as [Webpack](https://webpack.js.org/),
 
 1. Add TwitchJS to your project:
    ```bash
-   npm install --save twitch-js
+   npm install twitch-js
    ```
 2. Import TwitchJS
 
