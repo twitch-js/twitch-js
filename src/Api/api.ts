@@ -154,6 +154,13 @@ class Api {
     return this._handleFetch<T>(endpoint, { ...options, method: 'put' })
   }
 
+  /**
+   * DELETE endpoint.
+   */
+  delete<T = any>(endpoint: string, options?: ApiFetchOptions) {
+    return this._handleFetch<T>(endpoint, { ...options, method: 'delete' })
+  }
+
   private _getAuthenticationHeaders(): RequestInit['headers'] {
     const { clientId, token } = this._options
 

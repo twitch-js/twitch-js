@@ -143,6 +143,17 @@ describe('Api', () => {
       expect(actualOpts).toMatchObject({ method: 'put' })
     })
 
+    test('delete should call fetch with method=delete', async () => {
+      const api = new Api(options)
+
+      const endpoint = 'ENDPOINT'
+      await api.delete(endpoint, fetchOptions)
+
+      const [, actualOpts] = fetchUtil.mock.calls[0]
+
+      expect(actualOpts).toMatchObject({ method: 'delete' })
+    })
+
     test('should throw on failure', async () => {
       expect.assertions(2)
 
