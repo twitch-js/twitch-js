@@ -26,7 +26,7 @@ import { ApiOptions, ApiReadyStates, ApiFetchOptions } from './api-types'
  *
  * By default, the API client makes requests to the
  * [Helix API](https://dev.twitch.tv/docs/api), and exposes [[Api.get]],
- * [[Api.post]] and [[Api.put]] methods. Query and body parameters are provided
+ * [[Api.post]], [[Api.put]] and [[Api.delete]] methods. Query and body parameters are provided
  * via `options.search` and `options.body` properties, respectively.
  *
  * ### Examples
@@ -152,6 +152,13 @@ class Api {
    */
   put<T = any>(endpoint: string, options?: ApiFetchOptions) {
     return this._handleFetch<T>(endpoint, { ...options, method: 'put' })
+  }
+
+  /**
+   * DELETE endpoint.
+   */
+  delete<T = any>(endpoint: string, options?: ApiFetchOptions) {
+    return this._handleFetch<T>(endpoint, { ...options, method: 'delete' })
   }
 
   private _getAuthenticationHeaders(): RequestInit['headers'] {
